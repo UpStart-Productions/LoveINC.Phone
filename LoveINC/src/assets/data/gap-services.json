@@ -5,7 +5,7 @@
     "schedule": "Thursday",
     "daysTimes": "1st & 3rd Thursday\n10 am - Noon",
     "church": "St. Peter Catholic",
-    "address": "2315 N. Main St.",
+    "address": "2315 N Main St, Newberg, OR 97132",
     "contact": "Call Love INC",
     "contactMethod": "call_loveinc",
     "notes": null
@@ -16,7 +16,7 @@
     "schedule": "Thursday",
     "daysTimes": "1st & 3rd Thursday\n10 am - 2 pm",
     "church": "Seventh Day Adventist",
-    "address": "530 Edgewood Dr.",
+    "address": "530 Edgewood Dr, Newberg, OR 97132",
     "contact": "Direct to Church",
     "contactMethod": "direct",
     "notes": null
@@ -27,7 +27,7 @@
     "schedule": "Thursday",
     "daysTimes": "Thursdays\n10 am - Noon",
     "church": "Joyful Lutheran-Mary's Place",
-    "address": "1710 N. Villa Rd.",
+    "address": "1710 N Villa Rd, Newberg, OR 97132",
     "contact": "Direct to Mary's Place",
     "contactMethod": "direct",
     "notes": null
@@ -38,7 +38,7 @@
     "schedule": "Thursday",
     "daysTimes": "Thursday\n4:30 - 5:45 pm",
     "church": "Northwest Christian Church",
-    "address": "2345 Villa Rd.",
+    "address": "2345 Villa Rd, Newberg, OR 97132",
     "contact": "Direct to Church",
     "contactMethod": "direct",
     "notes": null
@@ -49,7 +49,7 @@
     "schedule": "Friday",
     "daysTimes": "Friday\n5:30 - 6:30 pm",
     "church": "St. Peter's Catholic Church",
-    "address": "2315 N. Main St",
+    "address": "2315 N Main St, Newberg, OR 97132",
     "contact": "Direct to church",
     "contactMethod": "direct",
     "notes": null
@@ -60,7 +60,7 @@
     "schedule": "Saturday",
     "daysTimes": "Work Day 2nd Saturday of the month\n9:00 - 11:00 am",
     "church": "Newberg Friends Church",
-    "address": null,
+    "address": "Newberg, OR 97132",
     "contact": "Love INC Office",
     "contactMethod": "call_loveinc",
     "notes": null
@@ -71,7 +71,7 @@
     "schedule": "Open Weekdays",
     "daysTimes": "Mon - Friday\n10 am - Noon",
     "church": "2nd Street Church",
-    "address": "504 E. 1st Street",
+    "address": "504 E 1st St, Newberg, OR 97132",
     "contact": "Direct to Church",
     "contactMethod": "direct",
     "notes": null
@@ -82,7 +82,7 @@
     "schedule": "By Appointment",
     "daysTimes": "By appt",
     "church": "2nd Street Church",
-    "address": "504 E. 1st Street",
+    "address": "504 E 1st St, Newberg, OR 97132",
     "contact": "Call Love INC",
     "contactMethod": "call_loveinc",
     "notes": null
@@ -93,7 +93,7 @@
     "schedule": "By Appointment",
     "daysTimes": "Delivered to you",
     "church": "Nazarene Church",
-    "address": null,
+    "address": "Newberg, OR 97132",
     "contact": "Call Love INC",
     "contactMethod": "call_loveinc",
     "notes": "Delivered to you"

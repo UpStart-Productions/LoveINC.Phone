@@ -1,4 +1,5 @@
 import { Component, EnvironmentInjector, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { 
   IonTabs, 
   IonTabBar, 
@@ -30,7 +31,8 @@ export class TabsPage {
 
   constructor(
     private actionSheetController: ActionSheetController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private router: Router
   ) {}
 
   async openServicesMenu() {
@@ -46,10 +48,10 @@ export class TabsPage {
           }
         },
         {
-          text: 'Gap Ministries',
+          text: 'Gap Services',
           icon: 'construct-outline',
           handler: () => {
-            this.showServiceDetail('Gap Ministries');
+            this.router.navigate(['/tabs/gap-ministries']);
           }
         },
         {

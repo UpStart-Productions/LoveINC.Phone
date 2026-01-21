@@ -37,6 +37,11 @@ export const routes: Routes = [
           import('../church-map/church-map.page').then((m) => m.ChurchMapPage),
       },
       {
+        path: 'gap-ministries',
+        loadComponent: () =>
+          import('../organization-services/gap-ministries/gap-ministries.page').then((m) => m.GapMinistriesPage),
+      },
+      {
         path: '',
         redirectTo: '/tabs/home',
         pathMatch: 'full',
