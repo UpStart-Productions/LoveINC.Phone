@@ -41,13 +41,14 @@ export const CardTypeIcons: Record<CardType, string> = {
   'donation-opportunity': 'hand-left-outline'
 };
 
+// Brand colors mapped to match CSS variables in variables.scss
 export const CardTypeColors: Record<CardType, string> = {
-  'event': '#3B82F6',
-  'volunteer': '#349394',
-  'donation-drive': '#eaa535',
-  'impact': '#8b5cf6',
-  'church-partner': '#214491',
-  'class': '#10b981',
-  'gap-ministry': '#ef4444',
-  'donation-opportunity': '#f59e0b'
+  'event': '#3B82F6',              // --ion-color-primary
+  'volunteer': '#349394',          // --love-inc-teal
+  'donation-drive': '#eaa535',     // --love-inc-gold
+  'impact': '#8b5cf6',             // purple (standard)
+  'church-partner': '#214491',     // --love-inc-blue
+  'class': '#10b981',              // green (standard)
+  'gap-ministry': '#ef4444',       // red (standard)
+  'donation-opportunity': '#f59e0b' // amber (standard)
 };

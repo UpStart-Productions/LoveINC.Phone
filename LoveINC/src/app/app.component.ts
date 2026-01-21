@@ -43,8 +43,8 @@ export class AppComponent {
       window.location.reload();
     };
     
-    console.log('%c🎉 Love INC App Loaded', 'color: #1a9cb0; font-size: 16px; font-weight: bold;');
-    console.log('%c💡 Testing Tip: Type clearOnboarding() in console to reset onboarding', 'color: #2c5f7d; font-size: 12px;');
+    console.log('%c🎉 Love INC App Loaded', 'color: #349394; font-size: 16px; font-weight: bold;');
+    console.log('%c💡 Testing Tip: Type clearOnboarding() in console to reset onboarding', 'color: #214491; font-size: 12px;');
   }
 
   private initializeIcons() {

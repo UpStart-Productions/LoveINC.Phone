@@ -71,6 +71,20 @@ ion-button:not([color]) {
   --border-radius: 50px;
 }
 
+/* Header Styling - Global */
+ion-header ion-toolbar {
+  --background: var(--love-inc-header-dark);
+  --color: #ffffff;
+  --opacity: 1;
+  background: var(--love-inc-header-dark);
+  opacity: 1;
+}
+
+ion-header ion-title {
+  --color: #ffffff;
+  color: #ffffff;
+}
+
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 

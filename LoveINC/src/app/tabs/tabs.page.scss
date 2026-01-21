@@ -67,7 +67,7 @@ ion-tab-button {
     font-size: 0.6rem !important;
     font-weight: 500;
     margin-top: -2px;
-    color: #666;
+    color: var(--love-inc-neutral-dark);
   }
   
   /* Tab icons */
@@ -75,7 +75,7 @@ ion-tab-button {
     font-size: 1.36rem;
     padding-top: 0px;
     margin-top: -2px;
-    color: #666;
+    color: var(--love-inc-neutral-dark);
   }
   
   /* Icon switching for active state */

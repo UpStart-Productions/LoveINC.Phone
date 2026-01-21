@@ -112,17 +112,17 @@
 }
 
 .get-help-button {
-  --background: #214491;
+  --background: var(--love-inc-blue);
   --color: white;
 }
 
 .volunteer-button {
-  --background: #349394;
+  --background: var(--love-inc-teal);
   --color: white;
 }
 
 .give-button {
-  --background: #eaa535;
+  --background: var(--love-inc-gold);
   --color: white;
 }
 
