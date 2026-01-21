@@ -11,8 +11,6 @@ import {
   IonLabel,
   IonCheckbox
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { checkmarkOutline } from 'ionicons/icons';
 import { OnboardingService, OnboardingData } from '../services/onboarding.service';
 
 @Component({
@@ -41,9 +39,7 @@ export class OnboardingStep2Page {
   constructor(
     private router: Router,
     private onboardingService: OnboardingService
-  ) {
-    addIcons({ checkmarkOutline });
-  }
+  ) {}
 
   canComplete(): boolean {
     return this.firstName.trim().length > 0 && 

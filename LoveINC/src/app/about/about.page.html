@@ -7,5 +7,155 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <app-explore-container name="About page"></app-explore-container>
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-icon">
+      <ion-icon name="heart-outline"></ion-icon>
+    </div>
+    <h1 class="hero-title">Love INC Newberg</h1>
+    <p class="hero-subtitle">Mobilizing local churches to transform lives and communities In the Name of Christ</p>
+  </div>
+
+  <!-- Mission & Vision -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="heart-outline" class="section-icon"></ion-icon>
+        Our Mission & Vision
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="mission-vision-container">
+        <div class="mission-box">
+          <h3>Mission</h3>
+          <p>We mobilize local churches to transform lives and communities In the Name of Christ.</p>
+        </div>
+        <div class="vision-box">
+          <h3>Vision</h3>
+          <p>We envision a world where Christian churches are united in purpose and fully engaged in actively living out their faith by lovingly serving people in need in their communities.</p>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- How We Serve -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="people-circle-outline" class="section-icon"></ion-icon>
+        How We Serve
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="intro-text">We help churches help people by developing a network of local churches and connecting them with opportunities to serve their neighbors in need.</p>
+      
+      <div class="service-list">
+        <div class="service-item">
+          <ion-icon name="construct-outline"></ion-icon>
+          <div>
+            <h4>Holistic Care</h4>
+            <p>Addressing spiritual, mental, emotional, and physical needs</p>
+          </div>
+        </div>
+        
+        <div class="service-item">
+          <ion-icon name="people-circle-outline"></ion-icon>
+          <div>
+            <h4>Church Collaboration</h4>
+            <p>Each church leans into its strengths, working together</p>
+          </div>
+        </div>
+        
+        <div class="service-item">
+          <ion-icon name="heart-outline"></ion-icon>
+          <div>
+            <h4>Gap Ministries</h4>
+            <p>Filling unmet needs in the community through partner churches</p>
+          </div>
+        </div>
+        
+        <div class="service-item">
+          <ion-icon name="school-outline"></ion-icon>
+          <div>
+            <h4>Transformational Ministry</h4>
+            <p>Educational classes, mentorship, and community events</p>
+          </div>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Impact Stats -->
+  <ion-card class="stats-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="heart-outline" class="section-icon"></ion-icon>
+        Our Impact
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="stats-grid">
+        <div class="stat-item" *ngFor="let stat of impactStats">
+          <div class="stat-number">{{ stat.number }}</div>
+          <div class="stat-label">{{ stat.label }}</div>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- The Love INC Model -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="construct-outline" class="section-icon"></ion-icon>
+        Better Together
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>In every community, people possess gifts and talents that can be used for ministry, but they often don't know how to connect with neighbors in need who are seeking those exact skills at that exact time.</p>
+      <p>Love INC helps churches mobilize their members to reach out to their neighbors in need, by creating specific, manageable opportunities that utilize the unique skills and talents of their congregation to fill unmet needs in the community.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Statement of Faith (Collapsible) -->
+  <ion-accordion-group>
+    <ion-accordion value="faith">
+      <ion-item slot="header" color="light">
+        <ion-icon name="heart-outline" slot="start"></ion-icon>
+        <ion-label>Statement of Faith</ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <h3>The Apostles' Creed</h3>
+        <p class="creed-text">
+          I believe in God, the Father almighty, creator of heaven and earth.
+          <br><br>
+          I believe in Jesus Christ, God's only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died, and was buried; he descended to the dead. On the third day he rose again; he ascended into heaven, he is seated at the right hand of the Father, and he will come to judge the living and the dead.
+          <br><br>
+          I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and the life everlasting. Amen.
+        </p>
+        <p class="faith-note">
+          We hold Scripture as divinely inspired and the ultimate authority for faith and life.
+        </p>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+
+  <!-- Call to Action -->
+  <div class="cta-section">
+    <h2>Join Us</h2>
+    <p>Be part of transforming lives in our community</p>
+    <div class="cta-buttons">
+      <ion-button expand="block" color="primary">
+        <ion-icon slot="start" name="heart-outline"></ion-icon>
+        Volunteer
+      </ion-button>
+      <ion-button expand="block" color="secondary" fill="outline">
+        <ion-icon slot="start" name="mail-outline"></ion-icon>
+        Contact Us
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Bottom Spacing -->
+  <div style="height: 100px;"></div>
 </ion-content>

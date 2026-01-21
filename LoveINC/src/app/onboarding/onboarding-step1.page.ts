@@ -6,8 +6,6 @@ import {
   IonButton,
   IonIcon
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { arrowForwardOutline, handRightOutline, heartOutline, giftOutline } from 'ionicons/icons';
 import { OnboardingService } from '../services/onboarding.service';
 
 @Component({
@@ -28,14 +26,7 @@ export class OnboardingStep1Page {
   constructor(
     private router: Router,
     private onboardingService: OnboardingService
-  ) {
-    addIcons({ 
-      arrowForwardOutline, 
-      handRightOutline, 
-      heartOutline, 
-      giftOutline 
-    });
-  }
+  ) {}
 
   toggleOption(option: string) {
     if (this.selectedOptions.has(option)) {

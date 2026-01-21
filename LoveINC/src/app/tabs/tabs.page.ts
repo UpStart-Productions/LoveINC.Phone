@@ -10,25 +10,6 @@ import {
   ActionSheetController,
   AlertController
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { 
-  homeOutline, 
-  home, 
-  informationCircleOutline, 
-  informationCircle,
-  newspaperOutline,
-  newspaper,
-  mailOutline,
-  mail,
-  heartOutline,
-  peopleCircleOutline,
-  constructOutline,
-  schoolOutline,
-  briefcaseOutline,
-  homeOutline as houseOutline,
-  handRightOutline,
-  closeOutline
-} from 'ionicons/icons';
 
 @Component({
   selector: 'app-tabs',
@@ -50,26 +31,7 @@ export class TabsPage {
   constructor(
     private actionSheetController: ActionSheetController,
     private alertController: AlertController
-  ) {
-    addIcons({ 
-      homeOutline, 
-      home, 
-      informationCircleOutline, 
-      informationCircle,
-      newspaperOutline,
-      newspaper,
-      mailOutline,
-      mail,
-      heartOutline,
-      peopleCircleOutline,
-      constructOutline,
-      schoolOutline,
-      briefcaseOutline,
-      houseOutline,
-      handRightOutline,
-      closeOutline
-    });
-  }
+  ) {}
 
   async openServicesMenu() {
     const actionSheet = await this.actionSheetController.create({
