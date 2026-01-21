@@ -1,0 +1,82 @@
+[
+  {
+    "id": "event-1",
+    "type": "event",
+    "photoUrl": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80",
+    "title": "Annual Fundraiser Gala",
+    "subtitle": "Saturday, March 15th • 6:00 PM",
+    "description": "Join us for an evening of celebration and giving as we support families in need. Dinner, silent auction, and inspirational stories included.",
+    "link": "/tabs/about",
+    "priority": 1
+  },
+  {
+    "id": "volunteer-1",
+    "type": "volunteer",
+    "photoUrl": "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&q=80",
+    "title": "Food Pantry Volunteers Needed",
+    "subtitle": "Wednesdays • 2-4 hours",
+    "description": "Help sort and distribute food to families in our community. Perfect for individuals or groups.",
+    "link": "/tabs/about",
+    "priority": 2
+  },
+  {
+    "id": "donation-drive-1",
+    "type": "donation-drive",
+    "photoUrl": "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&q=80",
+    "title": "Winter Coat Drive",
+    "subtitle": "Now through February 28th",
+    "description": "Collecting gently used winter coats for children and adults. Drop-off locations available throughout the city.",
+    "link": "/tabs/contact",
+    "priority": 3
+  },
+  {
+    "id": "impact-1",
+    "type": "impact",
+    "photoUrl": "assets/photos/impact-2.jpg",
+    "title": "Maria's Story: From Crisis to Hope",
+    "subtitle": "Community Impact",
+    "description": "After losing her job, Maria found help through our food pantry and job training program. Today she's helping others in need.",
+    "link": "/tabs/about",
+    "priority": 4
+  },
+  {
+    "id": "church-1",
+    "type": "church-partner",
+    "photoUrl": "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=800&q=80",
+    "title": "Grace Community Church",
+    "subtitle": "Partner Since 2015",
+    "description": "Grace Community provides volunteers every week and hosts our monthly community meals. Thank you for your faithful partnership!",
+    "link": "/tabs/about",
+    "priority": 5
+  },
+  {
+    "id": "class-1",
+    "type": "class",
+    "photoUrl": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80",
+    "title": "Financial Freedom Class",
+    "subtitle": "Starting February 10th • 6 weeks",
+    "description": "Learn budgeting, debt reduction, and financial planning in a supportive environment. Childcare provided.",
+    "link": "/tabs/updates",
+    "priority": 6
+  },
+  {
+    "id": "gap-1",
+    "type": "gap-ministry",
+    "photoUrl": "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&q=80",
+    "title": "Community Meal - Friday",
+    "subtitle": "Every Friday • 5:30 PM",
+    "description": "Free hot meal for anyone in need. All are welcome! No registration required.",
+    "link": "/tabs/contact",
+    "priority": 7
+  },
+  {
+    "id": "donation-1",
+    "type": "donation-opportunity",
+    "photoUrl": "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80",
+    "title": "Bicycle Donations Needed",
+    "subtitle": "Drop-off: Main Office",
+    "description": "We're collecting bicycles for families who need reliable transportation for work. Adult bikes especially needed.",
+    "link": "/tabs/contact",
+    "priority": 8
+  }
+]
