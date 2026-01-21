@@ -21,9 +21,12 @@ import {
   mailOutline,
   mail,
   heartOutline,
+  peopleCircleOutline,
+  constructOutline,
+  schoolOutline,
+  briefcaseOutline,
+  homeOutline as houseOutline,
   handRightOutline,
-  peopleOutline,
-  giftOutline,
   closeOutline
 } from 'ionicons/icons';
 
@@ -58,36 +61,61 @@ export class TabsPage {
       mailOutline,
       mail,
       heartOutline,
+      peopleCircleOutline,
+      constructOutline,
+      schoolOutline,
+      briefcaseOutline,
+      houseOutline,
       handRightOutline,
-      peopleOutline,
-      giftOutline,
       closeOutline
     });
   }
 
   async openServicesMenu() {
     const actionSheet = await this.actionSheetController.create({
-      header: 'Love INC Services',
+      header: 'Services',
+      cssClass: 'services-action-sheet',
       buttons: [
         {
-          text: 'Get Help',
-          icon: 'hand-right-outline',
+          text: 'Connection Center',
+          icon: 'people-circle-outline',
           handler: () => {
-            this.showServiceMessage('Get Help');
+            this.showServiceDetail('Connection Center');
           }
         },
         {
-          text: 'Volunteer',
-          icon: 'people-outline',
+          text: 'Gap Ministries',
+          icon: 'construct-outline',
           handler: () => {
-            this.showServiceMessage('Volunteer');
+            this.showServiceDetail('Gap Ministries');
           }
         },
         {
-          text: 'Give',
-          icon: 'gift-outline',
+          text: 'Transformational Classes',
+          icon: 'school-outline',
           handler: () => {
-            this.showServiceMessage('Give');
+            this.showServiceDetail('Transformational Classes');
+          }
+        },
+        {
+          text: 'J.O.B.S.',
+          icon: 'briefcase-outline',
+          handler: () => {
+            this.showServiceDetail('J.O.B.S.');
+          }
+        },
+        {
+          text: 'Hesed House',
+          icon: 'house-outline',
+          handler: () => {
+            this.showServiceDetail('Hesed House');
+          }
+        },
+        {
+          text: 'Prayer',
+          icon: 'heart-outline',
+          handler: () => {
+            this.showServiceDetail('Prayer');
           }
         },
         {
@@ -101,10 +129,11 @@ export class TabsPage {
     await actionSheet.present();
   }
 
-  async showServiceMessage(service: string) {
+  async showServiceDetail(service: string) {
+    // TODO: Navigate to service detail page with service parameter
     const alert = await this.alertController.create({
       header: service,
-      message: `You selected: ${service}\n\nThis feature will be implemented soon.`,
+      message: `You selected: ${service}\n\nService detail page will be implemented soon.`,
       buttons: ['OK']
     });
 

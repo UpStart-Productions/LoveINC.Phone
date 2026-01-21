@@ -35,3 +35,42 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/**
+ * Custom Services Action Sheet Styling
+ * -----------------------------------------------------
+ */
+.services-action-sheet {
+  .action-sheet-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    text-align: left;
+    padding-left: 20px;
+  }
+
+  .action-sheet-button {
+    text-align: left !important;
+    justify-content: flex-start !important;
+    
+    .action-sheet-button-inner {
+      justify-content: flex-start !important;
+    }
+
+    .action-sheet-icon {
+      font-size: 14px;
+      margin-right: 16px;
+      color: var(--ion-color-primary);
+    }
+
+    span {
+      font-size: 14px;
+    }
+  }
+
+  .action-sheet-cancel {
+    .action-sheet-icon {
+      color: var(--ion-color-medium);
+    }
+  }
+}
