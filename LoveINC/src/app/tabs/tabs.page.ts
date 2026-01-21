@@ -35,7 +35,7 @@ export class TabsPage {
 
   async openServicesMenu() {
     const actionSheet = await this.actionSheetController.create({
-      header: 'Services',
+      header: 'Services at Love INC Newberg',
       cssClass: 'services-action-sheet',
       buttons: [
         {
