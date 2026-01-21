@@ -48,9 +48,23 @@ export class OnboardingService {
    * Clear onboarding data (for testing purposes)
    */
   clearOnboarding(): void {
+    // Remove all onboarding-related keys from localStorage
     localStorage.removeItem(this.ONBOARDING_KEY);
     localStorage.removeItem(this.ONBOARDING_DATA_KEY);
-    console.log('✅ Onboarding data cleared - refresh to see onboarding again');
+    
+    // Ensure keys are completely removed (defensive programming)
+    try {
+      if (localStorage.getItem(this.ONBOARDING_KEY)) {
+        localStorage.removeItem(this.ONBOARDING_KEY);
+      }
+      if (localStorage.getItem(this.ONBOARDING_DATA_KEY)) {
+        localStorage.removeItem(this.ONBOARDING_DATA_KEY);
+      }
+    } catch (e) {
+      console.warn('Error clearing onboarding data:', e);
+    }
+    
+    console.log('✅ Onboarding data cleared from localStorage');
   }
 
   /**

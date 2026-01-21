@@ -103,3 +103,72 @@ ion-card-content {
   color: var(--ion-text-color);
 }
 
+// Action Sheet Styles
+::ng-deep .donate-action-sheet {
+  .action-sheet-button-with-subtitle {
+    .action-sheet-button-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      white-space: normal;
+      
+      .action-sheet-button-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+    
+    .button-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      white-space: normal;
+    }
+  }
+}
+
+::ng-deep .action-sheet-button.action-sheet-button-with-subtitle {
+  .button-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    white-space: normal;
+    line-height: 1.4;
+    
+    &::before {
+      content: attr(data-title);
+      font-weight: 600;
+      color: var(--ion-text-color);
+      margin-bottom: 4px;
+    }
+  }
+  
+  .action-sheet-icon {
+    margin-right: 12px;
+  }
+}
+
+// Better approach: Use CSS to style the text with newlines
+::ng-deep .donate-action-sheet {
+  .action-sheet-button-with-subtitle {
+    text-align: left;
+    
+    .button-inner {
+      display: flex;
+      align-items: center;
+      text-align: left;
+      white-space: pre-line;
+      line-height: 1.5;
+    }
+    
+    .action-sheet-icon {
+      margin-right: 12px;
+      margin-left: 0;
+      flex-shrink: 0;
+    }
+  }
+}

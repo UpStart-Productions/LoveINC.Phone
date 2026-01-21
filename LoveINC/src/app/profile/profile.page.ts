@@ -101,7 +101,12 @@ export class ProfilePage {
   }
 
   resetOnboarding() {
+    // Clear all onboarding data from localStorage
     this.onboardingService.clearOnboarding();
-    this.router.navigate(['/onboarding/step1']);
+    // Navigate to onboarding and reload to ensure fresh state
+    this.router.navigate(['/onboarding/step1']).then(() => {
+      // Reload the page to ensure all cached data is cleared
+      window.location.reload();
+    });
   }
 }

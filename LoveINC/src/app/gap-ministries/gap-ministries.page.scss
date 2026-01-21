@@ -1,0 +1,82 @@
+.content-wrapper {
+  padding: 16px;
+  padding-bottom: 100px; // Space for tab bar
+}
+
+.schedule-section {
+  margin-bottom: 32px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.schedule-header {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--ion-color-primary);
+}
+
+.service-card {
+  margin: 0 0 12px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --min-height: auto;
+}
+
+.service-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  margin: 0 0 12px 0;
+}
+
+.service-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--ion-color-medium);
+  margin-right: 8px;
+  min-width: 80px;
+}
+
+.detail-value {
+  color: var(--ion-color-dark);
+  flex: 1;
+}
+
+.detail-address {
+  color: var(--ion-color-medium);
+  font-size: 13px;
+}
+
+.action-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+}

@@ -20,10 +20,13 @@ import {
   briefcaseOutline,
   handRightOutline,
   closeOutline,
+  shirtOutline,
+  cubeOutline,
   // Onboarding Icons
   giftOutline,
   arrowForwardOutline,
   checkmarkOutline,
+  cardOutline,
   // Map Icons
   mapOutline,
 } from 'ionicons/icons';
@@ -68,10 +71,12 @@ export class AppComponent {
       briefcaseOutline,
       handRightOutline,
       closeOutline,
+      shirtOutline,
       // Onboarding Icons
       giftOutline,
       arrowForwardOutline,
       checkmarkOutline,
+      cardOutline,
       // Map Icons
       mapOutline,
       // Alias for house icon

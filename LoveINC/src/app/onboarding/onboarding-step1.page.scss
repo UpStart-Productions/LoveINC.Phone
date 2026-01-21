@@ -127,17 +127,26 @@
 }
 
 .next-button {
-  --border-radius: 50px;
+  --background: transparent;
+  --background-activated: transparent;
+  --background-hover: transparent;
+  --border-radius: 0;
   --padding-top: 16px;
   --padding-bottom: 16px;
+  --box-shadow: none;
   font-size: 18px;
   font-weight: 600;
   text-transform: none;
   letter-spacing: 0;
   margin-bottom: 24px;
+  color: var(--ion-color-primary);
 
   &:not([disabled]) {
-    --box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    --box-shadow: none;
+  }
+
+  &[disabled] {
+    opacity: 0.4;
   }
 }
 

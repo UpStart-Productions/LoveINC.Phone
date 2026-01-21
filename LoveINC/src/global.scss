@@ -127,24 +127,34 @@ ion-header ion-back-button {
 @import '@ionic/angular/css/palettes/dark.system.css';
 
 /**
- * Custom Services Action Sheet Styling
+ * Global Action Sheet Styling
+ * Applies to both Services and Donate action sheets
  * -----------------------------------------------------
  */
-.services-action-sheet {
-  .action-sheet-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--ion-color-primary);
-    text-align: left;
-    padding-left: 20px;
-  }
+.services-action-sheet .action-sheet-title,
+.donate-action-sheet .action-sheet-title,
+.services-action-sheet .action-sheet-header,
+.donate-action-sheet .action-sheet-header,
+.services-action-sheet .action-sheet-group h1,
+.donate-action-sheet .action-sheet-group h1 {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  color: var(--ion-color-primary) !important;
+  text-align: left !important;
+  padding-left: 20px !important;
+}
 
-  .action-sheet-button {
+.services-action-sheet,
+.donate-action-sheet {
+
+  .action-sheet-button,
+  .action-sheet-button-with-subtitle {
     text-align: left !important;
     justify-content: flex-start !important;
     
     .action-sheet-button-inner {
       justify-content: flex-start !important;
+      font-size: 14px;
     }
 
     .action-sheet-icon {
@@ -161,6 +171,23 @@ ion-header ion-back-button {
   .action-sheet-cancel {
     .action-sheet-icon {
       color: var(--ion-color-medium);
+    }
+  }
+}
+
+/**
+ * Donate Action Sheet Specific Styling
+ * For subtitle text formatting
+ * -----------------------------------------------------
+ */
+.donate-action-sheet {
+  .action-sheet-button-with-subtitle {
+    .action-sheet-button-inner {
+      line-height: 1.6;
+      
+      // Style the first line (main text) to be bold and darker
+      // Note: white-space: pre-line removed from container to prevent layout issues
+      // The newline in the text string should work with default handling
     }
   }
 }
