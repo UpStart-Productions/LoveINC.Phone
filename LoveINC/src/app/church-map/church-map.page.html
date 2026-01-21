@@ -1,10 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/about"></ion-back-button>
+    </ion-buttons>
     <ion-title>
-      Contact Us
+      Partner Churches Map
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="navigateToProfile()">
+      <ion-button (click)="router.navigate(['/tabs/profile'])">
         <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -12,5 +15,5 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <app-explore-container name="Contact page"></app-explore-container>
+  <div id="map"></div>
 </ion-content>

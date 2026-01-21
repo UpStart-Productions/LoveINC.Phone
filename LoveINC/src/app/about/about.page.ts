@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { 
   IonHeader, 
   IonToolbar, 
@@ -14,8 +15,11 @@ import {
   IonItem,
   IonLabel,
   IonIcon,
-  IonButton
+  IonButton,
+  IonButtons
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { personCircleOutline, mapOutline, mailOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-about',
@@ -23,6 +27,7 @@ import {
   styleUrls: ['about.page.scss'],
   imports: [
     CommonModule,
+    RouterModule,
     IonHeader, 
     IonToolbar, 
     IonTitle, 
@@ -36,7 +41,8 @@ import {
     IonItem,
     IonLabel,
     IonIcon,
-    IonButton
+    IonButton,
+    IonButtons
   ],
 })
 export class AboutPage {
@@ -47,5 +53,23 @@ export class AboutPage {
     { number: '100+', label: 'Active Volunteers' }
   ];
 
-  constructor() {}
+  constructor(private router: Router) {
+    addIcons({ personCircleOutline, mapOutline, mailOutline });
+  }
+
+  navigateToProfile() {
+    this.router.navigate(['/tabs/profile']);
+  }
+
+  navigateToChurchMap() {
+    console.log('Navigating to church map...');
+    this.router.navigate(['/tabs/church-map']).then(
+      (success) => {
+        console.log('Navigation successful:', success);
+      },
+      (error) => {
+        console.error('Navigation error:', error);
+      }
+    );
+  }
 }

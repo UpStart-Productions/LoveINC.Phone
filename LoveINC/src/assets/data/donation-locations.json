@@ -1,0 +1,225 @@
+[
+  {
+    "id": "bike-donations",
+    "category": "Bike Donations",
+    "organization": "First Presbyterian Church",
+    "address": "501 Mission Dr.",
+    "phone": "503-538-3313",
+    "hours": null,
+    "acceptedItems": ["Bikes"],
+    "notes": null
+  },
+  {
+    "id": "breakfast-lunch-hugss",
+    "category": "Breakfast and Lunch Items & HUGSS",
+    "organization": "2nd Street Community Church",
+    "address": "Drop In Center, 504 E 1st St",
+    "phone": "503-538-9761",
+    "hours": "Monday - Friday 9:00am - 5:00pm",
+    "acceptedItems": [
+      "Hats",
+      "Umbrellas",
+      "Gloves",
+      "Scarves",
+      "Socks",
+      "Juice boxes",
+      "Ready to eat soup",
+      "Packs of crackers",
+      "Granola bars",
+      "Fruit cups",
+      "Spoons",
+      "Napkins",
+      "HUGSS items",
+      "Blankets",
+      "Sleeping Bags",
+      "Backpacks",
+      "Tarps"
+    ],
+    "notes": "Homeless resources"
+  },
+  {
+    "id": "clothing-7th-day",
+    "category": "Clothing",
+    "organization": "7th Day Adventist Church",
+    "address": "530 Edgewood Dr.",
+    "phone": "503-537-5117",
+    "hours": "Shop: 1st & 3rd Thursdays from 9 am - 2 pm\nDonate: 2nd and 4th Thursday 9 am to noon",
+    "acceptedItems": ["All sizes of children and adults clothing"],
+    "notes": "Call Violet at Church before you go. We refer to them."
+  },
+  {
+    "id": "clothing-saints-hill",
+    "category": "Clothing",
+    "organization": "Saints Hill - Children's Clothing",
+    "address": null,
+    "phone": "503-537-3999",
+    "hours": null,
+    "acceptedItems": ["Children's clothing (up to 12 years)"],
+    "notes": "Call for more info"
+  },
+  {
+    "id": "diapers",
+    "category": "Diapers",
+    "organization": "Family Place",
+    "address": "600 E. Sixth, Newberg",
+    "phone": "503-538-0475",
+    "hours": "Tuesday - Friday 1:00 to 3:00",
+    "acceptedItems": ["Diapers", "Wipes"],
+    "notes": null
+  },
+  {
+    "id": "food",
+    "category": "Food",
+    "organization": "FISH Food Pantry",
+    "address": "125 S Elliott Rd.",
+    "phone": "503-538-4444",
+    "hours": "Monday, Tuesday, Thursday 10:00am- 1:00pm",
+    "acceptedItems": [
+      "Canned foods (tuna/soup)",
+      "Dried foods (beans/cereal)",
+      "Packaged food (cheese/peanut butter)"
+    ],
+    "notes": null
+  },
+  {
+    "id": "furniture-restore",
+    "category": "Furniture",
+    "organization": "ReStore Newberg",
+    "address": "801 N. Main St., Newberg",
+    "phone": "971-832-8153",
+    "hours": null,
+    "acceptedItems": ["Furniture"],
+    "notes": null
+  },
+  {
+    "id": "furniture-mac-hub",
+    "category": "Furniture",
+    "organization": "Mac Hub",
+    "address": "1294 NW Hwy 99W, McMinnville",
+    "phone": "503-883-9524",
+    "hours": null,
+    "acceptedItems": ["Furniture"],
+    "notes": null
+  },
+  {
+    "id": "kitchen-setup",
+    "category": "Kitchen Set-Up",
+    "organization": "2nd Street Community Church",
+    "address": "504 E 1st St.",
+    "phone": "503-538-9761",
+    "hours": "Monday - Friday 9:00 - 5:00",
+    "acceptedItems": [
+      "Pots",
+      "Pans",
+      "Skillets",
+      "Dishes",
+      "Glasses",
+      "Silverware",
+      "Casserole dishes",
+      "Utensils",
+      "Storage containers",
+      "New toasters",
+      "New crock pots"
+    ],
+    "notes": null
+  },
+  {
+    "id": "linen-closet",
+    "category": "Linen Closet",
+    "organization": "St. Peters Catholic Church or at Love INC",
+    "address": "2315 N. Main St.",
+    "phone": "503 538 4312",
+    "hours": "Monday - Thursday 7:00 - 3:00, Friday 8:00 - 12:00",
+    "acceptedItems": [
+      "Freshly laundered towels",
+      "Sheets",
+      "Blankets",
+      "New pillows only"
+    ],
+    "notes": "Freshly laundered towels, sheets, blankets, and new pillows only."
+  },
+  {
+    "id": "non-food-pantry",
+    "category": "Non Food Pantry",
+    "organization": "Northside Comm. Church",
+    "address": "1800 Hoskins St.",
+    "phone": "503-538-0440",
+    "email": "info@northsidenewberg.org",
+    "hours": null,
+    "acceptedItems": [
+      "Cleaning supplies",
+      "TP",
+      "PT",
+      "Soaps of all kinds",
+      "Razors",
+      "Shaving cream",
+      "Feminine products",
+      "Shampoo",
+      "Conditioner",
+      "Lotion"
+    ],
+    "notes": "Call or email for arrangements"
+  },
+  {
+    "id": "otc-medications",
+    "category": "Over-the-Counter Medications",
+    "organization": "Love INC office",
+    "address": "200 S College St.",
+    "phone": "503-537-3999",
+    "hours": "Monday - Thursday 10:00 - 1:00",
+    "acceptedItems": [
+      "Cold medications",
+      "Allergy medications",
+      "Stomach medications",
+      "Pain relief",
+      "Wound care",
+      "Vitamins (all for adults & children)"
+    ],
+    "notes": null
+  },
+  {
+    "id": "personal-care-kits",
+    "category": "Personal Care Kits",
+    "organization": "Grace Baptist Church",
+    "address": "1619 E. 2nd St.",
+    "phone": "503 538 7468",
+    "hours": "Tuesday - Thursday 8:30 - 4:00",
+    "acceptedItems": [
+      "Travel size items: toothpaste",
+      "Tooth brushes",
+      "Shampoo",
+      "Conditioner",
+      "Soap",
+      "Floss",
+      "Lotion",
+      "Deodorant",
+      "Shaving cream",
+      "Razors"
+    ],
+    "notes": null
+  },
+  {
+    "id": "pregnancy-counseling",
+    "category": "Pregnancy Counseling Center (Vine Medical)",
+    "organization": "McMinn/Newberg locations",
+    "address": "1218 3rd Street, Lafayette",
+    "phone": "503-714-4148",
+    "hours": "Monday-Thursday 10am - 4pm, Fri. & Sat. 10am - 2pm",
+    "acceptedItems": [
+      "Quality used maternity and baby clothes",
+      "Baby furnishings"
+    ],
+    "notes": null
+  },
+  {
+    "id": "wood-donations",
+    "category": "Wood Donations",
+    "organization": "Friends Cemetery",
+    "contact": "Ken Howe",
+    "phone": "503-554-7634",
+    "email": "khowerev@gmail.com",
+    "hours": null,
+    "acceptedItems": ["Firewood"],
+    "notes": "1. The wood ministry does not cut down trees.\n2. Wood must already be cut into 16\" lengths (maximum)\n3. Minimum size = 4\" diameter (no branches/twigs)\n4. Deliver to Friends Cemetery (call Ken to arrange time)"
+  }
+]

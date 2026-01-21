@@ -24,6 +24,8 @@ import {
   giftOutline,
   arrowForwardOutline,
   checkmarkOutline,
+  // Map Icons
+  mapOutline,
 } from 'ionicons/icons';
 
 @Component({
@@ -70,6 +72,8 @@ export class AppComponent {
       giftOutline,
       arrowForwardOutline,
       checkmarkOutline,
+      // Map Icons
+      mapOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });

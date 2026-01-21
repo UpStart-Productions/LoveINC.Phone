@@ -1,8 +1,18 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="isDonor">
+      <ion-button class="donate-button" (click)="navigateToDonate()">
+        <ion-icon slot="icon-only" name="gift"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>
       Love INC
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="navigateToProfile()">
+        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -28,12 +38,5 @@
         {{ card.description }}
       </ion-card-content>
     </ion-card>
-  </div>
-
-  <!-- Testing Link -->
-  <div class="reset-link-container">
-    <button class="reset-link" (click)="resetOnboarding()">
-      Reset Onboarding
-    </button>
   </div>
 </ion-content>

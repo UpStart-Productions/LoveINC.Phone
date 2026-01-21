@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonBadge, IonIcon } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonBadge, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { calendarOutline, heartOutline, giftOutline, starOutline, peopleOutline, schoolOutline, timeOutline, handLeftOutline } from 'ionicons/icons';
+import { calendarOutline, heartOutline, giftOutline, starOutline, peopleOutline, schoolOutline, timeOutline, handLeftOutline, personCircleOutline, gift } from 'ionicons/icons';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { OnboardingService } from '../services/onboarding.service';
 import { HomeCard, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../models/home-card.model';
@@ -19,7 +19,8 @@ import { HomeCard, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../mode
     IonToolbar, 
     IonTitle, 
     IonContent, 
-    IonButton, 
+    IonButton,
+    IonButtons,
     IonCard,
     IonCardHeader,
     IonCardTitle,
@@ -35,17 +36,21 @@ export class HomePage implements OnInit {
   cardTypeLabels = CardTypeLabels;
   cardTypeIcons = CardTypeIcons;
   cardTypeColors = CardTypeColors;
+  isDonor: boolean = false;
 
   constructor(
     private onboardingService: OnboardingService,
     private router: Router,
     private http: HttpClient
   ) {
-    addIcons({ calendarOutline, heartOutline, giftOutline, starOutline, peopleOutline, schoolOutline, timeOutline, handLeftOutline });
+    addIcons({ calendarOutline, heartOutline, giftOutline, starOutline, peopleOutline, schoolOutline, timeOutline, handLeftOutline, personCircleOutline, gift });
   }
 
   ngOnInit() {
     this.loadCards();
+    
+    // Check if user selected 'give' during onboarding
+    this.isDonor = this.onboardingService.hasSelectedOption('give');
     
     // For testing - add to window for easy access in console
     (window as any).clearOnboarding = () => {
@@ -71,5 +76,14 @@ export class HomePage implements OnInit {
   resetOnboarding() {
     this.onboardingService.clearOnboarding();
     this.router.navigate(['/onboarding/step1']);
+  }
+
+  navigateToProfile() {
+    this.router.navigate(['/tabs/profile']);
+  }
+
+  navigateToDonate() {
+    // TODO: Navigate to donate page or open donate modal
+    console.log('Navigate to Donate');
   }
 }

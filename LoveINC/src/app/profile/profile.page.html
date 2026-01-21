@@ -1,0 +1,124 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Profile
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <ion-icon name="person-outline"></ion-icon>
+    </div>
+    <h2 class="profile-name">{{ userProfile.name }}</h2>
+    <p class="profile-subtitle">Member since {{ userProfile.memberSince }}</p>
+  </div>
+
+  <!-- Account Information -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="person-outline" class="section-icon"></ion-icon>
+        Account Information
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-label>
+            <p>Email</p>
+            <h3>{{ userProfile.email || 'Not provided' }}</h3>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="call-outline" slot="start"></ion-icon>
+          <ion-label>
+            <p>Phone</p>
+            <h3>{{ userProfile.phone || 'Not provided' }}</h3>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Quick Actions -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="settings-outline" class="section-icon"></ion-icon>
+        Quick Actions
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item button (click)="navigateToNotifications()" detail="true">
+          <ion-icon name="notifications-outline" slot="start"></ion-icon>
+          <ion-label>Notifications</ion-label>
+        </ion-item>
+        <ion-item button (click)="navigateToSettings()" detail="true">
+          <ion-icon name="settings-outline" slot="start"></ion-icon>
+          <ion-label>Settings</ion-label>
+        </ion-item>
+        <ion-item button (click)="navigateToHelp()" detail="true">
+          <ion-icon name="help-circle-outline" slot="start"></ion-icon>
+          <ion-label>Help & Support</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- My Engagement -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="heart-outline" class="section-icon"></ion-icon>
+        My Engagement
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="engagement-grid">
+        <div class="engagement-item">
+          <div class="engagement-number">0</div>
+          <div class="engagement-label">Volunteer Hours</div>
+        </div>
+        <div class="engagement-item">
+          <div class="engagement-number">0</div>
+          <div class="engagement-label">Events Attended</div>
+        </div>
+        <div class="engagement-item">
+          <div class="engagement-number">0</div>
+          <div class="engagement-label">Donations Made</div>
+        </div>
+        <div class="engagement-item">
+          <div class="engagement-number">0</div>
+          <div class="engagement-label">Lives Impacted</div>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Logout Button -->
+  <div class="logout-section">
+    <ion-button expand="block" fill="outline" color="danger" (click)="logout()">
+      <ion-icon slot="start" name="log-out-outline"></ion-icon>
+      Sign Out
+    </ion-button>
+  </div>
+
+  <!-- Developer/Testing Section -->
+  <div class="developer-section">
+    <p class="developer-label">Developer Options</p>
+    <button class="reset-link" (click)="resetOnboarding()">
+      Reset Onboarding
+    </button>
+  </div>
+
+  <!-- Bottom Spacing -->
+  <div style="height: 100px;"></div>
+</ion-content>

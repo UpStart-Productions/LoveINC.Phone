@@ -27,6 +27,16 @@ export const routes: Routes = [
           import('../contact/contact.page').then((m) => m.ContactPage),
       },
       {
+        path: 'profile',
+        loadComponent: () =>
+          import('../profile/profile.page').then((m) => m.ProfilePage),
+      },
+      {
+        path: 'church-map',
+        loadComponent: () =>
+          import('../church-map/church-map.page').then((m) => m.ChurchMapPage),
+      },
+      {
         path: '',
         redirectTo: '/tabs/home',
         pathMatch: 'full',

@@ -85,6 +85,20 @@ ion-header ion-title {
   color: #ffffff;
 }
 
+ion-header ion-buttons ion-button {
+  --color: #ffffff;
+  color: #ffffff;
+}
+
+ion-header ion-buttons ion-button ion-icon {
+  color: #ffffff;
+}
+
+ion-header ion-back-button {
+  --color: #ffffff;
+  color: #ffffff;
+}
+
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 

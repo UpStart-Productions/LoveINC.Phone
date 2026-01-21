@@ -1,3 +1,32 @@
+// Donate Button in Header
+ion-header ion-toolbar ion-buttons .donate-button {
+  --background: var(--love-inc-gold);
+  --background-activated: var(--love-inc-gold);
+  --background-hover: var(--love-inc-gold);
+  --color: white;
+  --border-radius: 50%;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  width: 40px;
+  height: 40px;
+  margin: 0 0 0 10px;
+  border-radius: 50%;
+  background: var(--love-inc-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+
+  ion-icon {
+    color: white !important;
+    font-size: 29px !important;
+    width: 29px;
+    height: 29px;
+  }
+}
+
 .cards-container {
   padding: 16px;
   padding-bottom: 100px; // Space for tab bar
@@ -74,27 +103,3 @@ ion-card-content {
   color: var(--ion-text-color);
 }
 
-.reset-link-container {
-  position: fixed;
-  bottom: 80px; // Above tab bar
-  left: 0;
-  right: 0;
-  text-align: center;
-  padding: 16px;
-  z-index: 100;
-}
-
-.reset-link {
-  background: none;
-  border: none;
-  color: var(--ion-color-medium);
-  font-size: 12px;
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 8px 16px;
-  opacity: 0.7;
-
-  &:active {
-    opacity: 0.4;
-  }
-}

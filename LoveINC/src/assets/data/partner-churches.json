@@ -1,0 +1,329 @@
+[
+  {
+    "id": "zion-lutheran",
+    "churchName": "Zion Lutheran Church",
+    "ministries": ["Community Meal"],
+    "type": "church",
+    "address": null,
+    "city": "Newberg",
+    "state": "OR",
+    "zip": null,
+    "latitude": 45.3001,
+    "longitude": -122.9676,
+    "phone": null,
+    "website": null
+  },
+  {
+    "id": "2nd-street",
+    "churchName": "2nd Street Church",
+    "ministries": [
+      "Drop In Center",
+      "Kitchen Ministry",
+      "Homeless"
+    ],
+    "type": "church",
+    "address": "504 E 1st St",
+    "city": "Newberg",
+    "state": "OR",
+    "zip": "97132",
+    "latitude": 45.3040,
+    "longitude": -122.9685,
+    "phone": "503-538-9761",
+    "website": null
+  },
+  {
+    "id": "red-hills",
+    "churchName": "Red Hills Church",
+    "ministries": [
+      "Residence",
+      "Bus Passes"
+    ],
+    "type": "church",
+    "address": null,
+    "city": "Newberg",
+    "state": "OR",
+    "zip": null,
+    "latitude": 45.3001,
+    "longitude": -122.9676,
+    "phone": null,
+    "website": null
+  },
+  {
+    "id": "northside",
+    "churchName": "Northside Church",
+    "ministries": [
+      "Non-Food Pantry",
+      "Host Relational"
+    ],
+    "type": "church",
+    "address": "1800 Hoskins St",
+    "city": "Newberg",
+    "state": "OR",
+    "zip": "97132",
+    "latitude": 45.3120,
+    "longitude": -122.9550,
+    "phone": "503-538-0440",
+    "website": "info@northsidenewberg.org"
+  },
+  {
+    "id": "church-of-christ",
+    "churchName": "Church of Christ",
+    "ministries": [
+      "Children's Clothing Closet"
+    ],
+    "type": "church",
+    "address": null,
+    "city": "Newberg",
+    "state": "OR",
+    "zip": null,
+    "latitude": 45.3001,
+    "longitude": -122.9676,
+    "phone": null,
+    "website": null
+  },
+  {
+    "id": "grace-baptist",
+    "churchName": "Grace Baptist Church",
+    "ministries": [
+      "Personal Care Kits",
+      "New Client Gift Bags"
+    ],
+    "type": "church",
+    "address": "1619 E 2nd St",
+    "city": "Newberg",
+    "state": "OR",
+    "zip": "97132",
+    "latitude": 45.3065,
+    "longitude": -122.9420,
+    "phone": "503-538-7468",
+    "website": null
+  },
+  {
+    "id": "rock-point",
+    "churchName": "Rock Point Church",
+    "ministries": [
+      "Laundry Ministry",
+      "Bread Ministry"
+    ],
+    "type": "church",
+    "address": null,
+    "city": "Newberg",
+    "state": "OR",
+    "zip": null,
+    "latitude": 45.3001,
+    "longitude": -122.9676,
+    "phone": null,
+    "website": null
+  },
+  {
+    "id": "family-life",
+    "churchName": "Family Life Church",
+    "ministries": [
+      "Haircuts"
+    ],
+    "type": "church",
+    "address": null,
+    "city": "Newberg",
+    "state": "OR",
+    "zip": null,
+    "latitude": 45.3001,
+    "longitude": -122.9676,
+    "phone": null,
+    "website": null
+  },
+  {
+    "id": "st-peters-catholic",
+    "churchName": "St. Peter's Catholic Church",
+    "ministries": [
+      "Community Meal",
+      "Linen Closet"
+    ],
+    "type": "church",
+    "address": "2315 N Main St",
+    "city": "Newberg",
+    "state": "OR",
+    "zip": "97132",
+    "latitude": 45.3180,
+    "longitude": -122.9715,
+    "phone": "503-538-4312",
+    "website": null
+  },
+  {
+    "id": "first-presbyterian",
+    "churchName": "First Presbyterian Church",
+    "ministries": [
+      "Bike Ministry"
+    ],
+    "type": "church",
+    "address": "501 Mission Dr",
+    "city": "Newberg",
+    "state": "OR",
+    "zip": "97132",
+    "latitude": 45.3015,
+    "longitude": -122.9800,
+    "phone": "503-538-3313",
+    "website": null
+  },
+  {
+    "id": "river-street",
+    "churchName": "River Street Church",
+    "ministries": [
+      "Community Meal",
+      "Shower Ministry"
+    ],
+    "type": "church",
+    "address": null,
+    "city": "Newberg",
+    "state": "OR",
+    "zip": null,
+    "latitude": 45.3001,
+    "longitude": -122.9676,
+    "phone": null,
+    "website": null
+  },
+  {
+    "id": "northwest-christian",
+    "churchName": "Northwest Christian Church",
+    "ministries": [
+      "Community Meal"
+    ],
+    "type": "church",
+    "address": "2345 Villa Rd",
+    "city": "Newberg",
+    "state": "OR",
+    "zip": "97132",
+    "latitude": 45.3090,
+    "longitude": -122.9480,
+    "phone": null,
+    "website": null
+  },
+  {
+    "id": "joyful-lutheran",
+    "churchName": "Joyful Lutheran - Mary's Place",
+    "ministries": [
+      "Community Meal",
+      "Diapers & More"
+    ],
+    "type": "church",
+    "address": "1710 N Villa Rd",
+    "city": "Newberg",
+    "state": "OR",
+    "zip": "97132",
+    "latitude": 45.3125,
+    "longitude": -122.9465,
+    "phone": null,
+    "website": null
+  },
+  {
+    "id": "seventh-day-adventist",
+    "churchName": "Seventh Day Adventist Church",
+    "ministries": [
+      "Clothing"
+    ],
+    "type": "church",
+    "address": "530 Edgewood Dr",
+    "city": "Newberg",
+    "state": "OR",
+    "zip": "97132",
+    "latitude": 45.3055,
+    "longitude": -122.9835,
+    "phone": "503-537-5117",
+    "website": null
+  },
+  {
+    "id": "newberg-friends",
+    "churchName": "Newberg Friends Church",
+    "ministries": [
+      "Firewood",
+      "Over the Counter Medicine"
+    ],
+    "type": "church",
+    "address": null,
+    "city": "Newberg",
+    "state": "OR",
+    "zip": "97132",
+    "latitude": 45.3015,
+    "longitude": -122.9730,
+    "phone": null,
+    "website": null
+  },
+  {
+    "id": "newberg-nazarene",
+    "churchName": "Newberg Nazarene Church",
+    "ministries": [
+      "Over the Counter Meds"
+    ],
+    "type": "church",
+    "address": null,
+    "city": "Newberg",
+    "state": "OR",
+    "zip": null,
+    "latitude": 45.3001,
+    "longitude": -122.9676,
+    "phone": null,
+    "website": null
+  },
+  {
+    "id": "love-inc-office",
+    "churchName": "Love INC Office",
+    "ministries": [
+      "Coordination",
+      "Over the Counter Medications"
+    ],
+    "type": "office",
+    "address": "200 S College St",
+    "city": "Newberg",
+    "state": "OR",
+    "zip": "97132",
+    "latitude": 45.3025,
+    "longitude": -122.9710,
+    "phone": "503-537-3999",
+    "website": null
+  },
+  {
+    "id": "church-collaboratives",
+    "churchName": "Church Collaboratives",
+    "ministries": [
+      "Housecleaning",
+      "Yardwork",
+      "Moving Help",
+      "Relational Ministry",
+      "Mentoring",
+      "Shelter Mentoring"
+    ],
+    "type": "collaborative",
+    "address": null,
+    "city": "Newberg",
+    "state": "OR",
+    "zip": null,
+    "latitude": null,
+    "longitude": null,
+    "phone": null,
+    "website": null
+  },
+  {
+    "id": "community-partners",
+    "churchName": "Community Partners",
+    "ministries": [
+      "George Fox University - Marriage/Family",
+      "George Fox University - Counseling",
+      "A Family Place",
+      "Diapers",
+      "F.I.S.H.",
+      "Utility Assistance / Food",
+      "MTI / Pacific University",
+      "Community Based Services",
+      "City of Newberg",
+      "Other Resources"
+    ],
+    "type": "community_partner",
+    "address": null,
+    "city": "Newberg",
+    "state": "OR",
+    "zip": null,
+    "latitude": null,
+    "longitude": null,
+    "phone": null,
+    "website": null
+  }
+]
