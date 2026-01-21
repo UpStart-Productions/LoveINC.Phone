@@ -1,0 +1,36 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Transformation Classes
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="navigateToProfile()">
+        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="classes-container">
+    <ion-card *ngFor="let classItem of classes" class="class-card" (click)="navigateToClassDetail(classItem)">
+      <!-- Card Image -->
+      <div class="card-image-container">
+        <img [src]="classItem.photoUrl" [alt]="classItem.title" class="card-image" />
+      </div>
+      
+      <!-- Card Content -->
+      <ion-card-header>
+        <ion-card-title>{{ classItem.title }}</ion-card-title>
+        <ion-card-subtitle>
+          {{ classItem.nextSession.dayOfWeek }} {{ classItem.nextSession.time }}<br>
+          {{ formatSessionDates(classItem) }}
+        </ion-card-subtitle>
+      </ion-card-header>
+      
+      <ion-card-content>
+        {{ classItem.description }}
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

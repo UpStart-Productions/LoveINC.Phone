@@ -58,7 +58,7 @@ export class TabsPage {
           text: 'Transformational Classes',
           icon: 'school-outline',
           handler: () => {
-            this.showServiceDetail('Transformational Classes');
+            this.router.navigate(['/tabs/transformation-classes']);
           }
         },
         {

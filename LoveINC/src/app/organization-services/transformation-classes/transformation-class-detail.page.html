@@ -1,0 +1,67 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/transformation-classes"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Class Details
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="navigateToProfile()">
+        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" *ngIf="classItem">
+  <div class="detail-container">
+    <!-- Hero Image -->
+    <div class="hero-image-container">
+      <img [src]="classItem.photoUrl" [alt]="classItem.title" class="hero-image" />
+    </div>
+
+    <!-- Class Info Card -->
+    <ion-card class="info-card">
+      <ion-card-header>
+        <ion-card-title>{{ classItem.title }}</ion-card-title>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <p class="description">{{ classItem.description }}</p>
+
+        <ion-list lines="none">
+          <ion-item>
+            <ion-icon slot="start" name="person-outline" color="primary"></ion-icon>
+            <ion-label>
+              <h3>Instructor</h3>
+              <p>{{ classItem.teacher }}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon slot="start" name="calendar-outline" color="primary"></ion-icon>
+            <ion-label>
+              <h3>Schedule</h3>
+              <p>{{ classItem.nextSession.dayOfWeek }} {{ classItem.nextSession.time }}</p>
+              <p>{{ formatSessionDates() }}</p>
+              <p class="duration">8-week course</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+        <div class="action-buttons">
+          <ion-button expand="block" color="primary" (click)="onRegisterClick()">
+            <ion-icon slot="start" name="link-outline"></ion-icon>
+            Register Now
+          </ion-button>
+          
+          <ion-button expand="block" fill="outline" color="primary" (click)="onAddToCalendarClick()">
+            <ion-icon slot="start" name="calendar-outline"></ion-icon>
+            Add to Calendar
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

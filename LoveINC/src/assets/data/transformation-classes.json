@@ -1,0 +1,58 @@
+[
+  {
+    "id": "life-skills-1",
+    "title": "Life Skills",
+    "description": "Learn essential life skills including budgeting, meal planning, job search strategies, time management, and goal setting. This comprehensive 8-week course provides practical tools and strategies to help you build confidence and independence.",
+    "teacher": "Sarah Johnson",
+    "photoUrl": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80",
+    "registrationLink": "https://loveinc.org/register/life-skills",
+    "nextSession": {
+      "startDate": "2024-02-06",
+      "endDate": "2024-03-26",
+      "dayOfWeek": "Tuesdays",
+      "time": "6:00 PM - 8:00 PM"
+    }
+  },
+  {
+    "id": "shame-no-more-1",
+    "title": "Shame No More",
+    "description": "A transformative journey toward freedom from shame and guilt. Through guided discussions, personal reflection, and practical exercises, discover how to break free from negative self-perception and embrace your worth. This class creates a safe space for healing and growth.",
+    "teacher": "Pastor Michael Chen",
+    "photoUrl": "https://plus.unsplash.com/premium_photo-1665990292585-6a39c5229bc8?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "registrationLink": "https://loveinc.org/register/shame-no-more",
+    "nextSession": {
+      "startDate": "2024-02-08",
+      "endDate": "2024-03-28",
+      "dayOfWeek": "Thursdays",
+      "time": "7:00 PM - 9:00 PM"
+    }
+  },
+  {
+    "id": "faith-and-finance-1",
+    "title": "Faith and Finance",
+    "description": "Discover a biblical approach to managing money, debt reduction, saving for the future, and generous giving. Learn how faith principles can guide your financial decisions and bring peace to your financial life. Includes practical tools and worksheets.",
+    "teacher": "David Martinez",
+    "photoUrl": "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80",
+    "registrationLink": "https://loveinc.org/register/faith-finance",
+    "nextSession": {
+      "startDate": "2024-02-10",
+      "endDate": "2024-03-30",
+      "dayOfWeek": "Saturdays",
+      "time": "10:00 AM - 12:00 PM"
+    }
+  },
+  {
+    "id": "healthy-relationships-1",
+    "title": "Healthy Relationships",
+    "description": "Build stronger, healthier relationships with family, friends, and partners. Learn communication skills, conflict resolution, setting healthy boundaries, and understanding love languages. This class helps you create meaningful connections that last.",
+    "teacher": "Jennifer Williams",
+    "photoUrl": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80",
+    "registrationLink": "https://loveinc.org/register/healthy-relationships",
+    "nextSession": {
+      "startDate": "2024-02-12",
+      "endDate": "2024-04-01",
+      "dayOfWeek": "Mondays",
+      "time": "6:30 PM - 8:30 PM"
+    }
+  }
+]

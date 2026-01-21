@@ -42,6 +42,16 @@ export const routes: Routes = [
           import('../organization-services/gap-ministries/gap-ministries.page').then((m) => m.GapMinistriesPage),
       },
       {
+        path: 'transformation-classes',
+        loadComponent: () =>
+          import('../organization-services/transformation-classes/transformation-classes.page').then((m) => m.TransformationClassesPage),
+      },
+      {
+        path: 'transformation-classes/:id',
+        loadComponent: () =>
+          import('../organization-services/transformation-classes/transformation-class-detail.page').then((m) => m.TransformationClassDetailPage),
+      },
+      {
         path: '',
         redirectTo: '/tabs/home',
         pathMatch: 'full',
