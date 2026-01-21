@@ -3,13 +3,13 @@
 
 /** Love INC Brand Colors **/
 :root {
-  /** primary - Love INC Teal/Blue **/
-  --ion-color-primary: #1a9cb0;
-  --ion-color-primary-rgb: 26, 156, 176;
+  /** primary - Love INC Blue **/
+  --ion-color-primary: #3B82F6;
+  --ion-color-primary-rgb: 59, 130, 246;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #17899b;
-  --ion-color-primary-tint: #31a6b8;
+  --ion-color-primary-shade: #3474d8;
+  --ion-color-primary-tint: #4f8ff7;
 
   /** secondary - Love INC Dark Blue **/
   --ion-color-secondary: #2c5f7d;
@@ -83,12 +83,12 @@
    */
 
   body {
-    --ion-color-primary: #31a6b8;
-    --ion-color-primary-rgb: 49, 166, 184;
-    --ion-color-primary-contrast: #000000;
-    --ion-color-primary-contrast-rgb: 0, 0, 0;
-    --ion-color-primary-shade: #2b92a2;
-    --ion-color-primary-tint: #46afbf;
+    --ion-color-primary: #4f8ff7;
+    --ion-color-primary-rgb: 79, 143, 247;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-contrast-rgb: 255, 255, 255;
+    --ion-color-primary-shade: #4680d9;
+    --ion-color-primary-tint: #619af8;
 
     --ion-color-secondary: #416f8a;
     --ion-color-secondary-rgb: 65, 111, 138;

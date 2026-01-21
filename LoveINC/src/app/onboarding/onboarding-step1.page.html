@@ -1,25 +1,28 @@
 <ion-content [fullscreen]="true" class="onboarding-content">
+  <!-- Background Header with Photo -->
+  <div class="photo-background-header">
+    <div class="photo-overlay"></div>
+  </div>
+  
   <div class="onboarding-container">
-    <!-- Logo Placeholder -->
+    <!-- Logo -->
     <div class="logo-container">
-      <div class="logo-placeholder">
-        <ion-icon name="heart-outline" class="logo-icon"></ion-icon>
-      </div>
-      <h1 class="logo-text">Love INC</h1>
+      <img src="assets/branding/logo-oregon-newberg.webp" alt="Love INC Logo" class="logo-image">
+      <h1 class="tagline">Helping Churches Help People</h1>
     </div>
-
-    <!-- Tagline -->
-    <p class="tagline">Mobilizing Local Churches to Transform Lives and Communities</p>
 
     <!-- Selection Buttons -->
     <div class="button-group">
       <ion-button 
         expand="block" 
         size="large" 
-        [fill]="isSelected('get-help') ? 'solid' : 'outline'"
-        [color]="isSelected('get-help') ? 'primary' : 'medium'"
-        class="option-button"
+        fill="solid"
+        class="option-button get-help-button"
+        [class.selected]="isSelected('get-help')"
         (click)="toggleOption('get-help')">
+        <div class="checkbox-indicator" *ngIf="isSelected('get-help')">
+          <ion-icon name="checkmark"></ion-icon>
+        </div>
         <ion-icon slot="start" name="hand-right-outline"></ion-icon>
         Get Help
       </ion-button>
@@ -27,10 +30,13 @@
       <ion-button 
         expand="block" 
         size="large" 
-        [fill]="isSelected('volunteer') ? 'solid' : 'outline'"
-        [color]="isSelected('volunteer') ? 'primary' : 'medium'"
-        class="option-button"
+        fill="solid"
+        class="option-button volunteer-button"
+        [class.selected]="isSelected('volunteer')"
         (click)="toggleOption('volunteer')">
+        <div class="checkbox-indicator" *ngIf="isSelected('volunteer')">
+          <ion-icon name="checkmark"></ion-icon>
+        </div>
         <ion-icon slot="start" name="heart-outline"></ion-icon>
         Volunteer
       </ion-button>
@@ -38,10 +44,13 @@
       <ion-button 
         expand="block" 
         size="large" 
-        [fill]="isSelected('give') ? 'solid' : 'outline'"
-        [color]="isSelected('give') ? 'primary' : 'medium'"
-        class="option-button"
+        fill="solid"
+        class="option-button give-button"
+        [class.selected]="isSelected('give')"
         (click)="toggleOption('give')">
+        <div class="checkbox-indicator" *ngIf="isSelected('give')">
+          <ion-icon name="checkmark"></ion-icon>
+        </div>
         <ion-icon slot="start" name="gift-outline"></ion-icon>
         Give
       </ion-button>
@@ -50,7 +59,8 @@
     <!-- Next Button -->
     <ion-button 
       expand="block" 
-      size="large" 
+      size="large"
+      color="primary"
       class="next-button"
       [disabled]="!canProceed()"
       (click)="onNext()">

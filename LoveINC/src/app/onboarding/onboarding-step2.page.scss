@@ -2,12 +2,36 @@
   --background: linear-gradient(135deg, #f5f9fa 0%, #ffffff 100%);
 }
 
+.photo-background-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30vh;
+  background-image: url('/assets/branding/photo-1.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.photo-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 .onboarding-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: 100%;
   padding: 40px 24px;
+  position: relative;
+  z-index: 1;
 }
 
 .header-section {
@@ -16,15 +40,17 @@
 }
 
 .page-title {
+  font-family: 'Ilisarniq', sans-serif;
   font-size: 32px;
   font-weight: 700;
   margin: 0 0 8px 0;
-  color: var(--ion-color-primary);
+  color: white;
 }
 
 .page-subtitle {
+  font-family: 'Ilisarniq', sans-serif;
   font-size: 16px;
-  color: var(--ion-color-medium);
+  color: white;
   margin: 0;
 }
 
@@ -82,7 +108,7 @@
 }
 
 .complete-button {
-  --border-radius: 12px;
+  --border-radius: 50px;
   --padding-top: 16px;
   --padding-bottom: 16px;
   font-size: 18px;
@@ -92,7 +118,7 @@
   margin-bottom: 16px;
 
   &:not([disabled]) {
-    --box-shadow: 0 4px 12px rgba(26, 156, 176, 0.3);
+    --box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   }
 
   ion-icon {

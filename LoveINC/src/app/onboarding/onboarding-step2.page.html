@@ -1,4 +1,9 @@
 <ion-content [fullscreen]="true" class="onboarding-content">
+  <!-- Background Header with Photo -->
+  <div class="photo-background-header">
+    <div class="photo-overlay"></div>
+  </div>
+  
   <div class="onboarding-container">
     <!-- Header -->
     <div class="header-section">
@@ -53,7 +58,8 @@
     <!-- Complete Button -->
     <ion-button 
       expand="block" 
-      size="large" 
+      size="large"
+      color="primary"
       class="complete-button"
       [disabled]="!canComplete()"
       (click)="onComplete()">

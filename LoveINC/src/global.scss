@@ -9,6 +9,68 @@
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
 
+/* Custom Font - Ilisarniq */
+@font-face {
+  font-family: 'Ilisarniq';
+  src: url('/assets/fonts/Ilisarniq-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ilisarniq';
+  src: url('/assets/fonts/Ilisarniq-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ilisarniq';
+  src: url('/assets/fonts/Ilisarniq-Demi.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ilisarniq';
+  src: url('/assets/fonts/Ilisarniq-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ilisarniq';
+  src: url('/assets/fonts/Ilisarniq-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* Love INC Heart Logo SVG */
+.love-inc-heart-logo {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/icon/love-inc-heart.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Variant with custom color (use CSS filters for recoloring) */
+.love-inc-heart-logo.primary-color {
+  filter: brightness(0) saturate(100%) invert(47%) sepia(89%) saturate(2086%) hue-rotate(204deg) brightness(102%) contrast(93%);
+}
+
+.love-inc-heart-logo.secondary-color {
+  filter: brightness(0) saturate(100%) invert(31%) sepia(34%) saturate(871%) hue-rotate(159deg) brightness(91%) contrast(88%);
+}
+
+/* Primary Button Global Styles */
+ion-button[color="primary"],
+ion-button:not([color]) {
+  --border-radius: 50px;
+}
+
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 

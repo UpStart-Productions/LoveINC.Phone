@@ -64,4 +64,73 @@ export class OnboardingService {
     };
     localStorage.setItem(this.ONBOARDING_DATA_KEY, JSON.stringify(data));
   }
+
+  /**
+   * Get user's first name
+   */
+  getUserFirstName(): string | null {
+    const data = this.getOnboardingData();
+    return data?.firstName || null;
+  }
+
+  /**
+   * Get user's full name
+   */
+  getUserFullName(): string | null {
+    const data = this.getOnboardingData();
+    if (data?.firstName && data?.lastName) {
+      return `${data.firstName} ${data.lastName}`;
+    }
+    return null;
+  }
+
+  /**
+   * Get user's email
+   */
+  getUserEmail(): string | null {
+    const data = this.getOnboardingData();
+    return data?.email || null;
+  }
+
+  /**
+   * Check if user wants newsletter
+   */
+  wantsNewsletter(): boolean {
+    const data = this.getOnboardingData();
+    return data?.wantsNewsletter || false;
+  }
+
+  /**
+   * Get user's selected options
+   */
+  getSelectedOptions(): string[] {
+    const data = this.getOnboardingData();
+    return data?.selectedOptions || [];
+  }
+
+  /**
+   * Check if user selected a specific option
+   */
+  hasSelectedOption(option: string): boolean {
+    const options = this.getSelectedOptions();
+    return options.includes(option);
+  }
+
+  /**
+   * Check if user is exploring (skipped onboarding)
+   */
+  isExploring(): boolean {
+    return this.hasSelectedOption('exploring');
+  }
+
+  /**
+   * Update specific onboarding data fields
+   */
+  updateOnboardingData(updates: Partial<OnboardingData>): void {
+    const currentData = this.getOnboardingData();
+    if (currentData) {
+      const updatedData = { ...currentData, ...updates };
+      localStorage.setItem(this.ONBOARDING_DATA_KEY, JSON.stringify(updatedData));
+    }
+  }
 }

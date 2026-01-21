@@ -6,6 +6,8 @@ import {
   IonButton,
   IonIcon
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { checkmark, handRightOutline, heartOutline, giftOutline, arrowForwardOutline } from 'ionicons/icons';
 import { OnboardingService } from '../services/onboarding.service';
 
 @Component({
@@ -26,14 +28,19 @@ export class OnboardingStep1Page {
   constructor(
     private router: Router,
     private onboardingService: OnboardingService
-  ) {}
+  ) {
+    addIcons({ checkmark, handRightOutline, heartOutline, giftOutline, arrowForwardOutline });
+  }
 
   toggleOption(option: string) {
     if (this.selectedOptions.has(option)) {
       this.selectedOptions.delete(option);
+      console.log('Removed option:', option);
     } else {
       this.selectedOptions.add(option);
+      console.log('Added option:', option);
     }
+    console.log('Current selections:', Array.from(this.selectedOptions));
   }
 
   isSelected(option: string): boolean {
@@ -47,7 +54,9 @@ export class OnboardingStep1Page {
   onNext() {
     if (this.canProceed()) {
       // Store selections temporarily for step 2
-      sessionStorage.setItem('loveinc_temp_selections', JSON.stringify(Array.from(this.selectedOptions)));
+      const selectionsArray = Array.from(this.selectedOptions);
+      console.log('Saving to sessionStorage:', selectionsArray);
+      sessionStorage.setItem('loveinc_temp_selections', JSON.stringify(selectionsArray));
       this.router.navigate(['/onboarding/step2']);
     }
   }
