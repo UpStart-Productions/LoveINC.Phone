@@ -1,0 +1,113 @@
+.onboarding-content {
+  --background: linear-gradient(135deg, #f5f9fa 0%, #ffffff 100%);
+}
+
+.onboarding-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+  padding: 40px 24px;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.logo-placeholder {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 16px rgba(26, 156, 176, 0.2);
+}
+
+.logo-icon {
+  font-size: 64px;
+  color: white;
+}
+
+.logo-text {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--ion-color-primary);
+  text-align: center;
+}
+
+.tagline {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ion-color-medium);
+  text-align: center;
+  margin: 0 0 40px 0;
+  padding: 0 16px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.option-button {
+  --border-width: 2px;
+  --border-radius: 12px;
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  transition: all 0.3s ease;
+
+  ion-icon {
+    font-size: 24px;
+  }
+
+  &[fill="solid"] {
+    --box-shadow: 0 4px 12px rgba(26, 156, 176, 0.3);
+  }
+}
+
+.next-button {
+  --border-radius: 12px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  margin-bottom: 24px;
+
+  &:not([disabled]) {
+    --box-shadow: 0 4px 12px rgba(26, 156, 176, 0.3);
+  }
+}
+
+.exploring-link {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--ion-color-medium);
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 8px 16px;
+
+  &:active {
+    opacity: 0.6;
+  }
+}

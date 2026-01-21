@@ -1,0 +1,69 @@
+<ion-content [fullscreen]="true" class="onboarding-content">
+  <div class="onboarding-container">
+    <!-- Header -->
+    <div class="header-section">
+      <h1 class="page-title">Welcome!</h1>
+      <p class="page-subtitle">Let's get to know you better</p>
+    </div>
+
+    <!-- Form -->
+    <div class="form-section">
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked" class="form-label">First Name</ion-label>
+        <ion-input
+          [(ngModel)]="firstName"
+          type="text"
+          placeholder="Enter your first name"
+          class="form-input"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked" class="form-label">Last Name</ion-label>
+        <ion-input
+          [(ngModel)]="lastName"
+          type="text"
+          placeholder="Enter your last name"
+          class="form-input"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked" class="form-label">Email Address</ion-label>
+        <ion-input
+          [(ngModel)]="email"
+          type="email"
+          placeholder="Enter your email"
+          class="form-input"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="checkbox-item">
+        <ion-checkbox 
+          slot="start" 
+          [(ngModel)]="wantsNewsletter"
+          class="newsletter-checkbox"
+        ></ion-checkbox>
+        <ion-label class="checkbox-label">
+          I would like to receive Love INC newsletter
+        </ion-label>
+      </ion-item>
+    </div>
+
+    <!-- Complete Button -->
+    <ion-button 
+      expand="block" 
+      size="large" 
+      class="complete-button"
+      [disabled]="!canComplete()"
+      (click)="onComplete()">
+      <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+      Complete
+    </ion-button>
+
+    <!-- Privacy Note -->
+    <p class="privacy-note">
+      Your information is secure and will only be used to better serve you.
+    </p>
+  </div>
+</ion-content>

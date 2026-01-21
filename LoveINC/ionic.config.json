@@ -1,0 +1,7 @@
+{
+  "name": "LoveINC",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

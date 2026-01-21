@@ -1,0 +1,38 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom" class="custom-tab-bar">
+    <ion-tab-button tab="home" href="/tabs/home">
+      <ion-icon aria-hidden="true" name="home-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="home" class="solid-icon"></ion-icon>
+      <ion-label>Home</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="about" href="/tabs/about">
+      <ion-icon aria-hidden="true" name="information-circle-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="information-circle" class="solid-icon"></ion-icon>
+      <ion-label>About</ion-label>
+    </ion-tab-button>
+
+    <!-- Spacer for the floating action button -->
+    <ion-tab-button class="fab-spacer" disabled="true" style="visibility: hidden;">
+    </ion-tab-button>
+
+    <ion-tab-button tab="updates" href="/tabs/updates">
+      <ion-icon aria-hidden="true" name="newspaper-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="newspaper" class="solid-icon"></ion-icon>
+      <ion-label>Updates</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="contact" href="/tabs/contact">
+      <ion-icon aria-hidden="true" name="mail-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="mail" class="solid-icon"></ion-icon>
+      <ion-label>Contact</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+
+  <!-- Floating Action Button for Services -->
+  <ion-fab class="fab-center">
+    <ion-fab-button (click)="openServicesMenu()">
+      <ion-icon name="heart-outline" style="color: white;"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-tabs>

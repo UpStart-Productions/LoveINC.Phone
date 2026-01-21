@@ -1,0 +1,68 @@
+<ion-content [fullscreen]="true" class="onboarding-content">
+  <div class="onboarding-container">
+    <!-- Logo Placeholder -->
+    <div class="logo-container">
+      <div class="logo-placeholder">
+        <ion-icon name="heart-outline" class="logo-icon"></ion-icon>
+      </div>
+      <h1 class="logo-text">Love INC</h1>
+    </div>
+
+    <!-- Tagline -->
+    <p class="tagline">Mobilizing Local Churches to Transform Lives and Communities</p>
+
+    <!-- Selection Buttons -->
+    <div class="button-group">
+      <ion-button 
+        expand="block" 
+        size="large" 
+        [fill]="isSelected('get-help') ? 'solid' : 'outline'"
+        [color]="isSelected('get-help') ? 'primary' : 'medium'"
+        class="option-button"
+        (click)="toggleOption('get-help')">
+        <ion-icon slot="start" name="hand-right-outline"></ion-icon>
+        Get Help
+      </ion-button>
+
+      <ion-button 
+        expand="block" 
+        size="large" 
+        [fill]="isSelected('volunteer') ? 'solid' : 'outline'"
+        [color]="isSelected('volunteer') ? 'primary' : 'medium'"
+        class="option-button"
+        (click)="toggleOption('volunteer')">
+        <ion-icon slot="start" name="heart-outline"></ion-icon>
+        Volunteer
+      </ion-button>
+
+      <ion-button 
+        expand="block" 
+        size="large" 
+        [fill]="isSelected('give') ? 'solid' : 'outline'"
+        [color]="isSelected('give') ? 'primary' : 'medium'"
+        class="option-button"
+        (click)="toggleOption('give')">
+        <ion-icon slot="start" name="gift-outline"></ion-icon>
+        Give
+      </ion-button>
+    </div>
+
+    <!-- Next Button -->
+    <ion-button 
+      expand="block" 
+      size="large" 
+      class="next-button"
+      [disabled]="!canProceed()"
+      (click)="onNext()">
+      Next
+      <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+    </ion-button>
+
+    <!-- Exploring Link -->
+    <div class="exploring-link">
+      <button class="link-button" (click)="onExploring()">
+        I'm just exploring
+      </button>
+    </div>
+  </div>
+</ion-content>
