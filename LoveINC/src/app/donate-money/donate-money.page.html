@@ -1,0 +1,78 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Choose amount</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="donation-form-container">
+    <!-- Donation Frequency -->
+    <ion-segment [(ngModel)]="donationFrequency" class="frequency-segment">
+      <ion-segment-button value="one-time">
+        <ion-label>One-time</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="monthly">
+        <ion-label>Monthly</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="quarterly">
+        <ion-label>Quarterly</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <!-- Preset Amount Buttons -->
+    <div class="amount-buttons">
+      <button
+        *ngFor="let amount of presetAmounts"
+        class="amount-button"
+        [class.selected]="selectedAmount === amount"
+        (click)="selectAmount(amount)"
+        type="button">
+        ${{ amount }}
+      </button>
+    </div>
+
+    <!-- Other Amount Input -->
+    <div class="other-amount-container">
+      <ion-item class="other-amount-item">
+        <ion-label position="stacked">$ Other</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="customAmount"
+          (ionInput)="onCustomAmountChange()"
+          placeholder="0.00"
+          class="other-amount-input">
+        </ion-input>
+        <div slot="end" class="currency-label">USD</div>
+      </ion-item>
+    </div>
+
+    <!-- Additional Options -->
+    <div class="options-container">
+      <ion-item>
+        <ion-checkbox [(ngModel)]="addNote" slot="start"></ion-checkbox>
+        <ion-label>Add note/comment</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox [(ngModel)]="giveInHonor" slot="start"></ion-checkbox>
+        <ion-label>Give in honor/memory</ion-label>
+      </ion-item>
+    </div>
+
+    <!-- Continue Button -->
+    <ion-button
+      expand="block"
+      class="continue-button"
+      [disabled]="!canContinue()"
+      (click)="onContinue()">
+      Continue
+    </ion-button>
+
+    <!-- Powered by Givebutter -->
+    <div class="powered-by">
+      <span>Powered by Givebutter</span>
+    </div>
+  </div>
+</ion-content>

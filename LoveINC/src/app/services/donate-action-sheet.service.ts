@@ -46,7 +46,6 @@ export class DonateActionSheetService {
   }
 
   private handleOnlineDonation(): void {
-    // TODO: Navigate to online donation page or form
-    console.log('Navigate to Online Donation');
+    this.router.navigate(['/tabs/donate-money']);
   }
 }
