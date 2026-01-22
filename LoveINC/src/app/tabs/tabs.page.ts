@@ -85,8 +85,9 @@ export class TabsPage {
           }
         },
         {
-          text: 'Donate',
+          text: 'Donate to Love INC Newberg',
           icon: 'gift-outline',
+          cssClass: 'donate-button',
           handler: () => {
             this.donateActionSheetService.openDonateActionSheet();
           }

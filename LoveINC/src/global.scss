@@ -173,6 +173,30 @@ ion-header ion-back-button {
       color: var(--ion-color-medium);
     }
   }
+
+  // Style the Donate button as a full-width coral button
+  .action-sheet-button.donate-button {
+    background-color: var(--love-inc-coral) !important;
+    color: #ffffff !important;
+    margin: 8px 12px 8px 12px !important;
+    border-radius: 8px !important;
+    width: calc(100% - 24px) !important;
+    box-sizing: border-box !important;
+    
+    .action-sheet-icon {
+      color: #ffffff !important;
+    }
+    
+    span {
+      color: #ffffff !important;
+      font-weight: 600 !important;
+      font-size: 16px !important;
+    }
+    
+    .action-sheet-button-inner {
+      justify-content: center !important;
+    }
+  }
 }
 
 /**
