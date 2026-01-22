@@ -123,8 +123,7 @@ export class HomePage implements OnInit {
   }
 
   handleGoodsDonation() {
-    // TODO: Navigate to goods donation page or form
-    console.log('Navigate to Goods Donation');
+    this.router.navigate(['/tabs/donate-goods']);
   }
 
   handleOnlineDonation() {

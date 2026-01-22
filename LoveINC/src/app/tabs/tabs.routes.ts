@@ -52,6 +52,11 @@ export const routes: Routes = [
           import('../organization-services/transformation-classes/transformation-class-detail.page').then((m) => m.TransformationClassDetailPage),
       },
       {
+        path: 'donate-goods',
+        loadComponent: () =>
+          import('../donate-goods/donate-goods.page').then((m) => m.DonateGoodsPage),
+      },
+      {
         path: '',
         redirectTo: '/tabs/home',
         pathMatch: 'full',

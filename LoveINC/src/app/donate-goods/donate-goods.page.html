@@ -1,0 +1,86 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Search Donation Options"
+      (ionInput)="onSearchChange($event)"
+      [value]="searchQuery">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="navigateToProfile()">
+        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="content-wrapper">
+    <div *ngFor="let category of categoryOrder">
+      <div *ngIf="groupedLocations[category]?.length" class="category-section">
+        <h2 class="category-header">{{ category }}</h2>
+        <ion-card *ngFor="let location of groupedLocations[category]" class="location-card">
+          <ion-card-content>
+            <ion-item lines="none">
+              <ion-label>
+                <div class="location-header">
+                  <h3 class="organization-name">{{ location.organization }}</h3>
+                </div>
+                <div class="location-details">
+                  <div class="detail-row" *ngIf="location.address">
+                    <span class="detail-address">{{ location.address }}</span>
+                  </div>
+                  <div class="detail-row" *ngIf="location.hours">
+                    <span class="detail-value hours-value">{{ location.hours }}</span>
+                  </div>
+                  <div class="detail-row" *ngIf="location.phone">
+                    <span class="detail-value">{{ location.phone }}</span>
+                  </div>
+                  <div class="detail-row" *ngIf="location.email">
+                    <span class="detail-value">{{ location.email }}</span>
+                  </div>
+                  <div class="detail-row" *ngIf="location.contact">
+                    <span class="detail-value">{{ location.contact }}</span>
+                  </div>
+                  <div class="detail-row" *ngIf="location.acceptedItems?.length">
+                    <div class="accepted-items">
+                      <span class="item-pill" *ngFor="let item of location.acceptedItems">{{ item }}</span>
+                    </div>
+                  </div>
+                  <div class="detail-row" *ngIf="location.notes">
+                    <span class="detail-notes notes-value">{{ location.notes }}</span>
+                  </div>
+                </div>
+                <div class="action-icons">
+                  <ion-button 
+                    fill="clear" 
+                    size="small" 
+                    (click)="onMapPinClick(location)" 
+                    class="map-button"
+                    *ngIf="location.address">
+                    <ion-icon slot="icon-only" name="location-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button 
+                    fill="clear" 
+                    size="small" 
+                    (click)="onPhoneClick(location)" 
+                    class="phone-button"
+                    *ngIf="location.phone">
+                    <ion-icon slot="icon-only" name="call-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button 
+                    fill="clear" 
+                    size="small" 
+                    (click)="onEmailClick(location)" 
+                    class="email-button"
+                    *ngIf="location.email">
+                    <ion-icon slot="icon-only" name="mail-outline"></ion-icon>
+                  </ion-button>
+                </div>
+              </ion-label>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+  </div>
+</ion-content>
