@@ -1,1 +1,63 @@
-// Contact page styles
+.contact-content {
+  --background: linear-gradient(135deg, #f5f9fa 0%, #ffffff 100%);
+}
+
+.photo-background-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30vh;
+  background-image: url('/assets/branding/photo-1.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.photo-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.contact-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 100%;
+  padding: 40px 24px;
+  padding-top: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+  margin-top: calc(30vh - 200px);
+}
+
+.logo-image {
+  width: 300px;
+  height: auto;
+  margin-bottom: 24px;
+  object-fit: contain;
+  display: block;
+}
+
+.tagline {
+  font-family: 'Ilisarniq', sans-serif;
+  font-size: 32px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  margin: -15px 0 0 0;
+  padding: 0 16px;
+}

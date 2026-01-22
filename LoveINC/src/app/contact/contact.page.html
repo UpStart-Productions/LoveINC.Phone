@@ -1,16 +1,16 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Contact Us
-    </ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="navigateToProfile()">
-        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="contact-content">
+  <!-- Background Header with Photo -->
+  <div class="photo-background-header">
+    <div class="photo-overlay"></div>
+  </div>
+  
+  <div class="contact-container">
+    <!-- Logo -->
+    <div class="logo-container">
+      <img src="assets/branding/logo-oregon-newberg.webp" alt="Love INC Logo" class="logo-image">
+      <h1 class="tagline">Call or Visit Today</h1>
+    </div>
 
-<ion-content [fullscreen]="true">
-  <app-explore-container name="Contact page"></app-explore-container>
+    <app-explore-container name="Contact page"></app-explore-container>
+  </div>
 </ion-content>
