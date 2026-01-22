@@ -11,6 +11,7 @@ import {
   ActionSheetController,
   AlertController
 } from '@ionic/angular/standalone';
+import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 
 @Component({
   selector: 'app-tabs',
@@ -32,7 +33,8 @@ export class TabsPage {
   constructor(
     private actionSheetController: ActionSheetController,
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    private donateActionSheetService: DonateActionSheetService
   ) {}
 
   async openServicesMenu() {
@@ -80,6 +82,13 @@ export class TabsPage {
           icon: 'heart-outline',
           handler: () => {
             this.showServiceDetail('Prayer');
+          }
+        },
+        {
+          text: 'Donate',
+          icon: 'gift-outline',
+          handler: () => {
+            this.donateActionSheetService.openDonateActionSheet();
           }
         },
         {
