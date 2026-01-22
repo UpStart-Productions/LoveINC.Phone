@@ -1,0 +1,21 @@
+# Ionic Framework Rules
+
+## Default Ionic Controls
+- DO NOT embellish or add custom styling to default Ionic controls unless explicitly instructed by the user
+- Ionic is its own UI framework with well-designed default components
+- Use Ionic components out of the box with their default styling
+- Only add custom styling when the user specifically requests it
+- When working with forms, use standard Ionic form components (ion-item, ion-input, ion-select, etc.) with their default appearance
+- Avoid adding custom CSS classes, borders, backgrounds, or padding to Ionic components unless requested
+
+## Examples of what NOT to do:
+- Adding custom card styling to form fields
+- Adding custom borders or backgrounds to ion-item elements
+- Overriding default Ionic component styles without being asked
+- Creating custom wrappers around Ionic components when not needed
+
+## Examples of what TO do:
+- Use ion-list and ion-item as-is for form layouts
+- Use default Ionic button styles
+- Use standard Ionic input field styling
+- Only modify styling when the user explicitly asks for it

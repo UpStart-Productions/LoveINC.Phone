@@ -13,6 +13,10 @@
   background-position: center;
   background-repeat: no-repeat;
   z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .photo-overlay {
@@ -24,23 +28,13 @@
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.contact-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  min-height: 100%;
-  padding: 40px 24px;
-  padding-top: 0;
-  position: relative;
-  z-index: 1;
-}
-
 .logo-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 40px;
-  margin-top: calc(30vh - 200px);
+  position: relative;
+  z-index: 1;
+  margin-top: 35px;
 }
 
 .logo-image {
@@ -61,3 +55,12 @@
   margin: -15px 0 0 0;
   padding: 0 16px;
 }
+
+.form-scroll-container {
+  margin-top: calc(30vh);
+  height: calc(100vh - 30vh);
+  overflow-y: auto;
+  position: relative;
+  padding-bottom: 100px;
+}
+

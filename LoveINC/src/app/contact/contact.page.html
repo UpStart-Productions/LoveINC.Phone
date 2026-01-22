@@ -2,15 +2,95 @@
   <!-- Background Header with Photo -->
   <div class="photo-background-header">
     <div class="photo-overlay"></div>
-  </div>
-  
-  <div class="contact-container">
     <!-- Logo -->
     <div class="logo-container">
       <img src="assets/branding/logo-oregon-newberg.webp" alt="Love INC Logo" class="logo-image">
       <h1 class="tagline">Call or Visit Today</h1>
     </div>
+  </div>
+  
+  <div class="form-scroll-container">
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">First Name</ion-label>
+        <ion-input 
+          type="text" 
+          [(ngModel)]="contactForm.firstName" 
+          name="firstName"
+          required>
+        </ion-input>
+      </ion-item>
 
-    <app-explore-container name="Contact page"></app-explore-container>
+      <ion-item>
+        <ion-label position="stacked">Last Name</ion-label>
+        <ion-input 
+          type="text" 
+          [(ngModel)]="contactForm.lastName" 
+          name="lastName"
+          required>
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">City of Residence</ion-label>
+        <ion-input 
+          type="text" 
+          [(ngModel)]="contactForm.city" 
+          name="city"
+          required>
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Phone Number</ion-label>
+        <ion-input 
+          type="tel" 
+          [(ngModel)]="contactForm.phone" 
+          name="phone">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email Address</ion-label>
+        <ion-input 
+          type="email" 
+          [(ngModel)]="contactForm.email" 
+          name="email"
+          required>
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Reason for Contact</ion-label>
+        <ion-select 
+          [(ngModel)]="contactForm.reason" 
+          name="reason"
+          placeholder="Select a reason"
+          required>
+          <ion-select-option value="option1">Become a Client</ion-select-option>
+          <ion-select-option value="option2">Sign up for Service</ion-select-option>
+          <ion-select-option value="option3">Hesed House</ion-select-option>
+          <ion-select-option value="option4">Relational Ministry</ion-select-option>
+          <ion-select-option value="option5">Volunteer</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Questions or Comments</ion-label>
+        <ion-textarea 
+          [(ngModel)]="contactForm.comments" 
+          name="comments"
+          rows="6"
+          placeholder="Enter your questions or comments here...">
+        </ion-textarea>
+      </ion-item>
+    </ion-list>
+
+    <ion-button 
+      expand="block" 
+      (click)="onSubmit()"
+      style="margin: 16px;">
+      Submit
+    </ion-button>
   </div>
 </ion-content>

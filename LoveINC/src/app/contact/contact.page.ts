@@ -1,8 +1,18 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon } from '@ionic/angular/standalone';
-import { ExploreContainerComponent } from '../explore-container/explore-container.component';
+import { 
+  IonContent, 
+  IonList,
+  IonItem, 
+  IonLabel, 
+  IonInput, 
+  IonSelect, 
+  IonSelectOption,
+  IonTextarea,
+  IonButton
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { personCircleOutline } from 'ionicons/icons';
 
@@ -10,14 +20,41 @@ import { personCircleOutline } from 'ionicons/icons';
   selector: 'app-contact',
   templateUrl: 'contact.page.html',
   styleUrls: ['contact.page.scss'],
-  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon, ExploreContainerComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonContent,
+    IonList,
+    IonItem, 
+    IonLabel, 
+    IonInput, 
+    IonSelect, 
+    IonSelectOption,
+    IonTextarea,
+    IonButton
+  ],
 })
 export class ContactPage {
+  contactForm = {
+    firstName: '',
+    lastName: '',
+    city: '',
+    phone: '',
+    email: '',
+    reason: '',
+    comments: ''
+  };
+
   constructor(private router: Router) {
     addIcons({ personCircleOutline });
   }
 
   navigateToProfile() {
     this.router.navigate(['/tabs/profile']);
+  }
+
+  onSubmit() {
+    console.log('Contact form submitted:', this.contactForm);
+    // TODO: Implement form submission
   }
 }
