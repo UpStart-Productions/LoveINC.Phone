@@ -33,12 +33,18 @@
 
       <ion-item>
         <ion-label position="stacked">City of Residence</ion-label>
-        <ion-input 
-          type="text" 
+        <ion-select 
           [(ngModel)]="contactForm.city" 
           name="city"
+          placeholder="Select a city"
           required>
-        </ion-input>
+          <ion-select-option value="Newberg">Newberg</ion-select-option>
+          <ion-select-option value="St. Paul">St. Paul</ion-select-option>
+          <ion-select-option value="Yamhill">Yamhill</ion-select-option>
+          <ion-select-option value="Carlton">Carlton</ion-select-option>
+          <ion-select-option value="Sherwood">Sherwood</ion-select-option>
+          <ion-select-option value="Donald">Donald</ion-select-option>
+        </ion-select>
       </ion-item>
 
       <ion-item>
