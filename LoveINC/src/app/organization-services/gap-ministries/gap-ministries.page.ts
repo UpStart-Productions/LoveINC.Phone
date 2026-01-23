@@ -10,14 +10,11 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
   IonItem,
   IonLabel
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
+import { CardComponent, CardActionIcon } from '../../components/card/card.component';
 
 interface GapService {
   id: string;
@@ -45,12 +42,9 @@ interface GapService {
     IonButtons,
     IonButton,
     IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
     IonItem,
-    IonLabel
+    IonLabel,
+    CardComponent
   ],
   providers: [AlertController]
 })
@@ -94,6 +88,15 @@ export class GapMinistriesPage implements OnInit {
 
   navigateToProfile() {
     this.router.navigate(['/tabs/profile']);
+  }
+
+  getActionIcons(service: GapService): CardActionIcon[] {
+    return [
+      { icon: 'location-outline', handler: () => this.onMapPinClick(service), show: true, buttonClass: 'map-button' },
+      { icon: 'call-outline', handler: () => this.onPhoneClick(service), show: true, buttonClass: 'phone-button' },
+      { icon: 'people-outline', handler: () => this.onVolunteerClick(service), show: true, buttonClass: 'volunteer-button' },
+      { icon: 'calendar-outline', handler: () => this.onCalendarClick(service), show: true, buttonClass: 'calendar-button' },
+    ];
   }
 
   async onMapPinClick(service: GapService) {

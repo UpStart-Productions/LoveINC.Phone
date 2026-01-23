@@ -13,25 +13,16 @@
 
 <ion-content [fullscreen]="true">
   <div class="cards-container">
-    <ion-card *ngFor="let card of cards" class="home-card" (click)="navigateToCard(card)">
-      <!-- Card Image -->
-      <div class="card-image-container">
-        <img [src]="card.photoUrl" [alt]="card.title" class="card-image" />
-        <ion-badge class="card-type-badge" [style.background-color]="cardTypeColors[card.type]">
-          <ion-icon [name]="cardTypeIcons[card.type]"></ion-icon>
-          {{ cardTypeLabels[card.type] }}
-        </ion-badge>
-      </div>
-      
-      <!-- Card Content -->
-      <ion-card-header>
-        <ion-card-title>{{ card.title }}</ion-card-title>
-        <ion-card-subtitle>{{ card.subtitle }}</ion-card-subtitle>
-      </ion-card-header>
-      
-      <ion-card-content>
-        {{ card.description }}
-      </ion-card-content>
-    </ion-card>
+    <app-card
+      *ngFor="let card of cards"
+      class="home-card"
+      [imageUrl]="card.photoUrl"
+      [badge]="{ icon: cardTypeIcons[card.type], label: cardTypeLabels[card.type], color: cardTypeColors[card.type] }"
+      [title]="card.title"
+      [subtitle]="card.subtitle"
+      [clickable]="true"
+      (cardClick)="navigateToCard(card)">
+      {{ card.description }}
+    </app-card>
   </div>
 </ion-content>

@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonBadge, IonIcon } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon } from '@ionic/angular/standalone';
+import { CardComponent } from '../components/card/card.component';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { OnboardingService } from '../services/onboarding.service';
 import { HomeCard, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../models/home-card.model';
@@ -19,13 +20,8 @@ import { HomeCard, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../mode
     IonContent, 
     IonButton,
     IonButtons,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardSubtitle,
-    IonCardContent,
-    IonBadge,
     IonIcon,
+    CardComponent,
     ExploreContainerComponent
   ],
 })

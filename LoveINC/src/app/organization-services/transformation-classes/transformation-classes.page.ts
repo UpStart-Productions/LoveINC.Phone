@@ -10,12 +10,8 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonCardContent
 } from '@ionic/angular/standalone';
+import { CardComponent } from '../../components/card/card.component';
 export interface TransformationClass {
   id: string;
   title: string;
@@ -45,11 +41,7 @@ export interface TransformationClass {
     IonButtons,
     IonButton,
     IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardSubtitle,
-    IonCardContent
+    CardComponent,
   ],
 })
 export class TransformationClassesPage implements OnInit {

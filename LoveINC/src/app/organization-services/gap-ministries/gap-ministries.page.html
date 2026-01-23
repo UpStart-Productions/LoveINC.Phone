@@ -16,45 +16,33 @@
     <div *ngFor="let schedule of scheduleOrder">
       <div *ngIf="groupedServices[schedule]?.length" class="schedule-section">
         <h2 class="schedule-header">{{ schedule }}</h2>
-        <ion-card *ngFor="let service of groupedServices[schedule]" class="service-card">
-          <ion-card-content>
-            <ion-item lines="none">
-              <ion-label>
-                <div class="service-header">
-                  <h3 class="service-name">{{ service.service }}</h3>
+        <app-card
+          *ngFor="let service of groupedServices[schedule]"
+          class="service-card"
+          [actionIcons]="getActionIcons(service)"
+          [style.--app-card-margin-bottom]="'12px'">
+          <ion-item lines="none">
+            <ion-label>
+              <div class="service-header">
+                <h3 class="service-name">{{ service.service }}</h3>
+              </div>
+              <div class="service-details">
+                <div class="detail-row">
+                  <span class="detail-value">{{ service.daysTimes }}</span>
                 </div>
-                <div class="service-details">
-                  <div class="detail-row">
-                    <span class="detail-value">{{ service.daysTimes }}</span>
-                  </div>
-                  <div class="detail-row">
-                    <span class="detail-value">{{ service.church }}</span>
-                  </div>
-                  <div class="detail-row" *ngIf="service.address">
-                    <span class="detail-address">{{ service.address }}</span>
-                  </div>
-                  <div class="detail-row">
-                    <span class="detail-value">{{ service.contact }}</span>
-                  </div>
+                <div class="detail-row">
+                  <span class="detail-value">{{ service.church }}</span>
                 </div>
-                <div class="action-icons">
-                  <ion-button fill="clear" size="small" (click)="onMapPinClick(service)" class="map-button">
-                    <ion-icon slot="icon-only" name="location-outline"></ion-icon>
-                  </ion-button>
-                  <ion-button fill="clear" size="small" (click)="onPhoneClick(service)" class="phone-button">
-                    <ion-icon slot="icon-only" name="call-outline"></ion-icon>
-                  </ion-button>
-                  <ion-button fill="clear" size="small" (click)="onVolunteerClick(service)" class="volunteer-button">
-                    <ion-icon slot="icon-only" name="people-outline"></ion-icon>
-                  </ion-button>
-                  <ion-button fill="clear" size="small" (click)="onCalendarClick(service)" class="calendar-button">
-                    <ion-icon slot="icon-only" name="calendar-outline"></ion-icon>
-                  </ion-button>
+                <div class="detail-row" *ngIf="service.address">
+                  <span class="detail-address">{{ service.address }}</span>
                 </div>
-              </ion-label>
-            </ion-item>
-          </ion-card-content>
-        </ion-card>
+                <div class="detail-row">
+                  <span class="detail-value">{{ service.contact }}</span>
+                </div>
+              </div>
+            </ion-label>
+          </ion-item>
+        </app-card>
       </div>
     </div>
   </div>

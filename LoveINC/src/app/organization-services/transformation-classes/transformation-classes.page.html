@@ -13,24 +13,15 @@
 
 <ion-content [fullscreen]="true">
   <div class="classes-container">
-    <ion-card *ngFor="let classItem of classes" class="class-card" (click)="navigateToClassDetail(classItem)">
-      <!-- Card Image -->
-      <div class="card-image-container">
-        <img [src]="classItem.photoUrl" [alt]="classItem.title" class="card-image" />
-      </div>
-      
-      <!-- Card Content -->
-      <ion-card-header>
-        <ion-card-title>{{ classItem.title }}</ion-card-title>
-        <ion-card-subtitle>
-          {{ classItem.nextSession.dayOfWeek }} {{ classItem.nextSession.time }}<br>
-          {{ formatSessionDates(classItem) }}
-        </ion-card-subtitle>
-      </ion-card-header>
-      
-      <ion-card-content>
-        {{ classItem.description }}
-      </ion-card-content>
-    </ion-card>
+    <app-card
+      *ngFor="let classItem of classes"
+      class="class-card"
+      [imageUrl]="classItem.photoUrl"
+      [title]="classItem.title"
+      [subtitle]="classItem.nextSession.dayOfWeek + ' ' + classItem.nextSession.time + '\n' + formatSessionDates(classItem)"
+      [clickable]="true"
+      (cardClick)="navigateToClassDetail(classItem)">
+      {{ classItem.description }}
+    </app-card>
   </div>
 </ion-content>

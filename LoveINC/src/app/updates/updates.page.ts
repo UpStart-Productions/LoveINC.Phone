@@ -10,12 +10,8 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonCardContent,
 } from '@ionic/angular/standalone';
+import { CardComponent } from '../components/card/card.component';
 export interface UpdateEvent {
   id: string;
   photoUrl: string;
@@ -37,11 +33,7 @@ export interface UpdateEvent {
     IonButton,
     IonButtons,
     IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardSubtitle,
-    IonCardContent,
+    CardComponent,
   ],
 })
 export class UpdatesPage implements OnInit {

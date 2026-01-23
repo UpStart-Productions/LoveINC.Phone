@@ -1,0 +1,45 @@
+<ion-card
+  class="app-card"
+  [class.clickable]="clickable"
+  (click)="onCardClick($event)">
+  @if (imageUrl) {
+    <div class="card-image-container">
+      <img [src]="imageUrl" [alt]="title ?? ''" class="card-image" />
+      @if (badge) {
+        <ion-badge class="card-badge" [style.background-color]="badge.color">
+          <ion-icon [name]="badge.icon"></ion-icon>
+          {{ badge.label }}
+        </ion-badge>
+      }
+    </div>
+  }
+
+  @if (title || subtitle) {
+    <ion-card-header>
+      @if (title) {
+        <ion-card-title>{{ title }}</ion-card-title>
+      }
+      @if (subtitle) {
+        <ion-card-subtitle>{{ subtitle }}</ion-card-subtitle>
+      }
+    </ion-card-header>
+  }
+
+  <ion-card-content [class.has-action-icons]="hasActionIcons">
+    <ng-content></ng-content>
+
+    @if (hasActionIcons) {
+      <div class="action-icons">
+        @for (action of visibleActionIcons; track action.icon) {
+          <ion-button
+            fill="clear"
+            size="small"
+            [ngClass]="action.buttonClass"
+            (click)="onActionClick($event, action)">
+            <ion-icon slot="icon-only" [name]="action.icon"></ion-icon>
+          </ion-button>
+        }
+      </div>
+    }
+  </ion-card-content>
+</ion-card>

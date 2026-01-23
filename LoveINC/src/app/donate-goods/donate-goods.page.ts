@@ -10,15 +10,12 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
   IonItem,
   IonLabel,
   IonSearchbar
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
+import { CardComponent, CardActionIcon } from '../components/card/card.component';
 
 interface DonationLocation {
   id: string;
@@ -47,13 +44,10 @@ interface DonationLocation {
     IonButtons,
     IonButton,
     IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
     IonItem,
     IonLabel,
-    IonSearchbar
+    IonSearchbar,
+    CardComponent
   ],
   providers: [AlertController]
 })
@@ -137,6 +131,14 @@ export class DonateGoodsPage implements OnInit {
 
   navigateToProfile() {
     this.router.navigate(['/tabs/profile']);
+  }
+
+  getActionIcons(location: DonationLocation): CardActionIcon[] {
+    return [
+      { icon: 'location-outline', handler: () => this.onMapPinClick(location), show: !!location.address, buttonClass: 'map-button' },
+      { icon: 'call-outline', handler: () => this.onPhoneClick(location), show: !!location.phone, buttonClass: 'phone-button' },
+      { icon: 'mail-outline', handler: () => this.onEmailClick(location), show: !!location.email, buttonClass: 'email-button' },
+    ];
   }
 
   async onMapPinClick(location: DonationLocation) {

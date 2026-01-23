@@ -13,20 +13,16 @@
 
 <ion-content [fullscreen]="true">
   <div class="cards-container">
-    <ion-card *ngFor="let event of events" class="event-card">
-      <div class="card-image-container">
-        <img [src]="event.photoUrl" [alt]="event.title" class="card-image" />
-      </div>
-
-      <ion-card-header>
-        <ion-card-title>{{ event.title }}</ion-card-title>
-        <ion-card-subtitle>{{ event.subtitle }}</ion-card-subtitle>
-      </ion-card-header>
-
-      <ion-card-content>
+    <app-card
+      *ngFor="let event of events"
+      class="event-card"
+      [imageUrl]="event.photoUrl"
+      [title]="event.title"
+      [subtitle]="event.subtitle">
+      <div class="event-card-content">
         {{ event.description }}
         <ion-icon name="calendar-outline" class="card-calendar-icon"></ion-icon>
-      </ion-card-content>
-    </ion-card>
+      </div>
+    </app-card>
   </div>
 </ion-content>
