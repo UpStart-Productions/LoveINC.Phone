@@ -12,5 +12,21 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <app-explore-container name="Updates page"></app-explore-container>
+  <div class="cards-container">
+    <ion-card *ngFor="let event of events" class="event-card">
+      <div class="card-image-container">
+        <img [src]="event.photoUrl" [alt]="event.title" class="card-image" />
+      </div>
+
+      <ion-card-header>
+        <ion-card-title>{{ event.title }}</ion-card-title>
+        <ion-card-subtitle>{{ event.subtitle }}</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        {{ event.description }}
+        <ion-icon name="calendar-outline" class="card-calendar-icon"></ion-icon>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

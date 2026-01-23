@@ -1,0 +1,37 @@
+[
+  {
+    "id": "event-1",
+    "photoUrl": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80",
+    "title": "Annual Fundraiser Gala",
+    "subtitle": "Saturday, March 15th • 6:00 PM",
+    "description": "Join us for an evening of celebration and giving as we support families in need. Dinner, silent auction, and inspirational stories from our community."
+  },
+  {
+    "id": "event-2",
+    "photoUrl": "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&q=80",
+    "title": "Community Cleanup Day",
+    "subtitle": "Saturday, April 20th • 9:00 AM",
+    "description": "Gather with neighbors to beautify our community. We'll provide supplies and refreshments. All ages welcome—great for families and groups."
+  },
+  {
+    "id": "event-3",
+    "photoUrl": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80",
+    "title": "Financial Freedom Class",
+    "subtitle": "Starting February 10th • 6 weeks",
+    "description": "Learn budgeting, debt reduction, and financial planning in a supportive environment. Childcare provided. Registration required."
+  },
+  {
+    "id": "event-4",
+    "photoUrl": "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&q=80",
+    "title": "Volunteer Appreciation Dinner",
+    "subtitle": "Friday, May 5th • 6:30 PM",
+    "description": "A special evening to thank our dedicated volunteers. Enjoy dinner, awards, and stories of impact. By invitation for active volunteers."
+  },
+  {
+    "id": "event-5",
+    "photoUrl": "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&q=80",
+    "title": "Summer Food Drive Kickoff",
+    "subtitle": "Saturday, June 1st • 10:00 AM",
+    "description": "Help us kick off our summer food drive with a community gathering. Learn how to get involved, donate, or host a collection at your church or workplace."
+  }
+]
