@@ -62,6 +62,11 @@ export const routes: Routes = [
           import('../donate-money/donate-money.page').then((m) => m.DonateMoneyPage),
       },
       {
+        path: 'developer-options',
+        loadComponent: () =>
+          import('../developer-options/developer-options.page').then((m) => m.DeveloperOptionsPage),
+      },
+      {
         path: '',
         redirectTo: '/tabs/home',
         pathMatch: 'full',

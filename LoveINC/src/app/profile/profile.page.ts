@@ -190,6 +190,10 @@ export class ProfilePage {
     this.router.navigate(['/sandbox']);
   }
 
+  navigateToDeveloperOptions() {
+    this.router.navigate(['/tabs/developer-options']);
+  }
+
   logout() {
     console.log('Logout');
   }

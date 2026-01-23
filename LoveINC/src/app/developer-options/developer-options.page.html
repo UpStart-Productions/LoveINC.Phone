@@ -1,0 +1,31 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/profile"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Developer Options
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Lucide Icons Demo</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p style="margin-bottom: 24px; color: var(--ion-color-medium);">
+        This page demonstrates 20 Lucide icons to verify the installation was successful.
+      </p>
+      
+      <div class="icons-grid">
+        <div class="icon-item" *ngFor="let icon of icons">
+          <i-lucide [name]="icon.name" [size]="32" color="var(--ion-color-primary)"></i-lucide>
+          <span class="icon-label">{{ icon.label }}</span>
+          <span class="icon-name">{{ icon.name }}</span>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
