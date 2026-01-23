@@ -16,9 +16,6 @@ import {
   IonCardSubtitle,
   IonCardContent
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { personCircleOutline, schoolOutline } from 'ionicons/icons';
-
 export interface TransformationClass {
   id: string;
   title: string;
@@ -61,9 +58,7 @@ export class TransformationClassesPage implements OnInit {
   constructor(
     private http: HttpClient,
     private router: Router
-  ) {
-    addIcons({ personCircleOutline, schoolOutline });
-  }
+  ) {}
 
   ngOnInit() {
     this.loadClasses();

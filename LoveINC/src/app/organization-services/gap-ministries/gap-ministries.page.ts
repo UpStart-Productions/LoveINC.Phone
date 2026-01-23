@@ -18,8 +18,6 @@ import {
   IonLabel
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { personCircleOutline, locationOutline, callOutline, peopleOutline, calendarOutline } from 'ionicons/icons';
 
 interface GapService {
   id: string;
@@ -65,9 +63,7 @@ export class GapMinistriesPage implements OnInit {
     private http: HttpClient,
     private router: Router,
     private alertController: AlertController
-  ) {
-    addIcons({ personCircleOutline, locationOutline, callOutline, peopleOutline, calendarOutline });
-  }
+  ) {}
 
   ngOnInit() {
     this.loadServices();

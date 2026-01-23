@@ -21,13 +21,6 @@ import {
   IonList
 } from '@ionic/angular/standalone';
 import { PopoverController } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { 
-  locationOutline, 
-  callOutline, 
-  globeOutline,
-  personCircleOutline
-} from 'ionicons/icons';
 import { ChurchDetailsPopoverComponent } from './church-details-popover.component';
 
 declare var google: any;
@@ -78,9 +71,7 @@ export class ChurchMapPage implements OnInit, OnDestroy, AfterViewInit {
     private http: HttpClient,
     private ngZone: NgZone,
     private popoverController: PopoverController
-  ) {
-    addIcons({ locationOutline, callOutline, globeOutline, personCircleOutline });
-  }
+  ) {}
 
   ngOnInit() {
     this.loadChurches();

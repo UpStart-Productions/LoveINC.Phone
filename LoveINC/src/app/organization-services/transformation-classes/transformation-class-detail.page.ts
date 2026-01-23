@@ -20,8 +20,6 @@ import {
   IonList
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { personCircleOutline, calendarOutline, personOutline, linkOutline } from 'ionicons/icons';
 import { TransformationClass } from './transformation-classes.page';
 
 @Component({
@@ -58,9 +56,7 @@ export class TransformationClassDetailPage implements OnInit {
     private router: Router,
     private http: HttpClient,
     private alertController: AlertController
-  ) {
-    addIcons({ personCircleOutline, calendarOutline, personOutline, linkOutline });
-  }
+  ) {}
 
   ngOnInit() {
     this.classId = this.route.snapshot.paramMap.get('id') || '';

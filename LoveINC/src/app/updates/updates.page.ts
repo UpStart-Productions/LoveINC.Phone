@@ -16,9 +16,6 @@ import {
   IonCardSubtitle,
   IonCardContent,
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { personCircleOutline, calendarOutline } from 'ionicons/icons';
-
 export interface UpdateEvent {
   id: string;
   photoUrl: string;
@@ -53,9 +50,7 @@ export class UpdatesPage implements OnInit {
   constructor(
     private router: Router,
     private http: HttpClient
-  ) {
-    addIcons({ personCircleOutline, calendarOutline });
-  }
+  ) {}
 
   ngOnInit() {
     this.loadEvents();

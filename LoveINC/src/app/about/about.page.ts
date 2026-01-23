@@ -18,9 +18,6 @@ import {
   IonButton,
   IonButtons
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { personCircleOutline, mapOutline, mailOutline } from 'ionicons/icons';
-
 @Component({
   selector: 'app-about',
   templateUrl: 'about.page.html',
@@ -53,9 +50,7 @@ export class AboutPage {
     { number: '100+', label: 'Active Volunteers' }
   ];
 
-  constructor(private router: Router) {
-    addIcons({ personCircleOutline, mapOutline, mailOutline });
-  }
+  constructor(private router: Router) {}
 
   navigateToProfile() {
     this.router.navigate(['/tabs/profile']);

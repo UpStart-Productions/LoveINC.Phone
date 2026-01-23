@@ -18,9 +18,6 @@ import {
   IonInput,
   IonCheckbox
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { checkmarkOutline } from 'ionicons/icons';
-
 @Component({
   selector: 'app-donate-money',
   templateUrl: 'donate-money.page.html',
@@ -54,9 +51,7 @@ export class DonateMoneyPage {
 
   presetAmounts = [250, 100, 50, 25, 20, 10];
 
-  constructor(private router: Router) {
-    addIcons({ checkmarkOutline });
-  }
+  constructor(private router: Router) {}
 
   selectAmount(amount: number) {
     this.selectedAmount = amount;

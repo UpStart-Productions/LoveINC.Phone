@@ -13,9 +13,6 @@ import {
   IonTextarea,
   IonButton
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { personCircleOutline } from 'ionicons/icons';
-
 @Component({
   selector: 'app-contact',
   templateUrl: 'contact.page.html',
@@ -45,9 +42,7 @@ export class ContactPage {
     comments: ''
   };
 
-  constructor(private router: Router) {
-    addIcons({ personCircleOutline });
-  }
+  constructor(private router: Router) {}
 
   navigateToProfile() {
     this.router.navigate(['/tabs/profile']);

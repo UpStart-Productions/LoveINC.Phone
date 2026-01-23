@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonBadge, IonIcon } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { calendarOutline, heartOutline, giftOutline, starOutline, peopleOutline, schoolOutline, timeOutline, handLeftOutline, personCircleOutline, cubeOutline } from 'ionicons/icons';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { OnboardingService } from '../services/onboarding.service';
 import { HomeCard, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../models/home-card.model';
@@ -42,9 +40,7 @@ export class HomePage implements OnInit {
     private onboardingService: OnboardingService,
     private router: Router,
     private http: HttpClient
-  ) {
-    addIcons({ calendarOutline, heartOutline, giftOutline, starOutline, peopleOutline, schoolOutline, timeOutline, handLeftOutline, personCircleOutline, cubeOutline });
-  }
+  ) {}
 
   ngOnInit() {
     this.loadCards();

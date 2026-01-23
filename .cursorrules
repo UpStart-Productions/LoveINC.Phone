@@ -19,3 +19,9 @@
 - Use default Ionic button styles
 - Use standard Ionic input field styling
 - Only modify styling when the user explicitly asks for it
+
+## Ionic Icons
+- ALL Ionic icon imports (addIcons and icons from ionicons/icons) MUST be consolidated in app.component.ts
+- Do NOT import addIcons or icons from ionicons in pages, components, or any other files
+- When adding a new icon to the app: import it in app.component.ts and register it in the initializeIcons() addIcons() call
+- Pages and components should only reference icon names in templates (e.g. name="personCircleOutline"); the icons are registered app-wide at startup

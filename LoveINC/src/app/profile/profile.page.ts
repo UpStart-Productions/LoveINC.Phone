@@ -19,19 +19,6 @@ import {
   IonButtons,
   IonBackButton
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { 
-  personOutline, 
-  notificationsOutline, 
-  settingsOutline, 
-  helpCircleOutline,
-  logOutOutline,
-  chevronForwardOutline,
-  mailOutline,
-  callOutline,
-  heartOutline
-} from 'ionicons/icons';
-
 @Component({
   selector: 'app-profile',
   templateUrl: 'profile.page.html',
@@ -66,19 +53,7 @@ export class ProfilePage {
   constructor(
     private router: Router,
     private onboardingService: OnboardingService
-  ) {
-    addIcons({ 
-      personOutline, 
-      notificationsOutline, 
-      settingsOutline, 
-      helpCircleOutline,
-      logOutOutline,
-      chevronForwardOutline,
-      mailOutline,
-      callOutline,
-      heartOutline
-    });
-  }
+  ) {}
 
   navigateToSettings() {
     // TODO: Navigate to settings page

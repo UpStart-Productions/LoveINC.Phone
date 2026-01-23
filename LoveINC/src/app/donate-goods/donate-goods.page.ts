@@ -19,8 +19,6 @@ import {
   IonSearchbar
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { personCircleOutline, locationOutline, callOutline, mailOutline } from 'ionicons/icons';
 
 interface DonationLocation {
   id: string;
@@ -70,9 +68,7 @@ export class DonateGoodsPage implements OnInit {
     private http: HttpClient,
     private router: Router,
     private alertController: AlertController
-  ) {
-    addIcons({ personCircleOutline, locationOutline, callOutline, mailOutline });
-  }
+  ) {}
 
   ngOnInit() {
     this.loadLocations();

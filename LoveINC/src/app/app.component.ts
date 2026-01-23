@@ -19,16 +19,35 @@ import {
   schoolOutline,
   briefcaseOutline,
   handRightOutline,
+  handLeftOutline,
   closeOutline,
   shirtOutline,
   cubeOutline,
   // Onboarding Icons
   giftOutline,
   arrowForwardOutline,
+  checkmark,
   checkmarkOutline,
   cardOutline,
-  // Map Icons
+  // Map & Location Icons
   mapOutline,
+  locationOutline,
+  globeOutline,
+  // Profile & Contact Icons
+  personOutline,
+  personCircleOutline,
+  callOutline,
+  notificationsOutline,
+  settingsOutline,
+  helpCircleOutline,
+  logOutOutline,
+  chevronForwardOutline,
+  // Content Icons
+  calendarOutline,
+  starOutline,
+  peopleOutline,
+  timeOutline,
+  linkOutline,
 } from 'ionicons/icons';
 
 @Component({
@@ -70,15 +89,35 @@ export class AppComponent {
       schoolOutline,
       briefcaseOutline,
       handRightOutline,
+      handLeftOutline,
       closeOutline,
       shirtOutline,
+      cubeOutline,
       // Onboarding Icons
       giftOutline,
       arrowForwardOutline,
+      checkmark,
       checkmarkOutline,
       cardOutline,
-      // Map Icons
+      // Map & Location Icons
       mapOutline,
+      locationOutline,
+      globeOutline,
+      // Profile & Contact Icons
+      personOutline,
+      personCircleOutline,
+      callOutline,
+      notificationsOutline,
+      settingsOutline,
+      helpCircleOutline,
+      logOutOutline,
+      chevronForwardOutline,
+      // Content Icons
+      calendarOutline,
+      starOutline,
+      peopleOutline,
+      timeOutline,
+      linkOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });
