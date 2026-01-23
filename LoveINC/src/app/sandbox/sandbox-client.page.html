@@ -1,0 +1,114 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/sandbox"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Client Experience</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="client-container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <h1 class="hero-title">Help is Available Today</h1>
+      <p class="hero-subtitle">You're not alone. We're here to help.</p>
+      <div class="availability-badge">
+        <ion-icon name="time-outline"></ion-icon>
+        <span>{{ servicesAvailableToday }} services available today</span>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-section">
+      <h2 class="section-title">Quick Actions</h2>
+      <div class="quick-actions-grid">
+        <ion-button
+          *ngFor="let action of quickActions"
+          expand="block"
+          fill="outline"
+          (click)="navigateTo(action.route)"
+          class="quick-action-button">
+          <ion-icon [name]="action.icon" slot="start"></ion-icon>
+          {{ action.label }}
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Urgent Help Card -->
+    <ion-card class="urgent-help-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="alert-circle-outline" class="section-icon"></ion-icon>
+          Need Help Today?
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>If you're facing an emergency situation, we can help connect you with immediate assistance.</p>
+        <ion-button expand="block" color="primary" (click)="navigateTo('/tabs/contact')">
+          <ion-icon slot="start" name="call-outline"></ion-icon>
+          Request Help Now
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Personalized Recommendations -->
+    <div class="section-header">
+      <h2>Recommended for You</h2>
+      <p>Based on your interests</p>
+    </div>
+
+    <app-card
+      *ngFor="let rec of personalizedRecommendations"
+      [title]="rec.title"
+      [subtitle]="rec.subtitle"
+      [badge]="rec.available ? { icon: 'checkmark-circle-outline', label: 'Available', color: '#10b981' } : undefined"
+      [clickable]="true">
+      {{ rec.description }}
+    </app-card>
+
+    <!-- Success Stories -->
+    <div class="section-header">
+      <h2>You're Not Alone</h2>
+      <p>{{ communityStats.familiesHelped }}+ families helped this year</p>
+    </div>
+
+    <app-card
+      *ngFor="let story of successStories"
+      [imageUrl]="story.photoUrl"
+      [title]="'Meet ' + story.name"
+      [subtitle]="'Success Story'"
+      [clickable]="true">
+      {{ story.story }}
+    </app-card>
+
+    <!-- Community Impact -->
+    <ion-card class="community-impact-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="people-outline" class="section-icon"></ion-icon>
+          Our Community Impact
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="impact-stats">
+          <div class="stat-item">
+            <div class="stat-number">{{ communityStats.familiesHelped | number }}+</div>
+            <div class="stat-label">Families Helped</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">{{ communityStats.servicesProvided | number }}+</div>
+            <div class="stat-label">Services Provided</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">{{ communityStats.classesCompleted }}+</div>
+            <div class="stat-label">Classes Completed</div>
+          </div>
+        </div>
+        <ion-button expand="block" fill="outline" (click)="navigateTo('/tabs/about')">
+          Learn More About Love INC
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

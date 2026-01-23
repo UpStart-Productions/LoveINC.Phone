@@ -1,0 +1,154 @@
+.donor-container {
+  padding: 16px;
+  padding-bottom: 100px;
+}
+
+.hero-section {
+  text-align: center;
+  padding: 24px 0;
+  margin-bottom: 24px;
+  
+  .hero-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+  }
+  
+  .hero-subtitle {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.section-header {
+  margin: 32px 0 16px 0;
+  
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin-bottom: 4px;
+  }
+  
+  p {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.impact-meter-card {
+  margin-bottom: 20px;
+}
+
+.impact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.impact-item {
+  text-align: center;
+  padding: 16px;
+  background: var(--ion-color-light);
+  border-radius: 12px;
+  
+  .impact-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--love-inc-teal);
+    margin-bottom: 4px;
+  }
+  
+  .impact-label {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.urgent-need-card {
+  margin-bottom: 20px;
+  
+  .progress-info {
+    margin-bottom: 16px;
+  }
+  
+  .progress-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+    
+    .current {
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+    
+    .amount {
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+.quick-donate-card {
+  margin-bottom: 20px;
+  
+  .card-subtitle {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    margin-top: 4px;
+  }
+  
+  .quick-amounts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .amount-button {
+    height: 48px;
+  }
+}
+
+.multiplier-card {
+  margin-top: 20px;
+  background: linear-gradient(135deg, var(--love-inc-teal) 0%, var(--love-inc-blue) 100%);
+  color: white;
+  
+  .multiplier-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+    .multiplier-number {
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    
+    .multiplier-text {
+      flex: 1;
+      
+      h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      
+      p {
+        font-size: 14px;
+        opacity: 0.9;
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+.section-icon {
+  font-size: 20px;
+  margin-right: 8px;
+  vertical-align: middle;
+}

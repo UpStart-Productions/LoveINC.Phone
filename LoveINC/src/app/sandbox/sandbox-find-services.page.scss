@@ -1,0 +1,152 @@
+.find-services-container {
+  padding: 16px;
+  padding-bottom: 100px;
+}
+
+.instructions-section {
+  margin-bottom: 24px;
+  
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+  }
+  
+  p {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    line-height: 1.5;
+  }
+}
+
+.needs-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.need-chip {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  font-weight: 600;
+  height: 40px;
+  
+  &.selected {
+    border-color: var(--ion-color-dark);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  ion-icon {
+    margin-right: 6px;
+    font-size: 18px;
+  }
+}
+
+.results-section {
+  margin-top: 24px;
+}
+
+.results-header {
+  margin-bottom: 16px;
+  
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+  }
+  
+  .no-results {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    font-style: italic;
+  }
+}
+
+.service-header {
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.service-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  margin: 0;
+}
+
+.service-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  
+  ion-icon {
+    color: var(--ion-color-medium);
+    font-size: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  
+  .detail-value {
+    color: var(--ion-color-dark);
+    flex: 1;
+  }
+  
+  .detail-address {
+    color: var(--ion-color-medium);
+    font-size: 13px;
+    display: block;
+    width: 100%;
+  }
+  
+  .detail-notes {
+    color: var(--ion-color-medium);
+    font-size: 13px;
+    font-style: italic;
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  
+  .empty-icon {
+    font-size: 64px;
+    color: var(--ion-color-medium);
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+  
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+  }
+  
+  p {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    line-height: 1.6;
+  }
+}
+
+ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --min-height: auto;
+}

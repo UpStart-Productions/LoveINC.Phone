@@ -1,0 +1,172 @@
+.universal-container {
+  padding: 16px;
+  padding-bottom: 100px;
+}
+
+.pulse-card {
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, var(--love-inc-teal) 0%, var(--love-inc-blue) 100%);
+  color: white;
+  
+  .pulse-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .pulse-item {
+    text-align: center;
+    
+    .pulse-number {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .pulse-label {
+      font-size: 12px;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+.section-header {
+  margin: 32px 0 16px 0;
+  
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin-bottom: 4px;
+  }
+  
+  p {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.activity-card {
+  margin-bottom: 12px;
+  
+  .activity-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    .activity-icon {
+      font-size: 24px;
+      color: var(--love-inc-teal);
+    }
+  }
+}
+
+.testimonial-card {
+  margin-bottom: 16px;
+  border-left: 4px solid var(--love-inc-teal);
+  
+  .testimonial-quote {
+    font-size: 16px;
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    color: var(--ion-color-dark);
+  }
+  
+  .testimonial-author {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    font-weight: 600;
+  }
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.badge-item {
+  padding: 16px;
+  background: var(--ion-color-light);
+  border-radius: 12px;
+  text-align: center;
+  border: 2px solid transparent;
+  
+  &.earned {
+    border-color: var(--love-inc-teal);
+    background: rgba(52, 147, 148, 0.1);
+  }
+  
+  .badge-icon {
+    font-size: 32px;
+    color: var(--ion-color-medium);
+    margin-bottom: 8px;
+  }
+  
+  &.earned .badge-icon {
+    color: var(--love-inc-teal);
+  }
+  
+  .badge-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--ion-color-dark);
+  }
+}
+
+.progress-card {
+  margin-bottom: 20px;
+  
+  .progress-info {
+    .progress-bar {
+      height: 12px;
+      background: var(--ion-color-light);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--love-inc-teal) 0%, var(--love-inc-blue) 100%);
+      transition: width 0.3s ease;
+    }
+    
+    .progress-text {
+      font-size: 14px;
+      color: var(--ion-color-medium);
+      text-align: center;
+    }
+  }
+}
+
+.welcome-card {
+  margin-top: 24px;
+  
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .new-items {
+    margin: 12px 0 0 20px;
+    padding: 0;
+    
+    li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+  }
+}
+
+.section-icon {
+  font-size: 20px;
+  margin-right: 8px;
+  vertical-align: middle;
+}

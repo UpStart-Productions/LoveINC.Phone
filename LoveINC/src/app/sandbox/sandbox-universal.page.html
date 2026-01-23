@@ -1,0 +1,126 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/sandbox"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Universal Features</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="universal-container">
+    <!-- Community Pulse -->
+    <ion-card class="pulse-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="pulse-outline" class="section-icon"></ion-icon>
+          Community Pulse
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="pulse-grid">
+          <div class="pulse-item">
+            <div class="pulse-number">{{ communityPulse.familiesHelped }}</div>
+            <div class="pulse-label">Families Helped This Month</div>
+          </div>
+          <div class="pulse-item">
+            <div class="pulse-number">{{ communityPulse.volunteersActive }}</div>
+            <div class="pulse-label">Active Volunteers</div>
+          </div>
+          <div class="pulse-item">
+            <div class="pulse-number">{{ communityPulse.donationsToday }}</div>
+            <div class="pulse-label">Donations Today</div>
+          </div>
+          <div class="pulse-item">
+            <div class="pulse-number">{{ communityPulse.classesStarted }}</div>
+            <div class="pulse-label">Classes Started This Week</div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Recent Activity Feed -->
+    <div class="section-header">
+      <h2>Recent Activity</h2>
+      <p>What's happening in our community</p>
+    </div>
+
+    <ion-card *ngFor="let activity of recentActivity" class="activity-card">
+      <ion-card-content>
+        <div class="activity-content">
+          <ion-icon [name]="activity.icon" class="activity-icon"></ion-icon>
+          <span>{{ activity.text }}</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Testimonials -->
+    <div class="section-header">
+      <h2>What People Are Saying</h2>
+    </div>
+
+    <ion-card *ngFor="let testimonial of testimonials" class="testimonial-card">
+      <ion-card-content>
+        <div class="testimonial-quote">"{{ testimonial.quote }}"</div>
+        <div class="testimonial-author">
+          — {{ testimonial.author }}, {{ testimonial.role }}
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Engagement Badges -->
+    <div class="section-header">
+      <h2>Your Achievements</h2>
+    </div>
+
+    <div class="badges-grid">
+      <div 
+        *ngFor="let badge of engagementBadges" 
+        class="badge-item"
+        [class.earned]="badge.earned">
+        <ion-icon [name]="badge.icon" class="badge-icon"></ion-icon>
+        <div class="badge-name">{{ badge.name }}</div>
+        <ion-badge *ngIf="badge.earned" color="success">Earned</ion-badge>
+        <ion-badge *ngIf="!badge.earned" color="medium">Locked</ion-badge>
+      </div>
+    </div>
+
+    <!-- Progress Goals -->
+    <div class="section-header">
+      <h2>Your Progress</h2>
+    </div>
+
+    <ion-card *ngFor="let goal of progressGoals" class="progress-card">
+      <ion-card-header>
+        <ion-card-title>{{ goal.label }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="progress-info">
+          <div class="progress-bar">
+            <div 
+              class="progress-fill" 
+              [style.width.%]="(goal.current / goal.total) * 100">
+            </div>
+          </div>
+          <div class="progress-text">
+            {{ goal.current }} / {{ goal.total }} {{ goal.unit }}
+            ({{ ((goal.current / goal.total) * 100) | number:'1.0-0' }}%)
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Dynamic Welcome -->
+    <ion-card class="welcome-card">
+      <ion-card-content>
+        <h3>Welcome back!</h3>
+        <p>Here's what's new since your last visit:</p>
+        <ul class="new-items">
+          <li>3 new volunteer opportunities</li>
+          <li>2 new classes starting next week</li>
+          <li>5 urgent donation needs</li>
+        </ul>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

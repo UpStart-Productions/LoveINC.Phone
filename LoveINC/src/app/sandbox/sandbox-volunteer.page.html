@@ -1,0 +1,152 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/sandbox"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Volunteer Experience</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="volunteer-container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <h1 class="hero-title">Your Time Transforms Lives</h1>
+      <p class="hero-subtitle">Join us in making a difference</p>
+    </div>
+
+    <!-- This Weekend Section -->
+    <div class="section-header urgent">
+      <h2>
+        <ion-icon name="calendar-outline"></ion-icon>
+        This Weekend
+      </h2>
+      <p>Opportunities happening in the next few days</p>
+    </div>
+
+    <ion-card 
+      *ngFor="let opp of thisWeekendOpportunities" 
+      class="opportunity-card"
+      [class.urgent]="opp.urgent">
+      <ion-card-header>
+        <div class="card-header-row">
+          <ion-card-title>{{ opp.title }}</ion-card-title>
+          <ion-badge *ngIf="opp.spotsLeft <= 3" color="danger">
+            Only {{ opp.spotsLeft }} left!
+          </ion-badge>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="opportunity-details">
+          <div class="detail-row">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ opp.date }}</span>
+          </div>
+          <div class="detail-row">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ opp.time }}</span>
+          </div>
+          <div class="detail-row">
+            <ion-icon name="location-outline"></ion-icon>
+            <span>{{ opp.location }}</span>
+          </div>
+        </div>
+        <p class="opportunity-description">{{ opp.description }}</p>
+        <ion-button expand="block" color="primary" (click)="signUp(opp)">
+          <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+          Sign Up Now
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Your Impact -->
+    <ion-card class="impact-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="trophy-outline" class="section-icon"></ion-icon>
+          Your Impact
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="impact-grid">
+          <div class="impact-item">
+            <div class="impact-number">{{ volunteerImpact.totalHours }}</div>
+            <div class="impact-label">Hours Served</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-number">{{ volunteerImpact.familiesServed }}</div>
+            <div class="impact-label">Families Served</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-number">{{ volunteerImpact.eventsAttended }}</div>
+            <div class="impact-label">Events</div>
+          </div>
+          <div class="impact-item streak">
+            <div class="impact-number">{{ volunteerImpact.streak }}</div>
+            <div class="impact-label">Day Streak 🔥</div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Perfect Matches -->
+    <div class="section-header">
+      <h2>Perfect for You</h2>
+      <p>Opportunities that match your skills</p>
+    </div>
+
+    <ion-card *ngFor="let match of perfectMatches" class="match-card">
+      <ion-card-header>
+        <div class="match-header">
+          <ion-card-title>{{ match.title }}</ion-card-title>
+          <ion-chip color="success">{{ match.match }}% Match</ion-chip>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <p>{{ match.description }}</p>
+        <div class="match-tags">
+          <ion-chip>{{ match.skill }}</ion-chip>
+          <ion-chip>{{ match.frequency }}</ion-chip>
+        </div>
+        <ion-button expand="block" fill="outline" (click)="signUp(match)">
+          Learn More
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Team Challenges -->
+    <div class="section-header">
+      <h2>Join the Team</h2>
+      <p>Group opportunities</p>
+    </div>
+
+    <ion-card *ngFor="let challenge of teamChallenges" class="challenge-card">
+      <ion-card-header>
+        <ion-card-title>{{ challenge.title }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>{{ challenge.description }}</p>
+        <div class="challenge-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="(challenge.current / challenge.total) * 100"></div>
+          </div>
+          <div class="progress-text">
+            {{ challenge.current }}/{{ challenge.total }} volunteers • {{ challenge.deadline }} left
+          </div>
+        </div>
+        <ion-button expand="block" color="primary" (click)="signUp(challenge)">
+          Join the Team
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Volunteer Spotlight -->
+    <app-card
+      [imageUrl]="volunteerSpotlight.photoUrl"
+      [title]="'Meet ' + volunteerSpotlight.name"
+      [subtitle]="volunteerSpotlight.hours + ' hours this year'"
+      [clickable]="false">
+      {{ volunteerSpotlight.quote }}
+    </app-card>
+  </div>
+</ion-content>

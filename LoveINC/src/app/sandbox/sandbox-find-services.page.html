@@ -1,0 +1,83 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/sandbox/client"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Find Services</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="find-services-container">
+    <!-- Instructions -->
+    <div class="instructions-section">
+      <h2>What do you need help with?</h2>
+      <p>Select one or more needs below to see available services</p>
+    </div>
+
+    <!-- Need Pills -->
+    <div class="needs-section">
+      <ion-chip
+        *ngFor="let need of needCategories"
+        [class.selected]="isNeedSelected(need.id)"
+        [style.--background]="isNeedSelected(need.id) ? need.color : 'var(--ion-color-light)'"
+        [style.--color]="isNeedSelected(need.id) ? 'white' : 'var(--ion-color-dark)'"
+        (click)="toggleNeed(need.id)"
+        class="need-chip">
+        <ion-icon [name]="need.icon"></ion-icon>
+        {{ need.label }}
+      </ion-chip>
+    </div>
+
+    <!-- Results Section -->
+    <div *ngIf="selectedNeeds.size > 0" class="results-section">
+      <div class="results-header">
+        <h3>{{ filteredServices.length }} Service{{ filteredServices.length !== 1 ? 's' : '' }} Found</h3>
+        <p *ngIf="filteredServices.length === 0" class="no-results">
+          No services match your selected needs. Try selecting different needs.
+        </p>
+      </div>
+
+      <app-card
+        *ngFor="let service of filteredServices"
+        [actionIcons]="getActionIcons(service)"
+        [style.--app-card-margin-bottom]="'12px'">
+        <ion-item lines="none">
+          <ion-label>
+            <div class="service-header">
+              <h3 class="service-name">{{ service.service }}</h3>
+            </div>
+            <div class="service-details">
+              <div class="detail-row">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <span class="detail-value">{{ service.daysTimes }}</span>
+              </div>
+              <div class="detail-row">
+                <ion-icon name="location-outline"></ion-icon>
+                <span class="detail-value">{{ service.church }}</span>
+              </div>
+              <div class="detail-row" *ngIf="service.address">
+                <ion-icon name="map-outline"></ion-icon>
+                <span class="detail-address">{{ service.address }}</span>
+              </div>
+              <div class="detail-row">
+                <ion-icon name="call-outline"></ion-icon>
+                <span class="detail-value">{{ service.contact }}</span>
+              </div>
+              <div class="detail-row" *ngIf="service.notes">
+                <span class="detail-notes">{{ service.notes }}</span>
+              </div>
+            </div>
+          </ion-label>
+        </ion-item>
+      </app-card>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="selectedNeeds.size === 0" class="empty-state">
+      <ion-icon name="search-outline" class="empty-icon"></ion-icon>
+      <h3>Select Your Needs</h3>
+      <p>Choose one or more needs above to see available services in your area</p>
+    </div>
+  </div>
+</ion-content>

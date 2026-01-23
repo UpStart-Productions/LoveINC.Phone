@@ -1,0 +1,129 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/sandbox"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Donor Experience</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="donor-container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <h1 class="hero-title">Your Gift Changes Lives</h1>
+      <p class="hero-subtitle">Every dollar makes a difference in our community</p>
+    </div>
+
+    <!-- Impact Meter -->
+    <ion-card class="impact-meter-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="gift-outline" class="section-icon"></ion-icon>
+          Your Impact This Year
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="impact-grid">
+          <div class="impact-item">
+            <div class="impact-number">${{ impactMetrics.totalDonated | number }}</div>
+            <div class="impact-label">Total Donated</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-number">{{ impactMetrics.familiesHelped }}</div>
+            <div class="impact-label">Families Helped</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-number">{{ impactMetrics.mealsProvided }}</div>
+            <div class="impact-label">Meals Provided</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-number">{{ impactMetrics.classesFunded }}</div>
+            <div class="impact-label">Classes Funded</div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Urgent Needs -->
+    <div class="section-header">
+      <h2>Urgent Needs</h2>
+      <p>Help us meet these critical needs this week</p>
+    </div>
+
+    <ion-card *ngFor="let need of urgentNeeds" class="urgent-need-card">
+      <ion-card-header>
+        <ion-card-title>{{ need.title }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="progress-info">
+          <div class="progress-stats">
+            <span class="current">{{ need.current }}/{{ need.total }}</span>
+            <span class="amount">${{ need.amountRaised | number }} / ${{ need.amountNeeded | number }}</span>
+          </div>
+          <ion-progress-bar 
+            [value]="need.amountRaised / need.amountNeeded" 
+            color="primary">
+          </ion-progress-bar>
+        </div>
+        <ion-button expand="block" color="primary" (click)="navigateToDonate()">
+          <ion-icon slot="start" name="gift-outline"></ion-icon>
+          Donate Now
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Quick Donate -->
+    <ion-card class="quick-donate-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="flash-outline" class="section-icon"></ion-icon>
+          Quick Donate
+        </ion-card-title>
+        <p class="card-subtitle">Donate in 30 seconds</p>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="quick-amounts">
+          <ion-button 
+            *ngFor="let amount of quickDonateAmounts" 
+            fill="outline" 
+            (click)="navigateToDonate()"
+            class="amount-button">
+            ${{ amount }}
+          </ion-button>
+        </div>
+        <ion-button expand="block" fill="outline" (click)="navigateToDonate()">
+          Custom Amount
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Impact Stories -->
+    <div class="section-header">
+      <h2>Stories of Impact</h2>
+      <p>See how your donations are changing lives</p>
+    </div>
+
+    <app-card
+      *ngFor="let story of impactStories"
+      [imageUrl]="story.photoUrl"
+      [title]="story.title"
+      [subtitle]="'Thanks to donors like you'"
+      [clickable]="true">
+      {{ story.description }}
+    </app-card>
+
+    <!-- Impact Multiplier -->
+    <ion-card class="multiplier-card">
+      <ion-card-content>
+        <div class="multiplier-content">
+          <div class="multiplier-number">3x</div>
+          <div class="multiplier-text">
+            <h3>Impact Multiplier</h3>
+            <p>Every $1 you give = $3 in community value through volunteer time and church partnerships</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

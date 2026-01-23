@@ -48,6 +48,14 @@ import {
   peopleOutline,
   timeOutline,
   linkOutline,
+  flashOutline,
+  pulseOutline,
+  alertCircleOutline,
+  trophyOutline,
+  searchOutline,
+  documentTextOutline,
+  restaurantOutline,
+  medicalOutline,
 } from 'ionicons/icons';
 
 @Component({
@@ -118,6 +126,14 @@ export class AppComponent {
       peopleOutline,
       timeOutline,
       linkOutline,
+      flashOutline,
+      pulseOutline,
+      alertCircleOutline,
+      trophyOutline,
+      searchOutline,
+      documentTextOutline,
+      restaurantOutline,
+      medicalOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });

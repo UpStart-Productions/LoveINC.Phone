@@ -1,0 +1,32 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/profile"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Sandbox - POC Ideas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="sandbox-container">
+    <div class="intro-section">
+      <h1>Sandbox - Proof of Concept</h1>
+      <p>Explore ideas for making the app incredibly sticky for each user type.</p>
+    </div>
+
+    <ion-list>
+      <ion-item 
+        *ngFor="let page of sandboxPages" 
+        button 
+        (click)="navigateTo(page)"
+        class="sandbox-item">
+        <ion-icon [name]="page.icon" slot="start" [style.color]="page.color"></ion-icon>
+        <ion-label>
+          <h2>{{ page.title }}</h2>
+          <p>{{ page.description }}</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

@@ -1,0 +1,123 @@
+.client-container {
+  padding: 16px;
+  padding-bottom: 100px;
+}
+
+.hero-section {
+  text-align: center;
+  padding: 24px 0;
+  margin-bottom: 24px;
+  
+  .hero-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+  }
+  
+  .hero-subtitle {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin-bottom: 16px;
+  }
+  
+  .availability-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--love-inc-teal);
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+  margin-bottom: 16px;
+}
+
+.quick-actions-section {
+  margin-bottom: 24px;
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 12px;
+}
+
+.quick-action-button {
+  height: 56px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.urgent-help-card {
+  margin-bottom: 24px;
+  border-left: 4px solid var(--ion-color-danger);
+  
+  p {
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+}
+
+.section-header {
+  margin: 32px 0 16px 0;
+  
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin-bottom: 4px;
+  }
+  
+  p {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.community-impact-card {
+  margin-top: 24px;
+  
+  .impact-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .stat-item {
+    text-align: center;
+    
+    .stat-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--love-inc-teal);
+      margin-bottom: 4px;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: var(--ion-color-medium);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+.section-icon {
+  font-size: 20px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
