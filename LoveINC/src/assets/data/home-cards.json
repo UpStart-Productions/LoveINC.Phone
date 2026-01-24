@@ -34,10 +34,10 @@
     "type": "impact",
     "photoUrl": "assets/photos/impact-2.jpg",
     "title": "Maria's Story: From Crisis to Hope",
-    "subtitle": "Community Impact",
+    "subtitle": "Love INC In Action",
     "description": "After losing her job, Maria found help through our food pantry and job training program. Today she's helping others in need.",
     "link": "/tabs/about",
-    "priority": 4
+    "priority": 0
   },
   {
     "id": "church-1",

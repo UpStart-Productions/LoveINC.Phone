@@ -12,17 +12,18 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="cards-container">
-    <!-- User Type Cards -->
-    <app-user-type-card
-      *ngFor="let userType of selectedUserTypes"
-      [userType]="userType">
-    </app-user-type-card>
+  <!-- User Type Cards - Full Width -->
+  <app-user-type-card
+    *ngFor="let userType of selectedUserTypes"
+    [userType]="userType">
+  </app-user-type-card>
 
-    <!-- Home Cards -->
+  <!-- Home Cards - With Padding -->
+  <div class="cards-container">
     <app-card
       *ngFor="let card of cards"
       class="home-card"
+      [class.impact-card]="card.type === 'impact'"
       [imageUrl]="card.photoUrl"
       [badge]="{ icon: cardTypeIcons[card.type], label: cardTypeLabels[card.type], color: cardTypeColors[card.type] }"
       [title]="card.title"

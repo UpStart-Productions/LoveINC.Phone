@@ -1,22 +1,19 @@
-<ion-card 
-  class="user-type-card" 
-  [class.clickable]="isClickable"
-  [style.--user-type-color]="config.color"
+<ion-item 
+  class="user-type-item" 
+  button 
+  detail="false"
   (click)="onCardClick()">
-  <ion-card-content>
-    <div class="user-type-content">
-      <ion-icon [name]="config.icon" class="user-type-icon"></ion-icon>
-      <div class="user-type-text">
-        <div class="user-type-message">{{ displayMessage }}</div>
-        @if (userType === 'give') {
-          <div class="donor-stats">{{ donorStats }}</div>
-          <ion-progress-bar 
-            [value]="donorProgress" 
-            color="light"
-            class="donor-progress-bar">
-          </ion-progress-bar>
-        }
-      </div>
-    </div>
-  </ion-card-content>
-</ion-card>
+  <ion-icon [name]="config.icon" slot="start" [style.color]="config.color" class="user-type-icon"></ion-icon>
+  <ion-label>
+    <p class="user-type-description">{{ displayDescription }}</p>
+    @if (userType === 'give') {
+      <ion-progress-bar 
+        [value]="donorProgress" 
+        class="donor-progress-bar">
+      </ion-progress-bar>
+    }
+  </ion-label>
+  <div slot="end" class="action-pill" [style.background-color]="actionPillColor">
+    {{ actionPillText }}
+  </div>
+</ion-item>

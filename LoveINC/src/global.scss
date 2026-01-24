@@ -99,6 +99,45 @@ ion-header ion-back-button {
   color: #ffffff;
 }
 
+/* Global List Item Detail Icon (Chevron) Styling - 10% larger than 50% smaller, light grey */
+ion-item[detail="true"] {
+  --detail-icon-font-size: 13px;
+  --detail-icon-opacity: 1;
+  --detail-icon-color: var(--ion-color-medium);
+}
+
+/* Target detail icon using part selector */
+ion-item[detail="true"]::part(native) {
+  --detail-icon-font-size: 13px;
+  --detail-icon-color: var(--ion-color-medium);
+}
+
+/* Fallback: target detail icon directly */
+ion-item[detail="true"] .item-detail-icon,
+ion-item[detail="true"] ion-icon[slot="end"] {
+  font-size: 13px !important;
+  width: 13px !important;
+  height: 13px !important;
+  color: var(--ion-color-medium) !important;
+}
+
+/* Global Pill Styling - 10% smaller size */
+.action-pill,
+.item-pill {
+  padding: 5.4px 14.4px !important;
+  border-radius: 20px;
+  font-size: 12.6px !important;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Global List Item Title Styling - 10% smaller */
+ion-item ion-label h2,
+ion-item ion-label .user-type-title {
+  font-size: 16.2px !important;
+}
+
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 

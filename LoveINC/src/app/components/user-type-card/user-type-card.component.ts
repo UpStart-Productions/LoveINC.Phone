@@ -2,8 +2,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
-  IonCard,
-  IonCardContent,
+  IonItem,
+  IonLabel,
   IonIcon,
   IonButton,
   IonProgressBar,
@@ -24,8 +24,8 @@ interface UserTypeConfig {
   standalone: true,
   imports: [
     CommonModule,
-    IonCard,
-    IonCardContent,
+    IonItem,
+    IonLabel,
     IonIcon,
     IonButton,
     IonProgressBar,
@@ -61,16 +61,54 @@ export class UserTypeCardComponent {
     return this.userTypeConfigs[this.userType];
   }
 
-  get clientMessage(): string {
+  get clientTitle(): string {
+    return 'Support';
+  }
+
+  get clientDescription(): string {
     return `${this.servicesCount} services available today. Get help here.`;
   }
 
-  get volunteerMessage(): string {
+  get volunteerTitle(): string {
+    return 'Volunteer';
+  }
+
+  get volunteerDescription(): string {
     return `${this.volunteerOpportunitiesCount} volunteer opportunities you can join now.`;
   }
 
-  get donorMessage(): string {
-    return 'Winter Coat Drive';
+  get donorTitle(): string {
+    return 'Donate';
+  }
+
+  get donorDescription(): string {
+    return 'Winter Coat Drive\r\n$450/$500 raised';
+  }
+
+  get displayTitle(): string {
+    switch (this.userType) {
+      case 'get-help':
+        return this.clientTitle;
+      case 'volunteer':
+        return this.volunteerTitle;
+      case 'give':
+        return this.donorTitle;
+      default:
+        return '';
+    }
+  }
+
+  get displayDescription(): string {
+    switch (this.userType) {
+      case 'get-help':
+        return this.clientDescription;
+      case 'volunteer':
+        return this.volunteerDescription;
+      case 'give':
+        return this.donorDescription;
+      default:
+        return '';
+    }
   }
 
   get donorProgress(): number {
@@ -80,19 +118,6 @@ export class UserTypeCardComponent {
 
   get donorStats(): string {
     return '45/50 coats collected • $450/$500 raised';
-  }
-
-  get displayMessage(): string {
-    switch (this.userType) {
-      case 'get-help':
-        return this.clientMessage;
-      case 'volunteer':
-        return this.volunteerMessage;
-      case 'give':
-        return this.donorMessage;
-      default:
-        return '';
-    }
   }
 
   get showProgressBar(): boolean {
@@ -108,6 +133,23 @@ export class UserTypeCardComponent {
   }
 
   get isClickable(): boolean {
-    return this.userType === 'get-help';
+    return true; // All cards are clickable now
+  }
+
+  get actionPillText(): string {
+    switch (this.userType) {
+      case 'get-help':
+        return 'Support';
+      case 'volunteer':
+        return 'Join';
+      case 'give':
+        return 'Donate';
+      default:
+        return '';
+    }
+  }
+
+  get actionPillColor(): string {
+    return this.config.color;
   }
 }

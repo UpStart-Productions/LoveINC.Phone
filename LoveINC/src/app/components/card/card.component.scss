@@ -29,6 +29,11 @@
   object-fit: cover;
 }
 
+// Top-align images for impact cards
+:host-context(.impact-card) .card-image {
+  object-position: top;
+}
+
 .card-badge {
   position: absolute;
   top: 12px;
