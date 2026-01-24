@@ -3,9 +3,9 @@
     <ion-title>
       {{ welcomeTitle }}
     </ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="navigateToProfile()">
-        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+    <ion-buttons slot="end" *ngIf="showDonateButton">
+      <ion-button (click)="openDonateMenu()" class="donate-header-button">
+        <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -13,6 +13,13 @@
 
 <ion-content [fullscreen]="true">
   <div class="cards-container">
+    <!-- User Type Cards -->
+    <app-user-type-card
+      *ngFor="let userType of selectedUserTypes"
+      [userType]="userType">
+    </app-user-type-card>
+
+    <!-- Home Cards -->
     <app-card
       *ngFor="let card of cards"
       class="home-card"

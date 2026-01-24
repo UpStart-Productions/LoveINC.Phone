@@ -1,0 +1,27 @@
+.user-type-card {
+  --background: var(--user-type-color);
+  margin: 0;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-type-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.user-type-icon {
+  font-size: 24px;
+  color: white;
+}
+
+.user-type-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  text-transform: none;
+  letter-spacing: 0;
+}

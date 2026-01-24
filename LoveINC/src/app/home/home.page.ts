@@ -7,6 +7,8 @@ import { CardComponent } from '../components/card/card.component';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { OnboardingService } from '../services/onboarding.service';
 import { HomeCard, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../models/home-card.model';
+import { UserTypeCardComponent, UserType } from '../components/user-type-card/user-type-card.component';
+import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 
 @Component({
   selector: 'app-home',
@@ -17,12 +19,13 @@ import { HomeCard, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../mode
     IonHeader, 
     IonToolbar, 
     IonTitle, 
-    IonContent, 
+    IonContent,
     IonButton,
     IonButtons,
     IonIcon,
     CardComponent,
-    ExploreContainerComponent
+    ExploreContainerComponent,
+    UserTypeCardComponent
   ],
 })
 export class HomePage implements OnInit {
@@ -31,15 +34,19 @@ export class HomePage implements OnInit {
   cardTypeIcons = CardTypeIcons;
   cardTypeColors = CardTypeColors;
   welcomeTitle: string = 'Welcome to Love INC.';
+  selectedUserTypes: UserType[] = [];
+  showDonateButton: boolean = false;
 
   constructor(
     private onboardingService: OnboardingService,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private donateActionSheetService: DonateActionSheetService
   ) {}
 
   ngOnInit() {
     this.loadCards();
+    this.loadUserTypes();
     
     // Set welcome title based on first name
     const firstName = this.onboardingService.getUserFirstName();
@@ -53,6 +60,21 @@ export class HomePage implements OnInit {
     (window as any).clearOnboarding = () => {
       this.onboardingService.clearOnboarding();
     };
+  }
+
+  loadUserTypes() {
+    const selectedOptions = this.onboardingService.getSelectedOptions();
+    // Filter out 'exploring' and map to UserType
+    this.selectedUserTypes = selectedOptions
+      .filter(option => option !== 'exploring' && ['get-help', 'volunteer', 'give'].includes(option))
+      .map(option => option as UserType);
+    
+    // Show donate button if user selected volunteer or give (donor)
+    this.showDonateButton = selectedOptions.includes('volunteer') || selectedOptions.includes('give');
+  }
+
+  openDonateMenu() {
+    this.donateActionSheetService.openDonateActionSheet();
   }
 
   loadCards() {
@@ -73,9 +95,5 @@ export class HomePage implements OnInit {
   resetOnboarding() {
     this.onboardingService.clearOnboarding();
     this.router.navigate(['/onboarding/step1']);
-  }
-
-  navigateToProfile() {
-    this.router.navigate(['/tabs/profile']);
   }
 }

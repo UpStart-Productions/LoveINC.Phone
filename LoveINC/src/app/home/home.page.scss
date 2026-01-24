@@ -1,3 +1,34 @@
+// Donate Header Button
+.donate-header-button {
+  --background: var(--love-inc-gold);
+  --color: white;
+  --border-radius: 50% !important;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  margin: 0 8px;
+  padding: 0 !important;
+  
+  &::part(native) {
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    padding: 0 !important;
+  }
+  
+  ion-icon {
+    font-size: 20px;
+    color: white;
+  }
+}
+
 .cards-container {
   padding: 16px;
   padding-bottom: 100px; // Space for tab bar

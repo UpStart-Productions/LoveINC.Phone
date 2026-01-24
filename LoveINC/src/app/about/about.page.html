@@ -3,11 +3,6 @@
     <ion-title>
       About Love INC
     </ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="navigateToProfile()">
-        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -154,7 +149,7 @@
         <ion-icon slot="start" name="map-outline"></ion-icon>
         Find Partner Churches
       </ion-button>
-      <ion-button expand="block" color="secondary" fill="outline">
+      <ion-button expand="block" color="secondary" fill="outline" routerLink="/tabs/contact">
         <ion-icon slot="start" name="mail-outline"></ion-icon>
         Contact Us
       </ion-button>

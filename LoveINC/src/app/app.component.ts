@@ -35,6 +35,7 @@ import {
   globeOutline,
   // Profile & Contact Icons
   personOutline,
+  personCircle,
   personCircleOutline,
   callOutline,
   notificationsOutline,
@@ -113,6 +114,7 @@ export class AppComponent {
       globeOutline,
       // Profile & Contact Icons
       personOutline,
+      personCircle,
       personCircleOutline,
       callOutline,
       notificationsOutline,

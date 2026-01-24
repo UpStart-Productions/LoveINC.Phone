@@ -15,8 +15,7 @@ import {
   IonItem,
   IonLabel,
   IonIcon,
-  IonButton,
-  IonButtons
+  IonButton
 } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-about',
@@ -38,8 +37,7 @@ import {
     IonItem,
     IonLabel,
     IonIcon,
-    IonButton,
-    IonButtons
+    IonButton
   ],
 })
 export class AboutPage {
@@ -51,10 +49,6 @@ export class AboutPage {
   ];
 
   constructor(private router: Router) {}
-
-  navigateToProfile() {
-    this.router.navigate(['/tabs/profile']);
-  }
 
   navigateToChurchMap() {
     console.log('Navigating to church map...');

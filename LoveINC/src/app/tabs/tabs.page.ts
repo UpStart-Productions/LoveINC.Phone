@@ -85,14 +85,6 @@ export class TabsPage {
           }
         },
         {
-          text: 'Donate to Love INC Newberg',
-          icon: 'gift-outline',
-          cssClass: 'donate-button',
-          handler: () => {
-            this.donateActionSheetService.openDonateActionSheet();
-          }
-        },
-        {
           text: 'Cancel',
           icon: 'close-outline',
           role: 'cancel'
