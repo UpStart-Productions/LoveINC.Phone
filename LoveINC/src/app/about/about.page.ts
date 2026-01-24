@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { DonateButtonService } from '../services/donate-button.service';
+import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { 
   IonHeader, 
   IonToolbar, 
@@ -15,7 +17,8 @@ import {
   IonItem,
   IonLabel,
   IonIcon,
-  IonButton
+  IonButton,
+  IonButtons
 } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-about',
@@ -37,18 +40,32 @@ import {
     IonItem,
     IonLabel,
     IonIcon,
-    IonButton
+    IonButton,
+    IonButtons
   ],
 })
-export class AboutPage {
+export class AboutPage implements OnInit {
   impactStats = [
     { number: '500+', label: 'Families Helped' },
     { number: '1,000+', label: 'Needs Met' },
     { number: '40+', label: 'Church Partners' },
     { number: '100+', label: 'Active Volunteers' }
   ];
+  showDonateButton: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private donateButtonService: DonateButtonService,
+    private donateActionSheetService: DonateActionSheetService
+  ) {}
+
+  ngOnInit() {
+    this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
+  }
+
+  openDonateMenu() {
+    this.donateActionSheetService.openDonateActionSheet();
+  }
 
   navigateToChurchMap() {
     console.log('Navigating to church map...');

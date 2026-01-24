@@ -22,6 +22,8 @@ import {
 } from '@ionic/angular/standalone';
 import { PopoverController } from '@ionic/angular';
 import { ChurchDetailsPopoverComponent } from './church-details-popover.component';
+import { DonateButtonService } from '../services/donate-button.service';
+import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 
 declare var google: any;
 
@@ -65,16 +67,24 @@ export class ChurchMapPage implements OnInit, OnDestroy, AfterViewInit {
   selectedChurch: PartnerChurch | null = null;
   popover: any = null;
   router = this.routerInstance;
+  showDonateButton: boolean = false;
 
   constructor(
     private routerInstance: Router,
     private http: HttpClient,
     private ngZone: NgZone,
-    private popoverController: PopoverController
+    private popoverController: PopoverController,
+    private donateButtonService: DonateButtonService,
+    private donateActionSheetService: DonateActionSheetService
   ) {}
 
   ngOnInit() {
     this.loadChurches();
+    this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
+  }
+
+  openDonateMenu() {
+    this.donateActionSheetService.openDonateActionSheet();
   }
 
   ngAfterViewInit() {

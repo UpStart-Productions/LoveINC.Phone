@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { 
   IonHeader, 
@@ -9,9 +9,12 @@ import {
   IonContent,
   IonButtons,
   IonButton,
+  IonBackButton,
   IonIcon,
 } from '@ionic/angular/standalone';
 import { CardComponent } from '../../components/card/card.component';
+import { DonateButtonService } from '../../services/donate-button.service';
+import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 export interface TransformationClass {
   id: string;
   title: string;
@@ -40,20 +43,38 @@ export interface TransformationClass {
     IonContent,
     IonButtons,
     IonButton,
+    IonBackButton,
     IonIcon,
     CardComponent,
   ],
 })
 export class TransformationClassesPage implements OnInit {
   classes: TransformationClass[] = [];
+  fromServices: boolean = false;
+  showDonateButton: boolean = false;
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private donateButtonService: DonateButtonService,
+    private donateActionSheetService: DonateActionSheetService
   ) {}
 
   ngOnInit() {
     this.loadClasses();
+    // Check if navigated from Services page
+    this.route.queryParamMap.subscribe(params => {
+      this.fromServices = params.get('from') === 'services';
+    });
+    // Also check snapshot for immediate value
+    this.fromServices = this.route.snapshot.queryParamMap.get('from') === 'services';
+    
+    this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
+  }
+
+  openDonateMenu() {
+    this.donateActionSheetService.openDonateActionSheet();
   }
 
   loadClasses() {
@@ -67,12 +88,10 @@ export class TransformationClassesPage implements OnInit {
     });
   }
 
-  navigateToProfile() {
-    this.router.navigate(['/tabs/profile']);
-  }
 
   navigateToClassDetail(classItem: TransformationClass) {
-    this.router.navigate(['/tabs/transformation-classes', classItem.id]);
+    const queryParams = this.fromServices ? { from: 'services' } : {};
+    this.router.navigate(['/tabs/transformation-classes', classItem.id], { queryParams });
   }
 
   formatSessionDates(classItem: TransformationClass): string {

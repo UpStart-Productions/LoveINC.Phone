@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { 
   IonHeader, 
@@ -9,12 +9,15 @@ import {
   IonContent,
   IonButtons,
   IonButton,
+  IonBackButton,
   IonIcon,
   IonItem,
   IonLabel
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
+import { DonateButtonService } from '../../services/donate-button.service';
+import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 
 interface GapService {
   id: string;
@@ -41,6 +44,7 @@ interface GapService {
     IonContent,
     IonButtons,
     IonButton,
+    IonBackButton,
     IonIcon,
     IonItem,
     IonLabel,
@@ -52,15 +56,38 @@ export class GapMinistriesPage implements OnInit {
   services: GapService[] = [];
   groupedServices: { [key: string]: GapService[] } = {};
   scheduleOrder = ['Thursday', 'Friday', 'Saturday', 'Open Weekdays', 'By Appointment'];
+  fromServices: boolean = false;
+  showDonateButton: boolean = false;
 
   constructor(
     private http: HttpClient,
     private router: Router,
-    private alertController: AlertController
+    private route: ActivatedRoute,
+    private alertController: AlertController,
+    private donateButtonService: DonateButtonService,
+    private donateActionSheetService: DonateActionSheetService
   ) {}
 
   ngOnInit() {
     this.loadServices();
+    // Check if navigated from Services page
+    const fromParam = this.route.snapshot.queryParamMap.get('from');
+    console.log('Gap Ministries - query param "from":', fromParam);
+    this.fromServices = fromParam === 'services';
+    console.log('Gap Ministries - fromServices:', this.fromServices);
+    
+    // Also subscribe for changes
+    this.route.queryParamMap.subscribe(params => {
+      const from = params.get('from');
+      this.fromServices = from === 'services';
+      console.log('Gap Ministries - query param changed, fromServices:', this.fromServices);
+    });
+    
+    this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
+  }
+
+  openDonateMenu() {
+    this.donateActionSheetService.openDonateActionSheet();
   }
 
   loadServices() {
@@ -86,9 +113,6 @@ export class GapMinistriesPage implements OnInit {
     });
   }
 
-  navigateToProfile() {
-    this.router.navigate(['/tabs/profile']);
-  }
 
   getActionIcons(service: GapService): CardActionIcon[] {
     return [

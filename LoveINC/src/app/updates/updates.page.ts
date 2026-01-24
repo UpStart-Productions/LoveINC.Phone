@@ -12,6 +12,8 @@ import {
   IonIcon,
 } from '@ionic/angular/standalone';
 import { CardComponent } from '../components/card/card.component';
+import { DonateButtonService } from '../services/donate-button.service';
+import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 export interface UpdateEvent {
   id: string;
   photoUrl: string;
@@ -38,14 +40,22 @@ export interface UpdateEvent {
 })
 export class UpdatesPage implements OnInit {
   events: UpdateEvent[] = [];
+  showDonateButton: boolean = false;
 
   constructor(
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private donateButtonService: DonateButtonService,
+    private donateActionSheetService: DonateActionSheetService
   ) {}
 
   ngOnInit() {
     this.loadEvents();
+    this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
+  }
+
+  openDonateMenu() {
+    this.donateActionSheetService.openDonateActionSheet();
   }
 
   loadEvents() {
@@ -59,7 +69,4 @@ export class UpdatesPage implements OnInit {
     });
   }
 
-  navigateToProfile() {
-    this.router.navigate(['/tabs/profile']);
-  }
 }

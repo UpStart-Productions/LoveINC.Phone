@@ -1,8 +1,22 @@
-<ion-card class="user-type-card" [style.--user-type-color]="config.color">
+<ion-card 
+  class="user-type-card" 
+  [class.clickable]="isClickable"
+  [style.--user-type-color]="config.color"
+  (click)="onCardClick()">
   <ion-card-content>
     <div class="user-type-content">
       <ion-icon [name]="config.icon" class="user-type-icon"></ion-icon>
-      <span class="user-type-label">{{ config.label }}</span>
+      <div class="user-type-text">
+        <div class="user-type-message">{{ displayMessage }}</div>
+        @if (userType === 'give') {
+          <div class="donor-stats">{{ donorStats }}</div>
+          <ion-progress-bar 
+            [value]="donorProgress" 
+            color="light"
+            class="donor-progress-bar">
+          </ion-progress-bar>
+        }
+      </div>
     </div>
   </ion-card-content>
 </ion-card>

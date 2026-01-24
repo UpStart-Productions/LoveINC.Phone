@@ -1,11 +1,14 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="fromServices">
+      <ion-back-button defaultHref="/tabs/services"></ion-back-button>
+    </ion-buttons>
     <ion-title>
       Transformation Classes
     </ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="navigateToProfile()">
-        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+    <ion-buttons slot="end" *ngIf="showDonateButton">
+      <ion-button (click)="openDonateMenu()" class="donate-header-button">
+        <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

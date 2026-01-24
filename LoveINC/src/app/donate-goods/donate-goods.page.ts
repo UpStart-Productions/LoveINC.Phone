@@ -16,6 +16,8 @@ import {
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
+import { DonateButtonService } from '../services/donate-button.service';
+import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 
 interface DonationLocation {
   id: string;
@@ -57,15 +59,23 @@ export class DonateGoodsPage implements OnInit {
   groupedLocations: { [key: string]: DonationLocation[] } = {};
   categoryOrder: string[] = [];
   searchQuery: string = '';
+  showDonateButton: boolean = false;
 
   constructor(
     private http: HttpClient,
     private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private donateButtonService: DonateButtonService,
+    private donateActionSheetService: DonateActionSheetService
   ) {}
 
   ngOnInit() {
     this.loadLocations();
+    this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
+  }
+
+  openDonateMenu() {
+    this.donateActionSheetService.openDonateActionSheet();
   }
 
   loadLocations() {
@@ -129,9 +139,6 @@ export class DonateGoodsPage implements OnInit {
     this.groupLocationsByCategory();
   }
 
-  navigateToProfile() {
-    this.router.navigate(['/tabs/profile']);
-  }
 
   getActionIcons(location: DonationLocation): CardActionIcon[] {
     return [

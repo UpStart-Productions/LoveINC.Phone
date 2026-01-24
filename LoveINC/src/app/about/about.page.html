@@ -3,6 +3,11 @@
     <ion-title>
       About Love INC
     </ion-title>
+    <ion-buttons slot="end" *ngIf="showDonateButton">
+      <ion-button (click)="openDonateMenu()" class="donate-header-button">
+        <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

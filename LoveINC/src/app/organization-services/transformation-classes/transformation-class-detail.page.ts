@@ -21,6 +21,8 @@ import {
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { TransformationClass } from './transformation-classes.page';
+import { DonateButtonService } from '../../services/donate-button.service';
+import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 
 @Component({
   selector: 'app-transformation-class-detail',
@@ -50,17 +52,33 @@ import { TransformationClass } from './transformation-classes.page';
 export class TransformationClassDetailPage implements OnInit {
   classItem: TransformationClass | null = null;
   classId: string = '';
+  fromServices: boolean = false;
+  showDonateButton: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private donateButtonService: DonateButtonService,
+    private donateActionSheetService: DonateActionSheetService
   ) {}
 
   ngOnInit() {
     this.classId = this.route.snapshot.paramMap.get('id') || '';
     this.loadClassDetail();
+    // Check if navigated from Services page
+    this.route.queryParamMap.subscribe(params => {
+      this.fromServices = params.get('from') === 'services';
+    });
+    // Also check snapshot for immediate value
+    this.fromServices = this.route.snapshot.queryParamMap.get('from') === 'services';
+    
+    this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
+  }
+
+  openDonateMenu() {
+    this.donateActionSheetService.openDonateActionSheet();
   }
 
   loadClassDetail() {
@@ -74,9 +92,6 @@ export class TransformationClassDetailPage implements OnInit {
     });
   }
 
-  navigateToProfile() {
-    this.router.navigate(['/tabs/profile']);
-  }
 
   async onRegisterClick() {
     if (!this.classItem) return;

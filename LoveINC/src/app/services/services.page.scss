@@ -29,20 +29,18 @@
   }
 }
 
-.cards-container {
-  padding: 16px;
-  padding-bottom: 100px;
+ion-list {
+  padding: 8px 0;
 }
 
-.event-card-content {
-  position: relative;
-  padding-right: 48px;
-}
-
-.card-calendar-icon {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  font-size: 24px;
-  color: var(--ion-color-medium);
+ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --min-height: 56px;
+  
+  ion-icon {
+    font-size: 24px;
+    color: var(--ion-color-primary);
+    margin-right: 16px;
+  }
 }

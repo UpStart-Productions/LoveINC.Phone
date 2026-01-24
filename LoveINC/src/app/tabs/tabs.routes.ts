@@ -67,6 +67,11 @@ export const routes: Routes = [
           import('../developer-options/developer-options.page').then((m) => m.DeveloperOptionsPage),
       },
       {
+        path: 'services',
+        loadComponent: () =>
+          import('../services/services.page').then((m) => m.ServicesPage),
+      },
+      {
         path: '',
         redirectTo: '/tabs/home',
         pathMatch: 'full',

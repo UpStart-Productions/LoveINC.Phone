@@ -1,10 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/about"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      Partner Churches Map
+      Services
     </ion-title>
     <ion-buttons slot="end" *ngIf="showDonateButton">
       <ion-button (click)="openDonateMenu()" class="donate-header-button">
@@ -15,5 +15,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div id="map"></div>
+  <ion-list>
+    <ion-item 
+      button 
+      detail="true"
+      *ngFor="let service of services"
+      (click)="handleServiceClick(service)">
+      <ion-icon [name]="service.icon" slot="start"></ion-icon>
+      <ion-label>{{ service.name }}</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
