@@ -1,0 +1,78 @@
+<ion-content [fullscreen]="true" class="onboarding-content">
+  <!-- Fixed Header Container -->
+  <div class="header-container">
+    <div class="photo-background-header">
+      <div class="photo-overlay"></div>
+    </div>
+    <div class="logo-container">
+      <img src="assets/branding/logo-oregon-newberg.webp" alt="Love INC Logo" class="logo-image">
+      <h1 class="tagline">Let's get to know you better</h1>
+    </div>
+  </div>
+
+  <!-- Content Container -->
+  <div class="content-container">
+    <!-- Form -->
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">First Name</ion-label>
+        <ion-input
+          [(ngModel)]="firstName"
+          type="text"
+          name="firstName"
+          required>
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Last Name</ion-label>
+        <ion-input
+          [(ngModel)]="lastName"
+          type="text"
+          name="lastName"
+          required>
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email Address</ion-label>
+        <ion-input
+          [(ngModel)]="email"
+          type="email"
+          name="email"
+          required>
+        </ion-input>
+      </ion-item>
+
+      <ion-item button detail="false" (click)="toggleNewsletter()">
+        <ion-checkbox 
+          slot="start" 
+          [(ngModel)]="wantsNewsletter"
+          name="wantsNewsletter">
+        </ion-checkbox>
+        <ion-label>
+          I would like to receive Love INC newsletter
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <!-- Complete Button -->
+    <ion-button 
+      expand="block" 
+      size="large"
+      color="primary"
+      class="complete-button"
+      [disabled]="!canComplete()"
+      (click)="onComplete()">
+      <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+      Complete
+    </ion-button>
+
+    <!-- Skip Link -->
+    <div class="exploring-link">
+      <button class="link-button" (click)="onSkip()">
+        No thanks. I'm just exploring.
+      </button>
+    </div>
+  </div>
+</ion-content>

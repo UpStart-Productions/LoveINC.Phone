@@ -1,17 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IonContent,
   IonButton,
-  IonIcon,
-  IonInput,
-  IonItem,
-  IonLabel,
-  IonCheckbox
+  IonIcon
 } from '@ionic/angular/standalone';
-import { OnboardingService, OnboardingData } from '../services/onboarding.service';
+import { OnboardingService } from '../services/onboarding.service';
 
 @Component({
   selector: 'app-onboarding-step2',
@@ -20,62 +15,50 @@ import { OnboardingService, OnboardingData } from '../services/onboarding.servic
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     IonContent,
     IonButton,
-    IonIcon,
-    IonInput,
-    IonItem,
-    IonLabel,
-    IonCheckbox
+    IonIcon
   ]
 })
 export class OnboardingStep2Page {
-  firstName: string = '';
-  lastName: string = '';
-  email: string = '';
-  wantsNewsletter: boolean = false;
+  selectedOptions: Set<string> = new Set();
 
   constructor(
     private router: Router,
     private onboardingService: OnboardingService
   ) {}
 
-  canComplete(): boolean {
-    return this.firstName.trim().length > 0 && 
-           this.lastName.trim().length > 0 && 
-           this.email.trim().length > 0 &&
-           this.isValidEmail(this.email);
-  }
-
-  isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  onComplete() {
-    if (this.canComplete()) {
-      // Get selections from step 1
-      const selectionsStr = sessionStorage.getItem('loveinc_temp_selections');
-      const selections = selectionsStr ? JSON.parse(selectionsStr) : [];
-
-      // Create onboarding data
-      const data: OnboardingData = {
-        selectedOptions: selections,
-        firstName: this.firstName.trim(),
-        lastName: this.lastName.trim(),
-        email: this.email.trim(),
-        wantsNewsletter: this.wantsNewsletter
-      };
-
-      // Save and complete onboarding
-      this.onboardingService.setOnboardingCompleted(data);
-
-      // Clean up temporary storage
-      sessionStorage.removeItem('loveinc_temp_selections');
-
-      // Navigate to main app
-      this.router.navigate(['/tabs']);
+  toggleOption(option: string) {
+    if (this.selectedOptions.has(option)) {
+      this.selectedOptions.delete(option);
+      console.log('Removed option:', option);
+    } else {
+      this.selectedOptions.add(option);
+      console.log('Added option:', option);
     }
+    console.log('Current selections:', Array.from(this.selectedOptions));
+  }
+
+  isSelected(option: string): boolean {
+    return this.selectedOptions.has(option);
+  }
+
+  canProceed(): boolean {
+    return this.selectedOptions.size > 0;
+  }
+
+  onNext() {
+    if (this.canProceed()) {
+      // Store selections temporarily for step 3
+      const selectionsArray = Array.from(this.selectedOptions);
+      console.log('Saving to sessionStorage:', selectionsArray);
+      sessionStorage.setItem('loveinc_temp_selections', JSON.stringify(selectionsArray));
+      this.router.navigate(['/onboarding/step3']);
+    }
+  }
+
+  onExploring() {
+    this.onboardingService.skipOnboarding();
+    this.router.navigate(['/tabs']);
   }
 }

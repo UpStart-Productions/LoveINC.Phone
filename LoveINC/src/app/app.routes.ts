@@ -39,6 +39,11 @@ export const routes: Routes = [
     canActivate: [skipOnboardingGuard]
   },
   {
+    path: 'onboarding/step3',
+    loadComponent: () => import('./onboarding/onboarding-step3.page').then(m => m.OnboardingStep3Page),
+    canActivate: [skipOnboardingGuard]
+  },
+  {
     path: 'sandbox',
     loadComponent: () => import('./sandbox/sandbox-index.page').then(m => m.SandboxIndexPage)
   },
