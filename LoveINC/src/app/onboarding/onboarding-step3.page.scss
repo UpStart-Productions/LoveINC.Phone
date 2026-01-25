@@ -79,23 +79,9 @@ ion-list {
   margin-bottom: 16px;
 }
 
-.complete-button {
-  --border-radius: 50px;
-  --padding-top: 16px;
-  --padding-bottom: 16px;
-  font-size: 18px;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
+.pill-button {
   margin: 16px;
-
-  &:not([disabled]) {
-    --box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  }
-
-  ion-icon {
-    font-size: 24px;
-  }
+  /* Other styles are handled globally in global.scss */
 }
 
 .exploring-link {

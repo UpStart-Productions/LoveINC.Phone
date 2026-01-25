@@ -3,11 +3,11 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Choose amount</ion-title>
+    <ion-title>Give to Love INC</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content class="content-wrapper">
   <div class="donation-form-container">
     <!-- Donation Frequency -->
     <ion-segment [(ngModel)]="donationFrequency" class="frequency-segment">
@@ -64,7 +64,7 @@
     <!-- Continue Button -->
     <ion-button
       expand="block"
-      class="continue-button"
+      class="pill-button"
       [disabled]="!canContinue()"
       (click)="onContinue()">
       Continue

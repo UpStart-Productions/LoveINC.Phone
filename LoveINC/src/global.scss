@@ -71,6 +71,25 @@ ion-button:not([color]) {
   --border-radius: 50px;
 }
 
+/* Global Pill Button Styles */
+.pill-button {
+  --border-radius: 50px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  
+  &:not([disabled]) {
+    --box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  }
+  
+  ion-icon {
+    font-size: 24px;
+  }
+}
+
 /* Header Styling - Global */
 ion-header ion-toolbar {
   --background: var(--love-inc-header-dark);

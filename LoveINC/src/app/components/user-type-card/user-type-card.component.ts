@@ -8,6 +8,7 @@ import {
   IonButton,
   IonProgressBar,
 } from '@ionic/angular/standalone';
+import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 
 export type UserType = 'get-help' | 'volunteer' | 'give';
 
@@ -37,7 +38,10 @@ export class UserTypeCardComponent {
   @Input() volunteerOpportunitiesCount?: number = 2; // Default for volunteer
   @Output() cardClick = new EventEmitter<void>();
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private donateActionSheetService: DonateActionSheetService
+  ) {}
 
   private readonly userTypeConfigs: Record<UserType, UserTypeConfig> = {
     'get-help': {
@@ -127,6 +131,8 @@ export class UserTypeCardComponent {
   onCardClick() {
     if (this.userType === 'get-help') {
       this.router.navigate(['/tabs/services']);
+    } else if (this.userType === 'give') {
+      this.donateActionSheetService.openDonateActionSheet();
     } else {
       this.cardClick.emit();
     }

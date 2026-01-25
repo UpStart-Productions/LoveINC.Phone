@@ -1,6 +1,5 @@
 .donation-form-container {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding: 20px;
   max-width: 100%;
 }
 
@@ -100,17 +99,14 @@
   }
 }
 
-.continue-button {
+.pill-button {
   margin-top: 32px;
   margin-bottom: 24px;
-  --border-radius: 8px;
-  height: 48px;
-  font-size: 16px;
-  font-weight: 600;
   
   &[disabled] {
     opacity: 0.5;
   }
+  /* Other styles are handled globally in global.scss */
 }
 
 .powered-by {
