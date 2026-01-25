@@ -1,42 +1,11 @@
-// Donate Header Button
-.donate-header-button {
-  --background: var(--love-inc-gold);
-  --color: white;
-  --border-radius: 50% !important;
-  --padding-start: 0;
-  --padding-end: 0;
-  --padding-top: 0;
-  --padding-bottom: 0;
-  width: 40px !important;
-  height: 40px !important;
-  min-width: 40px !important;
-  min-height: 40px !important;
-  margin: 0 8px;
-  padding: 0 !important;
-  
-  &::part(native) {
-    border-radius: 50% !important;
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    padding: 0 !important;
-  }
-  
-  ion-icon {
-    font-size: 20px;
-    color: white;
-  }
-}
-
 .content-wrapper {
   padding: 0;
   padding-bottom: 100px; // Space for tab bar
 }
 
 .schedule-section {
-  padding: 16px;
   padding-top: 16px;
+  padding-bottom: 16px;
   
   &:first-child {
     padding-top: 16px;
@@ -55,12 +24,10 @@
   display: block;
   width: 100%;
   font-size: 20px;
-  font-weight: 700;
-  color: white;
-  background-color: var(--love-inc-orange);
+  font-weight: 500;
+  color: var(--ion-color-medium);
   margin: 0 0 16px 0;
-  padding: 12px 16px;
-  border-radius: 8px;
+  padding: 0px 16px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }

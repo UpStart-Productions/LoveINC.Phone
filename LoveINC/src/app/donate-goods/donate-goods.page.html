@@ -21,8 +21,7 @@
         <app-card
           *ngFor="let location of groupedLocations[category]"
           class="location-card"
-          [actionIcons]="getActionIcons(location)"
-          [style.--app-card-margin-bottom]="'12px'">
+          [actionIcons]="getActionIcons(location)">
           <ion-item lines="none">
             <ion-label>
               <div class="location-header">
