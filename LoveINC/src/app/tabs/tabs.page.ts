@@ -50,8 +50,8 @@ export class TabsPage {
           }
         },
         {
-          text: 'Gap Services',
-          icon: 'construct-outline',
+          text: 'Gap Ministries',
+          icon: 'hand-right-outline',
           handler: () => {
             this.router.navigate(['/tabs/gap-ministries']);
           }

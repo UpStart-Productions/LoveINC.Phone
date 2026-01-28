@@ -1,0 +1,82 @@
+[
+  {
+    "id": "1",
+    "title": "New Transformational Class: Financial Peace",
+    "message": "Our next Financial Peace class starts in February. Learn practical steps to budget, save, and get out of debt. Sign up through the app or call (503) 537-3999.",
+    "date": "2025-01-20T09:00:00",
+    "read": false,
+    "type": "program"
+  },
+  {
+    "id": "2",
+    "title": "Volunteer Opportunity: Furniture Delivery",
+    "message": "We need volunteers to help with a furniture delivery this Thursday afternoon. If you have a truck or can lend a hand, contact the office at (503) 537-3999.",
+    "date": "2025-01-18T14:00:00",
+    "read": false,
+    "type": "volunteer"
+  },
+  {
+    "id": "3",
+    "title": "Office Hours Reminder",
+    "message": "Love INC Newberg is open Monday–Thursday, 10am–1pm. Call (503) 537-3999 or email info@loveincnewberg.org. We’re here to connect you with help.",
+    "date": "2025-01-15T08:00:00",
+    "read": true,
+    "type": "info"
+  },
+  {
+    "id": "4",
+    "title": "Donation Need: Winter Coats",
+    "message": "We’re accepting gently used winter coats for children and adults. Drop off at our office during open hours (Mon–Thu 10am–1pm) or at any of our partner church locations.",
+    "date": "2025-01-17T11:00:00",
+    "read": false,
+    "type": "donation"
+  },
+  {
+    "id": "5",
+    "title": "Impact Update: 500+ Families Helped",
+    "message": "Thanks to our partner churches and volunteers, we’ve helped over 500 families in the Newberg area this year. Your support transforms lives. See Impact Stories in the app.",
+    "date": "2025-01-10T09:00:00",
+    "read": true,
+    "type": "impact"
+  },
+  {
+    "id": "6",
+    "title": "Gap Ministries: Connection Center Open Slots",
+    "message": "The Connection Center has open volunteer slots for greeting and intake. Training provided. Serve once a week or on rotation. Reply or call the office to learn more.",
+    "date": "2025-01-19T10:00:00",
+    "read": false,
+    "type": "volunteer"
+  },
+  {
+    "id": "7",
+    "title": "New Church Partner: Welcome Springbrook Community",
+    "message": "We’re excited to welcome Springbrook Community Church as a new Love INC partner. Together we’re mobilizing more churches to transform lives In the Name of Christ.",
+    "date": "2025-01-12T09:00:00",
+    "read": true,
+    "type": "partnership"
+  },
+  {
+    "id": "8",
+    "title": "Holiday Office Closure",
+    "message": "Our office will be closed December 24–25 for Christmas. We’ll reopen with normal hours (Mon–Thu 10am–1pm) the following week. For urgent needs, check with your local church or community resources.",
+    "date": "2024-12-20T08:00:00",
+    "read": true,
+    "type": "info"
+  },
+  {
+    "id": "9",
+    "title": "Verse of the Day Now in App",
+    "message": "Check the new Verse of the Day under More in the app. A fresh verse is available each day to encourage you.",
+    "date": "2025-01-14T07:00:00",
+    "read": false,
+    "type": "app"
+  },
+  {
+    "id": "10",
+    "title": "Updated Donation Drop-Off Locations",
+    "message": "Donate goods drop-off locations and hours have been updated. Open the Donate Goods section in the app to see current sites, what we accept, and when you can drop off.",
+    "date": "2025-01-16T12:00:00",
+    "read": false,
+    "type": "donation"
+  }
+]

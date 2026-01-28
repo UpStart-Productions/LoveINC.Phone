@@ -24,7 +24,9 @@ import {
   Download,
   Upload,
   Share,
-  Check
+  Check,
+  HandHelping,
+  Church
 } from 'lucide-angular';
 
 import { routes } from './app/app.routes';
@@ -57,7 +59,9 @@ bootstrapApplication(AppComponent, {
         Download,
         Upload,
         Share,
-        Check
+        Check,
+        HandHelping,
+        Church
       })
     ),
   ],

@@ -1,0 +1,36 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/more"></ion-back-button>
+    </ion-buttons>
+    <ion-title>FAQ</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="container">
+    <div *ngIf="loading" class="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading FAQs...</p>
+    </div>
+
+    <div *ngIf="!loading && faqs.length === 0" class="no-faqs">
+      <ion-icon name="help-circle-outline" size="large"></ion-icon>
+      <h2>No FAQs Available</h2>
+      <p>No frequently asked questions are currently available.</p>
+    </div>
+
+    <div *ngIf="!loading && faqs.length > 0" class="faqs-list">
+      <ion-accordion-group [multiple]="false" [value]="accordionValue" (ionChange)="onAccordionChange($event)">
+        <ion-accordion *ngFor="let faq of faqs; let i = index" [value]="'faq-' + i">
+          <ion-item slot="header">
+            <ion-label>{{ faq.question }}</ion-label>
+          </ion-item>
+          <div slot="content" class="faq-answer">
+            <div [innerHTML]="faq.answer"></div>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </div>
+  </div>
+</ion-content>

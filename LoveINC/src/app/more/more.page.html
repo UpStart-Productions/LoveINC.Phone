@@ -1,0 +1,29 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      More
+    </ion-title>
+    <ion-buttons slot="end" *ngIf="showDonateButton">
+      <ion-button (click)="openDonateMenu()" class="donate-header-button">
+        <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list lines="none">
+    <ion-item
+      button
+      detail="true"
+      *ngFor="let item of moreItems"
+      (click)="handleItemClick(item)">
+      <div slot="start" class="item-icon-slot">
+        <div *ngIf="item.name === 'Profile' && userFirstInitial" class="profile-initial-avatar">{{ userFirstInitial }}</div>
+        <i-lucide *ngIf="!(item.name === 'Profile' && userFirstInitial) && item.lucideIcon" [name]="item.lucideIcon" [size]="24" color="var(--ion-color-primary)"></i-lucide>
+        <ion-icon *ngIf="!(item.name === 'Profile' && userFirstInitial) && !item.lucideIcon" [name]="item.icon"></ion-icon>
+      </div>
+      <ion-label>{{ item.name }}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

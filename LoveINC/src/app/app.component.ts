@@ -43,6 +43,9 @@ import {
   helpCircleOutline,
   logOutOutline,
   chevronForwardOutline,
+  // More Menu Icons
+  menu,
+  menuOutline,
   // Content Icons
   calendarOutline,
   starOutline,
@@ -57,6 +60,9 @@ import {
   documentTextOutline,
   restaurantOutline,
   medicalOutline,
+  bookOutline,
+  playCircleOutline,
+  bookmarkOutline,
 } from 'ionicons/icons';
 
 @Component({
@@ -122,6 +128,9 @@ export class AppComponent {
       helpCircleOutline,
       logOutOutline,
       chevronForwardOutline,
+      // More Menu Icons
+      menu,
+      menuOutline,
       // Content Icons
       calendarOutline,
       starOutline,
@@ -136,6 +145,9 @@ export class AppComponent {
       documentTextOutline,
       restaurantOutline,
       medicalOutline,
+      bookOutline,
+      playCircleOutline,
+      bookmarkOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });

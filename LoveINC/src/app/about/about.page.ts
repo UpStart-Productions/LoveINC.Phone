@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
+import { AlertsModalService } from '../services/alerts-modal.service';
 import { 
   IonHeader, 
   IonToolbar, 
@@ -56,7 +57,8 @@ export class AboutPage implements OnInit {
   constructor(
     private router: Router,
     private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private alertsModalService: AlertsModalService
   ) {}
 
   ngOnInit() {
@@ -65,6 +67,10 @@ export class AboutPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
+  }
+
+  openAlertsModal() {
+    this.alertsModalService.openAlertsModal();
   }
 
   navigateToChurchMap() {

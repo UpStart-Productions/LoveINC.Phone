@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, NavigationExtras } from '@angular/router';
 import { DonateButtonService } from './donate-button.service';
 import { DonateActionSheetService } from './donate-action-sheet.service';
+import { LucideAngularModule } from 'lucide-angular';
 import {
   IonHeader,
   IonToolbar,
@@ -20,6 +21,7 @@ import {
 interface Service {
   name: string;
   icon: string;
+  lucideIcon?: string;
   route?: string;
   handler?: () => void;
 }
@@ -31,6 +33,7 @@ interface Service {
   standalone: true,
   imports: [
     CommonModule,
+    LucideAngularModule,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -55,8 +58,9 @@ export class ServicesPage implements OnInit {
       },
     },
     {
-      name: 'Gap Services',
-      icon: 'construct-outline',
+      name: 'Gap Ministries',
+      icon: 'hand-right-outline',
+      lucideIcon: 'hand-helping',
       route: '/tabs/gap-ministries',
     },
     {

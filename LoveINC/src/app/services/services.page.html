@@ -21,7 +21,8 @@
       detail="true"
       *ngFor="let service of services"
       (click)="handleServiceClick(service)">
-      <ion-icon [name]="service.icon" slot="start"></ion-icon>
+      <i-lucide *ngIf="service.lucideIcon" [name]="service.lucideIcon" [size]="24" color="var(--ion-color-primary)" slot="start"></i-lucide>
+      <ion-icon *ngIf="!service.lucideIcon" [name]="service.icon" slot="start"></ion-icon>
       <ion-label>{{ service.name }}</ion-label>
     </ion-item>
   </ion-list>
