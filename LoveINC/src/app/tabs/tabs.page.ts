@@ -51,7 +51,7 @@ export class TabsPage {
         },
         {
           text: 'Gap Ministries',
-          icon: 'hand-right-outline',
+          icon: 'assets/icons/hand-helping.svg',
           handler: () => {
             this.router.navigate(['/tabs/gap-ministries']);
           }

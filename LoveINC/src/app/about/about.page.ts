@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { LucideAngularModule } from 'lucide-angular';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { AlertsModalService } from '../services/alerts-modal.service';
@@ -28,6 +29,7 @@ import {
   imports: [
     CommonModule,
     RouterModule,
+    LucideAngularModule,
     IonHeader, 
     IonToolbar, 
     IonTitle, 

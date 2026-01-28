@@ -18,6 +18,7 @@ import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
+import { SharingService } from '../services/sharing/sharing.service';
 
 interface DonationLocation {
   id: string;
@@ -66,7 +67,8 @@ export class DonateGoodsPage implements OnInit {
     private router: Router,
     private alertController: AlertController,
     private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private sharingService: SharingService
   ) {}
 
   ngOnInit() {
@@ -199,5 +201,29 @@ export class DonateGoodsPage implements OnInit {
       });
       await alert.present();
     }
+  }
+
+  async onShareLocation(location: DonationLocation) {
+    const htmlContent = `
+      <h2>${location.organization}</h2>
+      ${location.address ? `<p><strong>Address:</strong> ${location.address}</p>` : ''}
+      ${location.hours ? `<p><strong>Hours:</strong> ${location.hours}</p>` : ''}
+      ${location.phone ? `<p><strong>Phone:</strong> ${location.phone}</p>` : ''}
+      ${location.email ? `<p><strong>Email:</strong> ${location.email}</p>` : ''}
+      ${location.contact ? `<p><strong>Contact:</strong> ${location.contact}</p>` : ''}
+      ${location.acceptedItems && location.acceptedItems.length > 0 ? `
+        <p><strong>Accepted Items:</strong></p>
+        <ul>
+          ${location.acceptedItems.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+      ` : ''}
+      ${location.notes ? `<p>${location.notes}</p>` : ''}
+    `;
+    
+    await this.sharingService.shareContent({
+      title: location.organization,
+      subject: `Love INC Donation Location: ${location.organization}`,
+      htmlContent: htmlContent
+    });
   }
 }

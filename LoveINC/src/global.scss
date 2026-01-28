@@ -215,6 +215,14 @@ ion-accordion .ion-accordion-toggle-icon {
   flex-shrink: 0;
 }
 
+/* Home page user-type pills (Support, Join, Donate) - equal width */
+.action-pill {
+  width: 72px;
+  min-width: 72px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
 /* Global List Item Title Styling - 10% smaller */
 ion-item ion-label h2,
 ion-item ion-label .user-type-title {
@@ -255,10 +263,13 @@ ion-item ion-label .user-type-title {
  */
 .services-action-sheet .action-sheet-title,
 .donate-action-sheet .action-sheet-title,
+.share-action-sheet .action-sheet-title,
 .services-action-sheet .action-sheet-header,
 .donate-action-sheet .action-sheet-header,
+.share-action-sheet .action-sheet-header,
 .services-action-sheet .action-sheet-group h1,
-.donate-action-sheet .action-sheet-group h1 {
+.donate-action-sheet .action-sheet-group h1,
+.share-action-sheet .action-sheet-group h1 {
   font-size: 20px !important;
   font-weight: 600 !important;
   color: var(--ion-color-primary) !important;
@@ -267,7 +278,8 @@ ion-item ion-label .user-type-title {
 }
 
 .services-action-sheet,
-.donate-action-sheet {
+.donate-action-sheet,
+.share-action-sheet {
 
   .action-sheet-button,
   .action-sheet-button-with-subtitle {
@@ -333,6 +345,11 @@ ion-item ion-label .user-type-title {
       height: 24px !important;
     }
 
+    /* Custom Lucide hand-helping SVG icon (Gap Ministries) */
+    ion-icon[src*="hand-helping.svg"] {
+      color: var(--ion-color-primary);
+    }
+
     .action-sheet-button-inner {
       font-size: 16px !important;
     }
@@ -345,11 +362,60 @@ ion-item ion-label .user-type-title {
 }
 
 /**
+ * Share Action Sheet Specific Styling
+ * Matches Services FAB action sheet styling
+ * -----------------------------------------------------
+ */
+.share-action-sheet {
+  .action-sheet-button {
+    .action-sheet-icon {
+      font-size: 24px !important;
+      width: 24px !important;
+      height: 24px !important;
+      color: var(--ion-color-primary) !important;
+    }
+
+    .action-sheet-button-inner {
+      font-size: 16px !important;
+    }
+
+    span {
+      font-size: 16px !important;
+      color: var(--ion-color-dark) !important;
+    }
+  }
+
+  .action-sheet-cancel {
+    .action-sheet-icon {
+      color: var(--ion-color-medium) !important;
+    }
+  }
+}
+
+/**
  * Donate Action Sheet Specific Styling
  * For subtitle text formatting
  * -----------------------------------------------------
  */
 .donate-action-sheet {
+  .action-sheet-button {
+    .action-sheet-icon {
+      font-size: 24px !important;
+      width: 24px !important;
+      height: 24px !important;
+    }
+
+    .action-sheet-button-inner {
+      font-size: 16px !important;
+      line-height: 1.6;
+    }
+
+    span {
+      font-size: 16px !important;
+      color: var(--ion-color-dark) !important;
+    }
+  }
+
   .action-sheet-button-with-subtitle {
     .action-sheet-button-inner {
       line-height: 1.6;

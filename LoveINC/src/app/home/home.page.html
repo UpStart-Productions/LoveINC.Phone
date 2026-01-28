@@ -29,7 +29,8 @@
       [title]="card.title"
       [subtitle]="card.subtitle"
       [clickable]="true"
-      (cardClick)="navigateToCard(card)">
+      (cardClick)="navigateToCard(card)"
+      (shareClick)="onShareCard(card)">
       {{ card.description }}
     </app-card>
   </div>

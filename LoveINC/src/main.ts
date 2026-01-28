@@ -26,6 +26,7 @@ import {
   Share,
   Check,
   HandHelping,
+  HeartHandshake,
   Church
 } from 'lucide-angular';
 
@@ -61,6 +62,7 @@ bootstrapApplication(AppComponent, {
         Share,
         Check,
         HandHelping,
+        HeartHandshake,
         Church
       })
     ),

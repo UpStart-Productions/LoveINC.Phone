@@ -45,6 +45,10 @@ ion-item {
 .service-header {
   margin-bottom: 12px;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .service-name {
@@ -52,6 +56,14 @@ ion-item {
   font-weight: 600;
   color: var(--ion-color-dark);
   margin: 0;
+  flex: 1;
+}
+
+.service-days-times {
+  font-size: 14px;
+  color: var(--ion-color-medium);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .service-details {

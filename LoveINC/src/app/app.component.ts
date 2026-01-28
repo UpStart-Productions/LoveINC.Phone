@@ -63,6 +63,8 @@ import {
   bookOutline,
   playCircleOutline,
   bookmarkOutline,
+  shareOutline,
+  chatbubbleOutline,
 } from 'ionicons/icons';
 
 @Component({
@@ -148,6 +150,8 @@ export class AppComponent {
       bookOutline,
       playCircleOutline,
       bookmarkOutline,
+      shareOutline,
+      chatbubbleOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });

@@ -18,6 +18,7 @@ import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
+import { SharingService } from '../../services/sharing/sharing.service';
 
 interface GapService {
   id: string;
@@ -65,7 +66,8 @@ export class GapMinistriesPage implements OnInit {
     private route: ActivatedRoute,
     private alertController: AlertController,
     private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private sharingService: SharingService
   ) {}
 
   ngOnInit() {
@@ -118,7 +120,7 @@ export class GapMinistriesPage implements OnInit {
     return [
       { icon: 'location-outline', handler: () => this.onMapPinClick(service), show: true, buttonClass: 'map-button' },
       { icon: 'call-outline', handler: () => this.onPhoneClick(service), show: true, buttonClass: 'phone-button' },
-      { icon: 'people-outline', handler: () => this.onVolunteerClick(service), show: true, buttonClass: 'volunteer-button' },
+      { lucideIcon: 'heart-handshake', handler: () => this.onVolunteerClick(service), show: true, buttonClass: 'volunteer-button' },
       { icon: 'calendar-outline', handler: () => this.onCalendarClick(service), show: true, buttonClass: 'calendar-button' },
     ];
   }
@@ -157,5 +159,23 @@ export class GapMinistriesPage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  async onShareService(service: GapService) {
+    const htmlContent = `
+      <h2>${service.service}</h2>
+      <p><strong>Schedule:</strong> ${service.schedule}</p>
+      ${service.daysTimes ? `<p><strong>Days/Times:</strong> ${service.daysTimes}</p>` : ''}
+      ${service.church ? `<p><strong>Church:</strong> ${service.church}</p>` : ''}
+      ${service.address ? `<p><strong>Address:</strong> ${service.address}</p>` : ''}
+      ${service.contact ? `<p><strong>Contact:</strong> ${service.contact}</p>` : ''}
+      ${service.notes ? `<p>${service.notes}</p>` : ''}
+    `;
+    
+    await this.sharingService.shareContent({
+      title: service.service,
+      subject: `Love INC Gap Ministry: ${service.service}`,
+      htmlContent: htmlContent
+    });
   }
 }

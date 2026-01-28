@@ -10,9 +10,11 @@ import {
   IonIcon,
   IonButton,
 } from '@ionic/angular/standalone';
+import { LucideAngularModule } from 'lucide-angular';
 
 export interface CardActionIcon {
-  icon: string;
+  icon?: string;
+  lucideIcon?: string;
   handler: (e?: Event) => void;
   show?: boolean;
   buttonClass?: string;
@@ -39,6 +41,7 @@ export interface CardBadge {
     IonBadge,
     IonIcon,
     IonButton,
+    LucideAngularModule,
   ],
 })
 export class CardComponent {
@@ -48,12 +51,30 @@ export class CardComponent {
   @Input() subtitle?: string;
   @Input() actionIcons?: CardActionIcon[];
   @Input() clickable = false;
+  @Input() showShareIcon: boolean = true;
 
   @Output() cardClick = new EventEmitter<Event>();
+  @Output() shareClick = new EventEmitter<Event>();
 
   get visibleActionIcons(): CardActionIcon[] {
-    if (!this.actionIcons?.length) return [];
-    return this.actionIcons.filter((a) => a.show !== false);
+    const icons = this.actionIcons?.filter((a) => a.show !== false) || [];
+    
+    // Automatically append share icon if enabled
+    if (this.showShareIcon) {
+      icons.push({
+        icon: 'share-outline',
+        handler: (e?: Event) => {
+          if (e) {
+            e.stopPropagation();
+          }
+          this.shareClick.emit(e);
+        },
+        show: true,
+        buttonClass: 'share-button'
+      });
+    }
+    
+    return icons;
   }
 
   get hasActionIcons(): boolean {

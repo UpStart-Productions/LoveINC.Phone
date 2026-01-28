@@ -4,14 +4,5 @@
 }
 
 .event-card-content {
-  position: relative;
-  padding-right: 48px;
-}
-
-.card-calendar-icon {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  font-size: 24px;
-  color: var(--ion-color-medium);
+  // Removed custom calendar icon styling - now using actionIcons for consistency
 }

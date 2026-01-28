@@ -9,6 +9,7 @@ import { OnboardingService } from '../services/onboarding.service';
 import { HomeCard, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../models/home-card.model';
 import { UserTypeCardComponent, UserType } from '../components/user-type-card/user-type-card.component';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
+import { SharingService } from '../services/sharing/sharing.service';
 
 @Component({
   selector: 'app-home',
@@ -41,7 +42,8 @@ export class HomePage implements OnInit {
     private onboardingService: OnboardingService,
     private router: Router,
     private http: HttpClient,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private sharingService: SharingService
   ) {}
 
   ngOnInit() {
@@ -90,6 +92,20 @@ export class HomePage implements OnInit {
 
   navigateToCard(card: HomeCard) {
     this.router.navigate([card.link]);
+  }
+
+  async onShareCard(card: HomeCard) {
+    const htmlContent = `
+      <h2>${card.title}</h2>
+      ${card.subtitle ? `<p><strong>${card.subtitle}</strong></p>` : ''}
+      ${card.description ? `<p>${card.description}</p>` : ''}
+    `;
+    
+    await this.sharingService.shareContent({
+      title: card.title,
+      subject: `Love INC: ${card.title}`,
+      htmlContent: htmlContent
+    });
   }
 
   resetOnboarding() {

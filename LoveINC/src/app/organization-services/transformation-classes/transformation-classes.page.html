@@ -23,7 +23,8 @@
       [title]="classItem.title"
       [subtitle]="classItem.nextSession.dayOfWeek + ' ' + classItem.nextSession.time + '\n' + formatSessionDates(classItem)"
       [clickable]="true"
-      (cardClick)="navigateToClassDetail(classItem)">
+      (cardClick)="navigateToClassDetail(classItem)"
+      (shareClick)="onShareClass(classItem)">
       {{ classItem.description }}
     </app-card>
   </div>

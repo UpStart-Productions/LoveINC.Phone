@@ -18,10 +18,11 @@
       class="event-card"
       [imageUrl]="event.photoUrl"
       [title]="event.title"
-      [subtitle]="event.subtitle">
+      [subtitle]="event.subtitle"
+      [actionIcons]="getActionIcons(event)"
+      (shareClick)="onShareEvent(event)">
       <div class="event-card-content">
         {{ event.description }}
-        <ion-icon name="calendar-outline" class="card-calendar-icon"></ion-icon>
       </div>
     </app-card>
   </div>

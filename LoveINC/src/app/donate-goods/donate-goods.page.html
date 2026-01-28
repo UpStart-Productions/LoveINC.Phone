@@ -21,7 +21,8 @@
         <app-card
           *ngFor="let location of groupedLocations[category]"
           class="location-card"
-          [actionIcons]="getActionIcons(location)">
+          [actionIcons]="getActionIcons(location)"
+          (shareClick)="onShareLocation(location)">
           <ion-item lines="none">
             <ion-label>
               <div class="location-header">

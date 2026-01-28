@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { LucideAngularModule } from 'lucide-angular';
 import {
   IonItem,
   IonLabel,
@@ -25,6 +26,7 @@ interface UserTypeConfig {
   standalone: true,
   imports: [
     CommonModule,
+    LucideAngularModule,
     IonItem,
     IonLabel,
     IonIcon,

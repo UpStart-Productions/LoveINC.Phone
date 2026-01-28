@@ -11,9 +11,10 @@ import {
   IonButtons,
   IonIcon,
 } from '@ionic/angular/standalone';
-import { CardComponent } from '../components/card/card.component';
+import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
+import { SharingService } from '../services/sharing/sharing.service';
 export interface UpdateEvent {
   id: string;
   photoUrl: string;
@@ -46,7 +47,8 @@ export class UpdatesPage implements OnInit {
     private router: Router,
     private http: HttpClient,
     private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private sharingService: SharingService
   ) {}
 
   ngOnInit() {
@@ -66,6 +68,31 @@ export class UpdatesPage implements OnInit {
       error: (err) => {
         console.error('Error loading events:', err);
       },
+    });
+  }
+
+  getActionIcons(event: UpdateEvent): CardActionIcon[] {
+    return [
+      { icon: 'calendar-outline', handler: () => this.onCalendarClick(event), show: true, buttonClass: 'calendar-button' },
+    ];
+  }
+
+  onCalendarClick(event: UpdateEvent) {
+    // TODO: Implement calendar functionality
+    console.log('Calendar clicked for event:', event.title);
+  }
+
+  async onShareEvent(event: UpdateEvent) {
+    const htmlContent = `
+      <h2>${event.title}</h2>
+      ${event.subtitle ? `<p><strong>${event.subtitle}</strong></p>` : ''}
+      ${event.description ? `<p>${event.description}</p>` : ''}
+    `;
+    
+    await this.sharingService.shareContent({
+      title: event.title,
+      subject: `Love INC Event: ${event.title}`,
+      htmlContent: htmlContent
     });
   }
 

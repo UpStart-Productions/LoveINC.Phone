@@ -30,13 +30,17 @@
 
     @if (hasActionIcons) {
       <div class="action-icons">
-        @for (action of visibleActionIcons; track action.icon) {
+        @for (action of visibleActionIcons; track action.icon || action.lucideIcon) {
           <ion-button
             fill="clear"
             size="small"
             [ngClass]="action.buttonClass"
             (click)="onActionClick($event, action)">
-            <ion-icon slot="icon-only" [name]="action.icon"></ion-icon>
+            @if (action.lucideIcon) {
+              <i-lucide slot="icon-only" [name]="action.lucideIcon" [size]="21.6" color="var(--ion-color-dark)"></i-lucide>
+            } @else {
+              <ion-icon slot="icon-only" [name]="action.icon"></ion-icon>
+            }
           </ion-button>
         }
       </div>

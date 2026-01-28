@@ -23,7 +23,6 @@
   <ion-card>
     <ion-card-header>
       <ion-card-title>
-        <ion-icon name="heart-outline" class="section-icon"></ion-icon>
         Our Mission & Vision
       </ion-card-title>
     </ion-card-header>
@@ -45,7 +44,6 @@
   <ion-card>
     <ion-card-header>
       <ion-card-title>
-        <ion-icon name="people-circle-outline" class="section-icon"></ion-icon>
         How We Serve
       </ion-card-title>
     </ion-card-header>
@@ -54,7 +52,7 @@
       
       <div class="service-list">
         <div class="service-item">
-          <ion-icon name="construct-outline"></ion-icon>
+          <ion-icon name="heart-outline"></ion-icon>
           <div>
             <h4>Holistic Care</h4>
             <p>Addressing spiritual, mental, emotional, and physical needs</p>
@@ -70,7 +68,7 @@
         </div>
         
         <div class="service-item">
-          <ion-icon name="heart-outline"></ion-icon>
+          <i-lucide name="hand-helping" [size]="28" color="var(--ion-color-primary)" slot="start"></i-lucide>
           <div>
             <h4>Gap Ministries</h4>
             <p>Filling unmet needs in the community through partner churches</p>
@@ -90,12 +88,6 @@
 
   <!-- Impact Stats -->
   <ion-card class="stats-card">
-    <ion-card-header>
-      <ion-card-title>
-        <ion-icon name="heart-outline" class="section-icon"></ion-icon>
-        Our Impact
-      </ion-card-title>
-    </ion-card-header>
     <ion-card-content>
       <div class="stats-grid">
         <div class="stat-item" *ngFor="let stat of impactStats">
@@ -110,7 +102,6 @@
   <ion-card>
     <ion-card-header>
       <ion-card-title>
-        <ion-icon name="construct-outline" class="section-icon"></ion-icon>
         Better Together
       </ion-card-title>
     </ion-card-header>
@@ -124,7 +115,6 @@
   <ion-accordion-group>
     <ion-accordion value="faith">
       <ion-item slot="header" color="light">
-        <ion-icon name="heart-outline" slot="start"></ion-icon>
         <ion-label>Statement of Faith</ion-label>
       </ion-item>
       <div class="ion-padding" slot="content">

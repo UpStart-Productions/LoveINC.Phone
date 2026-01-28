@@ -23,24 +23,20 @@
           *ngFor="let service of groupedServices[schedule]"
           class="service-card"
           [actionIcons]="getActionIcons(service)"
-          [style.--app-card-margin-bottom]="'12px'">
+          [style.--app-card-margin-bottom]="'12px'"
+          (shareClick)="onShareService(service)">
           <ion-item lines="none">
             <ion-label>
               <div class="service-header">
                 <h3 class="service-name">{{ service.service }}</h3>
+                <span class="service-days-times">{{ service.daysTimes }}</span>
               </div>
               <div class="service-details">
-                <div class="detail-row">
-                  <span class="detail-value">{{ service.daysTimes }}</span>
-                </div>
                 <div class="detail-row">
                   <span class="detail-value">{{ service.church }}</span>
                 </div>
                 <div class="detail-row" *ngIf="service.address">
                   <span class="detail-address">{{ service.address }}</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-value">{{ service.contact }}</span>
                 </div>
               </div>
             </ion-label>

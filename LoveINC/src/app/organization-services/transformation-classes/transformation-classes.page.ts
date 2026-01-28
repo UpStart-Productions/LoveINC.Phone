@@ -15,6 +15,7 @@ import {
 import { CardComponent } from '../../components/card/card.component';
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
+import { SharingService } from '../../services/sharing/sharing.service';
 export interface TransformationClass {
   id: string;
   title: string;
@@ -58,7 +59,8 @@ export class TransformationClassesPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private sharingService: SharingService
   ) {}
 
   ngOnInit() {
@@ -100,5 +102,24 @@ export class TransformationClassesPage implements OnInit {
     const startMonth = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const endMonth = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     return `${startMonth} - ${endMonth}`;
+  }
+
+  async onShareClass(classItem: TransformationClass) {
+    const htmlContent = `
+      <h2>${classItem.title}</h2>
+      ${classItem.description ? `<p>${classItem.description}</p>` : ''}
+      ${classItem.teacher ? `<p><strong>Teacher:</strong> ${classItem.teacher}</p>` : ''}
+      ${classItem.nextSession ? `
+        <p><strong>Next Session:</strong></p>
+        <p>${classItem.nextSession.dayOfWeek} ${classItem.nextSession.time}</p>
+        <p>${this.formatSessionDates(classItem)}</p>
+      ` : ''}
+    `;
+    
+    await this.sharingService.shareContent({
+      title: classItem.title,
+      subject: `Love INC Class: ${classItem.title}`,
+      htmlContent: htmlContent
+    });
   }
 }
