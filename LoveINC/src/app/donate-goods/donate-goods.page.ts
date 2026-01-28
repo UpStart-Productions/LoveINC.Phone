@@ -19,6 +19,7 @@ import { CardComponent, CardActionIcon } from '../components/card/card.component
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { SharingService } from '../services/sharing/sharing.service';
+import { AlertsModalService } from '../services/alerts-modal.service';
 
 interface DonationLocation {
   id: string;
@@ -68,7 +69,8 @@ export class DonateGoodsPage implements OnInit {
     private alertController: AlertController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
-    private sharingService: SharingService
+    private sharingService: SharingService,
+    private alertsModalService: AlertsModalService
   ) {}
 
   ngOnInit() {
@@ -78,6 +80,10 @@ export class DonateGoodsPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
+  }
+
+  openAlertsModal() {
+    this.alertsModalService.openAlertsModal();
   }
 
   loadLocations() {

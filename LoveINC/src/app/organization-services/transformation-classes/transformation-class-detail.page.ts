@@ -23,6 +23,7 @@ import { AlertController } from '@ionic/angular';
 import { TransformationClass } from './transformation-classes.page';
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
+import { AlertsModalService } from '../../services/alerts-modal.service';
 
 @Component({
   selector: 'app-transformation-class-detail',
@@ -61,7 +62,8 @@ export class TransformationClassDetailPage implements OnInit {
     private http: HttpClient,
     private alertController: AlertController,
     private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private alertsModalService: AlertsModalService
   ) {}
 
   ngOnInit() {
@@ -79,6 +81,10 @@ export class TransformationClassDetailPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
+  }
+
+  openAlertsModal() {
+    this.alertsModalService.openAlertsModal();
   }
 
   loadClassDetail() {

@@ -19,6 +19,7 @@ import { CardComponent, CardActionIcon } from '../../components/card/card.compon
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { SharingService } from '../../services/sharing/sharing.service';
+import { AlertsModalService } from '../../services/alerts-modal.service';
 
 interface GapService {
   id: string;
@@ -67,7 +68,8 @@ export class GapMinistriesPage implements OnInit {
     private alertController: AlertController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
-    private sharingService: SharingService
+    private sharingService: SharingService,
+    private alertsModalService: AlertsModalService
   ) {}
 
   ngOnInit() {
@@ -90,6 +92,10 @@ export class GapMinistriesPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
+  }
+
+  openAlertsModal() {
+    this.alertsModalService.openAlertsModal();
   }
 
   loadServices() {

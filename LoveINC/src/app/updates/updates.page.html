@@ -3,8 +3,12 @@
     <ion-title>
       Updates & News
     </ion-title>
-    <ion-buttons slot="end" *ngIf="showDonateButton">
-      <ion-button (click)="openDonateMenu()" class="donate-header-button">
+    <ion-buttons slot="end">
+      <ion-button class="notifications-button" (click)="openAlertsModal()">
+        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+        <span class="notification-badge"></span>
+      </ion-button>
+      <ion-button *ngIf="showDonateButton" (click)="openDonateMenu()" class="donate-header-button">
         <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
       </ion-button>
     </ion-buttons>

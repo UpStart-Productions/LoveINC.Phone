@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, NavigationExtras } from '@angular/router';
 import { DonateButtonService } from './donate-button.service';
 import { DonateActionSheetService } from './donate-action-sheet.service';
+import { AlertsModalService } from '../services/alerts-modal.service';
 import { LucideAngularModule } from 'lucide-angular';
 import {
   IonHeader,
@@ -99,7 +100,8 @@ export class ServicesPage implements OnInit {
   constructor(
     private router: Router,
     private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private alertsModalService: AlertsModalService
   ) {}
 
   ngOnInit() {
@@ -108,6 +110,10 @@ export class ServicesPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
+  }
+
+  openAlertsModal() {
+    this.alertsModalService.openAlertsModal();
   }
 
   handleServiceClick(service: Service) {

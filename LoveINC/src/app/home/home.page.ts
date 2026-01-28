@@ -10,6 +10,7 @@ import { HomeCard, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../mode
 import { UserTypeCardComponent, UserType } from '../components/user-type-card/user-type-card.component';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { SharingService } from '../services/sharing/sharing.service';
+import { AlertsModalService } from '../services/alerts-modal.service';
 
 @Component({
   selector: 'app-home',
@@ -43,7 +44,8 @@ export class HomePage implements OnInit {
     private router: Router,
     private http: HttpClient,
     private donateActionSheetService: DonateActionSheetService,
-    private sharingService: SharingService
+    private sharingService: SharingService,
+    private alertsModalService: AlertsModalService
   ) {}
 
   ngOnInit() {
@@ -77,6 +79,10 @@ export class HomePage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
+  }
+
+  openAlertsModal() {
+    this.alertsModalService.openAlertsModal();
   }
 
   loadCards() {

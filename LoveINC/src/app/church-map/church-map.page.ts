@@ -24,6 +24,7 @@ import { PopoverController } from '@ionic/angular';
 import { ChurchDetailsPopoverComponent } from './church-details-popover.component';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
+import { AlertsModalService } from '../services/alerts-modal.service';
 
 declare var google: any;
 
@@ -75,7 +76,8 @@ export class ChurchMapPage implements OnInit, OnDestroy, AfterViewInit {
     private ngZone: NgZone,
     private popoverController: PopoverController,
     private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private alertsModalService: AlertsModalService
   ) {}
 
   ngOnInit() {
@@ -85,6 +87,10 @@ export class ChurchMapPage implements OnInit, OnDestroy, AfterViewInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
+  }
+
+  openAlertsModal() {
+    this.alertsModalService.openAlertsModal();
   }
 
   ngAfterViewInit() {

@@ -16,6 +16,7 @@ import { CardComponent } from '../../components/card/card.component';
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { SharingService } from '../../services/sharing/sharing.service';
+import { AlertsModalService } from '../../services/alerts-modal.service';
 export interface TransformationClass {
   id: string;
   title: string;
@@ -60,7 +61,8 @@ export class TransformationClassesPage implements OnInit {
     private route: ActivatedRoute,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
-    private sharingService: SharingService
+    private sharingService: SharingService,
+    private alertsModalService: AlertsModalService
   ) {}
 
   ngOnInit() {
@@ -77,6 +79,10 @@ export class TransformationClassesPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
+  }
+
+  openAlertsModal() {
+    this.alertsModalService.openAlertsModal();
   }
 
   loadClasses() {

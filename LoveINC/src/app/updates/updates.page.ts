@@ -15,6 +15,7 @@ import { CardComponent, CardActionIcon } from '../components/card/card.component
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { SharingService } from '../services/sharing/sharing.service';
+import { AlertsModalService } from '../services/alerts-modal.service';
 export interface UpdateEvent {
   id: string;
   photoUrl: string;
@@ -48,7 +49,8 @@ export class UpdatesPage implements OnInit {
     private http: HttpClient,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
-    private sharingService: SharingService
+    private sharingService: SharingService,
+    private alertsModalService: AlertsModalService
   ) {}
 
   ngOnInit() {
@@ -58,6 +60,10 @@ export class UpdatesPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
+  }
+
+  openAlertsModal() {
+    this.alertsModalService.openAlertsModal();
   }
 
   loadEvents() {
