@@ -221,6 +221,9 @@ ion-accordion .ion-accordion-toggle-icon {
   min-width: 72px;
   text-align: center;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Global List Item Title Styling - 10% smaller */
