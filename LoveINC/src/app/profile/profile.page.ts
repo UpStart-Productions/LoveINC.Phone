@@ -197,11 +197,4 @@ export class ProfilePage {
   logout() {
     console.log('Logout');
   }
-
-  resetOnboarding() {
-    this.onboardingService.clearOnboarding();
-    this.router.navigate(['/onboarding/step1']).then(() => {
-      window.location.reload();
-    });
-  }
 }

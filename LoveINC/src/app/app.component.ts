@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { OnboardingService } from './services/onboarding.service';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { addIcons } from 'ionicons';
 import {
   // Tab Bar Icons
@@ -21,6 +22,7 @@ import {
   handRightOutline,
   handLeftOutline,
   closeOutline,
+  close,
   shirtOutline,
   cubeOutline,
   // Onboarding Icons
@@ -65,6 +67,8 @@ import {
   bookmarkOutline,
   shareOutline,
   chatbubbleOutline,
+  refreshOutline,
+  codeOutline,
 } from 'ionicons/icons';
 
 @Component({
@@ -72,7 +76,7 @@ import {
   templateUrl: 'app.component.html',
   imports: [IonApp, IonRouterOutlet],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   constructor(private onboardingService: OnboardingService) {
     // Initialize all icons for app-wide use
     this.initializeIcons();
@@ -86,6 +90,16 @@ export class AppComponent {
     
     console.log('%c🎉 Love INC App Loaded', 'color: #349394; font-size: 16px; font-weight: bold;');
     console.log('%c💡 Testing Tip: Type clearOnboarding() in console to reset onboarding', 'color: #214491; font-size: 12px;');
+  }
+
+  async ngOnInit() {
+    // Hide splash screen after app is ready
+    try {
+      await SplashScreen.hide();
+    } catch (error) {
+      // Splash screen might not be available in web browser
+      console.log('Splash screen not available (likely running in browser)');
+    }
   }
 
   private initializeIcons() {
@@ -108,6 +122,7 @@ export class AppComponent {
       handRightOutline,
       handLeftOutline,
       closeOutline,
+      close,
       shirtOutline,
       cubeOutline,
       // Onboarding Icons
@@ -152,6 +167,8 @@ export class AppComponent {
       bookmarkOutline,
       shareOutline,
       chatbubbleOutline,
+      refreshOutline,
+      codeOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });

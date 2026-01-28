@@ -11,7 +11,10 @@ export class AlertsModalService {
   async openAlertsModal(): Promise<void> {
     const modal = await this.modalController.create({
       component: AlertsModalComponent,
-      cssClass: 'alerts-modal-fullscreen',
+      cssClass: 'alerts-modal-sheet',
+      presentingElement: await this.modalController.getTop(),
+      showBackdrop: true,
+      backdropDismiss: true,
     });
     await modal.present();
   }

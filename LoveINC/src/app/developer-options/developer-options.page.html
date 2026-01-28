@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/profile"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/more"></ion-back-button>
     </ion-buttons>
     <ion-title>
       Developer Options
@@ -10,22 +10,41 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <!-- Onboarding Reset -->
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Lucide Icons Demo</ion-card-title>
+      <ion-card-title>
+        <ion-icon name="refresh-outline" class="section-icon"></ion-icon>
+        Onboarding
+      </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p style="margin-bottom: 24px; color: var(--ion-color-medium);">
-        This page demonstrates 20 Lucide icons to verify the installation was successful.
+      <p style="margin-bottom: 16px; color: var(--ion-color-medium);">
+        Reset the onboarding flow to test the initial setup process.
       </p>
-      
-      <div class="icons-grid">
-        <div class="icon-item" *ngFor="let icon of icons">
-          <i-lucide [name]="icon.name" [size]="32" color="var(--ion-color-primary)"></i-lucide>
-          <span class="icon-label">{{ icon.label }}</span>
-          <span class="icon-name">{{ icon.name }}</span>
-        </div>
-      </div>
+      <ion-button expand="block" fill="outline" (click)="resetOnboarding()">
+        <ion-icon slot="start" name="refresh-outline"></ion-icon>
+        Reset Onboarding
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Test Push Notification -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="notifications-outline" class="section-icon"></ion-icon>
+        Push Notifications
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p style="margin-bottom: 16px; color: var(--ion-color-medium);">
+        Test local push notifications on your device.
+      </p>
+      <ion-button expand="block" fill="outline" (click)="testLocalNotification()">
+        <ion-icon slot="start" name="notifications-outline"></ion-icon>
+        Test Local Notification
+      </ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>

@@ -90,6 +90,11 @@ export class MorePage implements OnInit {
       icon: 'settings-outline',
       route: '/tabs/settings',
     },
+    {
+      name: 'Developer Options',
+      icon: 'code-outline',
+      route: '/tabs/developer-options',
+    },
   ];
 
   showDonateButton: boolean = false;

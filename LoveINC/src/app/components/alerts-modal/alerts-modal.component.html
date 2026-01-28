@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Alerts</ion-title>
+    <ion-title>Notifications</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="close()">
-        <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+      <ion-button (click)="close()" fill="clear">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -12,22 +12,40 @@
 <ion-content>
   <div *ngIf="loading" class="loading">
     <ion-spinner name="crescent"></ion-spinner>
-    <p>Loading alerts...</p>
+    <p>Loading notifications...</p>
   </div>
 
   <div *ngIf="!loading && alerts.length === 0" class="no-alerts">
     <ion-icon name="notifications-outline"></ion-icon>
-    <h2>No Alerts</h2>
+    <h2>No Notifications</h2>
     <p>You're all caught up. Check back later for updates from Love INC Newberg.</p>
   </div>
 
-  <ion-list *ngIf="!loading && alerts.length > 0" lines="none" class="alerts-list">
-    <ion-item *ngFor="let alert of alerts" [class.unread]="!alert.read" button detail="false" class="alert-item">
-      <ion-label>
-        <h2>{{ alert.title }}</h2>
-        <p>{{ alert.message }}</p>
-        <p class="alert-date">{{ formatDate(alert.date) }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+  <div *ngIf="!loading && alerts.length > 0" class="notifications-wrapper">
+    <div class="notifications-scrollable">
+      <ion-list lines="none" class="notifications-list">
+        <ion-item *ngFor="let alert of alerts; let i = index" [class.unread]="!alert.read" [class.read]="alert.read" button detail="false" class="notification-item" (click)="markAsRead(i)">
+          <ion-label>
+            <div class="notification-header">
+              <h2 class="notification-title">{{ alert.title }}</h2>
+              <div *ngIf="!alert.read" class="unread-dot"></div>
+            </div>
+            <div class="notification-content">
+              <p class="notification-message">{{ alert.message }}</p>
+              <div class="notification-footer">
+                <span *ngIf="!alert.read" class="new-badge">NEW</span>
+                <span class="notification-date">{{ formatDate(alert.date) }}</span>
+              </div>
+            </div>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+    
+    <div class="mark-all-container">
+      <ion-button expand="block" class="mark-all-button" (click)="markAllAsRead()">
+        Mark all as read
+      </ion-button>
+    </div>
+  </div>
 </ion-content>

@@ -50,7 +50,7 @@
   display: inline-block;
   width: 100%;
   height: 100%;
-  background-image: url('/assets/icon/love-inc-heart.svg');
+  background-image: url('/assets/icons/love-inc-heart.svg');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -166,13 +166,26 @@ ion-header ion-back-button {
   }
 }
 
-/* Alerts full-screen modal */
-ion-modal.alerts-modal-fullscreen {
-  --width: 100%;
-  --height: 100%;
-  --max-width: 100%;
-  --max-height: 100%;
-  --border-radius: 0;
+/* Alerts modal sheet */
+ion-modal.alerts-modal-sheet {
+  --width: calc(100% - 16px);
+  --height: 85vh;
+  --max-width: calc(100% - 16px);
+  --max-height: 85vh;
+  --border-radius: 24px 24px 0 0;
+  --box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+  
+  &::part(content) {
+    position: absolute;
+    bottom: 0;
+    left: 8px;
+    right: 8px;
+    margin: 0 auto;
+  }
+  
+  &::part(backdrop) {
+    background: rgba(0, 0, 0, 0.4);
+  }
 }
 
 /* Global List Item Detail Icon (Chevron) Styling - 10% larger than 50% smaller, light grey */
