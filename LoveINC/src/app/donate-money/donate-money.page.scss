@@ -1,28 +1,23 @@
 .donation-form-container {
-  padding: 20px;
   max-width: 100%;
 }
 
 .frequency-segment {
-  margin-bottom: 24px;
   --background: var(--ion-color-light);
   --indicator-color: var(--ion-color-primary);
   border-radius: 8px;
-  padding: 4px;
 }
 
 .amount-buttons {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
-  margin-bottom: 24px;
 }
 
 .amount-button {
   background-color: var(--ion-color-light);
   border: 1px solid var(--ion-color-light-shade);
   border-radius: 8px;
-  padding: 16px;
   font-size: var(--app-font-size-title);
   font-weight: var(--app-font-weight-medium);
   color: var(--app-text-primary);
@@ -42,7 +37,6 @@
 }
 
 .other-amount-container {
-  margin-bottom: 24px;
 }
 
 .other-amount-item {
@@ -54,13 +48,11 @@
   --min-height: auto;
   border: 1px solid var(--ion-color-light-shade);
   border-radius: 8px;
-  padding: 12px 16px;
   margin-bottom: 0;
   
   ion-label {
     font-size: var(--app-font-size-body);
     color: var(--app-text-secondary);
-    margin-bottom: 8px;
   }
   
   ion-input {
@@ -73,12 +65,9 @@
 .currency-label {
   font-size: var(--app-font-size-body);
   color: var(--app-text-secondary);
-  margin-left: 8px;
 }
 
 .options-container {
-  margin-bottom: 24px;
-  
   ion-item {
     --background: transparent;
     --padding-start: 0;
@@ -86,7 +75,6 @@
     --inner-padding-end: 0;
     --inner-padding-start: 0;
     --min-height: auto;
-    margin-bottom: 12px;
     
     &:last-child {
       margin-bottom: 0;
@@ -100,9 +88,6 @@
 }
 
 .pill-button {
-  margin-top: 32px;
-  margin-bottom: 24px;
-  
   &[disabled] {
     opacity: 0.5;
   }
@@ -111,12 +96,10 @@
 
 .powered-by {
   text-align: center;
-  padding: 16px 0;
   font-size: var(--app-font-size-caption);
   color: var(--app-text-secondary);
   
   &::before {
     content: '😊';
-    margin-right: 4px;
   }
 }

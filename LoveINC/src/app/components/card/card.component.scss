@@ -13,14 +13,11 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 8px;
-  padding-top: 6px;
-  padding-bottom: 6px;
   border-top: 1px solid var(--ion-color-light);
 
   ion-button {
-    --padding-start: 4px;
-    --padding-end: 4px;
+    --padding-start: 3px;
+    --padding-end: 3px;
     margin: 0;
 
     ion-icon {

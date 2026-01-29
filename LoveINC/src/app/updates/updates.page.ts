@@ -83,6 +83,10 @@ export class UpdatesPage implements OnInit {
     ];
   }
 
+  navigateToEventDetail(event: UpdateEvent) {
+    this.router.navigate(['/tabs/content-detail', 'event', event.id]);
+  }
+
   onCalendarClick(event: UpdateEvent) {
     // TODO: Implement calendar functionality
     console.log('Calendar clicked for event:', event.title);

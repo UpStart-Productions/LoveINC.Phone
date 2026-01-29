@@ -19,13 +19,13 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 4px;
   flex-wrap: wrap;
 }
 
 .category-icon {
   font-size: var(--app-font-size-body);
   color: var(--app-text-secondary);
+  margin-top: -20px;
 }
 
 .detail-row {

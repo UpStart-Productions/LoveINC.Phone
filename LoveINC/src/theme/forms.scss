@@ -1,0 +1,37 @@
+/* -----------------------------------------------------------------------------
+ * Form Element Styles
+ * ----------------------------------------------------------------------------- */
+
+/* Live search searchbar styling */
+ion-searchbar.live-search {
+  --background: rgba(var(--ion-color-primary-contrast-rgb), 0.1);
+  --box-shadow: none;
+  --placeholder-color: rgba(var(--ion-color-primary-contrast-rgb), 0.6);
+  --placeholder-opacity: 1;
+  --color: var(--ion-color-primary-contrast);
+  --icon-color: rgba(var(--ion-color-primary-contrast-rgb), 0.6);
+  --clear-button-color: rgba(var(--ion-color-primary-contrast-rgb), 0.6);
+  
+  .searchbar-input {
+    font-size: var(--app-font-size-title) !important;
+    color: white;
+  }
+  
+  .searchbar-search-icon {
+    font-size: var(--app-font-size-title) !important;
+    align-self: center !important;
+    
+    ion-icon {
+      font-size: var(--app-font-size-title) !important;
+    }
+  }
+  
+  .searchbar-clear-button {
+    font-size: var(--app-font-size-title) !important;
+    align-self: center !important;
+    
+    ion-icon {
+      font-size: var(--app-font-size-title) !important;
+    }
+  }
+}

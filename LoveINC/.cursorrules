@@ -31,6 +31,48 @@
 
 All icons should be imported in `src/app/app.component.ts` for app-wide availability. Do not import icons in individual components.
 
+## Whitespace Management
+
+**CRITICAL: Always use whitespace utility classes from `whitespace.scss` instead of creating custom margin/padding styles.**
+
+### Available Whitespace Utilities:
+
+**Margins:**
+- `.m-{size}` - Margin on all sides (3, 6, 12, 18, 24, 30, 36, 42, 48)
+- `.m-t-{size}` - Margin top
+- `.m-b-{size}` - Margin bottom
+- `.m-l-{size}` - Margin left
+- `.m-r-{size}` - Margin right
+
+**Padding:**
+- `.p-{size}` - Padding on all sides (3, 6, 12, 18, 24, 30, 36, 42, 48)
+- `.p-t-{size}` - Padding top
+- `.p-b-{size}` - Padding bottom
+- `.p-l-{size}` - Padding left
+- `.p-r-{size}` - Padding right
+
+### Examples:
+```html
+<!-- ✅ CORRECT: Use utility classes -->
+<div class="m-b-24">Content</div>
+<p class="p-18">Text with padding</p>
+<section class="m-t-12 m-b-36">Section</section>
+
+<!-- ❌ WRONG: Don't create custom CSS -->
+<div style="margin-bottom: 24px;">Content</div>
+```
+
+### When to Use:
+- **ALWAYS** use whitespace utilities for spacing between elements
+- **NEVER** create custom margin/padding styles in component SCSS files
+- **ONLY** create custom spacing if you need a value not in the scale (3, 6, 12, 18, 24, 30, 36, 42, 48)
+
+### Benefits:
+- Consistent spacing throughout the app
+- Faster development (no need to write CSS)
+- Easier maintenance (change spacing scale in one place)
+- Better performance (utility classes are optimized)
+
 ## Theme File Organization
 
 All theme files are imported in `src/global.scss`:
@@ -38,3 +80,4 @@ All theme files are imported in `src/global.scss`:
 - `typography.scss` - Font sizes, weights, line heights
 - `cards.scss` - Card component styles
 - `icons.scss` - Icon styles for all icon types
+- `whitespace.scss` - Margin and padding utility classes

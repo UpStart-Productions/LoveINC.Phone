@@ -97,7 +97,22 @@ export class HomePage implements OnInit {
   }
 
   navigateToCard(card: HomeCard) {
-    this.router.navigate([card.link]);
+    // Map all card types to content-detail route types
+    const contentDetailTypes: Record<string, string> = {
+      'event': 'event',
+      'class': 'class',
+      'impact': 'impact-story',
+      'volunteer': 'volunteer',
+      'donation-drive': 'donation-drive',
+      'church-partner': 'church-partner',
+      'gap-ministry': 'gap-ministry',
+      'donation-opportunity': 'donation-opportunity',
+    };
+
+    const detailType = contentDetailTypes[card.type] || card.type;
+    
+    // Navigate to generic content-detail page for all card types
+    this.router.navigate(['/tabs/content-detail', detailType, card.id]);
   }
 
   async onShareCard(card: HomeCard) {

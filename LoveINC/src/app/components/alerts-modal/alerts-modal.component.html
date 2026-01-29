@@ -10,28 +10,28 @@
 </ion-header>
 
 <ion-content>
-  <div *ngIf="loading" class="loading">
-    <ion-spinner name="crescent"></ion-spinner>
+  <div *ngIf="loading" class="loading p-48 p-l-24 p-r-24">
+    <ion-spinner name="crescent" class="m-b-18"></ion-spinner>
     <p>Loading notifications...</p>
   </div>
 
-  <div *ngIf="!loading && alerts.length === 0" class="no-alerts">
-    <ion-icon name="notifications-outline"></ion-icon>
-    <h2>No Notifications</h2>
+  <div *ngIf="!loading && alerts.length === 0" class="no-alerts p-48 p-l-24 p-r-24">
+    <ion-icon name="notifications-outline" class="m-b-18"></ion-icon>
+    <h2 class="m-b-6">No Notifications</h2>
     <p>You're all caught up. Check back later for updates from Love INC Newberg.</p>
   </div>
 
   <div *ngIf="!loading && alerts.length > 0" class="notifications-wrapper">
-    <div class="notifications-scrollable">
+    <div class="notifications-scrollable p-18">
       <ion-list lines="none" class="notifications-list">
-        <ion-item *ngFor="let alert of alerts; let i = index" [class.unread]="!alert.read" [class.read]="alert.read" button detail="false" class="notification-item" (click)="markAsRead(i)">
+        <ion-item *ngFor="let alert of alerts; let i = index" [class.unread]="!alert.read" [class.read]="alert.read" button detail="false" class="notification-item m-b-12" (click)="markAsRead(i)">
           <ion-label>
-            <div class="notification-header">
+            <div class="notification-header m-b-6">
               <h2>{{ alert.title }}</h2>
-              <div *ngIf="!alert.read" class="unread-dot"></div>
+              <div *ngIf="!alert.read" class="unread-dot m-t-6"></div>
             </div>
             <div class="notification-content">
-              <p style="margin: 0 0 8px 0; line-height: var(--app-line-height-body);">{{ alert.message }}</p>
+              <p style="line-height: var(--app-line-height-body);" class="m-b-6">{{ alert.message }}</p>
               <div class="notification-footer">
                 <span *ngIf="!alert.read" class="new-badge">NEW</span>
                 <span class="app-caption">{{ formatDate(alert.date) }}</span>
@@ -42,7 +42,7 @@
       </ion-list>
     </div>
     
-    <div class="mark-all-container">
+    <div class="mark-all-container p-18 p-t-6">
       <ion-button expand="block" class="mark-all-button" (click)="markAllAsRead()">
         Mark all as read
       </ion-button>

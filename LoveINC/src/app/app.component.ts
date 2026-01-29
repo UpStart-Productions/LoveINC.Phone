@@ -80,6 +80,8 @@ import {
   imports: [IonApp, IonRouterOutlet],
 })
 export class AppComponent implements OnInit {
+  private static splashScreenHidden = false;
+
   constructor(private onboardingService: OnboardingService) {
     // Initialize all icons for app-wide use
     this.initializeIcons();
@@ -96,12 +98,16 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
-    // Hide splash screen after app is ready
-    try {
-      await SplashScreen.hide();
-    } catch (error) {
-      // Splash screen might not be available in web browser
-      console.log('Splash screen not available (likely running in browser)');
+    // Hide splash screen only on initial app launch, not when app comes back to foreground
+    if (!AppComponent.splashScreenHidden) {
+      try {
+        await SplashScreen.hide();
+        AppComponent.splashScreenHidden = true;
+      } catch (error) {
+        // Splash screen might not be available in web browser
+        console.log('Splash screen not available (likely running in browser)');
+        AppComponent.splashScreenHidden = true;
+      }
     }
   }
 

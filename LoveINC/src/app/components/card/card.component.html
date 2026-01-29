@@ -26,10 +26,11 @@
   }
 
   <ion-card-content [class.has-action-icons]="hasActionIcons">
-    <ng-content></ng-content>
-
+    <div>
+      <ng-content></ng-content>
+    </div>
     @if (hasActionIcons) {
-      <div class="action-icons">
+      <div class="action-icons m-t-6 p-t-6 p-b-6">
         @for (action of visibleActionIcons; track action.icon || action.lucideIcon) {
           <ion-button
             fill="clear"

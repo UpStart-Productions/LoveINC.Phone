@@ -1,0 +1,90 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backRoute"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{ pageTitle }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onShareClick()">
+        <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="isEvent() || hasSchedule()" (click)="onAddToCalendarClick()">
+        <ion-icon slot="icon-only" name="calendar-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" *ngIf="contentItem">
+  <div>
+    <!-- Hero Image -->
+    <div class="hero-image-container">
+      <img [src]="contentItem.photoUrl" [alt]="contentItem.title" class="hero-image" />
+    </div>
+
+    <!-- Content Info -->
+    <div class="p-l-18 p-r-18 p-t-18 p-b-36">
+      <h2 class="m-b-18">{{ contentItem.title }}</h2>
+      
+      <p *ngIf="contentItem.subtitle" class="m-b-24" style="font-size: var(--app-font-size-title); line-height: var(--app-line-height-loose);">{{ contentItem.subtitle }}</p>
+      
+      <p class="m-b-24" style="font-size: var(--app-font-size-title); line-height: var(--app-line-height-loose);">{{ contentItem.description }}</p>
+
+      <ion-list lines="none">
+        <!-- Instructor (for classes) -->
+        <ion-item *ngIf="hasInstructor()">
+          <ion-icon slot="start" name="person-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Instructor</h3>
+            <p>{{ contentItem.teacher }}</p>
+          </ion-label>
+        </ion-item>
+
+        <!-- Schedule (for classes) -->
+        <ion-item *ngIf="hasSchedule()">
+          <ion-icon slot="start" name="calendar-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Schedule</h3>
+            <p>{{ contentItem.nextSession?.dayOfWeek }} {{ contentItem.nextSession?.time }}</p>
+            <p>{{ formatSessionDates() }}</p>
+            <p class="duration">8-week course</p>
+          </ion-label>
+        </ion-item>
+
+        <!-- Event Date/Time -->
+        <ion-item *ngIf="hasEventDateTime()">
+          <ion-icon slot="start" name="calendar-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Date & Time</h3>
+            <p *ngIf="contentItem.eventDate">{{ contentItem.eventDate }}</p>
+            <p *ngIf="contentItem.eventTime">{{ contentItem.eventTime }}</p>
+          </ion-label>
+        </ion-item>
+
+        <!-- Location -->
+        <ion-item *ngIf="hasLocation()">
+          <ion-icon slot="start" name="location-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Location</h3>
+            <p>{{ contentItem.location }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons" *ngIf="hasActionButton()">
+        <ion-button expand="block" color="primary" (click)="onActionButtonClick()">
+          <ion-icon slot="start" name="link-outline"></ion-icon>
+          {{ contentItem.actionButtonText || 'Register Now' }}
+        </ion-button>
+
+        <ion-button *ngIf="hasSchedule()" expand="block" fill="outline" color="primary" (click)="onAddToCalendarClick()">
+          <ion-icon slot="start" name="calendar-outline"></ion-icon>
+          Add to Calendar
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

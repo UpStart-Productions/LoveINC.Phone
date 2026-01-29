@@ -12,32 +12,6 @@
   }
 }
 
-// Mission & Vision
-.mission-vision-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.mission-box,
-.vision-box {
-  padding: 16px;
-  border-radius: 8px;
-  background: var(--ion-color-light);
-  
-  h3 {
-    font-size: var(--app-font-size-title);
-    font-weight: var(--app-font-weight-semibold);
-    margin: 0 0 8px 0;
-  }
-  
-  p {
-    margin: 0;
-    font-size: var(--app-font-size-body);
-    line-height: var(--app-line-height-relaxed);
-  }
-}
-
 // Service List
 .service-list {
   display: flex;
@@ -54,13 +28,11 @@
     font-size: var(--app-font-size-display-lg);
     color: var(--app-text-accent);
     flex-shrink: 0;
-    margin-top: 4px;
   }
   
   h4 {
     font-size: var(--app-font-size-title);
     font-weight: var(--app-font-weight-semibold);
-    margin: 0 0 4px 0;
   }
   
   p {
@@ -85,7 +57,6 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
-  margin-top: 16px;
 }
 
 .stat-item {
@@ -94,7 +65,6 @@
   .stat-number {
     font-size: var(--app-font-size-display-lg);
     font-weight: var(--app-font-weight-bold);
-    margin-bottom: 4px;
     color: white;
   }
   
@@ -106,28 +76,22 @@
 }
 
 // Accordion (Statement of Faith)
-ion-accordion-group {
-  margin: 16px;
-}
+// Margin handled by utility class in HTML
 
 // Call to Action Section
 .cta-section {
-  padding: 32px 24px;
   text-align: center;
   background: var(--ion-color-light);
-  margin: 16px 16px 0 16px;
   border-radius: 12px;
   
   h2 {
     font-size: var(--app-font-size-display-lg);
     font-weight: var(--app-font-weight-bold);
-    margin: 0 0 8px 0;
   }
   
   p {
     font-size: var(--app-font-size-body);
     color: var(--app-text-secondary);
-    margin: 0 0 24px 0;
   }
 }
 

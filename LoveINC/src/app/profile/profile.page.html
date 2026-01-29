@@ -11,16 +11,16 @@
 
 <ion-content [fullscreen]="true">
   <!-- Profile Header -->
-  <div class="profile-header">
-    <div class="profile-avatar">
+  <div class="profile-header p-42 p-l-24 p-r-24">
+    <div class="profile-avatar m-b-18">
       <ion-icon name="person-outline"></ion-icon>
     </div>
-    <h2 class="profile-name">{{ userProfile.name }}</h2>
+    <h2 class="profile-name m-b-6">{{ userProfile.name }}</h2>
     <p class="profile-subtitle">Member since {{ userProfile.memberSince }}</p>
   </div>
 
   <!-- User Type Selector -->
-  <ion-segment [(ngModel)]="selectedUserType" class="user-type-segment">
+  <ion-segment [(ngModel)]="selectedUserType" class="user-type-segment m-18">
     <ion-segment-button value="client">
       <ion-label>Client</ion-label>
     </ion-segment-button>
@@ -42,17 +42,17 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list lines="none">
-        <ion-item>
-          <ion-icon name="mail-outline" slot="start"></ion-icon>
+        <ion-item class="m-b-18">
+          <ion-icon name="mail-outline" slot="start" class="m-r-18"></ion-icon>
           <ion-label>
-            <p>Email</p>
+            <p class="m-b-3">Email</p>
             <h3>{{ userProfile.email || 'Not provided' }}</h3>
           </ion-label>
         </ion-item>
         <ion-item>
-          <ion-icon name="call-outline" slot="start"></ion-icon>
+          <ion-icon name="call-outline" slot="start" class="m-r-18"></ion-icon>
           <ion-label>
-            <p>Phone</p>
+            <p class="m-b-3">Phone</p>
             <h3>{{ userProfile.phone || 'Not provided' }}</h3>
           </ion-label>
         </ion-item>
@@ -95,23 +95,23 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <div class="engagement-grid">
-        <div class="engagement-item">
-          <div class="engagement-number">
+      <div class="engagement-grid m-t-6">
+        <div class="engagement-item p-18">
+          <div class="engagement-number m-b-3">
             <span *ngIf="isDonorValue1">$</span>{{ engagementValue1 | number }}
           </div>
           <div class="engagement-label">{{ engagementLabels.label1 }}</div>
         </div>
-        <div class="engagement-item">
-          <div class="engagement-number">{{ engagementValue2 }}</div>
+        <div class="engagement-item p-18">
+          <div class="engagement-number m-b-3">{{ engagementValue2 }}</div>
           <div class="engagement-label">{{ engagementLabels.label2 }}</div>
         </div>
-        <div class="engagement-item">
-          <div class="engagement-number">{{ engagementValue3 }}</div>
+        <div class="engagement-item p-18">
+          <div class="engagement-number m-b-3">{{ engagementValue3 }}</div>
           <div class="engagement-label">{{ engagementLabels.label3 }}</div>
         </div>
-        <div class="engagement-item">
-          <div class="engagement-number">{{ engagementValue4 }}</div>
+        <div class="engagement-item p-18">
+          <div class="engagement-number m-b-3">{{ engagementValue4 }}</div>
           <div class="engagement-label">{{ engagementLabels.label4 }}</div>
         </div>
       </div>
@@ -119,7 +119,7 @@
   </ion-card>
 
   <!-- Logout Button -->
-  <div class="logout-section">
+  <div class="logout-section p-24">
     <ion-button expand="block" fill="outline" color="danger" (click)="logout()">
       <ion-icon slot="start" name="log-out-outline"></ion-icon>
       Sign Out
@@ -127,12 +127,12 @@
   </div>
 
   <!-- Developer/Testing Section -->
-  <div class="developer-section">
-    <p class="developer-label">Developer Options</p>
-    <button class="reset-link" (click)="navigateToDeveloperOptions()">
+  <div class="developer-section p-l-24 p-r-24 p-b-24">
+    <p class="developer-label m-b-6">Developer Options</p>
+    <button class="reset-link p-6 p-l-18 p-r-18" (click)="navigateToDeveloperOptions()">
       Developer Options
     </button>
-    <button class="reset-link" (click)="navigateToSandbox()">
+    <button class="reset-link p-6 p-l-18 p-r-18" (click)="navigateToSandbox()">
       Sandbox - POC Ideas
     </button>
   </div>

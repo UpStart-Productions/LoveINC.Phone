@@ -120,11 +120,27 @@ export class DonateGoodsPage implements OnInit {
   }
 
   onSearchChange(event: any) {
-    const query = event.detail.value?.toLowerCase().trim() || '';
+    // Handle ionInput events
+    let value = '';
+    if (event?.detail?.value !== undefined) {
+      value = event.detail.value;
+    } else if (event?.target?.value !== undefined) {
+      value = event.target.value;
+    }
+    
+    const query = String(value || '').toLowerCase().trim();
     this.searchQuery = query;
+    this.performSearch(query);
+  }
 
+  onSearchClear() {
+    this.searchQuery = '';
+    this.performSearch('');
+  }
+
+  private performSearch(query: string) {
     if (!query) {
-      this.filteredLocations = this.locations;
+      this.filteredLocations = [...this.locations];
     } else {
       this.filteredLocations = this.locations.filter(location => {
         // Search across all fields

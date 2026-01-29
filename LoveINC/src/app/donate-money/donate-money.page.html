@@ -8,9 +8,9 @@
 </ion-header>
 
 <ion-content class="content-wrapper">
-  <div class="donation-form-container">
+  <div class="donation-form-container p-18">
     <!-- Donation Frequency -->
-    <ion-segment [(ngModel)]="donationFrequency" class="frequency-segment">
+    <ion-segment [(ngModel)]="donationFrequency" class="frequency-segment p-3 m-b-24">
       <ion-segment-button value="one-time">
         <ion-label>One-time</ion-label>
       </ion-segment-button>
@@ -23,10 +23,10 @@
     </ion-segment>
 
     <!-- Preset Amount Buttons -->
-    <div class="amount-buttons">
+    <div class="amount-buttons m-b-24">
       <button
         *ngFor="let amount of presetAmounts"
-        class="amount-button"
+        class="amount-button p-18"
         [class.selected]="selectedAmount === amount"
         (click)="selectAmount(amount)"
         type="button">
@@ -35,9 +35,9 @@
     </div>
 
     <!-- Other Amount Input -->
-    <div class="other-amount-container">
-      <ion-item class="other-amount-item">
-        <ion-label position="stacked">$ Other</ion-label>
+    <div class="other-amount-container m-b-24">
+      <ion-item class="other-amount-item p-12 p-l-18 p-r-18">
+        <ion-label position="stacked" class="m-b-6">$ Other</ion-label>
         <ion-input
           type="number"
           [(ngModel)]="customAmount"
@@ -45,13 +45,13 @@
           placeholder="0.00"
           class="other-amount-input">
         </ion-input>
-        <div slot="end" class="currency-label">USD</div>
+        <div slot="end" class="currency-label m-l-6">USD</div>
       </ion-item>
     </div>
 
     <!-- Additional Options -->
-    <div class="options-container">
-      <ion-item>
+    <div class="options-container m-b-24">
+      <ion-item class="m-b-12">
         <ion-checkbox [(ngModel)]="addNote" slot="start"></ion-checkbox>
         <ion-label>Add note/comment</ion-label>
       </ion-item>
@@ -64,15 +64,15 @@
     <!-- Continue Button -->
     <ion-button
       expand="block"
-      class="pill-button"
+      class="pill-button m-t-30 m-b-24"
       [disabled]="!canContinue()"
       (click)="onContinue()">
       Continue
     </ion-button>
 
     <!-- Powered by Givebutter -->
-    <div class="powered-by">
-      <span>Powered by Givebutter</span>
+    <div class="powered-by p-l-18 p-r-18">
+      <span class="m-r-3">Powered by Givebutter</span>
     </div>
   </div>
 </ion-content>

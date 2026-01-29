@@ -1,9 +1,14 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-searchbar
+      class="live-search"
       placeholder="Search Donation Options"
       (ionInput)="onSearchChange($event)"
-      [value]="searchQuery">
+      (ionChange)="onSearchChange($event)"
+      (ionClear)="onSearchClear()"
+      [value]="searchQuery"
+      showClearButton="always"
+      debounce="0">
     </ion-searchbar>
     <ion-buttons slot="end">
       <ion-button class="notifications-button" (click)="openAlertsModal()">
@@ -32,28 +37,28 @@
               <div class="location-header">
                 <h3>{{ location.organization }}</h3>
               </div>
-              <div class="location-details">
-                <div class="detail-row" *ngIf="location.address">
-                  <span class="app-body-secondary">{{ location.address }}</span>
+              <div>
+                <div *ngIf="location.address">
+                  <span>{{ location.address }}</span>
                 </div>
-                <div class="detail-row" *ngIf="location.hours">
-                  <span class="hours-value">{{ location.hours }}</span>
+                <div *ngIf="location.hours">
+                  <span>{{ location.hours }}</span>
                 </div>
-                <div class="detail-row" *ngIf="location.phone">
+                <div *ngIf="location.phone">
                   <span>{{ location.phone }}</span>
                 </div>
-                <div class="detail-row" *ngIf="location.email">
+                <div *ngIf="location.email">
                   <span>{{ location.email }}</span>
                 </div>
-                <div class="detail-row" *ngIf="location.contact">
+                <div *ngIf="location.contact">
                   <span>{{ location.contact }}</span>
                 </div>
-                <div class="detail-row" *ngIf="location.acceptedItems?.length">
+                <div class="m-t-12" *ngIf="location.acceptedItems?.length">
                   <div class="accepted-items">
                     <span class="item-pill" *ngFor="let item of location.acceptedItems">{{ item }}</span>
                   </div>
                 </div>
-                <div class="detail-row" *ngIf="location.notes">
+                <div *ngIf="location.notes">
                   <span class="app-body-secondary notes-value" style="font-style: italic;">{{ location.notes }}</span>
                 </div>
               </div>

@@ -1,0 +1,39 @@
+$spacers: (3, 6, 12, 18, 24, 30, 36, 42, 48);
+
+@mixin create-margins() {
+  @each $spacer in $spacers {
+    .m-#{$spacer} {
+      margin: #{$spacer}px !important;
+    }
+    .m-b-#{$spacer} {
+      margin-bottom: #{$spacer}px !important;
+    }
+    .m-t-#{$spacer} {
+      margin-top: #{$spacer}px !important;
+    }
+    .m-r-#{$spacer} {
+      margin-right: #{$spacer}px !important;
+    }
+    .m-l-#{$spacer} {
+      margin-left: #{$spacer}px !important;
+    }
+
+    .p-#{$spacer} {
+      padding: #{$spacer}px;
+    }
+    .p-b-#{$spacer} {
+      padding-bottom: #{$spacer}px;
+    }
+    .p-t-#{$spacer} {
+      padding-top: #{$spacer}px;
+    }
+    .p-r-#{$spacer} {
+      padding-right: #{$spacer}px;
+    }
+    .p-l-#{$spacer} {
+      padding-left: #{$spacer}px;
+    }
+  }
+}
+
+@include create-margins();

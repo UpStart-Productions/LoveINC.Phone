@@ -21,15 +21,42 @@ ion-card-header {
   padding: 16px 16px 8px 16px;
   --padding-start: 16px;
   --padding-end: 16px;
+  font-family: inherit;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 ion-card-header ion-card-title {
-  font-size: var(--app-font-size-title);
-  font-weight: var(--app-font-weight-semibold);
-  color: var(--app-text-primary);
+  --font-size: var(--app-font-size-display) !important;
+  font-size: var(--app-font-size-display) !important;
+  --font-weight: var(--app-font-weight-semibold) !important;
+  font-weight: var(--app-font-weight-semibold) !important;
+  --line-height: var(--app-line-height-body) !important;
+  line-height: var(--app-line-height-body) !important;
+  --color: var(--ion-color-dark) !important;
+  color: var(--ion-color-dark) !important;
   margin-bottom: 4px;
   padding-left: 0 !important;
   padding-right: 0 !important;
+  font-family: inherit !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* Target shadow DOM native element to ensure styles apply */
+ion-card-header ion-card-title::part(native) {
+  font-size: var(--app-font-size-display) !important;
+  font-weight: var(--app-font-weight-semibold) !important;
+  line-height: var(--app-line-height-body) !important;
+  font-family: inherit !important;
+  letter-spacing: normal !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
 }
 
 ion-card-header ion-card-subtitle {
@@ -46,12 +73,20 @@ ion-card-header ion-card-subtitle {
 }
 
 ion-card-content {
-  padding: 8px 16px 16px 16px;
-  --padding-start: 16px;
-  --padding-end: 16px;
-  font-size: var(--app-font-size-body);
-  line-height: var(--app-line-height-relaxed);
-  color: var(--app-text-primary);
+  padding: 8px 16px 16px 16px !important;
+  --padding-start: 16px !important;
+  --padding-end: 16px !important;
+  --padding-left: 16px !important;
+  --padding-right: 16px !important;
+
+  color: var(--app-text-secondary);
+  line-height: var(--app-line-height-loose);
+}
+
+/* Target shadow DOM native element */
+ion-card-content::part(native) {
+  padding-left: 16px !important;
+  padding-right: 16px !important;
 }
 
 ion-card-content p,
@@ -61,26 +96,7 @@ ion-card-content span {
   padding-right: 0 !important;
   margin-left: 0 !important;
   margin-right: 0 !important;
-}
-
-/* -----------------------------------------------------------------------------
- * Section cards (About, Profile, Developer Options): accent title + optional icon
- * ----------------------------------------------------------------------------- */
-.section-card ion-card-title {
-  display: flex;
-  align-items: center;
-  font-size: var(--app-font-size-title);
-  font-weight: var(--app-font-weight-semibold);
-  color: var(--app-text-accent);
-
-  .section-icon {
-    font-size: var(--app-font-size-display-lg);
-    margin-right: 8px;
-  }
-}
-
-.section-card ion-card-content {
-  line-height: var(--app-line-height-loose);
+  text-indent: 0 !important;
 }
 
 /* -----------------------------------------------------------------------------
@@ -157,9 +173,7 @@ ion-card.clickable {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.content-card ion-card-content {
-  padding: 16px;
-}
+/* Content card content padding handled by global ion-card-content styles above */
 
 .content-card.clickable:active {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);

@@ -7,6 +7,38 @@
 /* All headings default to ion-color-dark; override only in specific cases */
 h1, h2, h3, h4, h5, h6 {
   color: var(--ion-color-dark);
+  margin: 0;
+}
+
+/* Explicit Hx font sizes */
+h1 {
+  font-size: var(--app-font-size-display-lg);
+  font-weight: var(--app-font-weight-bold);
+  line-height: var(--app-line-height-tight);
+}
+
+h2 {
+  font-size: var(--app-font-size-display);
+  font-weight: var(--app-font-weight-semibold);
+  line-height: var(--app-line-height-body);
+}
+
+h3 {
+  font-size: var(--app-font-size-title);
+  font-weight: var(--app-font-weight-semibold);
+  line-height: var(--app-line-height-body);
+}
+
+h4 {
+  font-size: var(--app-font-size-title);
+  font-weight: var(--app-font-weight-semibold);
+  line-height: var(--app-line-height-body);
+}
+
+h5, h6 {
+  font-size: var(--app-font-size-body);
+  font-weight: var(--app-font-weight-semibold);
+  line-height: var(--app-line-height-body);
 }
 
 /* Default body text */
@@ -14,6 +46,11 @@ p {
   font-size: var(--app-font-size-body);
   color: var(--app-text-primary);
   line-height: var(--app-line-height-relaxed);
+}
+
+span {
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-primary);
 }
 
 /* Typography utility classes (5-size scale) */
@@ -33,6 +70,8 @@ p {
 .app-body-secondary {
   font-size: var(--app-font-size-body);
   color: var(--app-text-secondary);
+  margin-bottom: 24px; 
+  line-height: var(--app-line-height-loose);
 }
 
 .app-caption {
@@ -158,6 +197,7 @@ ion-header ion-back-button ion-icon {
 
     .action-sheet-button-inner {
       font-size: var(--app-font-size-body);
+      color: var(--ion-color-dark) !important;
     }
 
     .action-sheet-icon {
@@ -167,6 +207,7 @@ ion-header ion-back-button ion-icon {
 
     span {
       font-size: var(--app-font-size-body);
+      color: var(--ion-color-dark) !important;
     }
   }
 
@@ -194,11 +235,12 @@ ion-header ion-back-button ion-icon {
 
   .action-sheet-button-inner {
     font-size: var(--app-font-size-title) !important;
+    color: var(--ion-color-dark) !important;
   }
 
   span {
     font-size: var(--app-font-size-title) !important;
-    color: var(--app-text-primary) !important;
+    color: var(--ion-color-dark) !important;
   }
 
   ion-icon[src*="hand-helping.svg"] {
@@ -214,11 +256,12 @@ ion-header ion-back-button ion-icon {
 
   .action-sheet-button-inner {
     font-size: var(--app-font-size-title) !important;
+    color: var(--ion-color-dark) !important;
   }
 
   span {
     font-size: var(--app-font-size-title) !important;
-    color: var(--app-text-primary) !important;
+    color: var(--ion-color-dark) !important;
   }
 }
 
@@ -234,11 +277,12 @@ ion-header ion-back-button ion-icon {
   .action-sheet-button-inner {
     font-size: var(--app-font-size-title) !important;
     line-height: var(--app-line-height-loose);
+    color: var(--ion-color-dark) !important;
   }
 
   span {
     font-size: var(--app-font-size-title) !important;
-    color: var(--app-text-primary) !important;
+    color: var(--ion-color-dark) !important;
   }
 }
 

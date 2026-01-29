@@ -45,13 +45,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 16px;
 }
 
 .logo-image {
   width: 300px;
   height: auto;
-  margin-bottom: 24px;
   object-fit: contain;
 }
 
@@ -63,19 +61,16 @@
   color: white;
   text-align: center;
   margin: -15px 0 0 0;
-  padding: 0 16px;
 }
 
 /* Content Container */
 .content-container {
   margin-top: calc(30vh + 2rem + 44px);
   background: white;
-  padding: 40px 24px;
   min-height: calc(100vh - 30vh - 2rem - 44px);
 }
 
 .content-section {
-  margin-bottom: 40px;
 }
 
 .mission-text {
@@ -84,8 +79,6 @@
   line-height: var(--app-line-height-loose);
   color: var(--app-text-primary);
   text-align: center;
-  margin: 0 0 24px 0;
-  padding: 0 16px;
 }
 
 .with-love-inc-image {
@@ -102,14 +95,13 @@
   --background-activated: transparent;
   --background-hover: transparent;
   --border-radius: 0;
-  --padding-top: 16px;
-  --padding-bottom: 16px;
+  --padding-top: 18px;
+  --padding-bottom: 18px;
   --box-shadow: none;
   font-size: var(--app-font-size-title);
   font-weight: var(--app-font-weight-semibold);
   text-transform: none;
   letter-spacing: 0;
-  margin-bottom: 24px;
   color: var(--app-text-accent);
 
   &:not([disabled]) {

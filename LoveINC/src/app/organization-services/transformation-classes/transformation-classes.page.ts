@@ -99,7 +99,7 @@ export class TransformationClassesPage implements OnInit {
 
   navigateToClassDetail(classItem: TransformationClass) {
     const queryParams = this.fromServices ? { from: 'services' } : {};
-    this.router.navigate(['/tabs/transformation-classes', classItem.id], { queryParams });
+    this.router.navigate(['/tabs/content-detail', 'class', classItem.id], { queryParams });
   }
 
   formatSessionDates(classItem: TransformationClass): string {

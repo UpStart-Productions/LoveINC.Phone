@@ -37,10 +37,8 @@ ion-header {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 24px;
 
   ion-spinner {
-    margin-bottom: 16px;
   }
 
   p {
@@ -55,19 +53,16 @@ ion-header {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 24px;
   text-align: center;
 
   ion-icon {
     font-size: 64px;
     color: var(--app-text-secondary);
-    margin-bottom: 16px;
   }
 
   h2 {
     font-size: var(--app-font-size-display);
     font-weight: var(--app-font-weight-semibold);
-    margin: 0 0 8px 0;
   }
 
   p {
@@ -88,7 +83,6 @@ ion-header {
 .notifications-scrollable {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
   min-height: 0;
 }
 
@@ -105,7 +99,6 @@ ion-header {
   --inner-padding-end: 0;
   --background: var(--ion-background-color);
   --border-radius: 12px;
-  margin-bottom: 12px;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -130,7 +123,6 @@ ion-header {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 8px;
     width: 100%;
   }
 
@@ -166,13 +158,10 @@ ion-header {
     background-color: var(--ion-color-primary);
     flex-shrink: 0;
     align-self: flex-start;
-    margin-top: 7px;
   }
 }
 
 .mark-all-container {
-  padding: 16px;
-  padding-top: 8px;
   background: var(--ion-background-color);
   border-top: 1px solid rgba(var(--ion-color-dark-rgb), 0.1);
   flex-shrink: 0;
@@ -183,8 +172,8 @@ ion-header {
   --background-activated: var(--ion-color-primary-shade);
   --color: var(--ion-color-primary-contrast);
   --border-radius: 999px;
-  --padding-top: 14px;
-  --padding-bottom: 14px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
   font-size: var(--app-font-size-body);
   font-weight: var(--app-font-weight-semibold);
   text-transform: none;

@@ -97,6 +97,11 @@ export const routes: Routes = [
           import('../organization-services/transformation-classes/transformation-class-detail.page').then((m) => m.TransformationClassDetailPage),
       },
       {
+        path: 'content-detail/:type/:id',
+        loadComponent: () =>
+          import('../organization-services/content-detail/content-detail.page').then((m) => m.ContentDetailPage),
+      },
+      {
         path: 'donate-goods',
         loadComponent: () =>
           import('../donate-goods/donate-goods.page').then((m) => m.DonateGoodsPage),

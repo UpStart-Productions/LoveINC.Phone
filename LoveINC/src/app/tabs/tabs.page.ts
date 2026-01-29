@@ -1,4 +1,4 @@
-import { Component, EnvironmentInjector, inject } from '@angular/core';
+import { Component, EnvironmentInjector, inject, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { 
   IonTabs, 
@@ -11,6 +11,7 @@ import {
   ActionSheetController,
   AlertController
 } from '@ionic/angular/standalone';
+import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 
 @Component({
@@ -27,7 +28,7 @@ import { DonateActionSheetService } from '../services/donate-action-sheet.servic
     IonFabButton
   ],
 })
-export class TabsPage {
+export class TabsPage implements OnInit, OnDestroy {
   public environmentInjector = inject(EnvironmentInjector);
 
   constructor(
@@ -36,6 +37,25 @@ export class TabsPage {
     private router: Router,
     private donateActionSheetService: DonateActionSheetService
   ) {}
+
+  async ngOnInit() {
+    // Prevent keyboard from resizing viewport, which causes FAB to move
+    try {
+      await Keyboard.setResizeMode({ mode: KeyboardResize.None });
+    } catch (error) {
+      // Keyboard plugin might not be available in browser
+      console.log('Keyboard plugin not available');
+    }
+  }
+
+  async ngOnDestroy() {
+    // Restore default keyboard behavior when leaving tabs
+    try {
+      await Keyboard.setResizeMode({ mode: KeyboardResize.Native });
+    } catch (error) {
+      // Keyboard plugin might not be available
+    }
+  }
 
   async openServicesMenu() {
     const actionSheet = await this.actionSheetController.create({

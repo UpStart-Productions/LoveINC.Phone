@@ -1,7 +1,6 @@
 // Profile Header
 .profile-header {
   background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
-  padding: 40px 24px;
   text-align: center;
   color: white;
 }
@@ -9,7 +8,7 @@
 .profile-avatar {
   width: 100px;
   height: 100px;
-  margin: 0 auto 16px;
+  margin: 0 auto;
   background: rgba(var(--ion-color-primary-contrast-rgb), 0.2);
   border-radius: 50%;
   display: flex;
@@ -26,7 +25,6 @@
 .profile-name {
   font-size: var(--app-font-size-display-lg);
   font-weight: var(--app-font-weight-bold);
-  margin: 0 0 8px 0;
 }
 
 .profile-subtitle {
@@ -36,7 +34,6 @@
 }
 
 .user-type-segment {
-  margin: 16px;
   border-radius: 8px;
   background: var(--ion-color-light);
 }
@@ -49,7 +46,6 @@ ion-list {
 ion-item {
   --padding-start: 0;
   --inner-padding-end: 0;
-  margin-bottom: 16px;
   
   &:last-child {
     margin-bottom: 0;
@@ -58,14 +54,12 @@ ion-item {
   ion-icon {
     color: var(--app-text-accent);
     font-size: var(--app-font-size-display-lg);
-    margin-right: 16px;
   }
   
   ion-label {
     p {
       font-size: var(--app-font-size-caption);
       color: var(--app-text-secondary);
-      margin: 0 0 4px 0;
     }
     
     h3 {
@@ -80,12 +74,10 @@ ion-item {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
-  margin-top: 8px;
 }
 
 .engagement-item {
   text-align: center;
-  padding: 16px;
   background: var(--ion-color-light);
   border-radius: 12px;
   
@@ -93,7 +85,6 @@ ion-item {
     font-size: var(--app-font-size-display-lg);
     font-weight: var(--app-font-weight-bold);
     color: var(--app-text-accent);
-    margin-bottom: 4px;
   }
   
   .engagement-label {
@@ -104,12 +95,10 @@ ion-item {
 }
 
 .logout-section {
-  padding: 24px;
-  
   ion-button {
     --border-radius: 50px;
-    --padding-top: 16px;
-    --padding-bottom: 16px;
+    --padding-top: 18px;
+    --padding-bottom: 18px;
     font-size: var(--app-font-size-title);
     font-weight: var(--app-font-weight-semibold);
     text-transform: none;
@@ -118,13 +107,11 @@ ion-item {
 }
 
 .developer-section {
-  padding: 0 24px 24px;
   text-align: center;
   
   .developer-label {
     font-size: var(--app-font-size-caption);
     color: var(--app-text-secondary);
-    margin: 0 0 8px 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -136,7 +123,6 @@ ion-item {
     font-size: var(--app-font-size-caption);
     text-decoration: underline;
     cursor: pointer;
-    padding: 8px 16px;
     opacity: 0.7;
 
     &:active {

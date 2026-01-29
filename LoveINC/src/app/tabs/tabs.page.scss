@@ -4,8 +4,8 @@
   align-items: center;
   padding-bottom: calc(env(safe-area-inset-bottom) - 9px);
   margin-top: -3px;
-  --background: var(--ion-background-color);
-  background: var(--ion-background-color);
+  --background: var(--ion-color-light);
+  background: var(--ion-color-light);
   border-top: 1px solid rgba(var(--ion-color-dark-rgb), 0.1);
 }
 
