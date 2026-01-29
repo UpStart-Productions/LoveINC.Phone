@@ -8,7 +8,18 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="ion-padding">
-    <p>Tools content will go here.</p>
+  <div class="tools-list">
+    @for (card of toolCards; track card.title) {
+      <app-content-card
+        [category]="card.category"
+        [categoryIcon]="card.categoryIcon"
+        [categoryExtra]="card.categoryExtra"
+        [title]="card.title"
+        [detail]="card.detail"
+        [imageUrl]="card.imageUrl"
+        [iconName]="card.iconName"
+        [iconBackgroundColor]="card.iconBackgroundColor ?? '#8b7355'"
+      />
+    }
   </div>
 </ion-content>

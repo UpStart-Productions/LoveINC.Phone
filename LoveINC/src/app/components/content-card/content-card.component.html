@@ -1,0 +1,39 @@
+<ion-card class="content-card" [class.clickable]="clickable">
+  <ion-card-content>
+    <div class="content-card-inner">
+      <div class="content-card-left">
+        @if (category || categoryExtra) {
+          <div class="category-row">
+            @if (categoryIcon) {
+              <ion-icon [name]="categoryIcon" class="category-icon"></ion-icon>
+            }
+            @if (categoryExtra) {
+              <span class="category-extra">{{ categoryExtra }}</span>
+            }
+            @if (category) {
+              <span class="category-label">{{ category }}</span>
+            }
+          </div>
+        }
+        <h2 class="content-card-title">{{ title }}</h2>
+        @if (detail) {
+          <div class="detail-row">
+            @if (showDetailPlayIcon) {
+              <ion-icon name="play-outline" class="detail-play-icon"></ion-icon>
+            }
+            <span class="detail-text">{{ detail }}</span>
+          </div>
+        }
+      </div>
+      <div class="content-card-right">
+        @if (imageUrl) {
+          <img [src]="imageUrl" [alt]="title" class="content-card-image" />
+        } @else if (iconName) {
+          <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
+            <ion-icon [name]="iconName" class="content-card-icon"></ion-icon>
+          </div>
+        }
+      </div>
+    </div>
+  </ion-card-content>
+</ion-card>

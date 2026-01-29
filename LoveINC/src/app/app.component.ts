@@ -64,11 +64,14 @@ import {
   medicalOutline,
   bookOutline,
   playCircleOutline,
+  playOutline,
   bookmarkOutline,
   shareOutline,
   chatbubbleOutline,
   refreshOutline,
   codeOutline,
+  waterOutline,
+  checkmarkDoneOutline,
 } from 'ionicons/icons';
 
 @Component({
@@ -164,11 +167,14 @@ export class AppComponent implements OnInit {
       medicalOutline,
       bookOutline,
       playCircleOutline,
+      playOutline,
       bookmarkOutline,
       shareOutline,
       chatbubbleOutline,
       refreshOutline,
       codeOutline,
+      waterOutline,
+      checkmarkDoneOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });
