@@ -25,3 +25,33 @@
 - Do NOT import addIcons or icons from ionicons in pages, components, or any other files
 - When adding a new icon to the app: import it in app.component.ts and register it in the initializeIcons() addIcons() call
 - Pages and components should only reference icon names in templates (e.g. name="personCircleOutline"); the icons are registered app-wide at startup
+
+## Component and Page SCSS – Keep It Thin
+- DO NOT add new styles to component or page SCSS files unless you are intentionally overriding something
+- Between the Ionic theme and our custom theme files (src/theme/variables.scss, typography.scss, cards.scss, global.scss), there should be very little need for new component-level styles
+- Prefer using global typography, card, and layout patterns; add component SCSS only for explicit overrides or truly component-specific structure that cannot live in theme files
+
+## Avoid Redundant CSS Classes
+- DO NOT create custom CSS classes for typography that duplicates global styles
+- Use standard HTML elements (h1, h2, h3, h4, h5, h6, p, span) which already have global styling
+- Use global utility classes (.app-title, .app-body, .app-body-secondary, .app-caption) instead of creating component-specific typography classes
+- For text inside ion-label, use standard elements - ion-label p and ion-label h2/h3 are already styled globally
+- Only create custom classes for:
+  - Layout/structure (flexbox, grid, positioning)
+  - Component-specific visual treatments (borders, backgrounds, shadows)
+  - State-based styling (hover, active, disabled)
+  - Spacing that can't be handled by global patterns
+
+## Examples of redundant classes to avoid:
+- `.description`, `.intro-text`, `.detail-text` - use `p` or `.app-body-secondary`
+- `.title`, `.card-title`, `.content-title` - use `h2`, `h3`, or `.app-title`
+- `.organization-name`, `.service-name` - use `h3` (already styled globally)
+- `.notification-title`, `.notification-message` - use `h2` and `p` (already styled globally)
+- `.detail-value`, `.detail-address` - use `span` or `.app-body-secondary`
+- `.user-type-description` - use `ion-label p` (already styled globally)
+
+## Examples of what TO do:
+- Use `<h2>{{ title }}</h2>` instead of `<h2 class="content-title">{{ title }}</h2>`
+- Use `<p class="app-body-secondary">Text</p>` instead of `<p class="intro-text">Text</p>`
+- Use `<span class="app-caption">Date</span>` instead of `<span class="notification-date">Date</span>`
+- Use `<ion-label><p>Description</p></ion-label>` instead of `<ion-label><p class="user-type-description">Description</p></ion-label>`

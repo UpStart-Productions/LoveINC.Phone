@@ -8,20 +8,20 @@
               <ion-icon [name]="categoryIcon" class="category-icon"></ion-icon>
             }
             @if (categoryExtra) {
-              <span class="category-extra">{{ categoryExtra }}</span>
+              <span class="app-body-secondary">{{ categoryExtra }}</span>
             }
             @if (category) {
-              <span class="category-label">{{ category }}</span>
+              <span class="app-body-secondary">{{ category }}</span>
             }
           </div>
         }
-        <h2 class="content-card-title">{{ title }}</h2>
+        <h2>{{ title }}</h2>
         @if (detail) {
           <div class="detail-row">
             @if (showDetailPlayIcon) {
               <ion-icon name="play-outline" class="detail-play-icon"></ion-icon>
             }
-            <span class="detail-text">{{ detail }}</span>
+            <span class="app-body-secondary">{{ detail }}</span>
           </div>
         }
       </div>

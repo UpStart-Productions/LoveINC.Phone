@@ -27,14 +27,14 @@
         <ion-item *ngFor="let alert of alerts; let i = index" [class.unread]="!alert.read" [class.read]="alert.read" button detail="false" class="notification-item" (click)="markAsRead(i)">
           <ion-label>
             <div class="notification-header">
-              <h2 class="notification-title">{{ alert.title }}</h2>
+              <h2>{{ alert.title }}</h2>
               <div *ngIf="!alert.read" class="unread-dot"></div>
             </div>
             <div class="notification-content">
-              <p class="notification-message">{{ alert.message }}</p>
+              <p style="margin: 0 0 8px 0; line-height: var(--app-line-height-body);">{{ alert.message }}</p>
               <div class="notification-footer">
                 <span *ngIf="!alert.read" class="new-badge">NEW</span>
-                <span class="notification-date">{{ formatDate(alert.date) }}</span>
+                <span class="app-caption">{{ formatDate(alert.date) }}</span>
               </div>
             </div>
           </ion-label>

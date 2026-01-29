@@ -139,20 +139,10 @@ ion-header {
     margin-top: 0;
   }
 
-  .notification-title {
-    font-size: var(--app-font-size-title);
-    font-weight: var(--app-font-weight-semibold);
-    color: var(--app-text-primary);
+  .notification-header h2 {
     margin: 0;
     line-height: var(--app-line-height-body);
     flex: 1;
-  }
-
-  .notification-message {
-    font-size: var(--app-font-size-body);
-    color: var(--app-text-primary);
-    margin: 0 0 8px 0;
-    line-height: var(--app-line-height-body);
   }
 
   .notification-footer {
@@ -167,11 +157,6 @@ ion-header {
     font-weight: var(--app-font-weight-semibold);
     color: var(--app-text-primary);
     text-transform: uppercase;
-  }
-
-  .notification-date {
-    font-size: var(--app-font-size-caption);
-    color: var(--app-text-secondary);
   }
 
   .unread-dot {

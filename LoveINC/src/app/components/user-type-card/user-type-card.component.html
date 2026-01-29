@@ -7,7 +7,7 @@
   <i-lucide *ngIf="userType === 'volunteer'" name="heart-handshake" [size]="28" [style.color]="config.color" slot="start" class="user-type-icon"></i-lucide>
   <ion-icon *ngIf="userType === 'give'" [name]="config.icon" slot="start" [style.color]="config.color" class="user-type-icon"></ion-icon>
   <ion-label>
-    <p class="user-type-description">{{ displayDescription }}</p>
+    <p>{{ displayDescription }}</p>
     @if (userType === 'give') {
       <ion-progress-bar 
         [value]="donorProgress" 

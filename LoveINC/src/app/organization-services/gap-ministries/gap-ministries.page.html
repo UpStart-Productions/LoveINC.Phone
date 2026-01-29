@@ -32,15 +32,15 @@
           <ion-item lines="none">
             <ion-label>
               <div class="service-header">
-                <h3 class="service-name">{{ service.service }}</h3>
-                <span class="service-days-times">{{ service.daysTimes }}</span>
+                <h3>{{ service.service }}</h3>
+                <span class="app-body-secondary">{{ service.daysTimes }}</span>
               </div>
               <div class="service-details">
                 <div class="detail-row">
-                  <span class="detail-value">{{ service.church }}</span>
+                  <span>{{ service.church }}</span>
                 </div>
                 <div class="detail-row" *ngIf="service.address">
-                  <span class="detail-address">{{ service.address }}</span>
+                  <span class="app-body-secondary">{{ service.address }}</span>
                 </div>
               </div>
             </ion-label>

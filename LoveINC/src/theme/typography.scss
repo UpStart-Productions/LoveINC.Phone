@@ -101,8 +101,17 @@ ion-accordion .ion-accordion-toggle-icon {
 
 /* List item titles */
 ion-item ion-label h2,
+ion-item ion-label h3,
 ion-item ion-label .user-type-title {
   font-size: var(--app-font-size-title) !important;
+}
+
+/* List item paragraphs - secondary text */
+ion-item ion-label p {
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-secondary);
+  margin: 0;
+  line-height: var(--app-line-height-body);
 }
 
 /* Header icon sizes (toolbar, back, donate) */
