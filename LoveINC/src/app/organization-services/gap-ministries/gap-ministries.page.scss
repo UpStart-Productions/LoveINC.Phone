@@ -23,9 +23,9 @@
 .schedule-header {
   display: block;
   width: 100%;
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--ion-color-medium);
+  font-size: var(--app-font-size-display);
+  font-weight: var(--app-font-weight-medium);
+  color: var(--app-text-secondary);
   margin: 0 0 16px 0;
   padding: 0px 16px;
   text-transform: uppercase;
@@ -52,16 +52,16 @@ ion-item {
 }
 
 .service-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--ion-color-dark);
+  font-size: var(--app-font-size-title);
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-primary);
   margin: 0;
   flex: 1;
 }
 
 .service-days-times {
-  font-size: 14px;
-  color: var(--ion-color-medium);
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-secondary);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -76,25 +76,25 @@ ion-item {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: var(--app-font-size-body);
+  line-height: var(--app-line-height-relaxed);
 }
 
 .detail-label {
-  font-weight: 600;
-  color: var(--ion-color-medium);
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-secondary);
   margin-right: 8px;
   min-width: 80px;
 }
 
 .detail-value {
-  color: var(--ion-color-dark);
+  color: var(--app-text-primary);
   flex: 1;
 }
 
 .detail-address {
-  color: var(--ion-color-medium);
-  font-size: 13px;
+  color: var(--app-text-secondary);
+  font-size: var(--app-font-size-body);
   display: block;
   width: 100%;
 }

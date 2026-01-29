@@ -1,22 +1,4 @@
-.content-card {
-  margin-bottom: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-
-  &.clickable {
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    &:active {
-      transform: scale(0.98);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-    }
-  }
-}
-
-ion-card-content {
-  padding: 16px;
-}
+/* Card shell in theme/cards.scss .content-card */
 
 .content-card-inner {
   display: flex;
@@ -42,22 +24,22 @@ ion-card-content {
 }
 
 .category-icon {
-  font-size: 14px;
-  color: var(--ion-color-medium);
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-secondary);
 }
 
 .category-extra,
 .category-label {
-  font-size: 13px;
-  color: var(--ion-color-medium);
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-secondary);
 }
 
 .content-card-title {
-  font-size: 17px;
-  font-weight: 600;
-  color: #000;
+  font-size: var(--app-font-size-title);
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-primary);
   margin: 0 0 6px 0;
-  line-height: 1.35;
+  line-height: var(--app-line-height-tight);
 }
 
 .detail-row {
@@ -67,13 +49,13 @@ ion-card-content {
 }
 
 .detail-play-icon {
-  font-size: 14px;
-  color: #000;
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-primary);
 }
 
 .detail-text {
-  font-size: 13px;
-  color: var(--ion-color-medium);
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-secondary);
 }
 
 .content-card-right {

@@ -1,19 +1,10 @@
-ion-card {
-  margin: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+/* Section cards use theme/cards.scss .section-card; overrides below */
 
-ion-card-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--ion-color-primary);
-  display: flex;
-  align-items: center;
+:host .section-card ion-card-title {
+  font-size: var(--app-font-size-display);
   gap: 8px;
-}
 
-.section-icon {
-  font-size: 24px;
-  margin-right: 4px;
+  .section-icon {
+    margin-right: 4px;
+  }
 }

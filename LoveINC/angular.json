@@ -35,7 +35,7 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
+            "styles": ["src/theme/variables.scss", "src/global.scss", "src/theme/typography.scss", "src/theme/cards.scss"],
             "scripts": [],
             "browser": "src/main.ts"
           },
@@ -109,7 +109,7 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
+            "styles": ["src/theme/variables.scss", "src/global.scss", "src/theme/typography.scss", "src/theme/cards.scss"],
             "scripts": []
           },
           "configurations": {

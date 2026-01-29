@@ -12,31 +12,6 @@
   }
 }
 
-// Cards
-ion-card {
-  margin: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-ion-card-title {
-  display: flex;
-  align-items: center;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--ion-color-primary);
-  
-  .section-icon {
-    font-size: 24px;
-    margin-right: 8px;
-  }
-}
-
-ion-card-content {
-  line-height: 1.6;
-  color: var(--ion-color-dark);
-}
-
 // Mission & Vision
 .mission-vision-container {
   display: flex;
@@ -51,25 +26,24 @@ ion-card-content {
   background: var(--ion-color-light);
   
   h3 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--ion-color-primary);
+    font-size: var(--app-font-size-title);
+    font-weight: var(--app-font-weight-semibold);
     margin: 0 0 8px 0;
   }
   
   p {
     margin: 0;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: var(--app-font-size-body);
+    line-height: var(--app-line-height-relaxed);
   }
 }
 
 // Intro Text
 .intro-text {
   margin-bottom: 24px;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--ion-color-medium-shade);
+  font-size: var(--app-font-size-body);
+  line-height: var(--app-line-height-loose);
+  color: var(--app-text-secondary);
 }
 
 // Service List
@@ -85,32 +59,31 @@ ion-card-content {
   gap: 16px;
   
   ion-icon {
-    font-size: 28px;
-    color: var(--ion-color-primary);
+    font-size: var(--app-font-size-display-lg);
+    color: var(--app-text-accent);
     flex-shrink: 0;
     margin-top: 4px;
   }
   
   h4 {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: var(--app-font-size-title);
+    font-weight: var(--app-font-weight-semibold);
     margin: 0 0 4px 0;
-    color: var(--ion-color-dark);
   }
   
   p {
     margin: 0;
-    font-size: 13px;
-    color: var(--ion-color-medium);
-    line-height: 1.4;
+    font-size: var(--app-font-size-body);
+    color: var(--app-text-secondary);
+    line-height: var(--app-line-height-body);
   }
 }
 
-// Stats Card
+// Stats Card (override: gradient, white text)
 .stats-card {
   background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
   color: white;
-  
+
   ion-card-title {
     color: white;
   }
@@ -127,14 +100,14 @@ ion-card-content {
   text-align: center;
   
   .stat-number {
-    font-size: 32px;
-    font-weight: 700;
+    font-size: var(--app-font-size-display-lg);
+    font-weight: var(--app-font-weight-bold);
     margin-bottom: 4px;
     color: white;
   }
   
   .stat-label {
-    font-size: 12px;
+    font-size: var(--app-font-size-caption);
     opacity: 0.9;
     color: white;
   }
@@ -146,16 +119,16 @@ ion-accordion-group {
 }
 
 .creed-text {
-  font-size: 14px;
+  font-size: var(--app-font-size-body);
   line-height: 1.8;
   font-style: italic;
-  color: var(--ion-color-dark);
+  color: var(--app-text-primary);
   margin-bottom: 16px;
 }
 
 .faith-note {
-  font-size: 13px;
-  color: var(--ion-color-medium);
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-secondary);
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid var(--ion-color-light-shade);
@@ -170,15 +143,14 @@ ion-accordion-group {
   border-radius: 12px;
   
   h2 {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--ion-color-primary);
+    font-size: var(--app-font-size-display-lg);
+    font-weight: var(--app-font-weight-bold);
     margin: 0 0 8px 0;
   }
   
   p {
-    font-size: 15px;
-    color: var(--ion-color-medium);
+    font-size: var(--app-font-size-body);
+    color: var(--app-text-secondary);
     margin: 0 0 24px 0;
   }
 }

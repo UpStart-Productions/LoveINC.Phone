@@ -15,23 +15,16 @@
 }
 
 .user-type-icon {
-  font-size: 28px;
+  font-size: var(--app-font-size-display-lg);
   margin-right: 16px;
   flex-shrink: 0;
 }
 
-.user-type-title {
-  font-weight: 600;
-  color: var(--ion-color-dark);
-  margin: 0 0 4px 0;
-  /* Font size is handled globally in global.scss */
-}
-
 .user-type-description {
-  font-size: 14px;
-  color: var(--ion-color-medium);
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-secondary);
   margin: 0;
-  line-height: 1.4;
+  line-height: var(--app-line-height-body);
 }
 
 .donor-progress-bar {

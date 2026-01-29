@@ -88,6 +88,32 @@
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+  /** Typography – 5-size scale (Material / iOS–aligned); use weight + color for hierarchy **/
+  --app-font-size-caption: 12px;
+  --app-font-size-body: 14px;
+  --app-font-size-title: 17px;
+  --app-font-size-display: 20px;
+  --app-font-size-display-lg: 24px;
+
+  --app-font-weight-medium: 500;
+  --app-font-weight-semibold: 600;
+  --app-font-weight-bold: 700;
+
+  --app-line-height-tight: 1.35;
+  --app-line-height-body: 1.4;
+  --app-line-height-relaxed: 1.5;
+  --app-line-height-loose: 1.6;
+
+  --app-text-primary: var(--ion-text-color);
+  --app-text-secondary: var(--ion-color-medium);
+  --app-text-accent: var(--ion-color-primary);
+
+  /** Cards – overrides beyond Ionic defaults (https://ionicframework.com/docs/api/card) **/
+  --app-card-margin: 16px;
+  --app-card-radius: 12px;
+  --app-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --app-card-margin-bottom: 20px;
 }
 
 @media (prefers-color-scheme: dark) {

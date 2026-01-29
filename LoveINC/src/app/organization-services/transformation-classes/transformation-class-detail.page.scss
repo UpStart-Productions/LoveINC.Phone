@@ -15,16 +15,12 @@
   object-fit: cover;
 }
 
-.info-card {
-  margin: 16px;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+/* .info-card in theme/cards.scss */
 
 .description {
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--ion-color-dark);
+  font-size: var(--app-font-size-body);
+  line-height: var(--app-line-height-loose);
+  color: var(--app-text-primary);
   margin-bottom: 24px;
 }
 
@@ -46,26 +42,25 @@ ion-item {
 
   ion-icon {
     margin-right: 16px;
-    font-size: 24px;
+    font-size: var(--app-font-size-display-lg);
   }
 
   h3 {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--ion-color-medium);
+    font-size: var(--app-font-size-body);
+    font-weight: var(--app-font-weight-semibold);
     margin: 0 0 4px 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   p {
-    font-size: 16px;
-    color: var(--ion-color-dark);
+    font-size: var(--app-font-size-title);
+    color: var(--app-text-primary);
     margin: 0 0 4px 0;
 
     &.duration {
-      font-size: 14px;
-      color: var(--ion-color-medium);
+      font-size: var(--app-font-size-body);
+      color: var(--app-text-secondary);
       font-style: italic;
       margin-top: 4px;
     }

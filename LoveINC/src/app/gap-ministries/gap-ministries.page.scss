@@ -12,9 +12,9 @@
 }
 
 .schedule-header {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ion-color-primary);
+  font-size: var(--app-font-size-display);
+  font-weight: var(--app-font-weight-bold);
+  color: var(--app-text-accent);
   margin: 0 0 16px 0;
   padding-bottom: 8px;
   border-bottom: 2px solid var(--ion-color-primary);
@@ -37,9 +37,9 @@ ion-item {
 }
 
 .service-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--ion-color-dark);
+  font-size: var(--app-font-size-title);
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-primary);
   margin: 0 0 12px 0;
 }
 
@@ -53,25 +53,25 @@ ion-item {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: var(--app-font-size-body);
+  line-height: var(--app-line-height-relaxed);
 }
 
 .detail-label {
-  font-weight: 600;
-  color: var(--ion-color-medium);
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-secondary);
   margin-right: 8px;
   min-width: 80px;
 }
 
 .detail-value {
-  color: var(--ion-color-dark);
+  color: var(--app-text-primary);
   flex: 1;
 }
 
 .detail-address {
-  color: var(--ion-color-medium);
-  font-size: 13px;
+  color: var(--app-text-secondary);
+  font-size: var(--app-font-size-body);
 }
 
 .action-icons {

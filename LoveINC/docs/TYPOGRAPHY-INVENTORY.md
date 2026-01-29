@@ -4,6 +4,32 @@
 
 ---
 
+## 0. Typography Best Practices & Simplified Scale
+
+### Research summary (iOS HIG, Material Design, Learn UI Design)
+
+- **Use few font sizes.** Material Design mobile uses ~4 sizes for most UI: **14sp** (body, captions, buttons), **16sp** (list titles, inputs), **20–22sp** (page titles), **10sp** (overline). Hierarchy comes from **weight and color**, not many size steps.
+- **iOS** has more named styles (Title 1–3, Headline, Body, etc.) but they cluster: 17pt for body/headline, 16pt callout, 15pt subhead, 13pt footnote, 12/11pt caption. Still only a handful of distinct sizes.
+- **Principles:** Define a small typographic scale; avoid golden-ratio or “kitchen sink” scales. Use **semantic roles** (caption, body, title, display) rather than fine numeric gradations.
+
+### Why we had too many sizes
+
+We previously used **11 sizes** (12–32px). That encourages hierarchy-through-size instead of weight/color, adds cognitive overhead, and diverges from platform norms. Material explicitly *limits* options for consistency.
+
+### Simplified scale: **5 font sizes**
+
+| Variable | Size | Role | Use for |
+|----------|------|------|---------|
+| `--app-font-size-caption` | 12px | Caption | Pills, overlines, metadata, badges |
+| `--app-font-size-body` | 14px | Body | Default body, secondary text, buttons, list secondary, category/detail labels |
+| `--app-font-size-title` | 17px | Title | Card titles, list item titles, section headings, primary headings |
+| `--app-font-size-display` | 20px | Display | Page titles, action-sheet headers |
+| `--app-font-size-display-lg` | 24px | Display large | Hero text, onboarding headlines, large icons, big numbers |
+
+**Weight & color** handle nuance (e.g. body vs caption both 14px, differentiated by color).
+
+---
+
 ## 1. Reference: Tools / Content-Card Typography
 
 | Role | Font size | Font weight | Color | Line height | Usage |
@@ -23,39 +49,29 @@
 
 ---
 
-## 2. Proposed CSS Variables (variables.scss or global.scss)
+## 2. CSS Variables (simplified 5-size scale)
 
-Add these so components can use shared tokens instead of hardcoded values:
+See **§0** for rationale. Implemented in `variables.scss`:
 
 ```scss
-:root {
-  /* Typography - aligned with Tools / content-card */
-  --app-font-size-caption: 12px;    /* pills, tiny labels */
-  --app-font-size-body-sm: 13px;    /* detail, metadata, category */
-  --app-font-size-body: 14px;       /* body, list secondary */
-  --app-font-size-body-lg: 15px;    /* slightly larger body */
-  --app-font-size-title-sm: 16px;   /* list titles, small headings */
-  --app-font-size-title: 17px;      /* card title, primary heading */
-  --app-font-size-title-lg: 18px;   /* section headings */
-  --app-font-size-display-sm: 20px; /* page subheads */
-  --app-font-size-display: 24px;    /* page titles, big headings */
-  --app-font-size-display-lg: 28px; /* hero, icons */
-  --app-font-size-display-xl: 32px; /* onboarding, impact numbers */
+--app-font-size-caption: 12px;
+--app-font-size-body: 14px;
+--app-font-size-title: 17px;
+--app-font-size-display: 20px;
+--app-font-size-display-lg: 24px;
 
-  --app-font-weight-medium: 500;
-  --app-font-weight-semibold: 600;
-  --app-font-weight-bold: 700;
+--app-font-weight-medium: 500;
+--app-font-weight-semibold: 600;
+--app-font-weight-bold: 700;
 
-  --app-line-height-tight: 1.35;
-  --app-line-height-body: 1.4;
-  --app-line-height-relaxed: 1.5;
-  --app-line-height-loose: 1.6;
+--app-line-height-tight: 1.35;
+--app-line-height-body: 1.4;
+--app-line-height-relaxed: 1.5;
+--app-line-height-loose: 1.6;
 
-  /* Text colors - use Ionic vars where possible */
-  --app-text-primary: var(--ion-text-color);      /* or #000 for light theme */
-  --app-text-secondary: var(--ion-color-medium);
-  --app-text-accent: var(--ion-color-primary);
-}
+--app-text-primary: var(--ion-text-color);
+--app-text-secondary: var(--ion-color-medium);
+--app-text-accent: var(--ion-color-primary);
 ```
 
 ---
@@ -302,6 +318,16 @@ Wide variation: 12px–64px, 600–700, various colors. Good candidates to migra
 | 9 | `developer-options`, `gap-ministries`, `transformation-class-*` | Same |
 | 10 | `onboarding`, `contact`, `tabs` | Same |
 | 11 | Sandbox pages | Migrate as you go |
+
+---
+
+## 7. Implementation status (Phases 4–6 complete)
+
+- **Phases 1–3:** Variables, global styles, and shared components (content-card, card, alerts-modal, user-type-card) use the 5-size scale.
+- **Phase 4:** home, more, services, about updated to use typography vars.
+- **Phase 5:** donate-goods, donate-money, faq, profile, developer-options, gap-ministries (app + org-services), transformation-class-detail, onboarding (steps 1–3), contact updated. **Skipped:** tabs (tab bar uses rem; leave as-is), sandbox pages (migrate when touching).
+- **Phase 6:** Redundant profile typography consolidated. Build verified. Dark mode: `--app-text-primary` / `--app-text-secondary` / `--app-text-accent` use Ionic vars that switch in `prefers-color-scheme: dark`.
+- **Left as-is:** Decorative sizes (e.g. 36px, 48px, 64px icons), header icon `1.2rem`, tab bar `rem` sizes.
 
 ---
 

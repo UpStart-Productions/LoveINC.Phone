@@ -71,22 +71,14 @@ ion-button:not([color]) {
   --border-radius: 50px;
 }
 
-/* Global Pill Button Styles */
+/* Global Pill Button Styles (typography in theme/typography.scss) */
 .pill-button {
   --border-radius: 50px;
   --padding-top: 16px;
   --padding-bottom: 16px;
-  font-size: 18px;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
   
   &:not([disabled]) {
     --box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  }
-  
-  ion-icon {
-    font-size: 24px;
   }
 }
 
@@ -111,20 +103,11 @@ ion-header ion-buttons ion-button {
 
 ion-header ion-buttons ion-button ion-icon {
   color: #ffffff;
-  font-size: 1.2rem !important;
-  width: 1.2rem !important;
-  height: 1.2rem !important;
 }
 
 ion-header ion-back-button {
   --color: #ffffff;
   color: #ffffff;
-  
-  ion-icon {
-    font-size: 1.2rem !important;
-    width: 1.2rem !important;
-    height: 1.2rem !important;
-  }
 }
 
 /* Global Donate Header Button Styling */
@@ -143,9 +126,6 @@ ion-header ion-back-button {
   }
   
   ion-icon {
-    font-size: 1.2rem !important;
-    width: 1.2rem !important;
-    height: 1.2rem !important;
     color: white;
   }
 }
@@ -188,47 +168,15 @@ ion-modal.alerts-modal-sheet {
   }
 }
 
-/* Global List Item Detail Icon (Chevron) Styling - 10% larger than 50% smaller, light grey */
-ion-item[detail="true"] {
-  --detail-icon-font-size: 13px;
-  --detail-icon-opacity: 1;
-  --detail-icon-color: var(--ion-color-medium);
-}
-
-/* Target detail icon using part selector */
-ion-item[detail="true"]::part(native) {
-  --detail-icon-font-size: 13px;
-  --detail-icon-color: var(--ion-color-medium);
-}
-
-/* Fallback: target detail icon directly */
-ion-item[detail="true"] .item-detail-icon,
-ion-item[detail="true"] ion-icon[slot="end"] {
-  font-size: 13px !important;
-  width: 13px !important;
-  height: 13px !important;
-  color: var(--ion-color-medium) !important;
-}
-
-/* Accordion toggle icon - match ion-item detail icon size (13px) */
-ion-accordion .ion-accordion-toggle-icon {
-  font-size: 13px !important;
-  width: 13px !important;
-  height: 13px !important;
-}
-
-/* Global Pill Styling - 10% smaller size */
+/* Global Pill Styling (typography in theme/typography.scss) */
 .action-pill,
 .item-pill {
-  padding: 5.4px 14.4px !important;
+  padding: 6px 14px !important;
   border-radius: 20px;
-  font-size: 12.6px !important;
-  font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-/* Home page user-type pills (Support, Join, Donate) - equal width */
 .action-pill {
   width: 72px;
   min-width: 72px;
@@ -237,12 +185,6 @@ ion-accordion .ion-accordion-toggle-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* Global List Item Title Styling - 10% smaller */
-ion-item ion-label h2,
-ion-item ion-label .user-type-title {
-  font-size: 16.2px !important;
 }
 
 /* Core CSS required for Ionic components to work properly */
@@ -273,8 +215,8 @@ ion-item ion-label .user-type-title {
 @import '@ionic/angular/css/palettes/dark.system.css';
 
 /**
- * Global Action Sheet Styling
- * Applies to both Services and Donate action sheets
+ * Global Action Sheet Styling (typography in theme/typography.scss)
+ * Layout, spacing, structure only.
  * -----------------------------------------------------
  */
 .services-action-sheet .action-sheet-title,
@@ -286,45 +228,26 @@ ion-item ion-label .user-type-title {
 .services-action-sheet .action-sheet-group h1,
 .donate-action-sheet .action-sheet-group h1,
 .share-action-sheet .action-sheet-group h1 {
-  font-size: 20px !important;
-  font-weight: 600 !important;
-  color: var(--ion-color-primary) !important;
-  text-align: left !important;
   padding-left: 20px !important;
 }
 
 .services-action-sheet,
 .donate-action-sheet,
 .share-action-sheet {
-
   .action-sheet-button,
   .action-sheet-button-with-subtitle {
     text-align: left !important;
     justify-content: flex-start !important;
-    
+
     .action-sheet-button-inner {
       justify-content: flex-start !important;
-      font-size: 14px;
     }
 
     .action-sheet-icon {
-      font-size: 14px;
       margin-right: 16px;
-      color: var(--ion-color-primary);
-    }
-
-    span {
-      font-size: 14px;
     }
   }
 
-  .action-sheet-cancel {
-    .action-sheet-icon {
-      color: var(--ion-color-medium);
-    }
-  }
-
-  // Style the Donate button as a full-width coral button
   .action-sheet-button.donate-button {
     background-color: var(--love-inc-coral) !important;
     color: #ffffff !important;
@@ -332,113 +255,24 @@ ion-item ion-label .user-type-title {
     border-radius: 8px !important;
     width: calc(100% - 24px) !important;
     box-sizing: border-box !important;
-    
-    .action-sheet-icon {
-      color: #ffffff !important;
-    }
-    
-    span {
-      color: #ffffff !important;
-      font-weight: 600 !important;
-      font-size: 16px !important;
-    }
-    
+
     .action-sheet-button-inner {
       justify-content: center !important;
     }
   }
 }
 
-/**
- * Services Action Sheet Specific Styling
- * -----------------------------------------------------
- */
-.services-action-sheet {
-  .action-sheet-button {
-    .action-sheet-icon {
-      font-size: 24px !important;
-      width: 24px !important;
-      height: 24px !important;
-    }
-
-    /* Custom Lucide hand-helping SVG icon (Gap Ministries) */
-    ion-icon[src*="hand-helping.svg"] {
-      color: var(--ion-color-primary);
-    }
-
-    .action-sheet-button-inner {
-      font-size: 16px !important;
-    }
-
-    span {
-      font-size: 16px !important;
-      color: var(--ion-color-dark) !important;
-    }
-  }
+.services-action-sheet .action-sheet-button .action-sheet-icon {
+  width: 24px !important;
+  height: 24px !important;
 }
 
-/**
- * Share Action Sheet Specific Styling
- * Matches Services FAB action sheet styling
- * -----------------------------------------------------
- */
-.share-action-sheet {
-  .action-sheet-button {
-    .action-sheet-icon {
-      font-size: 24px !important;
-      width: 24px !important;
-      height: 24px !important;
-      color: var(--ion-color-primary) !important;
-    }
-
-    .action-sheet-button-inner {
-      font-size: 16px !important;
-    }
-
-    span {
-      font-size: 16px !important;
-      color: var(--ion-color-dark) !important;
-    }
-  }
-
-  .action-sheet-cancel {
-    .action-sheet-icon {
-      color: var(--ion-color-medium) !important;
-    }
-  }
+.share-action-sheet .action-sheet-button .action-sheet-icon {
+  width: 24px !important;
+  height: 24px !important;
 }
 
-/**
- * Donate Action Sheet Specific Styling
- * For subtitle text formatting
- * -----------------------------------------------------
- */
-.donate-action-sheet {
-  .action-sheet-button {
-    .action-sheet-icon {
-      font-size: 24px !important;
-      width: 24px !important;
-      height: 24px !important;
-    }
-
-    .action-sheet-button-inner {
-      font-size: 16px !important;
-      line-height: 1.6;
-    }
-
-    span {
-      font-size: 16px !important;
-      color: var(--ion-color-dark) !important;
-    }
-  }
-
-  .action-sheet-button-with-subtitle {
-    .action-sheet-button-inner {
-      line-height: 1.6;
-      
-      // Style the first line (main text) to be bold and darker
-      // Note: white-space: pre-line removed from container to prevent layout issues
-      // The newline in the text string should work with default handling
-    }
-  }
+.donate-action-sheet .action-sheet-button .action-sheet-icon {
+  width: 24px !important;
+  height: 24px !important;
 }

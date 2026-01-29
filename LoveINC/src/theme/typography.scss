@@ -1,0 +1,238 @@
+/*
+ * Typography – global font/text styles
+ * Uses vars from variables.scss (--app-font-*, --app-text-*, etc.)
+ * Include after variables.scss.
+ */
+
+/* All headings default to ion-color-dark; override only in specific cases */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ion-color-dark);
+}
+
+/* Default body text */
+p {
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-primary);
+  line-height: var(--app-line-height-relaxed);
+}
+
+/* Typography utility classes (5-size scale) */
+.app-title {
+  font-size: var(--app-font-size-title);
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-primary);
+  line-height: var(--app-line-height-tight);
+}
+
+.app-body {
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-primary);
+  line-height: var(--app-line-height-relaxed);
+}
+
+.app-body-secondary {
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-secondary);
+}
+
+.app-caption {
+  font-size: var(--app-font-size-caption);
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-secondary);
+}
+
+.app-display {
+  font-size: var(--app-font-size-display);
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-accent);
+}
+
+.app-display-lg {
+  font-size: var(--app-font-size-display-lg);
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-accent);
+}
+
+/* Pill button – typography */
+.pill-button {
+  font-size: var(--app-font-size-title);
+  font-weight: var(--app-font-weight-semibold);
+  text-transform: none;
+  letter-spacing: 0;
+
+  ion-icon {
+    font-size: var(--app-font-size-display-lg);
+  }
+}
+
+/* List item detail icon (chevron) */
+ion-item[detail="true"] {
+  --detail-icon-font-size: var(--app-font-size-body);
+  --detail-icon-opacity: 1;
+  --detail-icon-color: var(--app-text-secondary);
+}
+
+ion-item[detail="true"]::part(native) {
+  --detail-icon-font-size: var(--app-font-size-body);
+  --detail-icon-color: var(--app-text-secondary);
+}
+
+ion-item[detail="true"] .item-detail-icon,
+ion-item[detail="true"] ion-icon[slot="end"] {
+  font-size: var(--app-font-size-body) !important;
+  width: 14px !important;
+  height: 14px !important;
+  color: var(--app-text-secondary) !important;
+}
+
+/* Accordion toggle icon */
+ion-accordion .ion-accordion-toggle-icon {
+  font-size: var(--app-font-size-body) !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* Pills (action-pill, item-pill) */
+.action-pill,
+.item-pill {
+  font-size: var(--app-font-size-caption) !important;
+  font-weight: var(--app-font-weight-semibold);
+}
+
+/* List item titles */
+ion-item ion-label h2,
+ion-item ion-label .user-type-title {
+  font-size: var(--app-font-size-title) !important;
+}
+
+/* Header icon sizes (toolbar, back, donate) */
+ion-header ion-buttons ion-button ion-icon {
+  font-size: 1.2rem !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+}
+
+ion-header ion-back-button ion-icon {
+  font-size: 1.2rem !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+}
+
+.donate-header-button ion-icon {
+  font-size: 1.2rem !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+}
+
+/* Action sheet – typography */
+.services-action-sheet .action-sheet-title,
+.donate-action-sheet .action-sheet-title,
+.share-action-sheet .action-sheet-title,
+.services-action-sheet .action-sheet-header,
+.donate-action-sheet .action-sheet-header,
+.share-action-sheet .action-sheet-header,
+.services-action-sheet .action-sheet-group h1,
+.donate-action-sheet .action-sheet-group h1,
+.share-action-sheet .action-sheet-group h1 {
+  font-size: var(--app-font-size-display) !important;
+  font-weight: var(--app-font-weight-semibold) !important;
+  color: var(--app-text-accent) !important;
+  text-align: left !important;
+}
+
+.services-action-sheet,
+.donate-action-sheet,
+.share-action-sheet {
+  .action-sheet-button,
+  .action-sheet-button-with-subtitle {
+    text-align: left !important;
+
+    .action-sheet-button-inner {
+      font-size: var(--app-font-size-body);
+    }
+
+    .action-sheet-icon {
+      font-size: var(--app-font-size-body);
+      color: var(--app-text-accent);
+    }
+
+    span {
+      font-size: var(--app-font-size-body);
+    }
+  }
+
+  .action-sheet-cancel .action-sheet-icon {
+    color: var(--app-text-secondary);
+  }
+
+  .action-sheet-button.donate-button {
+    span {
+      color: #ffffff !important;
+      font-weight: var(--app-font-weight-semibold) !important;
+      font-size: var(--app-font-size-title) !important;
+    }
+
+    .action-sheet-icon {
+      color: #ffffff !important;
+    }
+  }
+}
+
+.services-action-sheet .action-sheet-button {
+  .action-sheet-icon {
+    font-size: var(--app-font-size-display-lg) !important;
+  }
+
+  .action-sheet-button-inner {
+    font-size: var(--app-font-size-title) !important;
+  }
+
+  span {
+    font-size: var(--app-font-size-title) !important;
+    color: var(--app-text-primary) !important;
+  }
+
+  ion-icon[src*="hand-helping.svg"] {
+    color: var(--app-text-accent);
+  }
+}
+
+.share-action-sheet .action-sheet-button {
+  .action-sheet-icon {
+    font-size: var(--app-font-size-display-lg) !important;
+    color: var(--app-text-accent) !important;
+  }
+
+  .action-sheet-button-inner {
+    font-size: var(--app-font-size-title) !important;
+  }
+
+  span {
+    font-size: var(--app-font-size-title) !important;
+    color: var(--app-text-primary) !important;
+  }
+}
+
+.share-action-sheet .action-sheet-cancel .action-sheet-icon {
+  color: var(--app-text-secondary) !important;
+}
+
+.donate-action-sheet .action-sheet-button {
+  .action-sheet-icon {
+    font-size: var(--app-font-size-display-lg) !important;
+  }
+
+  .action-sheet-button-inner {
+    font-size: var(--app-font-size-title) !important;
+    line-height: var(--app-line-height-loose);
+  }
+
+  span {
+    font-size: var(--app-font-size-title) !important;
+    color: var(--app-text-primary) !important;
+  }
+}
+
+.donate-action-sheet .action-sheet-button-with-subtitle .action-sheet-button-inner {
+  line-height: var(--app-line-height-loose);
+}
