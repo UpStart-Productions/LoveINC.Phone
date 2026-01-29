@@ -75,6 +75,11 @@ export class MorePage implements OnInit {
       route: '/tabs/videos',
     },
     {
+      name: 'Tools',
+      icon: 'construct-outline',
+      route: '/tabs/tools',
+    },
+    {
       name: 'Saved Items',
       icon: 'bookmark-outline',
       route: '/tabs/saved-items',

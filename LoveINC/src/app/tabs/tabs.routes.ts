@@ -52,6 +52,11 @@ export const routes: Routes = [
           import('../videos/videos.page').then((m) => m.VideosPage),
       },
       {
+        path: 'tools',
+        loadComponent: () =>
+          import('../tools/tools.page').then((m) => m.ToolsPage),
+      },
+      {
         path: 'saved-items',
         loadComponent: () =>
           import('../saved-items/saved-items.page').then((m) => m.SavedItemsPage),
