@@ -19,6 +19,8 @@ ion-card {
  * ----------------------------------------------------------------------------- */
 ion-card-header {
   padding: 16px 16px 8px 16px;
+  --padding-start: 16px;
+  --padding-end: 16px;
 }
 
 ion-card-header ion-card-title {
@@ -26,6 +28,8 @@ ion-card-header ion-card-title {
   font-weight: var(--app-font-weight-semibold);
   color: var(--app-text-primary);
   margin-bottom: 4px;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 ion-card-header ion-card-subtitle {
@@ -33,6 +37,8 @@ ion-card-header ion-card-subtitle {
   color: var(--app-text-secondary);
   font-weight: var(--app-font-weight-medium);
   line-height: var(--app-line-height-body);
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .app-card ion-card-header ion-card-subtitle {
@@ -41,9 +47,20 @@ ion-card-header ion-card-subtitle {
 
 ion-card-content {
   padding: 8px 16px 16px 16px;
+  --padding-start: 16px;
+  --padding-end: 16px;
   font-size: var(--app-font-size-body);
   line-height: var(--app-line-height-relaxed);
   color: var(--app-text-primary);
+}
+
+ion-card-content p,
+ion-card-content div,
+ion-card-content span {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 /* -----------------------------------------------------------------------------

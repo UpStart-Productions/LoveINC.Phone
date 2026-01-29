@@ -1,12 +1,12 @@
 ion-toolbar {
   ion-searchbar {
-    --background: rgba(255, 255, 255, 0.1);
+    --background: rgba(var(--ion-color-primary-contrast-rgb), 0.1);
     --box-shadow: none;
-    --placeholder-color: rgba(255, 255, 255, 0.6);
+    --placeholder-color: rgba(var(--ion-color-primary-contrast-rgb), 0.6);
     --placeholder-opacity: 1;
-    --color: white;
-    --icon-color: rgba(255, 255, 255, 0.6);
-    --clear-button-color: rgba(255, 255, 255, 0.6);
+    --color: var(--ion-color-primary-contrast);
+    --icon-color: rgba(var(--ion-color-primary-contrast-rgb), 0.6);
+    --clear-button-color: rgba(var(--ion-color-primary-contrast-rgb), 0.6);
     
     .searchbar-input {
       color: white;

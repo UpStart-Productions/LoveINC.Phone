@@ -9,7 +9,42 @@
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
 
-/* Custom Font - Ilisarniq */
+/* -----------------------------------------------------------------------------
+ * Ionic Core CSS Imports
+ * ----------------------------------------------------------------------------- */
+@import "@ionic/angular/css/core.css";
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* -----------------------------------------------------------------------------
+ * Ionic Optional CSS Utils
+ * ----------------------------------------------------------------------------- */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/* -----------------------------------------------------------------------------
+ * Ionic Dark Mode
+ * ----------------------------------------------------------------------------- */
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import '@ionic/angular/css/palettes/dark.system.css';
+
+/* -----------------------------------------------------------------------------
+ * Theme Imports (must be after Ionic imports for variable overrides)
+ * ----------------------------------------------------------------------------- */
+@import './theme/variables.scss';
+@import './theme/typography.scss';
+@import './theme/cards.scss';
+@import './theme/icons.scss';
+
+/* -----------------------------------------------------------------------------
+ * Custom Font - Ilisarniq
+ * ----------------------------------------------------------------------------- */
 @font-face {
   font-family: 'Ilisarniq';
   src: url('/assets/fonts/Ilisarniq-Light.woff2') format('woff2');
@@ -45,7 +80,9 @@
   font-style: normal;
 }
 
-/* Love INC Heart Logo SVG */
+/* -----------------------------------------------------------------------------
+ * Love INC Heart Logo SVG
+ * ----------------------------------------------------------------------------- */
 .love-inc-heart-logo {
   display: inline-block;
   width: 100%;
@@ -64,6 +101,10 @@
 .love-inc-heart-logo.secondary-color {
   filter: brightness(0) saturate(100%) invert(31%) sepia(34%) saturate(871%) hue-rotate(159deg) brightness(91%) contrast(88%);
 }
+
+/* -----------------------------------------------------------------------------
+ * Global Component Styles
+ * ----------------------------------------------------------------------------- */
 
 /* Primary Button Global Styles */
 ion-button[color="primary"],
@@ -187,38 +228,10 @@ ion-modal.alerts-modal-sheet {
   justify-content: center;
 }
 
-/* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
-
-/* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
-
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
-
-/**
+/* -----------------------------------------------------------------------------
  * Global Action Sheet Styling (typography in theme/typography.scss)
  * Layout, spacing, structure only.
- * -----------------------------------------------------
- */
+ * ----------------------------------------------------------------------------- */
 .services-action-sheet .action-sheet-title,
 .donate-action-sheet .action-sheet-title,
 .share-action-sheet .action-sheet-title,

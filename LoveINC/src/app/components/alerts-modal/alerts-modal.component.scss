@@ -1,11 +1,11 @@
 ion-header {
   ion-toolbar {
-    --background: #ffffff !important;
-    --color: #000000 !important;
+    --background: var(--ion-background-color) !important;
+    --color: var(--ion-color-dark) !important;
     --min-height: 56px;
     padding: 0 16px;
-    background: #ffffff !important;
-    color: #000000 !important;
+    background: var(--ion-background-color) !important;
+    color: var(--ion-color-dark) !important;
     
     ion-title {
       font-weight: var(--app-font-weight-semibold);
@@ -19,13 +19,13 @@ ion-header {
       margin: 0;
       
       ion-button {
-        --color: #000000 !important;
-        --color-hover: #000000 !important;
-        color: #000000 !important;
+        --color: var(--ion-color-dark) !important;
+        --color-hover: var(--ion-color-dark) !important;
+        color: var(--ion-color-dark) !important;
         margin: 0;
         
         ion-icon {
-          color: #000000 !important;
+          color: var(--ion-color-dark) !important;
         }
       }
     }
@@ -103,7 +103,7 @@ ion-header {
   --padding-top: 16px;
   --padding-bottom: 16px;
   --inner-padding-end: 0;
-  --background: #ffffff;
+  --background: var(--ion-background-color);
   --border-radius: 12px;
   margin-bottom: 12px;
   border-radius: 12px;
@@ -112,13 +112,13 @@ ion-header {
   flex-direction: column;
   
   &.unread {
-    --background: #f5f5f5;
-    background: #f5f5f5;
+    --background: var(--ion-color-light-shade);
+    background: var(--ion-color-light-shade);
   }
   
   &.read {
-    --background: #ffffff;
-    background: #ffffff;
+    --background: var(--ion-background-color);
+    background: var(--ion-background-color);
   }
 
   ion-label {
@@ -163,7 +163,7 @@ ion-header {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background-color: #007AFF;
+    background-color: var(--ion-color-primary);
     flex-shrink: 0;
     align-self: flex-start;
     margin-top: 7px;
@@ -173,15 +173,15 @@ ion-header {
 .mark-all-container {
   padding: 16px;
   padding-top: 8px;
-  background: #ffffff;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  background: var(--ion-background-color);
+  border-top: 1px solid rgba(var(--ion-color-dark-rgb), 0.1);
   flex-shrink: 0;
 }
 
 .mark-all-button {
   --background: var(--ion-color-primary);
   --background-activated: var(--ion-color-primary-shade);
-  --color: #ffffff;
+  --color: var(--ion-color-primary-contrast);
   --border-radius: 999px;
   --padding-top: 14px;
   --padding-bottom: 14px;

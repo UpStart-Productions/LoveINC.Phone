@@ -1,5 +1,5 @@
 .onboarding-content {
-  --background: linear-gradient(135deg, #f5f9fa 0%, #ffffff 100%);
+  --background: linear-gradient(135deg, var(--ion-color-light) 0%, var(--ion-background-color) 100%);
 }
 
 /* Fixed Header Container */
@@ -11,7 +11,7 @@
   height: calc(30vh + 75px);
   z-index: 10;
   overflow: hidden;
-  background-color: #000;
+  background-color: var(--ion-color-dark);
 }
 
 .photo-background-header {
@@ -32,7 +32,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(var(--ion-color-dark-rgb), 0.5);
 }
 
 .logo-container {

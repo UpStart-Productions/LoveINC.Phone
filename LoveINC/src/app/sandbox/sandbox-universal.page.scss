@@ -98,7 +98,7 @@
   
   &.earned {
     border-color: var(--love-inc-teal);
-    background: rgba(52, 147, 148, 0.1);
+    background: rgba(52, 147, 148, 0.1); // Using love-inc-teal (#349394) - consider adding --love-inc-teal-rgb variable
   }
   
   .badge-icon {

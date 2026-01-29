@@ -1,0 +1,222 @@
+/*
+ * Icons – global icon styles for all icon types
+ * Uses vars from variables.scss (--app-font-*, --app-text-*, etc.)
+ */
+
+/* -----------------------------------------------------------------------------
+ * Tab Bar Icons
+ * ----------------------------------------------------------------------------- */
+ion-tab-button {
+  ion-icon {
+    font-size: 1.36rem;
+    padding-top: 0px;
+    margin-top: -2px;
+    color: var(--love-inc-neutral-dark);
+  }
+
+  /* Icon switching for active state */
+  .solid-icon {
+    display: none;
+  }
+
+  .outline-icon {
+    display: block;
+  }
+
+  &.tab-selected {
+    ion-icon {
+      color: var(--ion-color-primary);
+    }
+
+    .solid-icon {
+      display: block;
+    }
+
+    .outline-icon {
+      display: none;
+    }
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * FAB (Floating Action Button) Icons
+ * ----------------------------------------------------------------------------- */
+ion-fab-button {
+  ion-icon {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * Header Icons (toolbar, back button, donate button)
+ * ----------------------------------------------------------------------------- */
+ion-header ion-buttons ion-button ion-icon {
+  font-size: 1.2rem !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+}
+
+ion-header ion-back-button {  
+  /* Target the native button element */
+  &::part(native) {
+    font-size: .9rem !important;
+  }
+}
+
+.donate-header-button ion-icon {
+  font-size: 1.2rem !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+}
+
+/* -----------------------------------------------------------------------------
+ * Card Icons
+ * ----------------------------------------------------------------------------- */
+
+/* Card badge icons */
+.card-badge,
+.card-type-badge {
+  ion-icon {
+    font-size: var(--app-font-size-body);
+  }
+}
+
+/* Section card title icons */
+.section-card ion-card-title .section-icon {
+  font-size: var(--app-font-size-display-lg);
+  margin-right: 8px;
+  color: var(--ion-color-dark);
+}
+
+/* Card action icons (map, phone, volunteer, etc.) */
+.action-icons {
+  ion-button {
+    ion-icon {
+      font-size: var(--app-font-size-display);
+      color: var(--ion-color-dark);
+    }
+
+    i-lucide {
+      color: var(--ion-color-dark);
+    }
+  }
+
+  .map-button ion-icon,
+  .phone-button ion-icon,
+  .volunteer-button ion-icon,
+  .calendar-button ion-icon,
+  .email-button ion-icon,
+  .share-button ion-icon {
+    color: var(--ion-color-dark);
+  }
+}
+
+/* Content card icons */
+.content-card-icon {
+  font-size: 36px;
+  color: #fff;
+}
+
+.category-icon {
+  font-size: var(--app-font-size-body);
+  color: var(--ion-color-dark);
+}
+
+.detail-play-icon {
+  font-size: var(--app-font-size-body);
+  color: var(--ion-color-dark);
+}
+
+/* -----------------------------------------------------------------------------
+ * List Item Icons
+ * ----------------------------------------------------------------------------- */
+
+/* List item detail icon (chevron) */
+ion-item[detail="true"] {
+  --detail-icon-font-size: var(--app-font-size-body);
+  --detail-icon-opacity: 1;
+  --detail-icon-color: var(--app-text-secondary);
+}
+
+ion-item[detail="true"]::part(native) {
+  --detail-icon-font-size: var(--app-font-size-body);
+  --detail-icon-color: var(--app-text-secondary);
+}
+
+ion-item[detail="true"] .item-detail-icon,
+ion-item[detail="true"] ion-icon[slot="end"] {
+  font-size: var(--app-font-size-body) !important;
+  width: 14px !important;
+  height: 14px !important;
+  color: var(--app-text-secondary) !important;
+}
+
+/* User type card icons */
+.user-type-icon {
+  font-size: var(--app-font-size-display-lg);
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+/* -----------------------------------------------------------------------------
+ * Accordion Icons
+ * ----------------------------------------------------------------------------- */
+ion-accordion .ion-accordion-toggle-icon {
+  font-size: var(--app-font-size-body) !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* -----------------------------------------------------------------------------
+ * Action Sheet Icons
+ * ----------------------------------------------------------------------------- */
+.services-action-sheet,
+.donate-action-sheet,
+.share-action-sheet {
+  .action-sheet-icon {
+    font-size: var(--app-font-size-body);
+    color: var(--app-text-accent);
+  }
+
+  .action-sheet-cancel .action-sheet-icon {
+    color: var(--app-text-secondary);
+  }
+}
+
+.services-action-sheet .action-sheet-button {
+  .action-sheet-icon {
+    font-size: var(--app-font-size-display-lg) !important;
+  }
+}
+
+.share-action-sheet .action-sheet-button {
+  .action-sheet-icon {
+    font-size: var(--app-font-size-display-lg) !important;
+    color: var(--app-text-accent) !important;
+  }
+}
+
+.share-action-sheet .action-sheet-cancel .action-sheet-icon {
+  color: var(--app-text-secondary) !important;
+}
+
+.donate-action-sheet .action-sheet-button {
+  .action-sheet-icon {
+    font-size: var(--app-font-size-display-lg) !important;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * Pill Icons (Action Pills, Item Pills)
+ * ----------------------------------------------------------------------------- */
+/* Icon styles for pills are handled globally in typography.scss */
+
+/* -----------------------------------------------------------------------------
+ * Pill Button Icons
+ * ----------------------------------------------------------------------------- */
+.pill-button {
+  ion-icon {
+    font-size: var(--app-font-size-display-lg);
+  }
+}

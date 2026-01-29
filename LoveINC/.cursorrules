@@ -1,0 +1,40 @@
+# Love INC Mobile App - Cursor Rules
+
+## Color Management
+
+**IMPORTANT: Always use CSS variables from `variables.scss` instead of hardcoded colors.**
+
+### Color Variables Available:
+- `var(--ion-color-primary)` - Primary brand color
+- `var(--ion-color-secondary)` - Secondary brand color
+- `var(--ion-color-dark)` - Dark text/backgrounds
+- `var(--ion-color-light)` - Light backgrounds (#f4f5f8)
+- `var(--ion-color-medium)` - Medium gray for secondary text
+- `var(--ion-color-primary-contrast)` - White/contrast color for primary
+- `var(--ion-color-dark-rgb)` - RGB values for rgba() usage
+- `var(--ion-color-light-rgb)` - RGB values for rgba() usage
+- `var(--love-inc-teal)`, `var(--love-inc-blue)`, etc. - Brand colors
+
+### Common Color Mappings:
+- `#ffffff` / `#fff` / `white` → `var(--ion-background-color)` or `var(--ion-color-primary-contrast)`
+- `#000000` / `#000` / `black` → `var(--ion-color-dark)`
+- `#f4f5f8` → `var(--ion-color-light)`
+- `rgba(0, 0, 0, 0.5)` → `rgba(var(--ion-color-dark-rgb), 0.5)`
+- `rgba(255, 255, 255, 0.2)` → `rgba(var(--ion-color-primary-contrast-rgb), 0.2)`
+
+### When Adding New Colors:
+1. Add the color to `src/theme/variables.scss` first
+2. Use the variable in component SCSS files
+3. Never hardcode hex, rgb, or named colors directly in component files
+
+## Icon Management
+
+All icons should be imported in `src/app/app.component.ts` for app-wide availability. Do not import icons in individual components.
+
+## Theme File Organization
+
+All theme files are imported in `src/global.scss`:
+- `variables.scss` - CSS variables and color definitions
+- `typography.scss` - Font sizes, weights, line heights
+- `cards.scss` - Card component styles
+- `icons.scss` - Icon styles for all icon types

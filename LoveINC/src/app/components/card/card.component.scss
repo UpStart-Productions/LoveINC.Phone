@@ -25,11 +25,11 @@
 
     ion-icon {
       font-size: var(--app-font-size-display);
-      color: var(--app-text-primary);
+      color: var(--ion-color-dark);
     }
 
     i-lucide {
-      color: var(--app-text-primary);
+      color: var(--ion-color-dark);
     }
   }
 
@@ -39,6 +39,6 @@
   .calendar-button ion-icon,
   .email-button ion-icon,
   .share-button ion-icon {
-    color: var(--app-text-primary);
+    color: var(--ion-color-dark);
   }
 }
