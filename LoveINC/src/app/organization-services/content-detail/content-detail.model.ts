@@ -1,4 +1,13 @@
 /**
+ * Class document interface for supporting handouts and resources
+ */
+export interface ClassDocument {
+  title: string;
+  url?: string;
+  type?: 'handout' | 'worksheet' | 'resource';
+}
+
+/**
  * Unified interface for all content detail types (events, classes, impact stories, etc.)
  */
 export interface ContentDetail {
@@ -19,6 +28,7 @@ export interface ContentDetail {
     dayOfWeek: string;
     time: string;
   };
+  classDocuments?: ClassDocument[];
   
   // Event-specific fields
   eventDate?: string;

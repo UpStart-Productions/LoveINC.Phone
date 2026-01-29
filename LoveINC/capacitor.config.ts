@@ -18,6 +18,8 @@ const config: CapacitorConfig = {
       splashImmersive: true,
       layoutName: 'launch_screen',
       useDialog: true,
+      // Prevent splash from showing when app resumes from background
+      autoHide: true,
     },
   },
 };

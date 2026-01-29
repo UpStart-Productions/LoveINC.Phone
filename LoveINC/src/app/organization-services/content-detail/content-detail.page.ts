@@ -253,6 +253,23 @@ export class ContentDetailPage implements OnInit {
     return !!(this.contentItem?.registrationLink || this.contentItem?.actionButtonLink || this.contentItem?.actionButtonText);
   }
 
+  hasClassDocuments(): boolean {
+    return !!(this.contentItem?.classDocuments && this.contentItem.classDocuments.length > 0);
+  }
+
+  getDocumentTypeIcon(type?: string): string {
+    switch (type) {
+      case 'handout':
+        return 'document-text-outline';
+      case 'worksheet':
+        return 'create-outline';
+      case 'resource':
+        return 'library-outline';
+      default:
+        return 'document-outline';
+    }
+  }
+
   private buildShareContent(): string {
     if (!this.contentItem) return '';
     

@@ -5,7 +5,7 @@
         @if (category || categoryExtra) {
           <div class="category-row">
             @if (categoryIcon) {
-              <ion-icon [name]="categoryIcon" class="category-icon"></ion-icon>
+              <ion-icon [name]="categoryIcon" class="icon"></ion-icon>
             }
             @if (categoryExtra) {
               <span class="app-body-secondary">{{ categoryExtra }}</span>
@@ -17,15 +17,12 @@
         }
         <h2 class="m-b-6">{{ title }}</h2>
         @if (detail) {
-          <div class="detail-row">
-            @if (showDetailPlayIcon) {
-              <ion-icon name="play-outline" class="detail-play-icon"></ion-icon>
-            }
-            <span class="app-body-secondary">{{ detail }}</span>
+          <div>
+            <p>{{ detail }}</p>
           </div>
         }
       </div>
-      <div class="content-card-right">
+      <div class="content-card-right m-t-6">
         @if (imageUrl) {
           <img [src]="imageUrl" [alt]="title" class="content-card-image" />
         } @else if (iconName) {

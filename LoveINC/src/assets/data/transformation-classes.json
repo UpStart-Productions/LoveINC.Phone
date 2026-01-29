@@ -11,7 +11,13 @@
       "endDate": "2024-03-26",
       "dayOfWeek": "Tuesdays",
       "time": "6:00 PM - 8:00 PM"
-    }
+    },
+    "classDocuments": [
+      { "title": "Week 1 – Budget Basics Handout", "type": "handout" },
+      { "title": "Meal Planning Worksheet", "type": "worksheet" },
+      { "title": "Job Search Checklist", "type": "resource" },
+      { "title": "Goal Setting Template", "type": "worksheet" }
+    ]
   },
   {
     "id": "shame-no-more-1",
@@ -25,7 +31,12 @@
       "endDate": "2024-03-28",
       "dayOfWeek": "Thursdays",
       "time": "7:00 PM - 9:00 PM"
-    }
+    },
+    "classDocuments": [
+      { "title": "Week 1 – Understanding Shame", "type": "handout" },
+      { "title": "Self-Worth Reflection Worksheet", "type": "worksheet" },
+      { "title": "Scripture & Reflection Guide", "type": "resource" }
+    ]
   },
   {
     "id": "faith-and-finance-1",
@@ -39,7 +50,13 @@
       "endDate": "2024-03-30",
       "dayOfWeek": "Saturdays",
       "time": "10:00 AM - 12:00 PM"
-    }
+    },
+    "classDocuments": [
+      { "title": "Week 1 – Biblical Stewardship", "type": "handout" },
+      { "title": "Monthly Budget Worksheet", "type": "worksheet" },
+      { "title": "Debt Paydown Tracker", "type": "worksheet" },
+      { "title": "Giving & Savings Plan", "type": "resource" }
+    ]
   },
   {
     "id": "healthy-relationships-1",
@@ -53,6 +70,12 @@
       "endDate": "2024-04-01",
       "dayOfWeek": "Mondays",
       "time": "6:30 PM - 8:30 PM"
-    }
+    },
+    "classDocuments": [
+      { "title": "Week 1 – Communication Basics", "type": "handout" },
+      { "title": "Love Languages Assessment", "type": "worksheet" },
+      { "title": "Boundaries Worksheet", "type": "worksheet" },
+      { "title": "Conflict Resolution Guide", "type": "resource" }
+    ]
   }
 ]

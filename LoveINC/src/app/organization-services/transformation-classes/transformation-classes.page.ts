@@ -17,6 +17,12 @@ import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { SharingService } from '../../services/sharing/sharing.service';
 import { AlertsModalService } from '../../services/alerts-modal.service';
+export interface ClassDocument {
+  title: string;
+  url?: string;
+  type?: 'handout' | 'worksheet' | 'resource';
+}
+
 export interface TransformationClass {
   id: string;
   title: string;
@@ -30,6 +36,7 @@ export interface TransformationClass {
     dayOfWeek: string;
     time: string;
   };
+  classDocuments?: ClassDocument[];
 }
 
 @Component({

@@ -93,8 +93,8 @@ export const routes: Routes = [
       },
       {
         path: 'transformation-classes/:id',
-        loadComponent: () =>
-          import('../organization-services/transformation-classes/transformation-class-detail.page').then((m) => m.TransformationClassDetailPage),
+        redirectTo: '/tabs/content-detail/class/:id',
+        pathMatch: 'full',
       },
       {
         path: 'content-detail/:type/:id',

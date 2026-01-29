@@ -28,9 +28,9 @@
     <div class="p-l-18 p-r-18 p-t-18 p-b-36">
       <h2 class="m-b-18">{{ contentItem.title }}</h2>
       
-      <p *ngIf="contentItem.subtitle" class="m-b-24" style="font-size: var(--app-font-size-title); line-height: var(--app-line-height-loose);">{{ contentItem.subtitle }}</p>
+      <p *ngIf="contentItem.subtitle" class="app-title m-b-24">{{ contentItem.subtitle }}</p>
       
-      <p class="m-b-24" style="font-size: var(--app-font-size-title); line-height: var(--app-line-height-loose);">{{ contentItem.description }}</p>
+      <p class="app-body-secondary m-b-24">{{ contentItem.description }}</p>
 
       <ion-list lines="none">
         <!-- Instructor (for classes) -->
@@ -71,10 +71,26 @@
             <p>{{ contentItem.location }}</p>
           </ion-label>
         </ion-item>
+
+        <!-- Class Documents Header -->
+        <ion-item *ngIf="hasClassDocuments()">
+          <ion-icon slot="start" name="document-text-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Class Documents</h3>
+          </ion-label>
+        </ion-item>
+
+        <!-- Individual Documents -->
+        <ion-item *ngFor="let doc of contentItem.classDocuments" [button]="!!doc.url" [href]="doc.url || null" [target]="doc.url ? '_blank' : null" [detail]="!!doc.url" class="document-item">
+          <ion-icon *ngIf="doc.type" slot="start" [name]="getDocumentTypeIcon(doc.type)" class="document-type-icon"></ion-icon>
+          <ion-label>
+            <p class="document-link">{{ doc.title }}</p>
+          </ion-label>
+        </ion-item>
       </ion-list>
 
       <!-- Action Buttons -->
-      <div class="action-buttons" *ngIf="hasActionButton()">
+      <div class="action-buttons m-t-24" *ngIf="hasActionButton()">
         <ion-button expand="block" color="primary" (click)="onActionButtonClick()">
           <ion-icon slot="start" name="link-outline"></ion-icon>
           {{ contentItem.actionButtonText || 'Register Now' }}

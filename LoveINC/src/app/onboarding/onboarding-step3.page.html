@@ -20,6 +20,7 @@
           [(ngModel)]="firstName"
           type="text"
           name="firstName"
+          autocapitalize="words"
           required>
         </ion-input>
       </ion-item>
@@ -30,6 +31,7 @@
           [(ngModel)]="lastName"
           type="text"
           name="lastName"
+          autocapitalize="words"
           required>
         </ion-input>
       </ion-item>
@@ -44,13 +46,13 @@
         </ion-input>
       </ion-item>
 
-      <ion-item button detail="false" (click)="toggleNewsletter()">
+      <ion-item button="false" detail="false" lines="full">
         <ion-checkbox 
           slot="start" 
           [(ngModel)]="wantsNewsletter"
           name="wantsNewsletter">
         </ion-checkbox>
-        <ion-label>
+        <ion-label (click)="wantsNewsletter = !wantsNewsletter">
           I would like to receive Love INC newsletter
         </ion-label>
       </ion-item>

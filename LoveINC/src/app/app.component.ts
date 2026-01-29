@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { OnboardingService } from './services/onboarding.service';
 import { SplashScreen } from '@capacitor/splash-screen';
+import { App } from '@capacitor/app';
 import { addIcons } from 'ionicons';
 import {
   // Tab Bar Icons
@@ -60,6 +61,9 @@ import {
   trophyOutline,
   searchOutline,
   documentTextOutline,
+  documentOutline,
+  createOutline,
+  libraryOutline,
   restaurantOutline,
   medicalOutline,
   bookOutline,
@@ -72,6 +76,9 @@ import {
   codeOutline,
   waterOutline,
   checkmarkDoneOutline,
+  calculatorOutline,
+  walletOutline,
+  peopleCircleOutline as peopleCircleOutlineIcon,
 } from 'ionicons/icons';
 
 @Component({
@@ -79,8 +86,9 @@ import {
   templateUrl: 'app.component.html',
   imports: [IonApp, IonRouterOutlet],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   private static splashScreenHidden = false;
+  private appStateListener: any;
 
   constructor(private onboardingService: OnboardingService) {
     // Initialize all icons for app-wide use
@@ -107,6 +115,34 @@ export class AppComponent implements OnInit {
         // Splash screen might not be available in web browser
         console.log('Splash screen not available (likely running in browser)');
         AppComponent.splashScreenHidden = true;
+      }
+    }
+
+    // Listen for app state changes to prevent splash screen from showing on resume
+    try {
+      this.appStateListener = await App.addListener('appStateChange', async (state) => {
+        if (state.isActive && AppComponent.splashScreenHidden) {
+          // App became active - ensure splash screen stays hidden
+          try {
+            await SplashScreen.hide();
+          } catch (error) {
+            // Ignore errors - splash might already be hidden
+          }
+        }
+      });
+    } catch (error) {
+      // App plugin might not be available in browser
+      console.log('App plugin not available');
+    }
+  }
+
+  async ngOnDestroy() {
+    // Remove app state listener
+    if (this.appStateListener) {
+      try {
+        await this.appStateListener.remove();
+      } catch (error) {
+        // Ignore errors
       }
     }
   }
@@ -169,6 +205,9 @@ export class AppComponent implements OnInit {
       trophyOutline,
       searchOutline,
       documentTextOutline,
+      documentOutline,
+      createOutline,
+      libraryOutline,
       restaurantOutline,
       medicalOutline,
       bookOutline,
@@ -181,6 +220,8 @@ export class AppComponent implements OnInit {
       codeOutline,
       waterOutline,
       checkmarkDoneOutline,
+      calculatorOutline,
+      walletOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });

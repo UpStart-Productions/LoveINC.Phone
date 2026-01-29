@@ -79,6 +79,16 @@ ion-list {
   margin-bottom: 16px;
 }
 
+ion-checkbox {
+  pointer-events: auto;
+  cursor: pointer;
+  
+  &::part(container) {
+    pointer-events: auto;
+    cursor: pointer;
+  }
+}
+
 .pill-button {
   margin: 16px;
   /* Other styles are handled globally in global.scss */
