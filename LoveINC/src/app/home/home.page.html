@@ -32,10 +32,10 @@
       [badge]="{ icon: cardTypeIcons[card.type], label: cardTypeLabels[card.type], color: cardTypeColors[card.type] }"
       [title]="card.title"
       [subtitle]="card.subtitle"
+      [description]="card.shortDescription"
       [clickable]="true"
       (cardClick)="navigateToCard(card)"
       (shareClick)="onShareCard(card)">
-      {{ card.description }}
     </app-card>
   </div>
 </ion-content>

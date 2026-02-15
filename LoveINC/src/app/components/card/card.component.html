@@ -26,9 +26,11 @@
   }
 
   <ion-card-content [class.has-action-icons]="hasActionIcons">
-    <div>
-      <ng-content></ng-content>
-    </div>
+    @if (description) {
+      <div [innerHTML]="description"></div>
+    } @else if (contentHtml) {
+      <div [innerHTML]="contentHtml"></div>
+    }
     @if (hasActionIcons) {
       <div class="action-icons p-t-12">
         @for (action of visibleActionIcons; track action.icon || action.lucideIcon) {

@@ -140,7 +140,8 @@ export interface PlatformHomeFeedItem {
   photoUrl?: string;
   title: string;
   subtitle?: string;
-  description?: string;
+  /** Short description for card body. Never use long description in cards. */
+  shortDescription?: string;
   priority: number;
   startDate?: string;
   endDate?: string;

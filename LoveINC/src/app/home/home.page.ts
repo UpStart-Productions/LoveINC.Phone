@@ -113,7 +113,7 @@ export class HomePage implements OnInit {
     photoUrl?: string;
     title: string;
     subtitle?: string;
-    description?: string;
+    shortDescription?: string;
     priority: number;
   }): HomeCard {
     const resolvedPhoto = item.photoUrl
@@ -125,7 +125,7 @@ export class HomePage implements OnInit {
       photoUrl: resolvedPhoto,
       title: item.title,
       subtitle: item.subtitle ?? '',
-      description: item.description ?? '',
+      shortDescription: item.shortDescription ?? item.subtitle ?? '',
       link: `/tabs/content-detail/${this.getContentDetailType(item.type)}/${item.id}`,
       priority: item.priority,
     };
@@ -153,7 +153,7 @@ export class HomePage implements OnInit {
     const htmlContent = `
       <h2>${card.title}</h2>
       ${card.subtitle ? `<p><strong>${card.subtitle}</strong></p>` : ''}
-      ${card.description ? `<p>${card.description}</p>` : ''}
+      ${card.shortDescription ? `<p>${card.shortDescription}</p>` : ''}
     `;
     
     await this.sharingService.shareContent({

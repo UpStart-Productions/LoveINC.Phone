@@ -23,13 +23,11 @@
       [imageUrl]="event.photoUrl"
       [title]="event.title"
       [subtitle]="event.subtitle"
+      [description]="event.shortDescription ?? event.description"
       [clickable]="true"
       [actionIcons]="getActionIcons(event)"
       (cardClick)="navigateToEventDetail(event)"
       (shareClick)="onShareEvent(event)">
-      <div class="event-card-content">
-        {{ event.description }}
-      </div>
     </app-card>
   </div>
 </ion-content>

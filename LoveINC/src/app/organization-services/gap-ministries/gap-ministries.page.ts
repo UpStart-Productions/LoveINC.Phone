@@ -122,6 +122,15 @@ export class GapMinistriesPage implements OnInit {
   }
 
 
+  getServiceContentHtml(service: GapService): string {
+    const esc = (s: string | null | undefined) =>
+      (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return `<div class="service-header"><h3>${esc(service.service)}</h3><span class="app-body-secondary">${esc(service.daysTimes)}</span></div>` +
+      `<div class="service-details"><div class="detail-row"><span>${esc(service.church)}</span></div>` +
+      (service.address ? `<div class="detail-row"><span class="app-body-secondary">${esc(service.address)}</span></div>` : '') +
+      '</div>';
+  }
+
   getActionIcons(service: GapService): CardActionIcon[] {
     return [
       { icon: 'location-outline', handler: () => this.onMapPinClick(service), show: true, buttonClass: 'map-button' },

@@ -62,9 +62,9 @@
       *ngFor="let rec of personalizedRecommendations"
       [title]="rec.title"
       [subtitle]="rec.subtitle"
+      [description]="rec.description"
       [badge]="rec.available ? { icon: 'checkmark-circle-outline', label: 'Available', color: '#10b981' } : undefined"
       [clickable]="true">
-      {{ rec.description }}
     </app-card>
 
     <!-- Success Stories -->
@@ -78,8 +78,8 @@
       [imageUrl]="story.photoUrl"
       [title]="'Meet ' + story.name"
       [subtitle]="'Success Story'"
+      [description]="story.story"
       [clickable]="true">
-      {{ story.story }}
     </app-card>
 
     <!-- Community Impact -->

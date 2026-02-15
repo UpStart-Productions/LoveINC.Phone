@@ -16,7 +16,8 @@ export interface HomeCard {
   photoUrl: string;
   title: string;
   subtitle: string;
-  description: string;
+  /** Short description for card body. Never use long description. */
+  shortDescription: string;
   link: string;
   priority: number;
 }

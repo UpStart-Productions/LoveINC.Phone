@@ -164,6 +164,26 @@ export class DonateGoodsPage implements OnInit {
   }
 
 
+  getLocationContentHtml(location: DonationLocation): string {
+    const esc = (s: string | null | undefined) =>
+      (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const parts: string[] = [];
+    parts.push(`<div class="location-header"><h3>${esc(location.organization)}</h3></div><div>`);
+    if (location.address) parts.push(`<div><span>${esc(location.address)}</span></div>`);
+    if (location.hours) parts.push(`<div><span>${esc(location.hours)}</span></div>`);
+    if (location.phone) parts.push(`<div><span>${esc(location.phone)}</span></div>`);
+    if (location.email) parts.push(`<div><span>${esc(location.email)}</span></div>`);
+    if (location.contact) parts.push(`<div><span>${esc(location.contact)}</span></div>`);
+    if (location.acceptedItems?.length) {
+      parts.push(`<div class="m-t-12"><div class="accepted-items">${
+        location.acceptedItems.map((item) => `<span class="item-pill">${esc(item)}</span>`).join('')
+      }</div></div>`);
+    }
+    if (location.notes) parts.push(`<div><span class="app-body-secondary notes-value" style="font-style: italic;">${esc(location.notes)}</span></div>`);
+    parts.push('</div>');
+    return parts.join('');
+  }
+
   getActionIcons(location: DonationLocation): CardActionIcon[] {
     return [
       { icon: 'location-outline', handler: () => this.onMapPinClick(location), show: !!location.address, buttonClass: 'map-button' },

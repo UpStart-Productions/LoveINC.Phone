@@ -30,40 +30,9 @@
         <app-card
           *ngFor="let location of groupedLocations[category]"
           class="location-card"
+          [contentHtml]="getLocationContentHtml(location)"
           [actionIcons]="getActionIcons(location)"
           (shareClick)="onShareLocation(location)">
-          <ion-item lines="none">
-            <ion-label>
-              <div class="location-header">
-                <h3>{{ location.organization }}</h3>
-              </div>
-              <div>
-                <div *ngIf="location.address">
-                  <span>{{ location.address }}</span>
-                </div>
-                <div *ngIf="location.hours">
-                  <span>{{ location.hours }}</span>
-                </div>
-                <div *ngIf="location.phone">
-                  <span>{{ location.phone }}</span>
-                </div>
-                <div *ngIf="location.email">
-                  <span>{{ location.email }}</span>
-                </div>
-                <div *ngIf="location.contact">
-                  <span>{{ location.contact }}</span>
-                </div>
-                <div class="m-t-12" *ngIf="location.acceptedItems?.length">
-                  <div class="accepted-items">
-                    <span class="item-pill" *ngFor="let item of location.acceptedItems">{{ item }}</span>
-                  </div>
-                </div>
-                <div *ngIf="location.notes">
-                  <span class="app-body-secondary notes-value" style="font-style: italic;">{{ location.notes }}</span>
-                </div>
-              </div>
-            </ion-label>
-          </ion-item>
         </app-card>
       </div>
     </div>

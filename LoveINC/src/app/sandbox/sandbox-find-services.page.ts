@@ -165,6 +165,18 @@ export class SandboxFindServicesPage implements OnInit {
     });
   }
 
+  getServiceContentHtml(service: GapService): string {
+    const esc = (s: string | null | undefined) =>
+      (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const rows: string[] = [];
+    rows.push(`<div class="detail-row"><ion-icon name="calendar-outline"></ion-icon><span class="detail-value">${esc(service.daysTimes)}</span></div>`);
+    rows.push(`<div class="detail-row"><ion-icon name="location-outline"></ion-icon><span class="detail-value">${esc(service.church)}</span></div>`);
+    if (service.address) rows.push(`<div class="detail-row"><ion-icon name="map-outline"></ion-icon><span class="detail-address">${esc(service.address)}</span></div>`);
+    rows.push(`<div class="detail-row"><ion-icon name="call-outline"></ion-icon><span class="detail-value">${esc(service.contact)}</span></div>`);
+    if (service.notes) rows.push(`<div class="detail-row"><span class="detail-notes">${esc(service.notes)}</span></div>`);
+    return `<div class="service-header"><h3 class="service-name">${esc(service.service)}</h3></div><div class="service-details">${rows.join('')}</div>`;
+  }
+
   getActionIcons(service: GapService): CardActionIcon[] {
     const actions: CardActionIcon[] = [];
 

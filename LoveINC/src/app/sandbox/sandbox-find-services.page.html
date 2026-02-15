@@ -40,36 +40,9 @@
 
       <app-card
         *ngFor="let service of filteredServices"
+        [contentHtml]="getServiceContentHtml(service)"
         [actionIcons]="getActionIcons(service)"
         [style.--app-card-margin-bottom]="'12px'">
-        <ion-item lines="none">
-          <ion-label>
-            <div class="service-header">
-              <h3 class="service-name">{{ service.service }}</h3>
-            </div>
-            <div class="service-details">
-              <div class="detail-row">
-                <ion-icon name="calendar-outline"></ion-icon>
-                <span class="detail-value">{{ service.daysTimes }}</span>
-              </div>
-              <div class="detail-row">
-                <ion-icon name="location-outline"></ion-icon>
-                <span class="detail-value">{{ service.church }}</span>
-              </div>
-              <div class="detail-row" *ngIf="service.address">
-                <ion-icon name="map-outline"></ion-icon>
-                <span class="detail-address">{{ service.address }}</span>
-              </div>
-              <div class="detail-row">
-                <ion-icon name="call-outline"></ion-icon>
-                <span class="detail-value">{{ service.contact }}</span>
-              </div>
-              <div class="detail-row" *ngIf="service.notes">
-                <span class="detail-notes">{{ service.notes }}</span>
-              </div>
-            </div>
-          </ion-label>
-        </ion-item>
       </app-card>
     </div>
 

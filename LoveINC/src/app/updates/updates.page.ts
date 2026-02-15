@@ -21,6 +21,7 @@ export interface UpdateEvent {
   photoUrl: string;
   title: string;
   subtitle: string;
+  shortDescription?: string;
   description: string;
 }
 

@@ -49,6 +49,10 @@ export class CardComponent {
   @Input() badge?: CardBadge;
   @Input() title?: string;
   @Input() subtitle?: string;
+  /** Short description for card body. Never use long description. */
+  @Input() description?: string;
+  /** Custom HTML content when description is not sufficient. Use sparingly. */
+  @Input() contentHtml?: string;
   @Input() actionIcons?: CardActionIcon[];
   @Input() clickable = false;
   @Input() showShareIcon: boolean = true;
