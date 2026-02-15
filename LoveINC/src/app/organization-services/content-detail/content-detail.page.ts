@@ -18,7 +18,13 @@ import {
 import { AlertController } from '@ionic/angular';
 import { ContentDetail, ContentType } from './content-detail.model';
 import { SharingService } from '../../services/sharing/sharing.service';
-import { PlatformApiService, type PlatformClass } from '../../services/platform-api.service';
+import {
+  PlatformApiService,
+  type PlatformClass,
+  type PlatformCta,
+  type PlatformEvent,
+  type PlatformImpactStory,
+} from '../../services/platform/platform-api.service';
 
 @Component({
   selector: 'app-content-detail',
@@ -87,6 +93,8 @@ export class ContentDetailPage implements OnInit {
         return '/tabs/gap-ministries';
       case 'volunteer':
       case 'donation-drive':
+      case 'fundraiser':
+      case 'awareness':
       case 'church-partner':
       case 'donation-opportunity':
       default:
@@ -108,6 +116,10 @@ export class ContentDetailPage implements OnInit {
         return 'Volunteer Opportunity';
       case 'donation-drive':
         return 'Donation Drive';
+      case 'fundraiser':
+        return 'Fundraiser';
+      case 'awareness':
+        return 'Awareness';
       case 'church-partner':
         return 'Church Partner';
       case 'donation-opportunity':
@@ -118,8 +130,17 @@ export class ContentDetailPage implements OnInit {
   }
 
   loadContentDetail() {
-    if (this.contentType === 'class') {
-      this.loadClassFromApi();
+    const apiTypes: ContentType[] = [
+      'event',
+      'class',
+      'impact-story',
+      'donation-drive',
+      'volunteer',
+      'fundraiser',
+      'awareness',
+    ];
+    if (apiTypes.includes(this.contentType)) {
+      this.loadFromPlatformApi();
       return;
     }
 
@@ -131,35 +152,153 @@ export class ContentDetailPage implements OnInit {
 
     this.http.get<any[]>(dataFile).subscribe({
       next: (data) => {
-        // If loading from home-cards.json, filter by type and map to ContentDetail
-        if (dataFile === 'assets/data/home-cards.json') {
-          // Map content-detail types to home-card types
-          const cardTypeMap: Record<string, string> = {
-            'impact-story': 'impact',
-            'donation-opportunity': 'donation-opportunity',
-            'volunteer': 'volunteer',
-            'donation-drive': 'donation-drive',
-            'church-partner': 'church-partner',
-            'gap-ministry': 'gap-ministry',
-            'class': 'class',
-            'event': 'event',
-          };
-          const homeCardType = cardTypeMap[this.contentType] || this.contentType;
-          const filteredData = data.filter(item => item.type === homeCardType);
-          this.contentItem = filteredData.find(item => item.id === this.contentId) || null;
-        } else {
-          // For other data files, use direct lookup
-          this.contentItem = data.find(item => item.id === this.contentId) || null;
-        }
-        
+        const cardTypeMap: Record<string, string> = {
+          'impact-story': 'impact',
+          'donation-opportunity': 'donation-opportunity',
+          'volunteer': 'volunteer',
+          'donation-drive': 'donation-drive',
+          'church-partner': 'church-partner',
+          'gap-ministry': 'gap-ministry',
+          'class': 'class',
+          'event': 'event',
+        };
+        const homeCardType = cardTypeMap[this.contentType] || this.contentType;
+        const filteredData = data.filter((item) => item.type === homeCardType);
+        this.contentItem = filteredData.find((item) => item.id === this.contentId) || null;
         if (!this.contentItem) {
           console.error('Content item not found:', this.contentId);
         }
       },
       error: (err) => {
         console.error('Error loading content detail:', err);
-      }
+      },
     });
+  }
+
+  private loadFromPlatformApi() {
+    switch (this.contentType) {
+      case 'class':
+        this.loadClassFromApi();
+        break;
+      case 'event':
+        this.loadEventFromApi();
+        break;
+      case 'impact-story':
+        this.loadImpactStoryFromApi();
+        break;
+      case 'donation-drive':
+      case 'volunteer':
+      case 'fundraiser':
+      case 'awareness':
+        this.loadCtaFromApi();
+        break;
+      default:
+        console.error('Unsupported API content type:', this.contentType);
+    }
+  }
+
+  private loadEventFromApi() {
+    this.platformApi.getEvents().subscribe({
+      next: (events) => {
+        const e = events.find((ev) => ev.id === this.contentId);
+        this.contentItem = e ? this.mapPlatformEventToContentDetail(e) : null;
+        if (!this.contentItem) {
+          console.error('Event not found:', this.contentId);
+        }
+      },
+      error: (err) => {
+        console.error('Error loading event detail:', err);
+      },
+    });
+  }
+
+  private loadImpactStoryFromApi() {
+    this.platformApi.getImpactStories().subscribe({
+      next: (stories) => {
+        const s = stories.find((st) => st.id === this.contentId);
+        this.contentItem = s ? this.mapPlatformImpactStoryToContentDetail(s) : null;
+        if (!this.contentItem) {
+          console.error('Impact story not found:', this.contentId);
+        }
+      },
+      error: (err) => {
+        console.error('Error loading impact story:', err);
+      },
+    });
+  }
+
+  private loadCtaFromApi() {
+    this.platformApi.getCtas().subscribe({
+      next: (ctas) => {
+        const c = ctas.find((cta) => cta.id === this.contentId);
+        this.contentItem = c ? this.mapPlatformCtaToContentDetail(c) : null;
+        if (!this.contentItem) {
+          console.error('CTA not found:', this.contentId);
+        }
+      },
+      error: (err) => {
+        console.error('Error loading CTA detail:', err);
+      },
+    });
+  }
+
+  private mapPlatformEventToContentDetail(e: PlatformEvent): ContentDetail {
+    let location: string | undefined;
+    if (e.address) {
+      const parts = [
+        e.address.locationName,
+        e.address.address,
+        `${e.address.city}, ${e.address.state} ${e.address.zip}`,
+      ].filter(Boolean);
+      location = parts.join('\n');
+    }
+    const start = new Date(e.startDate);
+    const end = new Date(e.endDate);
+    const eventDate = start.toLocaleDateString(undefined, {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
+    const eventTime =
+      start.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) +
+      (start.getTime() !== end.getTime()
+        ? ` – ${end.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`
+        : '');
+    return {
+      id: e.id,
+      title: e.title,
+      description: e.longDescription ?? e.shortDescription ?? '',
+      photoUrl: (this.platformApi.resolveUploadUrl(e.photoUrl) || e.photoUrl) ?? '',
+      subtitle: e.shortDescription,
+      eventDate,
+      eventTime,
+      location,
+    };
+  }
+
+  private mapPlatformImpactStoryToContentDetail(s: PlatformImpactStory): ContentDetail {
+    return {
+      id: s.id,
+      title: s.title,
+      description: s.longDescription ?? s.shortDescription ?? '',
+      photoUrl: (this.platformApi.resolveUploadUrl(s.photoUrl) || s.photoUrl) ?? '',
+      subtitle: s.shortDescription,
+    };
+  }
+
+  private mapPlatformCtaToContentDetail(c: PlatformCta): ContentDetail {
+    const actionLink =
+      c.actionType === 'openUrl' && c.actionValue ? c.actionValue : undefined;
+    return {
+      id: c.id,
+      title: c.title,
+      description: c.longDescription ?? c.shortDescription ?? '',
+      photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',
+      subtitle: c.shortDescription,
+      actionButtonText: c.actionLabel,
+      actionButtonLink: actionLink,
+    };
   }
 
   private loadClassFromApi() {
@@ -383,6 +522,10 @@ export class ContentDetailPage implements OnInit {
         return 'Volunteer Opportunity';
       case 'donation-drive':
         return 'Donation Drive';
+      case 'fundraiser':
+        return 'Fundraiser';
+      case 'awareness':
+        return 'Awareness';
       case 'church-partner':
         return 'Church Partner';
       case 'donation-opportunity':

@@ -46,4 +46,14 @@ export interface ContentDetail {
   actionButtonLink?: string;
 }
 
-export type ContentType = 'event' | 'class' | 'impact-story' | 'gap-ministry' | 'donation-opportunity' | 'volunteer' | 'donation-drive' | 'church-partner';
+export type ContentType =
+  | 'event'
+  | 'class'
+  | 'impact-story'
+  | 'gap-ministry'
+  | 'donation-opportunity'
+  | 'volunteer'
+  | 'donation-drive'
+  | 'church-partner'
+  | 'fundraiser'
+  | 'awareness';

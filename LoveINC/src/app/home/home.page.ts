@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon } from '@ionic/angular/standalone';
 import { CardComponent } from '../components/card/card.component';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { OnboardingService } from '../services/onboarding.service';
-import { HomeCard, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../models/home-card.model';
+import { HomeCard, CardType, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../models/home-card.model';
 import { UserTypeCardComponent, UserType } from '../components/user-type-card/user-type-card.component';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { SharingService } from '../services/sharing/sharing.service';
 import { AlertsModalService } from '../services/alerts-modal.service';
+import { PlatformApiService } from '../services/platform/platform-api.service';
 
 @Component({
   selector: 'app-home',
@@ -42,7 +42,7 @@ export class HomePage implements OnInit {
   constructor(
     private onboardingService: OnboardingService,
     private router: Router,
-    private http: HttpClient,
+    private platformApi: PlatformApiService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
     private alertsModalService: AlertsModalService
@@ -86,32 +86,66 @@ export class HomePage implements OnInit {
   }
 
   loadCards() {
-    this.http.get<HomeCard[]>('assets/data/home-cards.json').subscribe({
-      next: (data) => {
-        this.cards = data.sort((a, b) => a.priority - b.priority);
+    this.platformApi.getHomeFeed().subscribe({
+      next: (items) => {
+        this.cards = items
+          .filter((item): item is typeof item & { type: CardType } =>
+            this.isSupportedCardType(item.type))
+          .map((item) => this.mapFeedItemToHomeCard(item))
+          .sort((a, b) => a.priority - b.priority);
       },
       error: (err) => {
-        console.error('Error loading cards:', err);
-      }
+        console.error('Error loading home feed:', err);
+      },
     });
   }
 
-  navigateToCard(card: HomeCard) {
-    // Map all card types to content-detail route types
-    const contentDetailTypes: Record<string, string> = {
-      'event': 'event',
-      'class': 'class',
-      'impact': 'impact-story',
-      'volunteer': 'volunteer',
-      'donation-drive': 'donation-drive',
-      'church-partner': 'church-partner',
-      'gap-ministry': 'gap-ministry',
-      'donation-opportunity': 'donation-opportunity',
-    };
+  private isSupportedCardType(type: string): type is CardType {
+    const supported: CardType[] = [
+      'event', 'class', 'impact', 'donation-drive', 'volunteer', 'fundraiser', 'awareness',
+    ];
+    return supported.includes(type as CardType);
+  }
 
-    const detailType = contentDetailTypes[card.type] || card.type;
-    
-    // Navigate to generic content-detail page for all card types
+  private mapFeedItemToHomeCard(item: {
+    id: string;
+    type: string;
+    photoUrl?: string;
+    title: string;
+    subtitle?: string;
+    description?: string;
+    priority: number;
+  }): HomeCard {
+    const resolvedPhoto = item.photoUrl
+      ? this.platformApi.resolveUploadUrl(item.photoUrl) || item.photoUrl
+      : '';
+    return {
+      id: item.id,
+      type: item.type as CardType,
+      photoUrl: resolvedPhoto,
+      title: item.title,
+      subtitle: item.subtitle ?? '',
+      description: item.description ?? '',
+      link: `/tabs/content-detail/${this.getContentDetailType(item.type)}/${item.id}`,
+      priority: item.priority,
+    };
+  }
+
+  private getContentDetailType(apiType: string): string {
+    const map: Record<string, string> = {
+      event: 'event',
+      class: 'class',
+      impact: 'impact-story',
+      'donation-drive': 'donation-drive',
+      volunteer: 'volunteer',
+      fundraiser: 'fundraiser',
+      awareness: 'awareness',
+    };
+    return map[apiType] ?? apiType;
+  }
+
+  navigateToCard(card: HomeCard) {
+    const detailType = this.getContentDetailType(card.type);
     this.router.navigate(['/tabs/content-detail', detailType, card.id]);
   }
 

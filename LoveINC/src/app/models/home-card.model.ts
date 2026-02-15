@@ -1,4 +1,4 @@
-export type CardType = 
+export type CardType =
   | 'event'
   | 'volunteer'
   | 'donation-drive'
@@ -6,7 +6,9 @@ export type CardType =
   | 'church-partner'
   | 'class'
   | 'gap-ministry'
-  | 'donation-opportunity';
+  | 'donation-opportunity'
+  | 'fundraiser'
+  | 'awareness';
 
 export interface HomeCard {
   id: string;
@@ -27,7 +29,9 @@ export const CardTypeLabels: Record<CardType, string> = {
   'church-partner': 'Church Partner',
   'class': 'Class',
   'gap-ministry': 'Available Today',
-  'donation-opportunity': 'Donation Needed'
+  'donation-opportunity': 'Donation Needed',
+  'fundraiser': 'Fundraiser',
+  'awareness': 'Awareness',
 };
 
 export const CardTypeIcons: Record<CardType, string> = {
@@ -38,7 +42,9 @@ export const CardTypeIcons: Record<CardType, string> = {
   'church-partner': 'people-outline',
   'class': 'school-outline',
   'gap-ministry': 'time-outline',
-  'donation-opportunity': 'hand-left-outline'
+  'donation-opportunity': 'hand-left-outline',
+  'fundraiser': 'ribbon-outline',
+  'awareness': 'megaphone-outline',
 };
 
 // Brand colors mapped to match CSS variables in variables.scss
@@ -50,5 +56,7 @@ export const CardTypeColors: Record<CardType, string> = {
   'church-partner': '#214491',     // --love-inc-blue
   'class': '#10b981',              // green (standard)
   'gap-ministry': '#ef4444',       // red (standard)
-  'donation-opportunity': '#f59e0b' // amber (standard)
+  'donation-opportunity': '#f59e0b', // amber (standard)
+  'fundraiser': '#e11d48',        // rose (standard)
+  'awareness': '#6366f1',          // indigo (standard)
 };
