@@ -1,3 +1,7 @@
 export const environment = {
-  production: true
+  production: true,
+  apiBaseUrl: 'https://your-api-host.com/api',
+  apiKey: '',
+  customerSlug: 'loveinc',
+  tenantSlug: 'newberg',
 };

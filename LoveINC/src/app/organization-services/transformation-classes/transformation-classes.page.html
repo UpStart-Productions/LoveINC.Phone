@@ -25,7 +25,7 @@
       class="class-card"
       [imageUrl]="classItem.photoUrl"
       [title]="classItem.title"
-      [subtitle]="classItem.nextSession.dayOfWeek + ' ' + classItem.nextSession.time + '\n' + formatSessionDates(classItem)"
+      [subtitle]="getClassSubtitle(classItem)"
       [clickable]="true"
       (cardClick)="navigateToClassDetail(classItem)"
       (shareClick)="onShareClass(classItem)">

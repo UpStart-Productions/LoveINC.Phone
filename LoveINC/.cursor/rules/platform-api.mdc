@@ -1,0 +1,32 @@
+---
+description: Platform API integration - how this app connects to the Nonprofit Mobile Platform
+globs: 
+  - src/app/services/platform-api.service.ts
+  - src/environments/*.ts
+  - src/app/**/*.page.ts
+---
+
+# Platform API Integration
+
+This app fetches content from the **Nonprofit Mobile Platform** public API.
+
+## Config (environment.ts)
+
+- `apiBaseUrl` - API root (e.g. http://localhost:3000/api)
+- `apiKey` - From admin (API Keys or Mobile App Config → API Key)
+- `customerSlug` - e.g. loveinc
+- `tenantSlug` - e.g. newberg
+
+## API Pattern
+
+- Path: `GET /public/{customerSlug}/{tenantSlug}/{resource}`
+- Header: `x-api-key` required
+- Example: `GET /public/loveinc/newberg/classes`
+
+## Service
+
+`PlatformApiService` (`src/app/services/platform-api.service.ts`) builds the base path and sends the API key. Add new endpoint methods there.
+
+## Wired Pages
+
+- **Transformation Classes** - uses `platformApi.getClasses()` instead of static JSON

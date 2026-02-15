@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { 
   IonHeader, 
   IonToolbar, 
@@ -17,6 +16,7 @@ import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { SharingService } from '../../services/sharing/sharing.service';
 import { AlertsModalService } from '../../services/alerts-modal.service';
+import { PlatformApiService, type PlatformClass } from '../../services/platform-api.service';
 export interface ClassDocument {
   title: string;
   url?: string;
@@ -29,8 +29,8 @@ export interface TransformationClass {
   description: string;
   teacher: string;
   photoUrl: string;
-  registrationLink: string;
-  nextSession: {
+  registrationLink?: string;
+  nextSession?: {
     startDate: string;
     endDate: string;
     dayOfWeek: string;
@@ -63,7 +63,7 @@ export class TransformationClassesPage implements OnInit {
   showDonateButton: boolean = false;
 
   constructor(
-    private http: HttpClient,
+    private platformApi: PlatformApiService,
     private router: Router,
     private route: ActivatedRoute,
     private donateButtonService: DonateButtonService,
@@ -93,14 +93,31 @@ export class TransformationClassesPage implements OnInit {
   }
 
   loadClasses() {
-    this.http.get<TransformationClass[]>('assets/data/transformation-classes.json').subscribe({
+    this.platformApi.getClasses().subscribe({
       next: (data) => {
-        this.classes = data;
+        this.classes = data.map((c) => this.mapPlatformClassToTransformationClass(c));
       },
       error: (err) => {
         console.error('Error loading transformation classes:', err);
-      }
+      },
     });
+  }
+
+  getClassSubtitle(classItem: TransformationClass): string {
+    if (classItem.nextSession) {
+      return `${classItem.nextSession.dayOfWeek} ${classItem.nextSession.time}\n${this.formatSessionDates(classItem)}`;
+    }
+    return classItem.teacher ? `Instructor: ${classItem.teacher}` : '';
+  }
+
+  private mapPlatformClassToTransformationClass(c: PlatformClass): TransformationClass {
+    return {
+      id: c.id,
+      title: c.title,
+      description: c.longDescription ?? c.shortDescription ?? '',
+      teacher: c.instructor ?? '',
+      photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',
+    };
   }
 
 
@@ -110,6 +127,7 @@ export class TransformationClassesPage implements OnInit {
   }
 
   formatSessionDates(classItem: TransformationClass): string {
+    if (!classItem.nextSession) return '';
     const startDate = new Date(classItem.nextSession.startDate);
     const endDate = new Date(classItem.nextSession.endDate);
     const startMonth = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -118,15 +136,14 @@ export class TransformationClassesPage implements OnInit {
   }
 
   async onShareClass(classItem: TransformationClass) {
+    const sessionHtml = classItem.nextSession
+      ? `<p><strong>Next Session:</strong></p><p>${classItem.nextSession.dayOfWeek} ${classItem.nextSession.time}</p><p>${this.formatSessionDates(classItem)}</p>`
+      : '';
     const htmlContent = `
       <h2>${classItem.title}</h2>
       ${classItem.description ? `<p>${classItem.description}</p>` : ''}
       ${classItem.teacher ? `<p><strong>Teacher:</strong> ${classItem.teacher}</p>` : ''}
-      ${classItem.nextSession ? `
-        <p><strong>Next Session:</strong></p>
-        <p>${classItem.nextSession.dayOfWeek} ${classItem.nextSession.time}</p>
-        <p>${this.formatSessionDates(classItem)}</p>
-      ` : ''}
+      ${sessionHtml}
     `;
     
     await this.sharingService.shareContent({
