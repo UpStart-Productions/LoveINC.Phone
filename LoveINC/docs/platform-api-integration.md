@@ -33,26 +33,41 @@ This app connects to the **Nonprofit Mobile Platform** public API for content (c
 - **Path pattern:** `/public/{customerSlug}/{tenantSlug}/{resource}`
 - **Base URL:** `{apiBaseUrl}/public/{customerSlug}/{tenantSlug}`
 
-## Endpoints (incremental)
+## Service Layer
 
-| Endpoint | Status | Used by |
-|----------|--------|---------|
-| `GET /classes` | ✅ Wired | Transformation Classes page |
-| `GET /events` | Planned | Updates page |
-| `GET /services` | Planned | Gap Ministries, Services |
-| `GET /ctas` | Planned | Home, CTAs |
-| `GET /home-feed` | Planned | Home page |
-| `GET /branding` | Planned | App shell (colors, logo) |
-| `GET /navigation` | Planned | Tab bar config |
-| `GET /organization` | Planned | About, contact |
+The abstracted service layer lives in `src/app/services/platform/`:
+
+- **`types.ts`** — All `Platform*` interfaces aligned with the API
+- **`platform-api.service.ts`** — Single service with methods for each endpoint
+
+Import from `'../../services/platform'` or `'../../services/platform-api.service'` (legacy).
+
+## Endpoints
+
+| Endpoint | Status | Method | Used by |
+|----------|--------|--------|---------|
+| `GET /organization` | ✅ | `getOrganization()` | About, contact |
+| `GET /events` | ✅ | `getEvents()` | Updates page |
+| `GET /classes` | ✅ | `getClasses()` | Transformation Classes page |
+| `GET /services` | ✅ | `getServices()` | Gap Ministries, Services |
+| `GET /ctas` | ✅ | `getCtas()` | Home, CTAs |
+| `GET /impact-stories` | ✅ | `getImpactStories()` | Impact Stories page |
+| `GET /home-feed` | ✅ | `getHomeFeed()` | Home page |
+
+## Home Feed
+
+The home feed supports two modes:
+
+1. **Curated** — When the admin has added items via the Home Feed dashboard widget, those items are returned in the specified order.
+2. **Auto** — When no items are curated, the feed is built automatically from events, classes, CTAs, and impact stories.
 
 ## Adding More Endpoints
 
-1. Add the method to `PlatformApiService` (`src/app/services/platform-api.service.ts`)
-2. Add response types if needed
+1. Add the interface to `src/app/services/platform/types.ts`
+2. Add the method to `PlatformApiService` (`src/app/services/platform/platform-api.service.ts`)
 3. Update the page to use the service instead of `HttpClient.get('assets/data/...')`
 4. Map API response to existing models
 
 ## Fallback When API Key Missing
 
-If `apiKey` is empty, `PlatformApiService` returns empty arrays and logs a console warning. This lets the app run without the platform (e.g. for UI development).
+If `apiKey` is empty, `PlatformApiService` returns empty arrays/null and logs a console warning. This lets the app run without the platform (e.g. for UI development).
