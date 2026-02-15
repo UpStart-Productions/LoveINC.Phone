@@ -29,7 +29,7 @@
       [clickable]="true"
       (cardClick)="navigateToClassDetail(classItem)"
       (shareClick)="onShareClass(classItem)">
-      {{ classItem.description }}
+      <div [innerHTML]="classItem.shortDescription"></div>
     </app-card>
   </div>
 </ion-content>

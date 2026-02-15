@@ -30,7 +30,7 @@
       
       <p *ngIf="contentItem.subtitle" class="app-title m-b-24">{{ contentItem.subtitle }}</p>
       
-      <p class="app-body-secondary m-b-24">{{ contentItem.description }}</p>
+      <div class="app-body-secondary m-b-24" [innerHTML]="contentItem.description"></div>
 
       <ion-list lines="none">
         <!-- Instructor (for classes) -->
@@ -49,7 +49,25 @@
             <h3>Schedule</h3>
             <p>{{ contentItem.nextSession?.dayOfWeek }} {{ contentItem.nextSession?.time }}</p>
             <p>{{ formatSessionDates() }}</p>
-            <p class="duration">8-week course</p>
+            <p *ngIf="hasDuration()" class="duration">{{ formatDuration() }}</p>
+          </ion-label>
+        </ion-item>
+
+        <!-- Duration (for classes without schedule) -->
+        <ion-item *ngIf="hasDuration() && !hasSchedule()">
+          <ion-icon slot="start" name="time-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Duration</h3>
+            <p>{{ formatDuration() }}</p>
+          </ion-label>
+        </ion-item>
+
+        <!-- Cost (for classes) -->
+        <ion-item *ngIf="hasCost()">
+          <ion-icon slot="start" name="pricetag-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Cost</h3>
+            <p>{{ contentItem.cost }}</p>
           </ion-label>
         </ion-item>
 

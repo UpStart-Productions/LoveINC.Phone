@@ -11,7 +11,7 @@ export const environment = {
   /** Customer slug (e.g. loveinc) */
   customerSlug: 'loveinc',
   /** Tenant/affiliate slug (e.g. newberg) */
-  tenantSlug: 'newberg',
+  tenantSlug: 'salem',
 };
 
 /*

@@ -26,6 +26,7 @@ export interface ClassDocument {
 export interface TransformationClass {
   id: string;
   title: string;
+  shortDescription: string;
   description: string;
   teacher: string;
   photoUrl: string;
@@ -114,6 +115,7 @@ export class TransformationClassesPage implements OnInit {
     return {
       id: c.id,
       title: c.title,
+      shortDescription: c.shortDescription ?? '',
       description: c.longDescription ?? c.shortDescription ?? '',
       teacher: c.instructor ?? '',
       photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',

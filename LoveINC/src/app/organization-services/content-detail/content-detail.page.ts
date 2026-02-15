@@ -18,6 +18,7 @@ import {
 import { AlertController } from '@ionic/angular';
 import { ContentDetail, ContentType } from './content-detail.model';
 import { SharingService } from '../../services/sharing/sharing.service';
+import { PlatformApiService, type PlatformClass } from '../../services/platform-api.service';
 
 @Component({
   selector: 'app-content-detail',
@@ -52,7 +53,8 @@ export class ContentDetailPage implements OnInit {
     private router: Router,
     private http: HttpClient,
     private alertController: AlertController,
-    private sharingService: SharingService
+    private sharingService: SharingService,
+    private platformApi: PlatformApiService
   ) {}
 
   ngOnInit() {
@@ -116,6 +118,11 @@ export class ContentDetailPage implements OnInit {
   }
 
   loadContentDetail() {
+    if (this.contentType === 'class') {
+      this.loadClassFromApi();
+      return;
+    }
+
     const dataFile = this.getDataFile();
     if (!dataFile) {
       console.error('Unknown content type:', this.contentType);
@@ -153,6 +160,39 @@ export class ContentDetailPage implements OnInit {
         console.error('Error loading content detail:', err);
       }
     });
+  }
+
+  private loadClassFromApi() {
+    this.platformApi.getClasses().subscribe({
+      next: (classes) => {
+        const c = classes.find(cls => cls.id === this.contentId);
+        this.contentItem = c ? this.mapPlatformClassToContentDetail(c) : null;
+        if (!this.contentItem) {
+          console.error('Class not found:', this.contentId);
+        }
+      },
+      error: (err) => {
+        console.error('Error loading class detail:', err);
+      }
+    });
+  }
+
+  private mapPlatformClassToContentDetail(c: PlatformClass): ContentDetail {
+    let location: string | undefined;
+    if (c.address) {
+      const parts = [c.address.locationName, c.address.address, c.address.city, c.address.state, c.address.zip].filter(Boolean);
+      location = parts.join(', ');
+    }
+    return {
+      id: c.id,
+      title: c.title,
+      description: c.longDescription ?? c.shortDescription ?? '',
+      photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',
+      teacher: c.instructor,
+      location,
+      durationMinutes: c.durationMinutes,
+      cost: c.cost,
+    };
   }
 
   private getDataFile(): string | null {
@@ -257,6 +297,24 @@ export class ContentDetailPage implements OnInit {
     return !!(this.contentItem?.classDocuments && this.contentItem.classDocuments.length > 0);
   }
 
+  hasDuration(): boolean {
+    return !!(this.contentItem?.durationMinutes && this.contentItem.durationMinutes > 0);
+  }
+
+  hasCost(): boolean {
+    return !!(this.contentItem?.cost && this.contentItem.cost.trim().length > 0);
+  }
+
+  formatDuration(): string {
+    const mins = this.contentItem?.durationMinutes ?? 0;
+    if (mins >= 60) {
+      const hours = Math.floor(mins / 60);
+      const remainder = mins % 60;
+      return remainder > 0 ? `${hours} hr ${remainder} min` : `${hours} hr`;
+    }
+    return `${mins} min`;
+  }
+
   getDocumentTypeIcon(type?: string): string {
     switch (type) {
       case 'handout':
@@ -298,6 +356,14 @@ export class ContentDetailPage implements OnInit {
     
     if (this.contentItem.location) {
       html += `<p><strong>Location:</strong> ${this.contentItem.location}</p>`;
+    }
+    
+    if (this.contentItem.durationMinutes) {
+      html += `<p><strong>Duration:</strong> ${this.formatDuration()}</p>`;
+    }
+    
+    if (this.contentItem.cost) {
+      html += `<p><strong>Cost:</strong> ${this.contentItem.cost}</p>`;
     }
     
     return html;

@@ -22,6 +22,8 @@ export interface ContentDetail {
   // Class-specific fields
   teacher?: string;
   registrationLink?: string;
+  durationMinutes?: number;
+  cost?: string;
   nextSession?: {
     startDate: string;
     endDate: string;
