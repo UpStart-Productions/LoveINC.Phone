@@ -16,7 +16,8 @@ import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { SharingService } from '../../services/sharing/sharing.service';
 import { AlertsModalService } from '../../services/alerts-modal.service';
-import { PlatformApiService, type PlatformClass } from '../../services/platform-api.service';
+import { PlatformApiService, type PlatformClass, type PlatformOffering } from '../../services/platform';
+
 export interface ClassDocument {
   title: string;
   url?: string;
@@ -96,7 +97,7 @@ export class TransformationClassesPage implements OnInit {
   loadClasses() {
     this.platformApi.getClasses().subscribe({
       next: (data) => {
-        this.classes = data.map((c) => this.mapPlatformClassToTransformationClass(c));
+        this.classes = (data ?? []).map((c) => this.mapPlatformClassToTransformationClass(c));
       },
       error: (err) => {
         console.error('Error loading transformation classes:', err);
@@ -104,14 +105,8 @@ export class TransformationClassesPage implements OnInit {
     });
   }
 
-  getClassSubtitle(classItem: TransformationClass): string {
-    if (classItem.nextSession) {
-      return `${classItem.nextSession.dayOfWeek} ${classItem.nextSession.time}\n${this.formatSessionDates(classItem)}`;
-    }
-    return classItem.teacher ? `Instructor: ${classItem.teacher}` : '';
-  }
-
   private mapPlatformClassToTransformationClass(c: PlatformClass): TransformationClass {
+    const nextSession = c.nextSession ?? this.deriveNextSessionFromOfferings(c.offerings);
     return {
       id: c.id,
       title: c.title,
@@ -119,9 +114,37 @@ export class TransformationClassesPage implements OnInit {
       description: c.longDescription ?? c.shortDescription ?? '',
       teacher: c.instructor ?? '',
       photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',
+      nextSession,
     };
   }
 
+  private deriveNextSessionFromOfferings(offerings?: PlatformOffering[]): TransformationClass['nextSession'] | undefined {
+    if (!offerings?.length) return undefined;
+    const offering = offerings[0];
+    const rule = offering.scheduleRule;
+    const sessions = offering.sessions?.filter((s: { isCancelled?: boolean }) => !s.isCancelled);
+    const session = sessions?.[0];
+    if (!rule && !session) return undefined;
+    const startDate = session?.startDate ?? rule?.startDate;
+    const endDate = session?.endDate ?? rule?.endDate;
+    if (!startDate || !endDate) return undefined;
+    const dayOfWeek = rule?.daysOfWeek?.length ? this.dayNumberToName(rule.daysOfWeek[0]) : '';
+    const time = [rule?.startTime, rule?.endTime].filter(Boolean).join(' – ') || '';
+    return { startDate, endDate, dayOfWeek, time };
+  }
+
+  private dayNumberToName(n: number): string {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[n] ?? '';
+  }
+
+  getClassSubtitle(classItem: TransformationClass): string {
+    if (classItem.nextSession) {
+      const dateRange = this.formatSessionDates(classItem);
+      return `${classItem.nextSession.dayOfWeek} • ${classItem.nextSession.time} • ${dateRange}`;
+    }
+    return classItem.teacher ? `Instructor: ${classItem.teacher}` : '';
+  }
 
   navigateToClassDetail(classItem: TransformationClass) {
     const queryParams = this.fromServices ? { from: 'services' } : {};
@@ -132,9 +155,9 @@ export class TransformationClassesPage implements OnInit {
     if (!classItem.nextSession) return '';
     const startDate = new Date(classItem.nextSession.startDate);
     const endDate = new Date(classItem.nextSession.endDate);
-    const startMonth = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const endMonth = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    return `${startMonth} - ${endMonth}`;
+    const startStr = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const endStr = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `${startStr} – ${endStr}`;
   }
 
   async onShareClass(classItem: TransformationClass) {

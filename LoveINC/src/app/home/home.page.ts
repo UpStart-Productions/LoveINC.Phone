@@ -115,20 +115,68 @@ export class HomePage implements OnInit {
     subtitle?: string;
     shortDescription?: string;
     priority: number;
+    startDate?: string;
+    endDate?: string;
+    instructor?: string;
   }): HomeCard {
     const resolvedPhoto = item.photoUrl
       ? this.platformApi.resolveUploadUrl(item.photoUrl) || item.photoUrl
       : '';
+    const subtitle = this.getCardSubtitle(item);
     return {
       id: item.id,
       type: item.type as CardType,
       photoUrl: resolvedPhoto,
       title: item.title,
-      subtitle: item.subtitle ?? '',
-      shortDescription: item.shortDescription ?? item.subtitle ?? '',
+      subtitle,
+      shortDescription: item.shortDescription ?? '',
       link: `/tabs/content-detail/${this.getContentDetailType(item.type)}/${item.id}`,
       priority: item.priority,
     };
+  }
+
+  /** Subtitle must never be shortDescription. For events/classes, use dates. Impact stories: no subtitle. */
+  private getCardSubtitle(item: {
+    type: string;
+    subtitle?: string;
+    startDate?: string;
+    endDate?: string;
+    instructor?: string;
+  }): string {
+    if (item.type === 'event' && (item.startDate || item.endDate)) {
+      return this.formatEventDates(item.startDate, item.endDate);
+    }
+    if (item.type === 'class') {
+      if (item.startDate || item.endDate) {
+        return this.formatEventDates(item.startDate, item.endDate);
+      }
+      if (item.instructor) {
+        return `Instructor: ${item.instructor}`;
+      }
+    }
+    if (item.type === 'impact') {
+      return ''; // Never use shortDescription in subtitle
+    }
+    return item.subtitle ?? '';
+  }
+
+  private formatEventDates(startDate?: string, endDate?: string): string {
+    if (!startDate && !endDate) return '';
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+    const dateStr = start && end && start.getTime() === end.getTime()
+      ? start.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+      : start && end
+        ? `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+        : start
+          ? start.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+          : end
+            ? end.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+            : '';
+    const timeStr = start
+      ? start.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+      : '';
+    return timeStr ? `${dateStr} • ${timeStr}` : dateStr;
   }
 
   private getContentDetailType(apiType: string): string {

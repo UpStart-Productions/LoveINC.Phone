@@ -24,7 +24,8 @@ import {
   type PlatformCta,
   type PlatformEvent,
   type PlatformImpactStory,
-} from '../../services/platform/platform-api.service';
+  type PlatformOffering,
+} from '../../services/platform';
 
 @Component({
   selector: 'app-content-detail',
@@ -265,12 +266,13 @@ export class ContentDetailPage implements OnInit {
       (start.getTime() !== end.getTime()
         ? ` – ${end.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`
         : '');
+    const subtitle = `${eventDate} • ${eventTime}`;
     return {
       id: e.id,
       title: e.title,
       description: e.longDescription ?? e.shortDescription ?? '',
       photoUrl: (this.platformApi.resolveUploadUrl(e.photoUrl) || e.photoUrl) ?? '',
-      subtitle: e.shortDescription,
+      subtitle,
       eventDate,
       eventTime,
       location,
@@ -283,7 +285,7 @@ export class ContentDetailPage implements OnInit {
       title: s.title,
       description: s.longDescription ?? s.shortDescription ?? '',
       photoUrl: (this.platformApi.resolveUploadUrl(s.photoUrl) || s.photoUrl) ?? '',
-      subtitle: s.shortDescription,
+      // Subtitle must never be shortDescription; impact stories have no date/author from API
     };
   }
 
@@ -304,7 +306,7 @@ export class ContentDetailPage implements OnInit {
   private loadClassFromApi() {
     this.platformApi.getClasses().subscribe({
       next: (classes) => {
-        const c = classes.find(cls => cls.id === this.contentId);
+        const c = classes?.find(cls => cls.id === this.contentId);
         this.contentItem = c ? this.mapPlatformClassToContentDetail(c) : null;
         if (!this.contentItem) {
           console.error('Class not found:', this.contentId);
@@ -322,16 +324,50 @@ export class ContentDetailPage implements OnInit {
       const parts = [c.address.locationName, c.address.address, c.address.city, c.address.state, c.address.zip].filter(Boolean);
       location = parts.join(', ');
     }
+    const nextSession = c.nextSession ?? this.deriveNextSessionFromOfferings(c.offerings);
+    const subtitle = nextSession
+      ? `${nextSession.dayOfWeek} ${nextSession.time} • ${this.formatClassSessionDates(nextSession.startDate, nextSession.endDate)}`
+      : undefined;
     return {
       id: c.id,
       title: c.title,
       description: c.longDescription ?? c.shortDescription ?? '',
       photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',
+      subtitle,
       teacher: c.instructor,
       location,
       durationMinutes: c.durationMinutes,
       cost: c.cost,
+      nextSession,
     };
+  }
+
+  private deriveNextSessionFromOfferings(offerings?: PlatformOffering[]): ContentDetail['nextSession'] | undefined {
+    if (!offerings?.length) return undefined;
+    const offering = offerings[0];
+    const rule = offering.scheduleRule;
+    const sessions = offering.sessions?.filter((s: { isCancelled?: boolean }) => !s.isCancelled);
+    const session = sessions?.[0];
+    if (!rule && !session) return undefined;
+    const startDate = session?.startDate ?? rule?.startDate;
+    const endDate = session?.endDate ?? rule?.endDate;
+    if (!startDate || !endDate) return undefined;
+    const dayOfWeek = rule?.daysOfWeek?.length ? this.dayNumberToName(rule.daysOfWeek[0]) : '';
+    const time = [rule?.startTime, rule?.endTime].filter(Boolean).join(' – ') || '';
+    return { startDate, endDate, dayOfWeek, time };
+  }
+
+  private dayNumberToName(n: number): string {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[n] ?? '';
+  }
+
+  private formatClassSessionDates(startDate: string, endDate: string): string {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `${startStr} – ${endStr}`;
   }
 
   private getDataFile(): string | null {

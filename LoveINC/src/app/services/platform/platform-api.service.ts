@@ -20,6 +20,7 @@ export type {
   PlatformEvent,
   PlatformHomeFeedItem,
   PlatformImpactStory,
+  PlatformOffering,
   PlatformOrganization,
   PlatformService,
 } from './types';

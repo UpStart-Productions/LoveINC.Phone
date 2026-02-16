@@ -39,6 +39,13 @@ export interface PlatformEvent {
   address?: PlatformAddress;
 }
 
+export interface PlatformClassNextSession {
+  startDate: string;
+  endDate: string;
+  dayOfWeek: string;
+  time: string;
+}
+
 export interface PlatformClass {
   id: string;
   slug: string;
@@ -51,6 +58,9 @@ export interface PlatformClass {
   durationMinutes?: number;
   cost?: string;
   photoUrl?: string;
+  nextSession?: PlatformClassNextSession;
+  /** Alternative: schedule from offerings (scheduleRule + sessions) */
+  offerings?: PlatformOffering[];
 }
 
 export interface PlatformScheduleRule {
