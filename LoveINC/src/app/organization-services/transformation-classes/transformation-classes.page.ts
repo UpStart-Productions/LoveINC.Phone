@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { format, addDays } from 'date-fns';
 import { Router, ActivatedRoute } from '@angular/router';
 import { 
   IonHeader, 
@@ -17,6 +18,7 @@ import { DonateActionSheetService } from '../../services/donate-action-sheet.ser
 import { SharingService } from '../../services/sharing/sharing.service';
 import { AlertsModalService } from '../../services/alerts-modal.service';
 import { PlatformApiService, type PlatformClass, type PlatformOffering } from '../../services/platform';
+import { CardFormattingService, type FormattedCard } from '../../services/card-formatting.service';
 
 export interface ClassDocument {
   title: string;
@@ -41,6 +43,11 @@ export interface TransformationClass {
   classDocuments?: ClassDocument[];
 }
 
+export interface ClassCardItem {
+  formatted: FormattedCard;
+  class: TransformationClass;
+}
+
 @Component({
   selector: 'app-transformation-classes',
   templateUrl: 'transformation-classes.page.html',
@@ -60,12 +67,13 @@ export interface TransformationClass {
   ],
 })
 export class TransformationClassesPage implements OnInit {
-  classes: TransformationClass[] = [];
+  classCards: ClassCardItem[] = [];
   fromServices: boolean = false;
   showDonateButton: boolean = false;
 
   constructor(
     private platformApi: PlatformApiService,
+    private cardFormatting: CardFormattingService,
     private router: Router,
     private route: ActivatedRoute,
     private donateButtonService: DonateButtonService,
@@ -97,7 +105,11 @@ export class TransformationClassesPage implements OnInit {
   loadClasses() {
     this.platformApi.getClasses().subscribe({
       next: (data) => {
-        this.classes = (data ?? []).map((c) => this.mapPlatformClassToTransformationClass(c));
+        this.classCards = (data ?? []).map((c) => {
+          const cls = this.mapPlatformClassToTransformationClass(c);
+          const formatted = this.cardFormatting.formatForCard(c, 'class');
+          return { formatted, class: cls };
+        });
       },
       error: (err) => {
         console.error('Error loading transformation classes:', err);
@@ -106,7 +118,10 @@ export class TransformationClassesPage implements OnInit {
   }
 
   private mapPlatformClassToTransformationClass(c: PlatformClass): TransformationClass {
-    const nextSession = c.nextSession ?? this.deriveNextSessionFromOfferings(c.offerings);
+    let nextSession = c.nextSession ?? this.deriveNextSessionFromOfferings(c.offerings);
+    if (nextSession) {
+      nextSession = { ...nextSession, dayOfWeek: this.dayTo2Letter(nextSession.dayOfWeek) };
+    }
     return {
       id: c.id,
       title: c.title,
@@ -116,6 +131,14 @@ export class TransformationClassesPage implements OnInit {
       photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',
       nextSession,
     };
+  }
+
+  private dayTo2Letter(day: string): string {
+    return day
+      .split(',')
+      .map((d) => d.trim().replace(/s$/, '').slice(0, 2))
+      .filter(Boolean)
+      .join(', ');
   }
 
   private deriveNextSessionFromOfferings(offerings?: PlatformOffering[]): TransformationClass['nextSession'] | undefined {
@@ -128,22 +151,17 @@ export class TransformationClassesPage implements OnInit {
     const startDate = session?.startDate ?? rule?.startDate;
     const endDate = session?.endDate ?? rule?.endDate;
     if (!startDate || !endDate) return undefined;
-    const dayOfWeek = rule?.daysOfWeek?.length ? this.dayNumberToName(rule.daysOfWeek[0]) : '';
+    const dayOfWeek =
+      rule?.daysOfWeek?.length
+        ? rule.daysOfWeek.map((n) => this.dayNumberToName(n)).join(', ')
+        : '';
     const time = [rule?.startTime, rule?.endTime].filter(Boolean).join(' – ') || '';
     return { startDate, endDate, dayOfWeek, time };
   }
 
   private dayNumberToName(n: number): string {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return days[n] ?? '';
-  }
-
-  getClassSubtitle(classItem: TransformationClass): string {
-    if (classItem.nextSession) {
-      const dateRange = this.formatSessionDates(classItem);
-      return `${classItem.nextSession.dayOfWeek} • ${classItem.nextSession.time} • ${dateRange}`;
-    }
-    return classItem.teacher ? `Instructor: ${classItem.teacher}` : '';
+    const sun = new Date(2024, 0, 7);
+    return format(addDays(sun, n), 'EEE').slice(0, 2);
   }
 
   navigateToClassDetail(classItem: TransformationClass) {
@@ -155,9 +173,7 @@ export class TransformationClassesPage implements OnInit {
     if (!classItem.nextSession) return '';
     const startDate = new Date(classItem.nextSession.startDate);
     const endDate = new Date(classItem.nextSession.endDate);
-    const startStr = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const endStr = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    return `${startStr} – ${endStr}`;
+    return `${format(startDate, 'MMM d')} – ${format(endDate, 'MMM d, yyyy')}`;
   }
 
   async onShareClass(classItem: TransformationClass) {

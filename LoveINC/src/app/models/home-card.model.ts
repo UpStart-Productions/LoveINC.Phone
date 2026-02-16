@@ -10,6 +10,12 @@ export type CardType =
   | 'fundraiser'
   | 'awareness';
 
+export interface CardBadge {
+  icon: string;
+  label: string;
+  color: string;
+}
+
 export interface HomeCard {
   id: string;
   type: CardType;
@@ -20,6 +26,7 @@ export interface HomeCard {
   shortDescription: string;
   link: string;
   priority: number;
+  badge: CardBadge;
 }
 
 export const CardTypeLabels: Record<CardType, string> = {

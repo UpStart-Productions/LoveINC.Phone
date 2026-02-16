@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { format, parse, addDays } from 'date-fns';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { 
@@ -255,18 +256,18 @@ export class ContentDetailPage implements OnInit {
     }
     const start = new Date(e.startDate);
     const end = new Date(e.endDate);
-    const eventDate = start.toLocaleDateString(undefined, {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    });
+    const eventDate = format(start, 'EEEE, MMMM d, yyyy');
     const eventTime =
-      start.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) +
-      (start.getTime() !== end.getTime()
-        ? ` – ${end.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`
-        : '');
-    const subtitle = `${eventDate} • ${eventTime}`;
+      start.getTime() !== end.getTime()
+        ? this.formatTimeRange(format(start, 'h:mm a'), format(end, 'h:mm a'))
+        : format(start, 'h:mm a');
+    const dayStr = format(start, 'EEEE');
+    const dateStr =
+      start.getTime() === end.getTime()
+        ? format(start, 'MMMM d, yyyy')
+        : `${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`;
+    const subtitle =
+      eventTime ? `${dayStr} ${eventTime}\n${dateStr}` : `${dayStr}\n${dateStr}`;
     return {
       id: e.id,
       title: e.title,
@@ -324,9 +325,21 @@ export class ContentDetailPage implements OnInit {
       const parts = [c.address.locationName, c.address.address, c.address.city, c.address.state, c.address.zip].filter(Boolean);
       location = parts.join(', ');
     }
-    const nextSession = c.nextSession ?? this.deriveNextSessionFromOfferings(c.offerings);
+    let nextSession = c.nextSession ?? this.deriveNextSessionFromOfferings(c.offerings);
+    if (nextSession) {
+      nextSession = {
+        ...nextSession,
+        dayOfWeek: this.dayTo2Letter(nextSession.dayOfWeek),
+        time: nextSession.time ? this.formatTimeTo12hr(nextSession.time) : nextSession.time,
+      };
+    }
+    const dateRange = nextSession
+      ? this.formatClassSessionDates(nextSession.startDate, nextSession.endDate)
+      : '';
     const subtitle = nextSession
-      ? `${nextSession.dayOfWeek} ${nextSession.time} • ${this.formatClassSessionDates(nextSession.startDate, nextSession.endDate)}`
+      ? nextSession.time
+        ? `${nextSession.dayOfWeek} ${nextSession.time}\n${dateRange}`
+        : dateRange
       : undefined;
     return {
       id: c.id,
@@ -352,22 +365,75 @@ export class ContentDetailPage implements OnInit {
     const startDate = session?.startDate ?? rule?.startDate;
     const endDate = session?.endDate ?? rule?.endDate;
     if (!startDate || !endDate) return undefined;
-    const dayOfWeek = rule?.daysOfWeek?.length ? this.dayNumberToName(rule.daysOfWeek[0]) : '';
-    const time = [rule?.startTime, rule?.endTime].filter(Boolean).join(' – ') || '';
+    const dayOfWeek =
+      rule?.daysOfWeek?.length
+        ? rule.daysOfWeek.map((n) => this.dayNumberToName(n)).join(', ')
+        : '';
+    const rawTime = [rule?.startTime, rule?.endTime].filter(Boolean).join(' – ') || '';
+    const time = this.formatTimeTo12hr(rawTime) || rawTime;
     return { startDate, endDate, dayOfWeek, time };
   }
 
+  /** Format time range, dropping redundant AM/PM from first time when same period (e.g. "6:00 – 8:00 PM") */
+  private formatTimeRange(start: string, end: string): string {
+    const endMatch = end.match(/\s(AM|PM)$/);
+    if (endMatch && start.endsWith(` ${endMatch[1]}`)) {
+      return `${start.replace(/\s(AM|PM)$/, '')} – ${end}`;
+    }
+    return `${start} – ${end}`;
+  }
+
+  /** Convert 24hr time string (e.g. "18:00 - 20:00") to 12hr (e.g. "6:00 – 8:00 PM") */
+  private formatTimeTo12hr(timeStr: string): string {
+    if (!timeStr?.trim()) return timeStr;
+    const ref = new Date(2000, 0, 1);
+    const parts = timeStr.split(/\s*[-–]\s*|\s+to\s+/i).map((s) => s.trim()).filter(Boolean);
+    const formatted = parts.map((part) => {
+      try {
+        const d = parse(part, 'HH:mm', ref);
+        return format(d, 'h:mm a');
+      } catch {
+        try {
+          const d = parse(part, 'HH:mm:ss', ref);
+          return format(d, 'h:mm a');
+        } catch {
+          return part;
+        }
+      }
+    });
+    if (formatted.length >= 2) {
+      const last = formatted[formatted.length - 1];
+      const periodMatch = last.match(/\s(AM|PM)$/);
+      if (periodMatch) {
+        const period = periodMatch[1];
+        const allSame = formatted.every((f) => f.endsWith(` ${period}`));
+        if (allSame) {
+          return formatted
+            .map((f, i) => (i < formatted.length - 1 ? f.replace(/\s(AM|PM)$/, '') : f))
+            .join(' – ');
+        }
+      }
+    }
+    return formatted.join(' – ');
+  }
+
   private dayNumberToName(n: number): string {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return days[n] ?? '';
+    const sun = new Date(2024, 0, 7);
+    return format(addDays(sun, n), 'EEE').slice(0, 2);
+  }
+
+  private dayTo2Letter(day: string): string {
+    return day
+      .split(',')
+      .map((d) => d.trim().replace(/s$/, '').slice(0, 2))
+      .filter(Boolean)
+      .join(', ');
   }
 
   private formatClassSessionDates(startDate: string, endDate: string): string {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    return `${startStr} – ${endStr}`;
+    return `${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`;
   }
 
   private getDataFile(): string | null {
@@ -439,9 +505,7 @@ export class ContentDetailPage implements OnInit {
     if (!this.contentItem?.nextSession) return '';
     const startDate = new Date(this.contentItem.nextSession.startDate);
     const endDate = new Date(this.contentItem.nextSession.endDate);
-    const startFormatted = startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    const endFormatted = endDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    return `${startFormatted} - ${endFormatted}`;
+    return `${format(startDate, 'MMMM d, yyyy')} - ${format(endDate, 'MMMM d, yyyy')}`;
   }
 
   isEvent(): boolean {

@@ -29,7 +29,7 @@
       class="home-card"
       [class.impact-card]="card.type === 'impact'"
       [imageUrl]="card.photoUrl"
-      [badge]="{ icon: cardTypeIcons[card.type], label: cardTypeLabels[card.type], color: cardTypeColors[card.type] }"
+      [badge]="card.badge"
       [title]="card.title"
       [subtitle]="card.subtitle"
       [description]="card.shortDescription"

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { format } from 'date-fns';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OnboardingService } from '../services/onboarding.service';
@@ -58,7 +59,7 @@ export class ProfilePage {
     name: 'Guest User',
     email: '',
     phone: '',
-    memberSince: new Date().toLocaleDateString()
+    memberSince: format(new Date(), 'MMM d, yyyy')
   };
 
   // Client-specific data

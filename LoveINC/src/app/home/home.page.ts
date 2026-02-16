@@ -5,12 +5,14 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, Ion
 import { CardComponent } from '../components/card/card.component';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { OnboardingService } from '../services/onboarding.service';
-import { HomeCard, CardType, CardTypeLabels, CardTypeIcons, CardTypeColors } from '../models/home-card.model';
+import { HomeCard, CardType } from '../models/home-card.model';
+import { CardFormattingService } from '../services/card-formatting.service';
 import { UserTypeCardComponent, UserType } from '../components/user-type-card/user-type-card.component';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { SharingService } from '../services/sharing/sharing.service';
 import { AlertsModalService } from '../services/alerts-modal.service';
 import { PlatformApiService } from '../services/platform/platform-api.service';
+import type { PlatformHomeFeedItem } from '../services/platform/types';
 
 @Component({
   selector: 'app-home',
@@ -32,9 +34,6 @@ import { PlatformApiService } from '../services/platform/platform-api.service';
 })
 export class HomePage implements OnInit {
   cards: HomeCard[] = [];
-  cardTypeLabels = CardTypeLabels;
-  cardTypeIcons = CardTypeIcons;
-  cardTypeColors = CardTypeColors;
   welcomeTitle: string = 'Welcome to Love INC.';
   selectedUserTypes: UserType[] = [];
   showDonateButton: boolean = false;
@@ -43,6 +42,7 @@ export class HomePage implements OnInit {
     private onboardingService: OnboardingService,
     private router: Router,
     private platformApi: PlatformApiService,
+    private cardFormatting: CardFormattingService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
     private alertsModalService: AlertsModalService
@@ -107,76 +107,19 @@ export class HomePage implements OnInit {
     return supported.includes(type as CardType);
   }
 
-  private mapFeedItemToHomeCard(item: {
-    id: string;
-    type: string;
-    photoUrl?: string;
-    title: string;
-    subtitle?: string;
-    shortDescription?: string;
-    priority: number;
-    startDate?: string;
-    endDate?: string;
-    instructor?: string;
-  }): HomeCard {
-    const resolvedPhoto = item.photoUrl
-      ? this.platformApi.resolveUploadUrl(item.photoUrl) || item.photoUrl
-      : '';
-    const subtitle = this.getCardSubtitle(item);
+  private mapFeedItemToHomeCard(item: PlatformHomeFeedItem & { type: CardType }): HomeCard {
+    const formatted = this.cardFormatting.formatForCard(item, item.type);
     return {
-      id: item.id,
-      type: item.type as CardType,
-      photoUrl: resolvedPhoto,
-      title: item.title,
-      subtitle,
-      shortDescription: item.shortDescription ?? '',
-      link: `/tabs/content-detail/${this.getContentDetailType(item.type)}/${item.id}`,
+      id: formatted.id,
+      type: formatted.type,
+      photoUrl: formatted.photoUrl,
+      title: formatted.title,
+      subtitle: formatted.subtitle,
+      shortDescription: formatted.description,
+      link: `/tabs/content-detail/${this.getContentDetailType(formatted.type)}/${formatted.id}`,
       priority: item.priority,
+      badge: formatted.badge,
     };
-  }
-
-  /** Subtitle must never be shortDescription. For events/classes, use dates. Impact stories: no subtitle. */
-  private getCardSubtitle(item: {
-    type: string;
-    subtitle?: string;
-    startDate?: string;
-    endDate?: string;
-    instructor?: string;
-  }): string {
-    if (item.type === 'event' && (item.startDate || item.endDate)) {
-      return this.formatEventDates(item.startDate, item.endDate);
-    }
-    if (item.type === 'class') {
-      if (item.startDate || item.endDate) {
-        return this.formatEventDates(item.startDate, item.endDate);
-      }
-      if (item.instructor) {
-        return `Instructor: ${item.instructor}`;
-      }
-    }
-    if (item.type === 'impact') {
-      return ''; // Never use shortDescription in subtitle
-    }
-    return item.subtitle ?? '';
-  }
-
-  private formatEventDates(startDate?: string, endDate?: string): string {
-    if (!startDate && !endDate) return '';
-    const start = startDate ? new Date(startDate) : null;
-    const end = endDate ? new Date(endDate) : null;
-    const dateStr = start && end && start.getTime() === end.getTime()
-      ? start.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-      : start && end
-        ? `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
-        : start
-          ? start.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-          : end
-            ? end.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-            : '';
-    const timeStr = start
-      ? start.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
-      : '';
-    return timeStr ? `${dateStr} • ${timeStr}` : dateStr;
   }
 
   private getContentDetailType(apiType: string): string {

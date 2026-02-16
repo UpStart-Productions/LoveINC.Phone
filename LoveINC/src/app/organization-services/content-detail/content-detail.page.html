@@ -28,7 +28,7 @@
     <div class="p-l-18 p-r-18 p-t-18 p-b-36">
       <h2 class="m-b-18">{{ contentItem.title }}</h2>
       
-      <p *ngIf="contentItem.subtitle" class="app-title m-b-24">{{ contentItem.subtitle }}</p>
+      <p *ngIf="contentItem.subtitle && contentType !== 'event' && contentType !== 'class'" class="app-title m-b-24 content-subtitle">{{ contentItem.subtitle }}</p>
       
       <div class="app-body-secondary m-b-24" [innerHTML]="contentItem.description"></div>
 

@@ -21,15 +21,16 @@
 <ion-content [fullscreen]="true">
   <div>
     <app-card
-      *ngFor="let classItem of classes"
+      *ngFor="let item of classCards"
       class="class-card"
-      [imageUrl]="classItem.photoUrl"
-      [title]="classItem.title"
-      [subtitle]="getClassSubtitle(classItem)"
-      [description]="classItem.shortDescription"
+      [imageUrl]="item.formatted.photoUrl"
+      [badge]="item.formatted.badge"
+      [title]="item.formatted.title"
+      [subtitle]="item.formatted.subtitle"
+      [description]="item.formatted.description"
       [clickable]="true"
-      (cardClick)="navigateToClassDetail(classItem)"
-      (shareClick)="onShareClass(classItem)">
+      (cardClick)="navigateToClassDetail(item.class)"
+      (shareClick)="onShareClass(item.class)">
     </app-card>
   </div>
 </ion-content>
