@@ -26,6 +26,7 @@ import {
   type PlatformEvent,
   type PlatformImpactStory,
   type PlatformOffering,
+  type PlatformService,
 } from '../../services/platform';
 
 @Component({
@@ -136,6 +137,7 @@ export class ContentDetailPage implements OnInit {
       'event',
       'class',
       'impact-story',
+      'gap-ministry',
       'donation-drive',
       'volunteer',
       'fundraiser',
@@ -188,6 +190,9 @@ export class ContentDetailPage implements OnInit {
       case 'impact-story':
         this.loadImpactStoryFromApi();
         break;
+      case 'gap-ministry':
+        this.loadServiceFromApi();
+        break;
       case 'donation-drive':
       case 'volunteer':
       case 'fundraiser':
@@ -227,6 +232,104 @@ export class ContentDetailPage implements OnInit {
         console.error('Error loading impact story:', err);
       },
     });
+  }
+
+  private loadServiceFromApi() {
+    this.platformApi.getServices().subscribe({
+      next: (services) => {
+        const { item, service } = this.findServiceOrOfferingById(services ?? [], this.contentId);
+        this.contentItem = item && service ? this.mapPlatformServiceToContentDetail(item, service) : null;
+        if (!this.contentItem) {
+          console.error('Gap ministry not found:', this.contentId);
+        }
+      },
+      error: (err) => {
+        console.error('Error loading gap ministry detail:', err);
+      },
+    });
+  }
+
+  private findServiceOrOfferingById(
+    services: PlatformService[],
+    id: string
+  ): { item: PlatformOffering | PlatformService | null; service: PlatformService | null } {
+    for (const svc of services) {
+      if (svc.id === id) {
+        return { item: svc, service: svc };
+      }
+      for (const off of svc.offerings ?? []) {
+        if (off.id === id) {
+          return { item: off, service: svc };
+        }
+      }
+    }
+    return { item: null, service: null };
+  }
+
+  private mapPlatformServiceToContentDetail(
+    item: PlatformOffering | PlatformService,
+    service: PlatformService
+  ): ContentDetail {
+    const isOffering = 'provider' in item;
+    const off = isOffering ? (item as PlatformOffering) : null;
+    const addr = off?.address;
+    const location = addr
+      ? [addr.address, addr.city, addr.state, addr.zip].filter(Boolean).join(', ')
+      : undefined;
+    const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    let subtitle = '';
+    let nextSession: ContentDetail['nextSession'] | undefined;
+    if (off) {
+      const rule = off.scheduleRule;
+      const sessions = off.sessions?.filter((s) => !s.isCancelled) ?? [];
+      const firstSession = sessions[0];
+      if (firstSession) {
+        const start = new Date(firstSession.startDate);
+        const dayName = DAY_NAMES[start.getDay()];
+        const time =
+          start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) +
+          (firstSession.endDate
+            ? ` – ${new Date(firstSession.endDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`
+            : '');
+        subtitle = [off.provider?.name, `${dayName} ${time}`].filter(Boolean).join(' · ');
+        nextSession = {
+          startDate: firstSession.startDate,
+          endDate: firstSession.endDate ?? firstSession.startDate,
+          dayOfWeek: dayName ?? '',
+          time: time,
+        };
+      } else if (rule?.ruleType === 'by_appointment') {
+        subtitle = off.provider?.name ?? 'By Appointment';
+      } else if (rule?.daysOfWeek?.length) {
+        const names = rule.daysOfWeek.map((d) => DAY_NAMES[d] ?? '').filter(Boolean);
+        const schedule = names.length === 1 ? names[0] : names.length > 1 ? 'Open Weekdays' : 'By Appointment';
+        const time = [rule.startTime, rule.endTime].filter(Boolean).join(' – ') || '';
+        subtitle = [off.provider?.name, time ? `${schedule} ${time}` : schedule].filter(Boolean).join(' · ');
+        nextSession = rule.startDate && rule.endDate
+          ? {
+              startDate: rule.startDate,
+              endDate: rule.endDate,
+              dayOfWeek: names.join(', '),
+              time: time || 'See schedule',
+            }
+          : undefined;
+      } else {
+        subtitle = off.provider?.name ?? '';
+      }
+    } else {
+      subtitle = 'By Appointment';
+    }
+    const title =
+      off?.items?.length ? off.items.join(', ') : service.title;
+    return {
+      id: isOffering ? (item as PlatformOffering).id : (item as PlatformService).id,
+      title,
+      description: service.longDescription ?? service.shortDescription ?? '',
+      photoUrl: service.photoUrl ?? '',
+      subtitle: subtitle || undefined,
+      location,
+      nextSession,
+    };
   }
 
   private loadCtaFromApi() {

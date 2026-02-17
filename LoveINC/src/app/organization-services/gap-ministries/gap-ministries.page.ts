@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
   IonContent,
   IonButtons,
   IonButton,
   IonBackButton,
   IonIcon,
   IonItem,
-  IonLabel
+  IonLabel,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
@@ -20,8 +19,10 @@ import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { SharingService } from '../../services/sharing/sharing.service';
 import { AlertsModalService } from '../../services/alerts-modal.service';
+import { PlatformApiService } from '../../services/platform';
+import type { PlatformService, PlatformOffering, PlatformAddress } from '../../services/platform/types';
 
-interface GapService {
+export interface GapService {
   id: string;
   service: string;
   schedule: string;
@@ -31,6 +32,8 @@ interface GapService {
   contact: string;
   contactMethod: string;
   notes: string | null;
+  phone?: string;
+  email?: string;
 }
 
 @Component({
@@ -57,12 +60,15 @@ interface GapService {
 export class GapMinistriesPage implements OnInit {
   services: GapService[] = [];
   groupedServices: { [key: string]: GapService[] } = {};
-  scheduleOrder = ['Thursday', 'Friday', 'Saturday', 'Open Weekdays', 'By Appointment'];
+  scheduleOrder = [
+    'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
+    'Open Weekdays', 'By Appointment',
+  ];
   fromServices: boolean = false;
   showDonateButton: boolean = false;
 
   constructor(
-    private http: HttpClient,
+    private platformApi: PlatformApiService,
     private router: Router,
     private route: ActivatedRoute,
     private alertController: AlertController,
@@ -74,19 +80,11 @@ export class GapMinistriesPage implements OnInit {
 
   ngOnInit() {
     this.loadServices();
-    // Check if navigated from Services page
     const fromParam = this.route.snapshot.queryParamMap.get('from');
-    console.log('Gap Ministries - query param "from":', fromParam);
     this.fromServices = fromParam === 'services';
-    console.log('Gap Ministries - fromServices:', this.fromServices);
-    
-    // Also subscribe for changes
-    this.route.queryParamMap.subscribe(params => {
-      const from = params.get('from');
-      this.fromServices = from === 'services';
-      console.log('Gap Ministries - query param changed, fromServices:', this.fromServices);
+    this.route.queryParamMap.subscribe((params) => {
+      this.fromServices = params.get('from') === 'services';
     });
-    
     this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
   }
 
@@ -99,15 +97,95 @@ export class GapMinistriesPage implements OnInit {
   }
 
   loadServices() {
-    this.http.get<GapService[]>('assets/data/gap-services.json').subscribe({
-      next: (data) => {
-        this.services = data;
+    this.platformApi.getServices().subscribe({
+      next: (platformServices) => {
+        const all = platformServices ?? [];
+        const gapServices = all.filter((s) => s.slug === 'gap-ministries');
+        const toShow = gapServices.length > 0 ? gapServices : all;
+        this.services = this.mapPlatformServicesToGapServices(toShow);
         this.groupServicesBySchedule();
       },
       error: (err) => {
         console.error('Error loading gap services:', err);
-      }
+      },
     });
+  }
+
+  private mapPlatformServicesToGapServices(platformServices: PlatformService[]): GapService[] {
+    const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const result: GapService[] = [];
+    for (const svc of platformServices) {
+      if (svc.offerings?.length) {
+        for (const off of svc.offerings) {
+          const { schedule, daysTimes } = this.deriveScheduleFromOffering(off, DAY_NAMES);
+          const address = this.formatAddress(off.address);
+          const contact = off.provider?.phone ?? off.provider?.email ?? 'Contact Love INC';
+          const contactMethod = off.provider?.phone ? 'direct' : off.provider?.email ? 'direct' : 'call_loveinc';
+          const itemTitle = off.items?.length ? off.items.join(', ') : svc.title;
+          result.push({
+            id: off.id,
+            service: itemTitle,
+            schedule,
+            daysTimes,
+            church: off.provider?.name ?? '',
+            address,
+            contact,
+            contactMethod,
+            notes: svc.shortDescription ?? null,
+            phone: off.provider?.phone,
+            email: off.provider?.email,
+          });
+        }
+      } else {
+        result.push({
+          id: svc.id,
+          service: svc.title,
+          schedule: 'By Appointment',
+          daysTimes: 'By appointment',
+          church: '',
+          address: null,
+          contact: 'Contact Love INC',
+          contactMethod: 'call_loveinc',
+          notes: svc.shortDescription ?? null,
+        });
+      }
+    }
+    return result;
+  }
+
+  private deriveScheduleFromOffering(
+    off: PlatformOffering,
+    dayNames: string[]
+  ): { schedule: string; daysTimes: string } {
+    const rule = off.scheduleRule;
+    const sessions = off.sessions?.filter((s) => !s.isCancelled) ?? [];
+    const firstSession = sessions[0];
+    if (firstSession) {
+      const start = new Date(firstSession.startDate);
+      const dayName = dayNames[start.getDay()];
+      const time =
+        start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) +
+        (firstSession.endDate
+          ? ` – ${new Date(firstSession.endDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`
+          : '');
+      return { schedule: dayName ?? 'By Appointment', daysTimes: time };
+    }
+    if (rule?.ruleType === 'by_appointment') {
+      return { schedule: 'By Appointment', daysTimes: 'By appointment' };
+    }
+    if (rule?.daysOfWeek?.length) {
+      const names = rule.daysOfWeek.map((d) => dayNames[d] ?? '').filter(Boolean);
+      const schedule = names.length === 1 ? names[0] : names.length > 1 ? 'Open Weekdays' : 'By Appointment';
+      const time = [rule.startTime, rule.endTime].filter(Boolean).join(' – ') || '';
+      return { schedule, daysTimes: time || 'See schedule' };
+    }
+    return { schedule: 'By Appointment', daysTimes: 'By appointment' };
+  }
+
+  private formatAddress(addr: PlatformAddress | undefined): string | null {
+    if (!addr) return null;
+    const parts = [addr.address, addr.city, addr.state, addr.zip].filter(Boolean);
+    return parts.length ? parts.join(', ') : addr.locationName ?? null;
   }
 
   groupServicesBySchedule() {
@@ -141,21 +219,30 @@ export class GapMinistriesPage implements OnInit {
   }
 
   async onMapPinClick(service: GapService) {
-    const alert = await this.alertController.create({
-      header: 'Map',
-      message: `Show map for ${service.church}`,
-      buttons: ['OK']
-    });
-    await alert.present();
+    if (service.address) {
+      const query = encodeURIComponent(service.address);
+      window.open(`https://maps.google.com/?q=${query}`, '_blank');
+    } else {
+      const alert = await this.alertController.create({
+        header: 'Map',
+        message: `No address available for ${service.church || service.service}`,
+        buttons: ['OK'],
+      });
+      await alert.present();
+    }
   }
 
   async onPhoneClick(service: GapService) {
-    const alert = await this.alertController.create({
-      header: 'Phone',
-      message: `Call ${service.church}`,
-      buttons: ['OK']
-    });
-    await alert.present();
+    if (service.phone) {
+      window.open(`tel:${service.phone}`, '_self');
+    } else {
+      const alert = await this.alertController.create({
+        header: 'Phone',
+        message: `Call ${service.church || service.service}`,
+        buttons: ['OK'],
+      });
+      await alert.present();
+    }
   }
 
   async onVolunteerClick(service: GapService) {
@@ -174,6 +261,12 @@ export class GapMinistriesPage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  onCardClick(service: GapService) {
+    this.router.navigate(['/tabs/content-detail', 'gap-ministry', service.id], {
+      queryParams: { from: 'gap-ministries' },
+    });
   }
 
   async onShareService(service: GapService) {

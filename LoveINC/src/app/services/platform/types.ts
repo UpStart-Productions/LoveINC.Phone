@@ -89,6 +89,7 @@ export interface PlatformServiceItem {
 
 export interface PlatformService {
   id: string;
+  slug?: string;
   title: string;
   shortDescription?: string;
   longDescription?: string;

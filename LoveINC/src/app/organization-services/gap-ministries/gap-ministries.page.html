@@ -29,6 +29,8 @@
           [contentHtml]="getServiceContentHtml(service)"
           [actionIcons]="getActionIcons(service)"
           [style.--app-card-margin-bottom]="'12px'"
+          [clickable]="true"
+          (cardClick)="onCardClick(service)"
           (shareClick)="onShareService(service)">
         </app-card>
       </div>
