@@ -131,7 +131,7 @@ export class GapMinistriesPage implements OnInit {
             address,
             contact,
             contactMethod,
-            notes: svc.shortDescription ?? null,
+            notes: off.shortDescription ?? off.longDescription ?? svc.shortDescription ?? null,
             phone: off.provider?.phone,
             email: off.provider?.email,
           });

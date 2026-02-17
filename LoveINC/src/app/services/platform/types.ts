@@ -77,6 +77,9 @@ export interface PlatformOffering {
   provider: { id: string; name: string; phone?: string; email?: string };
   address?: PlatformAddress;
   items: string[];
+  shortDescription?: string;
+  longDescription?: string;
+  photoUrl?: string;
   scheduleRule?: PlatformScheduleRule;
   sessions?: Array<{ startDate: string; endDate: string; isCancelled?: boolean }>;
 }

@@ -321,11 +321,19 @@ export class ContentDetailPage implements OnInit {
     }
     const title =
       off?.items?.length ? off.items.join(', ') : service.title;
+    const rawPhotoUrl = off?.photoUrl ?? service.photoUrl ?? '';
+    const photoUrl = this.platformApi.resolveUploadUrl(rawPhotoUrl) || rawPhotoUrl;
+    const description =
+      off?.longDescription ??
+      off?.shortDescription ??
+      service.longDescription ??
+      service.shortDescription ??
+      '';
     return {
       id: isOffering ? (item as PlatformOffering).id : (item as PlatformService).id,
       title,
-      description: service.longDescription ?? service.shortDescription ?? '',
-      photoUrl: service.photoUrl ?? '',
+      description,
+      photoUrl,
       subtitle: subtitle || undefined,
       location,
       nextSession,
