@@ -48,20 +48,25 @@ ion-item {
   }
 }
 
-.document-item {
-  --padding-start: 40px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  margin-top: 0px;
-  margin-bottom: 0px;
+.class-documents-header-item {
+  margin-bottom: 4px;
+}
 
-  .document-type-icon {
-    font-size: 18px;
-    color: var(--app-text-secondary);
-  }
+.class-documents-heading {
+  font-weight: 400 !important;
+}
 
-  .document-link {
-    color: var(--ion-color-primary);
-    text-decoration: underline;
-  }
+.class-documents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding-left: 58px;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.document-link {
+  color: var(--ion-color-primary);
+  text-decoration: none;
+  font-size: var(--app-font-size-body);
 }

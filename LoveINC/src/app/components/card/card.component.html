@@ -1,8 +1,9 @@
 <ion-card
   class="app-card"
   [class.clickable]="clickable"
+  [class.card-with-right-thumbnail]="imagePosition === 'right' && (imageUrl || thumbnailPlaceholderIcon)"
   (click)="onCardClick($event)">
-  @if (imageUrl) {
+  @if (imageUrl && imagePosition === 'banner') {
     <div class="card-image-container">
       <img [src]="imageUrl" [alt]="title ?? ''" class="card-image" />
       @if (badge) {
@@ -26,27 +27,65 @@
   }
 
   <ion-card-content [class.has-action-icons]="hasActionIcons">
-    @if (description) {
-      <div [innerHTML]="description"></div>
-    } @else if (contentHtml) {
-      <div [innerHTML]="contentHtml"></div>
-    }
-    @if (hasActionIcons) {
-      <div class="action-icons p-t-12">
-        @for (action of visibleActionIcons; track action.icon || action.lucideIcon) {
-          <ion-button
-            fill="clear"
-            size="small"
-            [ngClass]="action.buttonClass"
-            (click)="onActionClick($event, action)">
-            @if (action.lucideIcon) {
-              <i-lucide slot="icon-only" [name]="action.lucideIcon" [size]="21.6" color="var(--ion-color-dark)"></i-lucide>
-            } @else {
-              <ion-icon slot="icon-only" [name]="action.icon"></ion-icon>
-            }
-          </ion-button>
-        }
+    @if (imagePosition === 'right' && (imageUrl || thumbnailPlaceholderIcon)) {
+      <div class="card-content-inner">
+        <div class="card-content-left">
+          @if (description) {
+            <div [innerHTML]="description"></div>
+          } @else if (contentHtml) {
+            <div [innerHTML]="contentHtml"></div>
+          }
+        </div>
+        <div class="card-content-right">
+          @if (imageUrl) {
+            <img [src]="imageUrl" [alt]="title ?? ''" class="card-thumbnail-image" />
+          } @else if (thumbnailPlaceholderIcon) {
+            <div class="card-thumbnail-placeholder" [style.background-color]="thumbnailPlaceholderColor">
+              <ion-icon [name]="thumbnailPlaceholderIcon" class="card-thumbnail-icon"></ion-icon>
+            </div>
+          }
+        </div>
       </div>
+      @if (hasActionIcons) {
+        <div class="action-icons p-t-12">
+          @for (action of visibleActionIcons; track action.icon || action.lucideIcon) {
+            <ion-button
+              fill="clear"
+              size="small"
+              [ngClass]="action.buttonClass"
+              (click)="onActionClick($event, action)">
+              @if (action.lucideIcon) {
+                <i-lucide slot="icon-only" [name]="action.lucideIcon" [size]="21.6" color="var(--ion-color-dark)"></i-lucide>
+              } @else {
+                <ion-icon slot="icon-only" [name]="action.icon"></ion-icon>
+              }
+            </ion-button>
+          }
+        </div>
+      }
+    } @else {
+      @if (description) {
+        <div [innerHTML]="description"></div>
+      } @else if (contentHtml) {
+        <div [innerHTML]="contentHtml"></div>
+      }
+      @if (hasActionIcons) {
+        <div class="action-icons p-t-12">
+          @for (action of visibleActionIcons; track action.icon || action.lucideIcon) {
+            <ion-button
+              fill="clear"
+              size="small"
+              [ngClass]="action.buttonClass"
+              (click)="onActionClick($event, action)">
+              @if (action.lucideIcon) {
+                <i-lucide slot="icon-only" [name]="action.lucideIcon" [size]="21.6" color="var(--ion-color-dark)"></i-lucide>
+              } @else {
+                <ion-icon slot="icon-only" [name]="action.icon"></ion-icon>
+              }
+            </ion-button>
+          }
+        </div>
+      }
     }
   </ion-card-content>
 </ion-card>

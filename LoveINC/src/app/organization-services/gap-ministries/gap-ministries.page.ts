@@ -34,6 +34,7 @@ export interface GapService {
   notes: string | null;
   phone?: string;
   email?: string;
+  photoUrl?: string;
 }
 
 @Component({
@@ -62,7 +63,7 @@ export class GapMinistriesPage implements OnInit {
   groupedServices: { [key: string]: GapService[] } = {};
   scheduleOrder = [
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
-    'Open Weekdays', 'By Appointment',
+    'By Appointment',
   ];
   fromServices: boolean = false;
   showDonateButton: boolean = false;
@@ -122,6 +123,8 @@ export class GapMinistriesPage implements OnInit {
           const contact = off.provider?.phone ?? off.provider?.email ?? 'Contact Love INC';
           const contactMethod = off.provider?.phone ? 'direct' : off.provider?.email ? 'direct' : 'call_loveinc';
           const itemTitle = off.items?.length ? off.items.join(', ') : svc.title;
+          const rawPhoto = off.photoUrl ?? svc.photoUrl;
+          const photoUrl = rawPhoto ? this.platformApi.resolveUploadUrl(rawPhoto) || rawPhoto : undefined;
           result.push({
             id: off.id,
             service: itemTitle,
@@ -134,6 +137,7 @@ export class GapMinistriesPage implements OnInit {
             notes: off.shortDescription ?? off.longDescription ?? svc.shortDescription ?? null,
             phone: off.provider?.phone,
             email: off.provider?.email,
+            photoUrl,
           });
         }
       } else {
@@ -175,7 +179,7 @@ export class GapMinistriesPage implements OnInit {
     }
     if (rule?.daysOfWeek?.length) {
       const names = rule.daysOfWeek.map((d) => dayNames[d] ?? '').filter(Boolean);
-      const schedule = names.length === 1 ? names[0] : names.length > 1 ? 'Open Weekdays' : 'By Appointment';
+      const schedule = names.length === 1 ? names[0] : names.length > 1 ? names.join(', ') : 'By Appointment';
       const time = [rule.startTime, rule.endTime].filter(Boolean).join(' – ') || '';
       return { schedule, daysTimes: time || 'See schedule' };
     }
@@ -191,12 +195,23 @@ export class GapMinistriesPage implements OnInit {
   groupServicesBySchedule() {
     this.groupedServices = {};
     this.services.forEach(service => {
-      const schedule = service.schedule;
-      if (!this.groupedServices[schedule]) {
-        this.groupedServices[schedule] = [];
-      }
-      this.groupedServices[schedule].push(service);
+      const days = this.getDaysFromSchedule(service.schedule);
+      days.forEach(day => {
+        if (!this.groupedServices[day]) {
+          this.groupedServices[day] = [];
+        }
+        this.groupedServices[day].push(service);
+      });
     });
+  }
+
+  /** Expand schedule string to the day keys it should appear under. Multi-day items show under each day. */
+  private getDaysFromSchedule(schedule: string): string[] {
+    if (schedule === 'By Appointment') return ['By Appointment'];
+    if (schedule === 'Open Weekdays') {
+      return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    }
+    return schedule.split(/,\s*/).map((s) => s.trim()).filter(Boolean);
   }
 
 

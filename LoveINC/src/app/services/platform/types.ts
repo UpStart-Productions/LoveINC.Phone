@@ -46,6 +46,14 @@ export interface PlatformClassNextSession {
   time: string;
 }
 
+export interface PlatformClassAttachment {
+  id: string;
+  label?: string;
+  url: string;
+  mimeType: string;
+  size?: number;
+}
+
 export interface PlatformClass {
   id: string;
   slug: string;
@@ -59,6 +67,8 @@ export interface PlatformClass {
   cost?: string;
   photoUrl?: string;
   nextSession?: PlatformClassNextSession;
+  /** Attachments from API (handouts, PDFs, etc.) */
+  attachments?: PlatformClassAttachment[];
   /** Alternative: schedule from offerings (scheduleRule + sessions) */
   offerings?: PlatformOffering[];
 }

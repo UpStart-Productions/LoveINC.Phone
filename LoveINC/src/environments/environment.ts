@@ -4,14 +4,14 @@
 
 export const environment = {
   production: false,
-  /** Nonprofit Mobile Platform API base URL (no trailing slash) */
-  apiBaseUrl: 'http://localhost:3000/api',
+  /** Nonprofit Mobile Platform API base URL (no trailing slash). Use /api in dev so the dev proxy forwards to api.grovlink.com and avoids CORS. */
+  apiBaseUrl: '/api',
   /** API key from admin (API Keys or Mobile App Config → API Key tab) */
-  apiKey: 'npmp_XltX6idTM8E8EczuRsJYcyUiPx6QGmspaU6ICP0UhdU',
+  apiKey: 'npmp_q-ajDhD2sB4O4yy5e-m3PcXflfrePITRv9EhGiGXYXU',
   /** Customer slug (e.g. loveinc) */
   customerSlug: 'loveinc',
   /** Tenant/affiliate slug (e.g. newberg) */
-  tenantSlug: 'salem',
+  tenantSlug: 'newberg',
 };
 
 /*

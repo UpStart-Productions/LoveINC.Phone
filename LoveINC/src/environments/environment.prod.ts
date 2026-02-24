@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://your-api-host.com/api',
-  apiKey: '',
+  apiBaseUrl: 'https://api.grovlink.com/api',
+  apiKey: 'npmp_q-ajDhD2sB4O4yy5e-m3PcXflfrePITRv9EhGiGXYXU',
   customerSlug: 'loveinc',
   tenantSlug: 'newberg',
 };

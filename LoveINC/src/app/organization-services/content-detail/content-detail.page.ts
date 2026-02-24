@@ -452,6 +452,21 @@ export class ContentDetailPage implements OnInit {
         ? `${nextSession.dayOfWeek} ${nextSession.time}\n${dateRange}`
         : dateRange
       : undefined;
+
+    // Map API attachments to classDocuments for display
+    const fromAttachments = (c.attachments ?? []).map((a) => ({
+      title: a.label?.trim() || this.filenameFromUrl(a.url) || 'Document',
+      url: this.platformApi.resolveUploadUrl(a.url) || a.url,
+    }));
+    const legacy = c as { classDocuments?: Array<{ title?: string; url?: string }>; documents?: Array<{ title?: string; url?: string }> };
+    const fromLegacy = (legacy.classDocuments ?? legacy.documents ?? []).map((d) => ({
+      title: d.title ?? 'Document',
+      url: d.url ? this.platformApi.resolveUploadUrl(d.url) || d.url : undefined,
+    }));
+    const classDocuments = [...fromAttachments, ...fromLegacy]
+      .filter((d) => d.url)
+      .map((d) => ({ title: d.title, url: d.url!, type: undefined as 'handout' | 'worksheet' | 'resource' | undefined }));
+
     return {
       id: c.id,
       title: c.title,
@@ -463,7 +478,20 @@ export class ContentDetailPage implements OnInit {
       durationMinutes: c.durationMinutes,
       cost: c.cost,
       nextSession,
+      classDocuments: classDocuments.length ? classDocuments : undefined,
     };
+  }
+
+  private filenameFromUrl(url: string): string {
+    try {
+      const path = new URL(url).pathname;
+      const name = path.split('/').pop();
+      if (name) return decodeURIComponent(name);
+    } catch {
+      const name = url.split('/').pop();
+      if (name) return decodeURIComponent(name);
+    }
+    return '';
   }
 
   private deriveNextSessionFromOfferings(offerings?: PlatformOffering[]): ContentDetail['nextSession'] | undefined {

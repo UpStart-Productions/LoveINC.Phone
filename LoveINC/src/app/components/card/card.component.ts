@@ -46,6 +46,12 @@ export interface CardBadge {
 })
 export class CardComponent {
   @Input() imageUrl?: string;
+  /** When 'right', image shows as 80x80 square on the right (Tools/Gap Ministry style). Default 'banner' = full-width top. */
+  @Input() imagePosition: 'banner' | 'right' = 'banner';
+  /** Icon for right-side when imagePosition is 'right' but no imageUrl (e.g. "church-outline") */
+  @Input() thumbnailPlaceholderIcon?: string;
+  /** Background color for thumbnail placeholder */
+  @Input() thumbnailPlaceholderColor = '#8b7355';
   @Input() badge?: CardBadge;
   @Input() title?: string;
   @Input() subtitle?: string;

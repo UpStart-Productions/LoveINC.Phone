@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map, catchError, of } from 'rxjs';
+import { Observable, map, catchError, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import type {
   PlatformAddress,
@@ -54,9 +54,27 @@ export class PlatformApiService {
       );
       return of(null as T);
     }
-    return this.http.get<T>(`${this.basePath}${path}`, { headers: this.headers }).pipe(
+    const url = `${this.basePath}${path}`;
+    return this.http.get<T>(url, { headers: this.headers }).pipe(
+      tap((res) => {
+        if (res != null) {
+          console.debug(`PlatformApiService: ${path} OK`, res);
+        }
+      }),
       catchError((err) => {
-        console.error(`PlatformApiService: failed to load ${path}`, err);
+        console.error(
+          `PlatformApiService: failed to load ${path}`,
+          'URL:',
+          url,
+          err?.status != null ? `Status: ${err.status}` : '',
+          err?.message ?? err
+        );
+        if (err?.status === 0) {
+          console.warn(
+            'PlatformApiService: Status 0 often means CORS blocked the response. ' +
+              'Ensure api.grovlink.com allows your origin (e.g. http://localhost:8100) or use a dev proxy.'
+          );
+        }
         return of(null as T);
       })
     );
