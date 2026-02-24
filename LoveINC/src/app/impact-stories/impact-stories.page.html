@@ -8,7 +8,16 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="ion-padding">
-    <p>Impact stories content will go here.</p>
+  <div class="cards-container">
+    <app-card
+      *ngFor="let story of stories"
+      class="impact-card"
+      [imageUrl]="getPhotoUrl(story)"
+      [title]="story.title"
+      [description]="story.shortDescription ?? story.longDescription ?? ''"
+      [clickable]="true"
+      (cardClick)="navigateToDetail(story)"
+      (shareClick)="onShareStory(story)">
+    </app-card>
   </div>
 </ion-content>

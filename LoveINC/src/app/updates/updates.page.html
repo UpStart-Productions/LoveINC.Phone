@@ -18,16 +18,16 @@
 <ion-content [fullscreen]="true">
   <div class="cards-container">
     <app-card
-      *ngFor="let event of events"
+      *ngFor="let item of items"
       class="event-card"
-      [imageUrl]="event.photoUrl"
-      [title]="event.title"
-      [subtitle]="event.subtitle"
-      [description]="event.shortDescription ?? event.description"
+      [imageUrl]="item.photoUrl"
+      [title]="item.title"
+      [subtitle]="item.subtitle"
+      [description]="item.shortDescription || item.description"
       [clickable]="true"
-      [actionIcons]="getActionIcons(event)"
-      (cardClick)="navigateToEventDetail(event)"
-      (shareClick)="onShareEvent(event)">
+      [actionIcons]="getActionIcons(item)"
+      (cardClick)="navigateToDetail(item)"
+      (shareClick)="onShareItem(item)">
     </app-card>
   </div>
 </ion-content>

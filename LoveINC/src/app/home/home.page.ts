@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { startOfDay } from 'date-fns';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon } from '@ionic/angular/standalone';
 import { CardComponent } from '../components/card/card.component';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
@@ -88,9 +89,11 @@ export class HomePage implements OnInit {
   loadCards() {
     this.platformApi.getHomeFeed().subscribe({
       next: (items) => {
+        const today = startOfDay(new Date()).getTime();
         this.cards = items
           .filter((item): item is typeof item & { type: CardType } =>
             this.isSupportedCardType(item.type))
+          .filter((item) => this.isNotPastEventOrClass(item, today))
           .map((item) => this.mapFeedItemToHomeCard(item))
           .sort((a, b) => a.priority - b.priority);
       },
@@ -105,6 +108,14 @@ export class HomePage implements OnInit {
       'event', 'class', 'impact', 'donation-drive', 'volunteer', 'fundraiser', 'awareness',
     ];
     return supported.includes(type as CardType);
+  }
+
+  /** Exclude events and classes that are in the past (before today). Other types are kept. */
+  private isNotPastEventOrClass(item: PlatformHomeFeedItem & { type: CardType }, todayMs: number): boolean {
+    if (item.type !== 'event' && item.type !== 'class') return true;
+    const startDate = item.startDate;
+    if (!startDate) return true;
+    return new Date(startDate).getTime() >= todayMs;
   }
 
   private mapFeedItemToHomeCard(item: PlatformHomeFeedItem & { type: CardType }): HomeCard {
