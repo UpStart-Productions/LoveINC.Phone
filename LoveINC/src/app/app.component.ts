@@ -26,6 +26,7 @@ import {
   close,
   shirtOutline,
   cubeOutline,
+  bicycleOutline,
   // Onboarding Icons
   giftOutline,
   arrowForwardOutline,
@@ -171,6 +172,7 @@ export class AppComponent implements OnInit, OnDestroy {
       close,
       shirtOutline,
       cubeOutline,
+      bicycleOutline,
       // Onboarding Icons
       giftOutline,
       arrowForwardOutline,

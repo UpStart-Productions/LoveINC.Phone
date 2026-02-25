@@ -5,4 +5,5 @@
 export {
   PlatformApiService,
   type PlatformClass,
+  type PlatformDonation,
 } from './platform/platform-api.service';

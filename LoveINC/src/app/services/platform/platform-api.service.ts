@@ -6,6 +6,7 @@ import type {
   PlatformAddress,
   PlatformClass,
   PlatformCta,
+  PlatformDonation,
   PlatformEvent,
   PlatformHomeFeedItem,
   PlatformImpactStory,
@@ -17,6 +18,7 @@ export type {
   PlatformAddress,
   PlatformClass,
   PlatformCta,
+  PlatformDonation,
   PlatformEvent,
   PlatformHomeFeedItem,
   PlatformImpactStory,
@@ -117,6 +119,12 @@ export class PlatformApiService {
   getHomeFeed(): Observable<PlatformHomeFeedItem[]> {
     return this.get<{ items: PlatformHomeFeedItem[] }>('/home-feed').pipe(
       map((res) => res?.items ?? [])
+    );
+  }
+
+  getDonations(): Observable<PlatformDonation[]> {
+    return this.get<{ donations: PlatformDonation[] }>('/donations').pipe(
+      map((res) => res?.donations ?? [])
     );
   }
 }

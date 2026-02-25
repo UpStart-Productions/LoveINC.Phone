@@ -26,10 +26,12 @@
   <div class="content-wrapper">
     <div *ngFor="let category of categoryOrder">
       <div *ngIf="groupedLocations[category]?.length" class="category-section">
-        <h2 class="category-header">{{ category }}</h2>
         <app-card
           *ngFor="let location of groupedLocations[category]"
           class="location-card"
+          [imageUrl]="location.photoUrl ?? undefined"
+          [imagePosition]="'banner'"
+          [badge]="location.badge"
           [contentHtml]="getLocationContentHtml(location)"
           [actionIcons]="getActionIcons(location)"
           (shareClick)="onShareLocation(location)">

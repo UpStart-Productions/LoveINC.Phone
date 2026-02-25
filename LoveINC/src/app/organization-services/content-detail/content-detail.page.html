@@ -122,6 +122,14 @@
           Add to Calendar
         </ion-button>
       </div>
+
+      <!-- Donate Now (Donation Drive) -->
+      <div class="action-buttons m-t-24" *ngIf="isDonationDrive()">
+        <ion-button expand="block" color="primary" (click)="openDonateActionSheet()">
+          <ion-icon slot="start" name="gift-outline"></ion-icon>
+          Donate Now
+        </ion-button>
+      </div>
     </div>
   </div>
 </ion-content>

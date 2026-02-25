@@ -1,0 +1,21 @@
+<ion-item
+  class="cta-row-item m-b-6"
+  button
+  detail="false"
+  (click)="onCardClick()">
+  <ion-icon [name]="iconName" slot="start" class="cta-row-icon m-r-18" [style.color]="accentColor"></ion-icon>
+  <ion-label>
+    <p>{{ cta.title }}</p>
+    @if (showProgressBar && progressText) {
+      <p class="app-body-secondary m-t-4">{{ progressText }}</p>
+      <ion-progress-bar
+        [value]="progressValue"
+        class="cta-progress-bar m-t-6"
+        [style.--progress-background]="accentColor">
+      </ion-progress-bar>
+    }
+  </ion-label>
+  <div slot="end" class="action-pill m-l-12" [style.background-color]="accentColor">
+    {{ pillText }}
+  </div>
+</ion-item>

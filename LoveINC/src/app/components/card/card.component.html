@@ -33,7 +33,7 @@
           @if (description) {
             <div [innerHTML]="description"></div>
           } @else if (contentHtml) {
-            <div [innerHTML]="contentHtml"></div>
+            <div [innerHTML]="contentHtml | safeHtml"></div>
           }
         </div>
         <div class="card-content-right">
@@ -67,7 +67,7 @@
       @if (description) {
         <div [innerHTML]="description"></div>
       } @else if (contentHtml) {
-        <div [innerHTML]="contentHtml"></div>
+        <div [innerHTML]="contentHtml | safeHtml"></div>
       }
       @if (hasActionIcons) {
         <div class="action-icons p-t-12">

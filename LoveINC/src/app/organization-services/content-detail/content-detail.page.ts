@@ -19,6 +19,7 @@ import {
 import { AlertController } from '@ionic/angular';
 import { ContentDetail, ContentType } from './content-detail.model';
 import { SharingService } from '../../services/sharing/sharing.service';
+import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import {
   PlatformApiService,
   type PlatformClass,
@@ -63,7 +64,8 @@ export class ContentDetailPage implements OnInit {
     private http: HttpClient,
     private alertController: AlertController,
     private sharingService: SharingService,
-    private platformApi: PlatformApiService
+    private platformApi: PlatformApiService,
+    private donateActionSheetService: DonateActionSheetService
   ) {}
 
   ngOnInit() {
@@ -669,6 +671,14 @@ export class ContentDetailPage implements OnInit {
 
   hasActionButton(): boolean {
     return !!(this.contentItem?.registrationLink || this.contentItem?.actionButtonLink || this.contentItem?.actionButtonText);
+  }
+
+  isDonationDrive(): boolean {
+    return this.contentType === 'donation-drive';
+  }
+
+  openDonateActionSheet(): void {
+    this.donateActionSheetService.openDonateActionSheet();
   }
 
   hasClassDocuments(): boolean {

@@ -94,6 +94,18 @@ export interface PlatformOffering {
   sessions?: Array<{ startDate: string; endDate: string; isCancelled?: boolean }>;
 }
 
+export interface PlatformDonation {
+  id: string;
+  title: string;
+  shortDescription?: string;
+  longDescription?: string;
+  provider: { id: string; name: string; phone?: string; email?: string };
+  address?: PlatformAddress;
+  photoUrl?: string;
+  itemLabels: string[];
+  scheduleRule?: PlatformScheduleRule;
+}
+
 export interface PlatformServiceItem {
   id: string;
   label: string;

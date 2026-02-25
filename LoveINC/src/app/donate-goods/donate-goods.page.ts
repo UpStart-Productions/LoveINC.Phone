@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { 
   IonHeader, 
   IonToolbar, 
@@ -20,6 +19,18 @@ import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { SharingService } from '../services/sharing/sharing.service';
 import { AlertsModalService } from '../services/alerts-modal.service';
+import { PlatformApiService } from '../services/platform/platform-api.service';
+import type { PlatformAddress, PlatformDonation, PlatformScheduleRule } from '../services/platform/types';
+import type { CardBadge } from '../components/card/card.component';
+
+/** Category → icon + color for donation badges (matches home card style) */
+const DONATION_CATEGORY_STYLE: Record<string, { icon: string; color: string }> = {
+  clothing: { icon: 'shirt-outline', color: '#10b981' },
+  diapers: { icon: 'heart-outline', color: '#f59e0b' },
+  food: { icon: 'restaurant-outline', color: '#eaa535' },
+  furniture: { icon: 'cube-outline', color: '#8b7355' },
+  bikes: { icon: 'bicycle-outline', color: '#349394' },
+};
 
 interface DonationLocation {
   id: string;
@@ -32,6 +43,8 @@ interface DonationLocation {
   acceptedItems: string[];
   notes: string | null;
   contact?: string | null;
+  photoUrl?: string | null;
+  badge?: CardBadge;
 }
 
 @Component({
@@ -64,7 +77,7 @@ export class DonateGoodsPage implements OnInit {
   showDonateButton: boolean = false;
 
   constructor(
-    private http: HttpClient,
+    private platformApi: PlatformApiService,
     private router: Router,
     private alertController: AlertController,
     private donateButtonService: DonateButtonService,
@@ -87,15 +100,9 @@ export class DonateGoodsPage implements OnInit {
   }
 
   loadLocations() {
-    this.http.get<DonationLocation[]>('assets/data/donation-locations.json').subscribe({
+    this.platformApi.getDonations().subscribe({
       next: (data) => {
-        // Sort accepted items alphabetically for each location
-        this.locations = data.map(location => ({
-          ...location,
-          acceptedItems: location.acceptedItems?.slice().sort((a, b) => 
-            a.localeCompare(b, undefined, { sensitivity: 'base' })
-          ) || []
-        }));
+        this.locations = data.map((d) => this.mapPlatformDonationToLocation(d));
         this.filteredLocations = this.locations;
         this.groupLocationsByCategory();
       },
@@ -103,6 +110,71 @@ export class DonateGoodsPage implements OnInit {
         console.error('Error loading donation locations:', err);
       }
     });
+  }
+
+  private mapPlatformDonationToLocation(d: PlatformDonation): DonationLocation {
+    const acceptedItems = (d.itemLabels ?? []).slice().sort((a, b) =>
+      a.localeCompare(b, undefined, { sensitivity: 'base' })
+    );
+    const category = acceptedItems[0] ?? d.title ?? 'Donations';
+    const photoUrl = d.photoUrl
+      ? this.platformApi.resolveUploadUrl(d.photoUrl) || d.photoUrl
+      : null;
+    const badge = this.getDonationBadge(category, d.title);
+    return {
+      id: d.id,
+      category,
+      organization: d.provider?.name ?? d.title ?? '',
+      address: this.formatAddress(d.address),
+      phone: d.provider?.phone ?? null,
+      email: d.provider?.email ?? null,
+      hours: this.formatScheduleRule(d.scheduleRule),
+      acceptedItems,
+      notes: d.shortDescription ?? d.longDescription ?? null,
+      contact: null,
+      photoUrl,
+      badge,
+    };
+  }
+
+  private getDonationBadge(category: string, title: string): CardBadge {
+    const label = title || category || 'Donation';
+    const key = category.toLowerCase();
+    const match = DONATION_CATEGORY_STYLE[key] ??
+      Object.entries(DONATION_CATEGORY_STYLE).find(([k]) => key.includes(k))?.[1];
+    const { icon, color } = match ?? { icon: 'gift-outline', color: '#eaa535' };
+    return { icon, label, color };
+  }
+
+  private formatAddress(addr: PlatformAddress | undefined): string | null {
+    if (!addr) return null;
+    const parts = [addr.address, addr.city, addr.state, addr.zip].filter(Boolean);
+    return parts.length ? parts.join(', ') : addr.locationName ?? null;
+  }
+
+  private formatScheduleRule(rule: PlatformScheduleRule | undefined): string | null {
+    if (!rule) return null;
+    const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    if (rule.ruleType === 'by_appointment') return 'By appointment';
+    if (rule.daysOfWeek?.length) {
+      const names = rule.daysOfWeek.map((d) => DAY_NAMES[d] ?? '').filter(Boolean);
+      const days = names.length ? names.join(', ') : '';
+      const start12 = rule.startTime ? this.formatTime24To12(rule.startTime) : '';
+      const end12 = rule.endTime ? this.formatTime24To12(rule.endTime) : '';
+      const time = [start12, end12].filter(Boolean).join(' – ') || '';
+      return [days, time].filter(Boolean).join(' ') || null;
+    }
+    return null;
+  }
+
+  private formatTime24To12(time24: string): string {
+    const match = time24.match(/^(\d{1,2}):(\d{2})$/);
+    if (!match) return time24;
+    let h = parseInt(match[1], 10);
+    const m = match[2];
+    const period = h >= 12 ? 'pm' : 'am';
+    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    return `${h}:${m}${period}`;
   }
 
   groupLocationsByCategory() {
@@ -168,18 +240,22 @@ export class DonateGoodsPage implements OnInit {
     const esc = (s: string | null | undefined) =>
       (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const parts: string[] = [];
-    parts.push(`<div class="location-header"><h3>${esc(location.organization)}</h3></div><div>`);
-    if (location.address) parts.push(`<div><span>${esc(location.address)}</span></div>`);
-    if (location.hours) parts.push(`<div><span>${esc(location.hours)}</span></div>`);
-    if (location.phone) parts.push(`<div><span>${esc(location.phone)}</span></div>`);
-    if (location.email) parts.push(`<div><span>${esc(location.email)}</span></div>`);
-    if (location.contact) parts.push(`<div><span>${esc(location.contact)}</span></div>`);
+    parts.push(`<div class="location-header"><h2>${esc(location.organization)}</h2></div><div class="donation-details">`);
+    if (location.address || location.hours) {
+      parts.push(`<div class="donation-address-schedule p-t-12 p-b-12">`);
+      if (location.address) parts.push(`<div class="donation-detail-row"><ion-icon name="location-outline"></ion-icon><span>${esc(location.address)}</span></div>`);
+      if (location.hours) parts.push(`<div class="donation-detail-row"><ion-icon name="time-outline"></ion-icon><span>${esc(location.hours)}</span></div>`);
+      parts.push(`</div>`);
+    }
+    if (location.phone) parts.push(`<div class="donation-detail-row"><span>${esc(location.phone)}</span></div>`);
+    if (location.email) parts.push(`<div class="donation-detail-row"><span>${esc(location.email)}</span></div>`);
+    if (location.contact) parts.push(`<div class="donation-detail-row"><span>${esc(location.contact)}</span></div>`);
+    if (location.notes) parts.push(`<div class="donation-detail-row"><span class="app-body-secondary notes-value">${esc(location.notes)}</span></div>`);
     if (location.acceptedItems?.length) {
       parts.push(`<div class="m-t-12"><div class="accepted-items">${
         location.acceptedItems.map((item) => `<span class="item-pill">${esc(item)}</span>`).join('')
       }</div></div>`);
     }
-    if (location.notes) parts.push(`<div><span class="app-body-secondary notes-value" style="font-style: italic;">${esc(location.notes)}</span></div>`);
     parts.push('</div>');
     return parts.join('');
   }

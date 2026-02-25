@@ -13,7 +13,8 @@ import { DonateActionSheetService } from '../services/donate-action-sheet.servic
 import { SharingService } from '../services/sharing/sharing.service';
 import { AlertsModalService } from '../services/alerts-modal.service';
 import { PlatformApiService } from '../services/platform/platform-api.service';
-import type { PlatformHomeFeedItem } from '../services/platform/types';
+import type { PlatformCta, PlatformHomeFeedItem } from '../services/platform/types';
+import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.component';
 
 @Component({
   selector: 'app-home',
@@ -30,13 +31,16 @@ import type { PlatformHomeFeedItem } from '../services/platform/types';
     IonIcon,
     CardComponent,
     ExploreContainerComponent,
-    UserTypeCardComponent
+    UserTypeCardComponent,
+    HomeCtaRowComponent
   ],
 })
 export class HomePage implements OnInit {
   cards: HomeCard[] = [];
   welcomeTitle: string = 'Welcome to Love INC.';
   selectedUserTypes: UserType[] = [];
+  giveCtas: PlatformCta[] = [];
+  volunteerCtas: PlatformCta[] = [];
   showDonateButton: boolean = false;
 
   constructor(
@@ -52,6 +56,7 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.loadCards();
     this.loadUserTypes();
+    this.loadCtas();
     
     // Set welcome title based on first name
     const firstName = this.onboardingService.getUserFirstName();
@@ -76,6 +81,48 @@ export class HomePage implements OnInit {
     
     // Show donate button if user selected volunteer or give (donor)
     this.showDonateButton = selectedOptions.includes('volunteer') || selectedOptions.includes('give');
+  }
+
+  loadCtas() {
+    this.platformApi.getCtas().subscribe({
+      next: (ctas) => {
+        const today = startOfDay(new Date()).getTime();
+        const active = (c: PlatformCta) => this.isActiveCta(c, today);
+        this.giveCtas = ctas
+          .filter((c) => this.isGiveCtaType(c.type))
+          .filter(active)
+          .sort((a, b) => a.sortOrder - b.sortOrder);
+        this.volunteerCtas = ctas
+          .filter((c) => c.type === 'volunteer_call')
+          .filter(active)
+          .sort((a, b) => a.sortOrder - b.sortOrder);
+      },
+      error: (err) => {
+        console.error('Error loading CTAs:', err);
+      },
+    });
+  }
+
+  private isGiveCtaType(type: string): boolean {
+    return type === 'donation_drive' || type === 'fundraiser';
+  }
+
+  private isActiveCta(cta: PlatformCta, todayMs: number): boolean {
+    if (cta.startDate && new Date(cta.startDate).getTime() > todayMs) return false;
+    if (cta.endDate && new Date(cta.endDate).getTime() < todayMs) return false;
+    return true;
+  }
+
+  get selectedUserTypesForUserCards(): UserType[] {
+    return this.selectedUserTypes.filter((t) => t === 'get-help');
+  }
+
+  get showGiveCtas(): boolean {
+    return this.selectedUserTypes.includes('give') && this.giveCtas.length > 0;
+  }
+
+  get showVolunteerCtas(): boolean {
+    return this.selectedUserTypes.includes('volunteer') && this.volunteerCtas.length > 0;
   }
 
   openDonateMenu() {

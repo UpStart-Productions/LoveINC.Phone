@@ -1,0 +1,23 @@
+.cta-row-item {
+  --padding-start: 18px;
+  --padding-end: 18px;
+  --min-height: 72px;
+  border-radius: 0;
+}
+
+.cta-row-icon {
+  font-size: var(--app-font-size-display-lg);
+  flex-shrink: 0;
+}
+
+.donor-progress-bar,
+.cta-progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  --background: var(--ion-color-light);
+  --progress-background: var(--love-inc-gold);
+}
+
+.action-pill {
+  color: white;
+}

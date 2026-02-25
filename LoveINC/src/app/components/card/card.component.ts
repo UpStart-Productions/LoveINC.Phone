@@ -11,6 +11,7 @@ import {
   IonButton,
 } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
+import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 
 export interface CardActionIcon {
   icon?: string;
@@ -42,6 +43,7 @@ export interface CardBadge {
     IonIcon,
     IonButton,
     LucideAngularModule,
+    SafeHtmlPipe,
   ],
 })
 export class CardComponent {

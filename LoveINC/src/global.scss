@@ -220,6 +220,39 @@ ion-modal.alerts-modal-sheet {
   flex-shrink: 0;
 }
 
+/* Donation card detail rows (address, schedule, notes) - icons + 3px spacing */
+.donation-details .donation-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.donation-details .donation-detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.donation-details .donation-detail-row ion-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+  margin-top: 2px;
+  color: var(--ion-color-dark);
+}
+
+/* Accepted items container + pills (e.g. donation itemLabels in cards with innerHTML) */
+.accepted-items {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.accepted-items .item-pill {
+  background-color: var(--ion-color-light) !important;
+  color: var(--app-text-primary) !important;
+  display: inline-block;
+}
+
 .action-pill {
   width: 72px;
   min-width: 72px;
