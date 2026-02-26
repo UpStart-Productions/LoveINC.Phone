@@ -19,6 +19,7 @@ export interface ToolCard {
   imageUrl?: string;
   iconName?: string;
   iconBackgroundColor?: string;
+  route?: string;
 }
 
 @Component({
@@ -78,6 +79,7 @@ export class ToolsPage {
       detail: 'Set and track personal goals',
       iconName: 'trophy-outline',
       iconBackgroundColor: '#eaa535',
+      route: '/tabs/goal-tracker',
     },
   ];
 }

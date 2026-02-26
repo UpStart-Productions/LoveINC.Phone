@@ -1,0 +1,81 @@
+/**
+ * Goal Tracker themeable styles
+ *
+ * Host app sets these CSS vars (e.g. in variables.scss):
+ *   --goal-tracker-primary
+ *   --goal-tracker-secondary
+ *   --goal-tracker-success
+ *   --goal-tracker-accent
+ */
+
+.goal-tracker-content {
+  padding: 16px;
+}
+
+.goal-tracker-loading {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.goal-tracker-error {
+  color: var(--goal-tracker-accent, var(--ion-color-danger));
+  font-size: var(--app-font-size-body, 16px);
+}
+
+.goal-tracker-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--goal-tracker-secondary, var(--ion-color-medium));
+  font-size: var(--app-font-size-body, 16px);
+}
+
+.goal-tracker-list {
+  background: transparent;
+}
+
+.goal-tracker-item {
+  --background: var(--ion-card-background, var(--ion-background-color));
+  margin-bottom: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  &.completed {
+    opacity: 0.7;
+
+    h2 {
+      text-decoration: line-through;
+    }
+  }
+
+  ion-checkbox {
+    --checkbox-background-checked: var(--goal-tracker-success, var(--ion-color-success));
+  }
+
+  h2 {
+    font-size: var(--app-font-size-title, 17px);
+    font-weight: 600;
+    color: var(--goal-tracker-primary, var(--ion-text-color));
+  }
+
+  p {
+    font-size: var(--app-font-size-caption, 12px);
+    color: var(--goal-tracker-secondary, var(--ion-color-medium));
+    margin-top: 4px;
+  }
+}
+
+.goal-tracker-progress {
+  margin-top: 8px;
+  --progress-background: rgba(var(--ion-color-primary-rgb, 59, 130, 246), 0.2);
+  --progress-bar-background: var(--goal-tracker-accent, var(--ion-color-primary));
+  height: 6px;
+  border-radius: 3px;
+}
+
+ion-fab-button {
+  --background: var(--goal-tracker-accent, var(--ion-color-primary));
+  --background-activated: var(--goal-tracker-accent, var(--ion-color-primary));
+  --background-hover: var(--goal-tracker-accent, var(--ion-color-primary));
+  --color: var(--ion-color-primary-contrast, #fff);
+}

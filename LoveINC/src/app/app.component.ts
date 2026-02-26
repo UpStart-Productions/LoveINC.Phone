@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { Component, OnInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { OnboardingService } from './services/onboarding.service';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { App } from '@capacitor/app';
@@ -65,6 +65,8 @@ import {
   documentTextOutline,
   documentOutline,
   createOutline,
+  addOutline,
+  trashOutline,
   pricetagOutline,
   libraryOutline,
   restaurantOutline,
@@ -83,17 +85,22 @@ import {
   walletOutline,
   peopleCircleOutline as peopleCircleOutlineIcon,
 } from 'ionicons/icons';
+import { defineCustomElements as jeepSqlite } from 'jeep-sqlite/loader';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   imports: [IonApp, IonRouterOutlet],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppComponent implements OnInit, OnDestroy {
   private static splashScreenHidden = false;
   private appStateListener: any;
 
-  constructor(private onboardingService: OnboardingService) {
+  constructor(
+    private onboardingService: OnboardingService,
+    private platform: Platform
+  ) {
     // Initialize all icons for app-wide use
     this.initializeIcons();
     
@@ -109,6 +116,21 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    await this.platform.ready();
+
+    // Initialize SQLite for web platform (jeep-sqlite required for PWA/browser)
+    if (!this.platform.is('capacitor')) {
+      try {
+        jeepSqlite(window);
+        const jeepEl = document.createElement('jeep-sqlite');
+        document.body.appendChild(jeepEl);
+        await customElements.whenDefined('jeep-sqlite');
+        console.log('✅ jeep-sqlite web component ready');
+      } catch (error) {
+        console.warn('jeep-sqlite init skipped:', error);
+      }
+    }
+
     // Hide splash screen only on initial app launch, not when app comes back to foreground
     if (!AppComponent.splashScreenHidden) {
       try {
@@ -212,6 +234,8 @@ export class AppComponent implements OnInit, OnDestroy {
       documentTextOutline,
       documentOutline,
       createOutline,
+      addOutline,
+      trashOutline,
       pricetagOutline,
       libraryOutline,
       restaurantOutline,

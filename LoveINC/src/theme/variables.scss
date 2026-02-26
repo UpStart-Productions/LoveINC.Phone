@@ -114,6 +114,12 @@
   --app-card-radius: 12px;
   --app-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   --app-card-margin-bottom: 20px;
+
+  /** Goal Tracker – themeable colors (override via host app) **/
+  --goal-tracker-primary: var(--ion-text-color);
+  --goal-tracker-secondary: var(--ion-color-medium);
+  --goal-tracker-success: var(--ion-color-success);
+  --goal-tracker-accent: var(--ion-color-primary);
 }
 
 @media (prefers-color-scheme: dark) {

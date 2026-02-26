@@ -5,6 +5,11 @@ const config: CapacitorConfig = {
   appName: 'Love INC',
   webDir: 'www',
   plugins: {
+    CapacitorSQLite: {
+      iosDatabaseLocation: 'Library/CapacitorDatabase',
+      iosIsEncryption: false,
+      androidIsEncryption: false,
+    },
     SplashScreen: {
       launchShowDuration: 2000,
       launchAutoHide: true,

@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
 
 @Component({
@@ -39,4 +40,15 @@ export class ContentCardComponent {
 
   /** Card clickable / tappable */
   @Input() clickable = true;
+
+  /** Route to navigate to on click (e.g. '/tabs/goal-tracker') */
+  @Input() route?: string;
+
+  constructor(private router: Router) {}
+
+  handleClick() {
+    if (this.route && this.clickable) {
+      this.router.navigateByUrl(this.route);
+    }
+  }
 }

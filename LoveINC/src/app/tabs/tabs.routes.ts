@@ -57,6 +57,11 @@ export const routes: Routes = [
           import('../tools/tools.page').then((m) => m.ToolsPage),
       },
       {
+        path: 'goal-tracker',
+        loadComponent: () =>
+          import('@upstart-productions/goal-tracker').then((m) => m.GoalTrackerPage),
+      },
+      {
         path: 'saved-items',
         loadComponent: () =>
           import('../saved-items/saved-items.page').then((m) => m.SavedItemsPage),

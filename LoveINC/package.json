@@ -7,9 +7,13 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "cap:sync": "ng build && npx cap sync",
+    "cap:run:ios": "ng build && npx cap sync && npx cap run ios",
+    "cap:pod:install": "cd ios/App && pod install",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
+    "build:goal-tracker": "ng-packagr -p packages/goal-tracker/ng-package.json && node packages/goal-tracker/scripts/fix-dist-package.js",
     "build:verse-of-the-day": "ng-packagr -p packages/verse-of-the-day/ng-package.json && node packages/verse-of-the-day/scripts/fix-dist-package.js"
   },
   "private": true,
@@ -22,6 +26,7 @@
     "@angular/platform-browser": "^20.0.0",
     "@angular/platform-browser-dynamic": "^20.0.0",
     "@angular/router": "^20.0.0",
+    "@capacitor-community/sqlite": "^8.0.0",
     "@capacitor/app": "8.0.0",
     "@capacitor/app-launcher": "^8.0.0",
     "@capacitor/core": "8.0.1",
@@ -33,9 +38,11 @@
     "@capacitor/splash-screen": "^8.0.0",
     "@capacitor/status-bar": "8.0.0",
     "@ionic/angular": "^8.0.0",
+    "@upstart-productions/goal-tracker": "file:packages/goal-tracker",
     "capacitor-email-composer": "^8.0.0",
     "date-fns": "^4.1.0",
     "ionicons": "^7.0.0",
+    "jeep-sqlite": "^2.8.0",
     "lucide-angular": "^0.563.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
@@ -68,8 +75,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.0",
-    "ng-packagr": "^20.0.0"
+    "ng-packagr": "^20.0.0",
+    "typescript": "~5.9.0"
   },
   "description": "An Ionic project"
 }
