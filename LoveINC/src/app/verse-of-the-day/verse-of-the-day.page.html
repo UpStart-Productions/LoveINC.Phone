@@ -9,6 +9,15 @@
 
 <ion-content [fullscreen]="true">
   <div class="ion-padding">
-    <p>Verse of the day content will go here.</p>
+    @if (loading) {
+      <div class="verse-loading">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+    } @else if (error || !verse) {
+      <p class="app-body-secondary">Unable to load the verse of the day. Please try again later.</p>
+    } @else {
+      <p class="app-caption m-b-12">{{ verse.reference }}</p>
+      <p class="app-body">{{ verse.text }}</p>
+    }
   </div>
 </ion-content>

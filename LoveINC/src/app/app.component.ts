@@ -37,6 +37,7 @@ import {
   mapOutline,
   locationOutline,
   globeOutline,
+  businessOutline,
   // Profile & Contact Icons
   personOutline,
   personCircle,
@@ -183,6 +184,7 @@ export class AppComponent implements OnInit, OnDestroy {
       mapOutline,
       locationOutline,
       globeOutline,
+      businessOutline,
       // Profile & Contact Icons
       personOutline,
       personCircle,

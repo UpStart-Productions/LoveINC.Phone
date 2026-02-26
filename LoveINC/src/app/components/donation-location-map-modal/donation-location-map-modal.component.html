@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ organization }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true">
+  <div id="donation-map" class="map-container"></div>
+  <div *ngIf="geocodeError" class="map-message">
+    <p>Could not find location on map.</p>
+    <p class="app-body-secondary">{{ address }}</p>
+  </div>
+  <div *ngIf="loading" class="map-message">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading map…</p>
+  </div>
+</ion-content>

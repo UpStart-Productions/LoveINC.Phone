@@ -13,6 +13,7 @@ import {
   IonLabel,
   IonSearchbar
 } from '@ionic/angular/standalone';
+import { ModalController } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { DonateButtonService } from '../services/donate-button.service';
@@ -80,6 +81,7 @@ export class DonateGoodsPage implements OnInit {
     private platformApi: PlatformApiService,
     private router: Router,
     private alertController: AlertController,
+    private modalController: ModalController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
@@ -269,12 +271,21 @@ export class DonateGoodsPage implements OnInit {
   }
 
   async onMapPinClick(location: DonationLocation) {
-    const alert = await this.alertController.create({
-      header: 'Map',
-      message: `Show map for ${location.organization}`,
-      buttons: ['OK']
+    if (!location.address) return;
+    const { DonationLocationMapModalComponent } = await import(
+      '../components/donation-location-map-modal/donation-location-map-modal.component'
+    );
+    const modal = await this.modalController.create({
+      component: DonationLocationMapModalComponent,
+      componentProps: {
+        organization: location.organization,
+        address: location.address,
+        hours: location.hours ?? null,
+        acceptedItems: location.acceptedItems ?? [],
+      },
+      cssClass: 'donation-map-modal-fullscreen',
     });
-    await alert.present();
+    await modal.present();
   }
 
   async onPhoneClick(location: DonationLocation) {

@@ -14,6 +14,7 @@ import {
   IonLabel,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
@@ -73,6 +74,7 @@ export class GapMinistriesPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private alertController: AlertController,
+    private modalController: ModalController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
@@ -226,7 +228,7 @@ export class GapMinistriesPage implements OnInit {
 
   getActionIcons(service: GapService): CardActionIcon[] {
     return [
-      { icon: 'location-outline', handler: () => this.onMapPinClick(service), show: true, buttonClass: 'map-button' },
+      { icon: 'location-outline', handler: () => this.onMapPinClick(service), show: !!service.address, buttonClass: 'map-button' },
       { icon: 'call-outline', handler: () => this.onPhoneClick(service), show: true, buttonClass: 'phone-button' },
       { lucideIcon: 'heart-handshake', handler: () => this.onVolunteerClick(service), show: true, buttonClass: 'volunteer-button' },
       { icon: 'calendar-outline', handler: () => this.onCalendarClick(service), show: true, buttonClass: 'calendar-button' },
@@ -234,17 +236,22 @@ export class GapMinistriesPage implements OnInit {
   }
 
   async onMapPinClick(service: GapService) {
-    if (service.address) {
-      const query = encodeURIComponent(service.address);
-      window.open(`https://maps.google.com/?q=${query}`, '_blank');
-    } else {
-      const alert = await this.alertController.create({
-        header: 'Map',
-        message: `No address available for ${service.church || service.service}`,
-        buttons: ['OK'],
-      });
-      await alert.present();
-    }
+    if (!service.address) return;
+    const { DonationLocationMapModalComponent } = await import(
+      '../../components/donation-location-map-modal/donation-location-map-modal.component'
+    );
+    const modal = await this.modalController.create({
+      component: DonationLocationMapModalComponent,
+      componentProps: {
+        organization: service.service,
+        address: service.address,
+        hours: service.daysTimes ?? null,
+        acceptedItems: service.church ? [service.church] : [],
+        itemsIcon: 'business-outline',
+      },
+      cssClass: 'donation-map-modal-fullscreen',
+    });
+    await modal.present();
   }
 
   async onPhoneClick(service: GapService) {
