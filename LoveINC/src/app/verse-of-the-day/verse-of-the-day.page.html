@@ -16,8 +16,12 @@
     } @else if (error || !verse) {
       <p class="app-body-secondary">Unable to load the verse of the day. Please try again later.</p>
     } @else {
-      <p class="app-caption m-b-12">{{ verse.reference }}</p>
-      <p class="app-body">{{ verse.text }}</p>
+      @if (verse.contentHtml) {
+        <div class="verse-content" [innerHTML]="verse.contentHtml"></div>
+      } @else {
+        <p class="app-caption m-b-12">{{ verse.reference }}</p>
+        <p class="app-body">{{ verse.text }}</p>
+      }
     }
   </div>
 </ion-content>

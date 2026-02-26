@@ -3,3 +3,13 @@
   justify-content: center;
   padding: 48px 0;
 }
+
+.verse-content {
+  font-size: var(--app-font-size-body);
+  line-height: var(--app-line-height-relaxed);
+  color: var(--app-text-primary);
+
+  a {
+    color: var(--ion-color-primary);
+  }
+}

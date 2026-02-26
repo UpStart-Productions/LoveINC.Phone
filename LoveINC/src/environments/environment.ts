@@ -12,6 +12,8 @@ export const environment = {
   customerSlug: 'loveinc',
   /** Tenant/affiliate slug (e.g. newberg) */
   tenantSlug: 'newberg',
+  /** ESV API key for verse-of-the-day (cross-refs, footnotes). Get one at https://api.esv.org/account/create-application/ */
+  esvApiKey: '',
 };
 
 /*
