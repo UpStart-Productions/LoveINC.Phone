@@ -1,0 +1,27 @@
+{
+  "name": "@upstart-productions/verse-of-the-day",
+  "version": "1.0.0",
+  "description": "Angular/Ionic Verse of the Day component - NET Bible + optional ESV cross-refs and footnotes",
+  "keywords": ["angular", "ionic", "bible", "verse-of-the-day", "devotional"],
+  "author": "UpStart Productions",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UpStart-Productions/LoveINC.Phone.git",
+    "directory": "LoveINC/packages/verse-of-the-day"
+  },
+  "peerDependencies": {
+    "@angular/common": "^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0",
+    "@angular/core": "^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0",
+    "@ionic/angular": "^7.0.0 || ^8.0.0",
+    "rxjs": "^7.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "scripts": {
+    "build": "ng-packagr -p ng-package.json && node scripts/fix-dist-package.js"
+  },
+  "sideEffects": false,
+  "files": ["dist"]
+}

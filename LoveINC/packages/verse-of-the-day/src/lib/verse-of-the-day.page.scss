@@ -1,0 +1,33 @@
+.verse-loading {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.verse-reference {
+  font-size: var(--app-font-size-caption, 0.875rem);
+  font-weight: 600;
+  color: var(--app-text-secondary, var(--ion-color-medium));
+  margin-bottom: 12px;
+}
+
+.verse-text {
+  font-size: var(--app-font-size-body, 1rem);
+  line-height: 1.6;
+  color: var(--app-text-primary, var(--ion-color-dark));
+}
+
+.verse-error {
+  font-size: var(--app-font-size-body, 1rem);
+  color: var(--app-text-secondary, var(--ion-color-medium));
+}
+
+.verse-content {
+  font-size: var(--app-font-size-body, 1rem);
+  line-height: 1.6;
+  color: var(--app-text-primary, var(--ion-color-dark));
+
+  a {
+    color: var(--ion-color-primary);
+  }
+}
