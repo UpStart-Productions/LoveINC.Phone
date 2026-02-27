@@ -264,7 +264,7 @@ ion-popover.location-popover::part(content) {
   margin: 0 0 12px 0;
   font-size: var(--app-font-size-caption);
   font-style: italic;
-  color: var(--app-text-secondary);
+  color: var(--ion-color-danger) !important;
 }
 
 /* Alerts modal sheet */
