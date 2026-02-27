@@ -17,7 +17,7 @@ import { CardComponent, CardActionIcon } from '../components/card/card.component
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { SharingService } from '../services/sharing/sharing.service';
-import { AlertsModalService } from '../services/alerts-modal.service';
+import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import {
   PlatformApiService,
   type PlatformClass,
@@ -52,6 +52,7 @@ export interface UpdateItem {
     IonButtons,
     IonIcon,
     CardComponent,
+    NotificationsButtonComponent,
   ],
 })
 export class UpdatesPage implements OnInit {
@@ -63,8 +64,7 @@ export class UpdatesPage implements OnInit {
     private platformApi: PlatformApiService,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
-    private sharingService: SharingService,
-    private alertsModalService: AlertsModalService
+    private sharingService: SharingService
   ) {}
 
   ngOnInit() {
@@ -74,10 +74,6 @@ export class UpdatesPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
-  }
-
-  openAlertsModal() {
-    this.alertsModalService.openAlertsModal();
   }
 
   loadItems() {

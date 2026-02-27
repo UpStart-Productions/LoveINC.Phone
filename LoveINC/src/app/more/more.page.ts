@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
-import { AlertsModalService } from '../services/alerts-modal.service';
+import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { OnboardingService } from '../services/onboarding.service';
 import {
   IonHeader,
@@ -45,6 +45,7 @@ interface MoreItem {
     IonLabel,
     IonIcon,
     IonButton,
+    NotificationsButtonComponent,
   ],
 })
 export class MorePage implements OnInit {
@@ -109,7 +110,6 @@ export class MorePage implements OnInit {
     private router: Router,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
-    private alertsModalService: AlertsModalService,
     private onboardingService: OnboardingService
   ) {}
 
@@ -123,10 +123,6 @@ export class MorePage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
-  }
-
-  openAlertsModal() {
-    this.alertsModalService.openAlertsModal();
   }
 
   handleItemClick(item: MoreItem) {

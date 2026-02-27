@@ -10,6 +10,7 @@ import type {
   PlatformEvent,
   PlatformHomeFeedItem,
   PlatformImpactStory,
+  PlatformNotification,
   PlatformOrganization,
   PlatformService,
 } from './types';
@@ -22,6 +23,7 @@ export type {
   PlatformEvent,
   PlatformHomeFeedItem,
   PlatformImpactStory,
+  PlatformNotification,
   PlatformOffering,
   PlatformOrganization,
   PlatformService,
@@ -125,6 +127,12 @@ export class PlatformApiService {
   getDonations(): Observable<PlatformDonation[]> {
     return this.get<{ donations: PlatformDonation[] }>('/donations').pipe(
       map((res) => res?.donations ?? [])
+    );
+  }
+
+  getNotifications(): Observable<PlatformNotification[]> {
+    return this.get<{ notifications: PlatformNotification[] }>('/notifications').pipe(
+      map((res) => res?.notifications ?? [])
     );
   }
 

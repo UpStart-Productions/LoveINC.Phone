@@ -12,10 +12,10 @@ import { UserTypeCardComponent, UserType } from '../components/user-type-card/us
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { DonateButtonService } from '../services/donate-button.service';
 import { SharingService } from '../services/sharing/sharing.service';
-import { AlertsModalService } from '../services/alerts-modal.service';
 import { PlatformApiService } from '../services/platform/platform-api.service';
 import type { PlatformCta, PlatformHomeFeedItem } from '../services/platform/types';
 import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.component';
+import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +33,8 @@ import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.com
     CardComponent,
     ExploreContainerComponent,
     UserTypeCardComponent,
-    HomeCtaRowComponent
+    HomeCtaRowComponent,
+    NotificationsButtonComponent,
   ],
 })
 export class HomePage implements OnInit {
@@ -51,8 +52,7 @@ export class HomePage implements OnInit {
     private cardFormatting: CardFormattingService,
     private donateActionSheetService: DonateActionSheetService,
     private donateButtonService: DonateButtonService,
-    private sharingService: SharingService,
-    private alertsModalService: AlertsModalService
+    private sharingService: SharingService
   ) {}
 
   ngOnInit() {
@@ -128,10 +128,6 @@ export class HomePage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
-  }
-
-  openAlertsModal() {
-    this.alertsModalService.openAlertsModal();
   }
 
   loadCards() {

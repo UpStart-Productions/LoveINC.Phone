@@ -190,6 +190,26 @@ export type HomeFeedItemType =
   | 'awareness'
   | 'impact';
 
+export interface PlatformNotificationMeta {
+  itemType: string;
+  itemId: string;
+  tenantSlug: string;
+}
+
+export interface PlatformNotification {
+  id: string;
+  itemType: string;
+  itemId: string;
+  title: string;
+  body: string;
+  meta: PlatformNotificationMeta;
+  createdAt: string;
+}
+
+export interface PlatformNotificationResponse {
+  notifications: PlatformNotification[];
+}
+
 export interface PlatformHomeFeedItem {
   id: string;
   type: HomeFeedItemType;

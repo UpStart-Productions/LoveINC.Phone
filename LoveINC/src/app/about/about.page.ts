@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
-import { AlertsModalService } from '../services/alerts-modal.service';
+import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { 
   IonHeader, 
   IonToolbar, 
@@ -44,7 +44,8 @@ import {
     IonLabel,
     IonIcon,
     IonButton,
-    IonButtons
+    IonButtons,
+    NotificationsButtonComponent,
   ],
 })
 export class AboutPage implements OnInit {
@@ -59,8 +60,7 @@ export class AboutPage implements OnInit {
   constructor(
     private router: Router,
     private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService,
-    private alertsModalService: AlertsModalService
+    private donateActionSheetService: DonateActionSheetService
   ) {}
 
   ngOnInit() {
@@ -69,10 +69,6 @@ export class AboutPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
-  }
-
-  openAlertsModal() {
-    this.alertsModalService.openAlertsModal();
   }
 
   navigateToChurchMap() {

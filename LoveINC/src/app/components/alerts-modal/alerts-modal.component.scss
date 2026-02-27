@@ -161,22 +161,3 @@ ion-header {
   }
 }
 
-.mark-all-container {
-  background: var(--ion-background-color);
-  border-top: 1px solid rgba(var(--ion-color-dark-rgb), 0.1);
-  flex-shrink: 0;
-}
-
-.mark-all-button {
-  --background: var(--ion-color-primary);
-  --background-activated: var(--ion-color-primary-shade);
-  --color: var(--ion-color-primary-contrast);
-  --border-radius: 999px;
-  --padding-top: 12px;
-  --padding-bottom: 12px;
-  font-size: var(--app-font-size-body);
-  font-weight: var(--app-font-weight-semibold);
-  text-transform: none;
-  margin: 0;
-  height: 44px;
-}

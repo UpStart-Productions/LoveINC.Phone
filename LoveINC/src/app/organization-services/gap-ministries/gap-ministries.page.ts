@@ -19,7 +19,7 @@ import { CardComponent, CardActionIcon } from '../../components/card/card.compon
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { SharingService } from '../../services/sharing/sharing.service';
-import { AlertsModalService } from '../../services/alerts-modal.service';
+import { NotificationsButtonComponent } from '../../components/notifications-button/notifications-button.component';
 import { PlatformApiService } from '../../services/platform';
 import type { PlatformService, PlatformOffering, PlatformAddress } from '../../services/platform/types';
 
@@ -55,7 +55,8 @@ export interface GapService {
     IonIcon,
     IonItem,
     IonLabel,
-    CardComponent
+    CardComponent,
+    NotificationsButtonComponent,
   ],
   providers: [AlertController]
 })
@@ -77,8 +78,7 @@ export class GapMinistriesPage implements OnInit {
     private modalController: ModalController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
-    private sharingService: SharingService,
-    private alertsModalService: AlertsModalService
+    private sharingService: SharingService
   ) {}
 
   ngOnInit() {
@@ -93,10 +93,6 @@ export class GapMinistriesPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
-  }
-
-  openAlertsModal() {
-    this.alertsModalService.openAlertsModal();
   }
 
   loadServices() {

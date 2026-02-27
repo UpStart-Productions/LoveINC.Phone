@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalController } from '@ionic/angular/standalone';
-import { AlertsService, Alert } from '../../services/alerts.service';
+import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { NotificationsService, type AppNotification } from '../../services/notifications.service';
+import type { ContentType } from '../../organization-services/content-detail/content-detail.model';
 import {
   IonHeader,
   IonToolbar,
@@ -36,74 +39,39 @@ import {
     IonSpinner,
   ],
 })
-export class AlertsModalComponent implements OnInit {
-  alerts: Alert[] = [];
+export class AlertsModalComponent implements OnInit, OnDestroy {
+  notifications: AppNotification[] = [];
   loading = true;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private modalController: ModalController,
-    private alertsService: AlertsService
+    private router: Router,
+    private notificationsService: NotificationsService
   ) {}
 
   ngOnInit(): void {
-    this.loadAlerts();
+    this.notificationsService.notifications$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (list) => {
+          this.notifications = list
+            .filter((n) => !n.read)
+            .sort(
+              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          this.loading = false;
+        },
+        error: () => {
+          this.notifications = [];
+          this.loading = false;
+        },
+      });
   }
 
-  loadAlerts(): void {
-    this.alertsService.getAlerts().subscribe({
-      next: (data) => {
-        // Generate random dates for demo purposes
-        const alertsWithRandomDates = (data ?? []).map(alert => ({
-          ...alert,
-          date: this.generateRandomDate()
-        }));
-        
-        this.alerts = alertsWithRandomDates.sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-        );
-      },
-      error: () => {
-        this.alerts = [];
-      },
-      complete: () => {
-        this.loading = false;
-      },
-    });
-  }
-
-  /**
-   * Generate a random date within the past for demo purposes
-   * Creates a mix of recent times: Now, minutes, hours, days, weeks
-   */
-  private generateRandomDate(): string {
-    const now = new Date();
-    const random = Math.random();
-    
-    // Weighted distribution: more recent times are more common
-    let minutesAgo: number;
-    
-    if (random < 0.15) {
-      // 15% chance: "Now" (0-1 minute)
-      minutesAgo = Math.floor(Math.random() * 1);
-    } else if (random < 0.35) {
-      // 20% chance: 1-59 minutes ago
-      minutesAgo = Math.floor(Math.random() * 59) + 1;
-    } else if (random < 0.55) {
-      // 20% chance: 1-23 hours ago
-      minutesAgo = Math.floor(Math.random() * 23 * 60) + 60;
-    } else if (random < 0.75) {
-      // 20% chance: 1-6 days ago
-      minutesAgo = Math.floor(Math.random() * 6 * 24 * 60) + (24 * 60);
-    } else if (random < 0.90) {
-      // 15% chance: 1-3 weeks ago
-      minutesAgo = Math.floor(Math.random() * 3 * 7 * 24 * 60) + (7 * 24 * 60);
-    } else {
-      // 10% chance: 1-2 months ago
-      minutesAgo = Math.floor(Math.random() * 2 * 30 * 24 * 60) + (30 * 24 * 60);
-    }
-    
-    const date = new Date(now.getTime() - (minutesAgo * 60 * 1000));
-    return date.toISOString();
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   close(): void {
@@ -114,22 +82,18 @@ export class AlertsModalComponent implements OnInit {
     const d = new Date(dateStr);
     const now = new Date();
     const diffMs = now.getTime() - d.getTime();
-    
-    // If less than 1 minute ago, show "Now"
+
     if (diffMs < 60000) {
       return 'Now';
     }
-    
-    // Calculate time differences
-    const diffSeconds = Math.floor(diffMs / 1000);
-    const diffMinutes = Math.floor(diffSeconds / 60);
+
+    const diffMinutes = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMinutes / 60);
     const diffDays = Math.floor(diffHours / 24);
     const diffWeeks = Math.floor(diffDays / 7);
     const diffMonths = Math.floor(diffDays / 30);
     const diffYears = Math.floor(diffDays / 365);
-    
-    // Format based on time difference
+
     if (diffMinutes < 60) {
       return `${diffMinutes} min`;
     } else if (diffHours < 24) {
@@ -145,19 +109,40 @@ export class AlertsModalComponent implements OnInit {
     }
   }
 
-  hasUnreadAlerts(): boolean {
-    return this.alerts.some(alert => !alert.read);
-  }
+  async onNotificationTap(notification: AppNotification): Promise<void> {
+    // Optimistically remove from list so it disappears immediately
+    this.notifications = this.notifications.filter((n) => n.id !== notification.id);
 
-  markAsRead(index: number): void {
-    if (this.alerts[index] && !this.alerts[index].read) {
-      this.alerts[index].read = true;
+    if (!notification.read) {
+      await this.notificationsService.markAsRead(notification.id);
+    }
+
+    const { meta } = notification;
+    if (meta?.itemType && meta?.itemId) {
+      const routeType = this.mapItemTypeToRoute(meta.itemType);
+      await this.modalController.dismiss();
+      this.router.navigate(['/tabs/content-detail', routeType, meta.itemId]);
     }
   }
 
-  markAllAsRead(): void {
-    this.alerts.forEach(alert => {
-      alert.read = true;
-    });
+  private mapItemTypeToRoute(itemType: string): ContentType {
+    const mapping: Record<string, ContentType> = {
+      event: 'event',
+      class: 'class',
+      'impact-story': 'impact-story',
+      impactStory: 'impact-story',
+      'gap-ministry': 'gap-ministry',
+      gapMinistry: 'gap-ministry',
+      'donation-opportunity': 'donation-opportunity',
+      donationOpportunity: 'donation-opportunity',
+      volunteer: 'volunteer',
+      'donation-drive': 'donation-drive',
+      donationDrive: 'donation-drive',
+      'church-partner': 'church-partner',
+      churchPartner: 'church-partner',
+      fundraiser: 'fundraiser',
+      awareness: 'awareness',
+    };
+    return mapping[itemType] ?? 'event';
   }
 }
