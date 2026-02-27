@@ -136,7 +136,7 @@ export class GrovLinkDatabaseService {
     const ids = new Set<string>();
     if (result?.values) {
       for (const row of result.values) {
-        const id = row[0] as string;
+        const id = (Array.isArray(row) ? row[0] : (row as Record<string, unknown>)['id']) as string;
         if (id) ids.add(id);
       }
     }

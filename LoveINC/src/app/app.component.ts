@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { OnboardingService } from './services/onboarding.service';
+import { GrovLinkDatabaseService } from './services/grovlink-database.service';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { App } from '@capacitor/app';
 import { addIcons } from 'ionicons';
@@ -85,8 +86,6 @@ import {
   walletOutline,
   peopleCircleOutline as peopleCircleOutlineIcon,
 } from 'ionicons/icons';
-import { defineCustomElements as jeepSqlite } from 'jeep-sqlite/loader';
-
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -99,7 +98,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private onboardingService: OnboardingService,
-    private platform: Platform
+    private platform: Platform,
+    private grovlinkDb: GrovLinkDatabaseService
   ) {
     // Initialize all icons for app-wide use
     this.initializeIcons();
@@ -118,18 +118,10 @@ export class AppComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     await this.platform.ready();
 
-    // Initialize SQLite for web platform (jeep-sqlite required for PWA/browser)
-    if (!this.platform.is('capacitor')) {
-      try {
-        jeepSqlite(window);
-        const jeepEl = document.createElement('jeep-sqlite');
-        document.body.appendChild(jeepEl);
-        await customElements.whenDefined('jeep-sqlite');
-        console.log('✅ jeep-sqlite web component ready');
-      } catch (error) {
-        console.warn('jeep-sqlite init skipped:', error);
-      }
-    }
+    // Pre-initialize GrovLink database so SQLite is ready when notifications are used
+    this.grovlinkDb.getDbConnection().catch((err) => {
+      console.warn('GrovLink DB init deferred:', err);
+    });
 
     // Hide splash screen only on initial app launch, not when app comes back to foreground
     if (!AppComponent.splashScreenHidden) {
