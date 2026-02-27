@@ -289,9 +289,9 @@ export class ContentDetailPage implements OnInit {
         const start = new Date(firstSession.startDate);
         const dayName = DAY_NAMES[start.getDay()];
         const time =
-          start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) +
+          this.formatSessionTime(firstSession.startDate) +
           (firstSession.endDate
-            ? ` – ${new Date(firstSession.endDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`
+            ? ` – ${this.formatSessionTime(firstSession.endDate)}`
             : '');
         subtitle = [off.provider?.name, `${dayName} ${time}`].filter(Boolean).join(' · ');
         nextSession = {
@@ -305,7 +305,8 @@ export class ContentDetailPage implements OnInit {
       } else if (rule?.daysOfWeek?.length) {
         const names = rule.daysOfWeek.map((d) => DAY_NAMES[d] ?? '').filter(Boolean);
         const schedule = names.length === 1 ? names[0] : names.length > 1 ? 'Open Weekdays' : 'By Appointment';
-        const time = [rule.startTime, rule.endTime].filter(Boolean).join(' – ') || '';
+        const rawTime = [rule.startTime, rule.endTime].filter(Boolean).join(' – ') || '';
+        const time = rawTime ? this.formatTimeTo12hr(rawTime) : '';
         subtitle = [off.provider?.name, time ? `${schedule} ${time}` : schedule].filter(Boolean).join(' · ');
         nextSession = rule.startDate && rule.endDate
           ? {
@@ -522,6 +523,18 @@ export class ContentDetailPage implements OnInit {
       return `${start.replace(/\s(AM|PM)$/, '')} – ${end}`;
     }
     return `${start} – ${end}`;
+  }
+
+  /** Format session date string as 12hr time. Uses UTC components when API stores local times as UTC. */
+  private formatSessionTime(isoDate: string): string {
+    const d = new Date(isoDate);
+    const isUtc = /Z$|[\+\-]\d{2}:?\d{2}$/.test(isoDate.trim());
+    const h = isUtc ? d.getUTCHours() : d.getHours();
+    const m = isUtc ? d.getUTCMinutes() : d.getMinutes();
+    const period = h >= 12 ? 'pm' : 'am';
+    const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    const min = m.toString().padStart(2, '0');
+    return `${hour12}:${min}${period}`;
   }
 
   /** Convert 24hr time string (e.g. "18:00 - 20:00") to 12hr (e.g. "6:00 – 8:00 PM") */

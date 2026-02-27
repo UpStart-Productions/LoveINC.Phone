@@ -176,12 +176,15 @@ ion-header ion-back-button ion-icon {
 .services-action-sheet .action-sheet-title,
 .donate-action-sheet .action-sheet-title,
 .share-action-sheet .action-sheet-title,
+.volunteer-action-sheet .action-sheet-title,
 .services-action-sheet .action-sheet-header,
 .donate-action-sheet .action-sheet-header,
 .share-action-sheet .action-sheet-header,
+.volunteer-action-sheet .action-sheet-header,
 .services-action-sheet .action-sheet-group h1,
 .donate-action-sheet .action-sheet-group h1,
-.share-action-sheet .action-sheet-group h1 {
+.share-action-sheet .action-sheet-group h1,
+.volunteer-action-sheet .action-sheet-group h1 {
   font-size: var(--app-font-size-display) !important;
   font-weight: var(--app-font-weight-semibold) !important;
   color: var(--app-text-accent) !important;
@@ -190,7 +193,8 @@ ion-header ion-back-button ion-icon {
 
 .services-action-sheet,
 .donate-action-sheet,
-.share-action-sheet {
+.share-action-sheet,
+.volunteer-action-sheet {
   .action-sheet-button,
   .action-sheet-button-with-subtitle {
     text-align: left !important;

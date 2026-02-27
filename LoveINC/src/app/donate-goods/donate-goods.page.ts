@@ -14,7 +14,7 @@ import {
   IonSearchbar
 } from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular/standalone';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ActionSheetController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
@@ -33,6 +33,14 @@ const DONATION_CATEGORY_STYLE: Record<string, { icon: string; color: string }> =
   bikes: { icon: 'bicycle-outline', color: '#349394' },
 };
 
+interface VolunteerPosition {
+  id: string;
+  title?: string;
+  shortDescription?: string;
+  description?: string;
+  schedule?: string;
+}
+
 interface DonationLocation {
   id: string;
   category: string;
@@ -46,6 +54,7 @@ interface DonationLocation {
   contact?: string | null;
   photoUrl?: string | null;
   badge?: CardBadge;
+  volunteerPositions?: VolunteerPosition[];
 }
 
 @Component({
@@ -82,6 +91,7 @@ export class DonateGoodsPage implements OnInit {
     private router: Router,
     private alertController: AlertController,
     private modalController: ModalController,
+    private actionSheetController: ActionSheetController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
@@ -123,6 +133,19 @@ export class DonateGoodsPage implements OnInit {
       ? this.platformApi.resolveUploadUrl(d.photoUrl) || d.photoUrl
       : null;
     const badge = this.getDonationBadge(category, d.title);
+    const volunteerPositions = (d.volunteerPositions ?? []).map((v) => {
+      const raw = v as Record<string, unknown>;
+      const shortDesc = (v.shortDescription ?? v.short_description ?? raw['short_description'] ?? raw['shortDescription']) as string | undefined;
+      const desc = (v.description ?? raw['description']) as string | undefined;
+      const sched = v.schedule ?? this.formatScheduleRule(v.scheduleRule) ?? (raw['schedule'] as string | undefined);
+      return {
+        id: v.id,
+        title: v.title,
+        shortDescription: shortDesc,
+        description: desc,
+        schedule: sched ?? undefined,
+      };
+    });
     return {
       id: d.id,
       category,
@@ -136,6 +159,7 @@ export class DonateGoodsPage implements OnInit {
       contact: null,
       photoUrl,
       badge,
+      volunteerPositions: volunteerPositions.length > 0 ? volunteerPositions : undefined,
     };
   }
 
@@ -170,7 +194,7 @@ export class DonateGoodsPage implements OnInit {
   }
 
   private formatTime24To12(time24: string): string {
-    const match = time24.match(/^(\d{1,2}):(\d{2})$/);
+    const match = time24.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
     if (!match) return time24;
     let h = parseInt(match[1], 10);
     const m = match[2];
@@ -250,7 +274,6 @@ export class DonateGoodsPage implements OnInit {
       parts.push(`</div>`);
     }
     if (location.phone) parts.push(`<div class="donation-detail-row"><span>${esc(location.phone)}</span></div>`);
-    if (location.email) parts.push(`<div class="donation-detail-row"><span>${esc(location.email)}</span></div>`);
     if (location.contact) parts.push(`<div class="donation-detail-row"><span>${esc(location.contact)}</span></div>`);
     if (location.notes) parts.push(`<div class="donation-detail-row"><span class="app-body-secondary notes-value">${esc(location.notes)}</span></div>`);
     if (location.acceptedItems?.length) {
@@ -267,6 +290,7 @@ export class DonateGoodsPage implements OnInit {
       { icon: 'location-outline', handler: () => this.onMapPinClick(location), show: !!location.address, buttonClass: 'map-button' },
       { icon: 'call-outline', handler: () => this.onPhoneClick(location), show: !!location.phone, buttonClass: 'phone-button' },
       { icon: 'mail-outline', handler: () => this.onEmailClick(location), show: !!location.email, buttonClass: 'email-button' },
+      { lucideIcon: 'heart-handshake', handler: () => this.onVolunteerClick(location), show: !!location.volunteerPositions?.length, buttonClass: 'volunteer-button' },
     ];
   }
 
@@ -308,6 +332,35 @@ export class DonateGoodsPage implements OnInit {
       });
       await alert.present();
     }
+  }
+
+  async onVolunteerClick(location: DonationLocation) {
+    if (!location.volunteerPositions?.length) return;
+    const buttons: Array<{ text: string; icon: string; handler?: () => void; role?: string }> = location.volunteerPositions.map((pos) => {
+      const subtitle = [pos.schedule ?? location.hours, pos.shortDescription ?? pos.description]
+        .filter(Boolean)
+        .join(' · ');
+      const text = subtitle ? `${pos.title || 'Volunteer'}\n${subtitle}` : (pos.title || 'Volunteer');
+      return {
+        text,
+        icon: 'heart-outline',
+        handler: () => {
+          // TODO: Navigate to volunteer flow or contact
+        },
+      };
+    });
+    buttons.push({
+      text: 'Cancel',
+      icon: 'close-outline',
+      role: 'cancel',
+    });
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Volunteer',
+      subHeader: location.organization,
+      buttons,
+      cssClass: 'volunteer-action-sheet services-action-sheet',
+    });
+    await actionSheet.present();
   }
 
   async onEmailClick(location: DonationLocation) {

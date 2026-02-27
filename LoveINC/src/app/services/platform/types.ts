@@ -94,6 +94,17 @@ export interface PlatformOffering {
   sessions?: Array<{ startDate: string; endDate: string; isCancelled?: boolean }>;
 }
 
+export interface PlatformVolunteerPosition {
+  id: string;
+  title?: string;
+  short_description?: string;
+  shortDescription?: string;
+  description?: string;
+  schedule?: string;
+  scheduleRule?: PlatformScheduleRule;
+  [key: string]: unknown;
+}
+
 export interface PlatformDonation {
   id: string;
   title: string;
@@ -104,6 +115,7 @@ export interface PlatformDonation {
   photoUrl?: string;
   itemLabels: string[];
   scheduleRule?: PlatformScheduleRule;
+  volunteerPositions?: PlatformVolunteerPosition[];
 }
 
 export interface PlatformServiceItem {

@@ -1,0 +1,27 @@
+<ion-header class="volunteer-modal-header">
+  <ion-toolbar>
+    <ion-title>Volunteer</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  @if (organization) {
+    <p class="app-body-secondary" style="margin-bottom: 16px;">{{ organization }}</p>
+  }
+  @for (pos of positions; track pos.id) {
+    <div class="volunteer-position">
+      <h3>{{ pos.title || 'Volunteer' }}</h3>
+      @if (pos.shortDescription || pos.description) {
+        <div class="volunteer-description" [innerHTML]="(pos.shortDescription ?? pos.description ?? '') | safeHtml"></div>
+      }
+      @if (pos.schedule || locationHours) {
+        <p class="volunteer-schedule"><strong>Schedule:</strong> {{ pos.schedule ?? locationHours }}</p>
+      }
+      <ion-button expand="block" (click)="onVolunteer(pos)">Volunteer</ion-button>
+    </div>
+  }
+</ion-content>

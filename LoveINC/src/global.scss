@@ -213,6 +213,50 @@ ion-popover.location-popover::part(content) {
   margin: 8px;
 }
 
+/* Volunteer modal - sheet modal at 50% (uses Ionic breakpoints) */
+ion-modal.volunteer-modal-half {
+  --border-radius: 16px 16px 0 0;
+}
+
+ion-modal.volunteer-modal-half .volunteer-modal-header ion-toolbar {
+  --background: var(--ion-background-color) !important;
+  background: var(--ion-background-color) !important;
+  --border-width: 0;
+  --min-height: 48px;
+}
+ion-modal.volunteer-modal-half .volunteer-modal-header ion-title {
+  --color: var(--ion-color-dark) !important;
+  color: var(--ion-color-dark) !important;
+}
+ion-modal.volunteer-modal-half .volunteer-modal-header ion-buttons ion-button {
+  --color: var(--ion-color-dark) !important;
+  --color-hover: var(--ion-color-dark) !important;
+  --color-activated: var(--ion-color-dark) !important;
+}
+ion-modal.volunteer-modal-half .volunteer-modal-header ion-buttons ion-button ion-icon {
+  color: var(--ion-color-dark) !important;
+}
+
+.volunteer-position {
+  margin-bottom: 24px;
+}
+.volunteer-position:last-child {
+  margin-bottom: 0;
+}
+.volunteer-position h3 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+}
+.volunteer-description {
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+  color: var(--ion-color-medium-shade);
+}
+.volunteer-schedule {
+  margin: 0 0 12px 0;
+  font-size: 0.875rem;
+}
+
 /* Alerts modal sheet */
 ion-modal.alerts-modal-sheet {
   --width: calc(100% - 16px);
@@ -294,18 +338,22 @@ ion-modal.alerts-modal-sheet {
 .services-action-sheet .action-sheet-title,
 .donate-action-sheet .action-sheet-title,
 .share-action-sheet .action-sheet-title,
+.volunteer-action-sheet .action-sheet-title,
 .services-action-sheet .action-sheet-header,
 .donate-action-sheet .action-sheet-header,
 .share-action-sheet .action-sheet-header,
+.volunteer-action-sheet .action-sheet-header,
 .services-action-sheet .action-sheet-group h1,
 .donate-action-sheet .action-sheet-group h1,
-.share-action-sheet .action-sheet-group h1 {
+.share-action-sheet .action-sheet-group h1,
+.volunteer-action-sheet .action-sheet-group h1 {
   padding-left: 20px !important;
 }
 
 .services-action-sheet,
 .donate-action-sheet,
-.share-action-sheet {
+.share-action-sheet,
+.volunteer-action-sheet {
   .action-sheet-button,
   .action-sheet-button-with-subtitle {
     text-align: left !important;
@@ -334,7 +382,8 @@ ion-modal.alerts-modal-sheet {
   }
 }
 
-.services-action-sheet .action-sheet-button .action-sheet-icon {
+.services-action-sheet .action-sheet-button .action-sheet-icon,
+.volunteer-action-sheet .action-sheet-button .action-sheet-icon {
   width: 24px !important;
   height: 24px !important;
 }

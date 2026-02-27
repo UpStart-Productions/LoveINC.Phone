@@ -170,9 +170,9 @@ export class GapMinistriesPage implements OnInit {
       const start = new Date(firstSession.startDate);
       const dayName = dayNames[start.getDay()];
       const time =
-        start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) +
+        this.formatSessionTime(firstSession.startDate) +
         (firstSession.endDate
-          ? ` – ${new Date(firstSession.endDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`
+          ? ` – ${this.formatSessionTime(firstSession.endDate)}`
           : '');
       return { schedule: dayName ?? 'By Appointment', daysTimes: time };
     }
@@ -182,10 +182,34 @@ export class GapMinistriesPage implements OnInit {
     if (rule?.daysOfWeek?.length) {
       const names = rule.daysOfWeek.map((d) => dayNames[d] ?? '').filter(Boolean);
       const schedule = names.length === 1 ? names[0] : names.length > 1 ? names.join(', ') : 'By Appointment';
-      const time = [rule.startTime, rule.endTime].filter(Boolean).join(' – ') || '';
+      const start12 = rule.startTime ? this.formatTime24To12(rule.startTime) : '';
+      const end12 = rule.endTime ? this.formatTime24To12(rule.endTime) : '';
+      const time = [start12, end12].filter(Boolean).join(' – ') || '';
       return { schedule, daysTimes: time || 'See schedule' };
     }
     return { schedule: 'By Appointment', daysTimes: 'By appointment' };
+  }
+
+  /** Format session date string as 12hr time. Uses UTC components when API stores local times as UTC. */
+  private formatSessionTime(isoDate: string): string {
+    const d = new Date(isoDate);
+    const isUtc = /Z$|[\+\-]\d{2}:?\d{2}$/.test(isoDate.trim());
+    const h = isUtc ? d.getUTCHours() : d.getHours();
+    const m = isUtc ? d.getUTCMinutes() : d.getMinutes();
+    const period = h >= 12 ? 'pm' : 'am';
+    const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    const min = m.toString().padStart(2, '0');
+    return `${hour12}:${min}${period}`;
+  }
+
+  private formatTime24To12(time24: string): string {
+    const match = time24.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+    if (!match) return time24;
+    let h = parseInt(match[1], 10);
+    const m = match[2];
+    const period = h >= 12 ? 'pm' : 'am';
+    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    return `${h}:${m}${period}`;
   }
 
   private formatAddress(addr: PlatformAddress | undefined): string | null {

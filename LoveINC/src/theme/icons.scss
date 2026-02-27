@@ -98,6 +98,7 @@ ion-header ion-back-button {
   .map-button ion-icon,
   .phone-button ion-icon,
   .volunteer-button ion-icon,
+  .volunteer-button i-lucide,
   .calendar-button ion-icon,
   .email-button ion-icon,
   .share-button ion-icon {
@@ -165,6 +166,7 @@ ion-accordion .ion-accordion-toggle-icon {
  * Action Sheet Icons
  * ----------------------------------------------------------------------------- */
 .services-action-sheet,
+.volunteer-action-sheet,
 .donate-action-sheet,
 .share-action-sheet {
   .action-sheet-icon {
@@ -177,7 +179,8 @@ ion-accordion .ion-accordion-toggle-icon {
   }
 }
 
-.services-action-sheet .action-sheet-button {
+.services-action-sheet .action-sheet-button,
+.volunteer-action-sheet .action-sheet-button {
   .action-sheet-icon {
     font-size: var(--app-font-size-display-lg) !important;
   }
