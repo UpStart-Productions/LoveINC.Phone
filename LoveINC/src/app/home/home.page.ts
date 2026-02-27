@@ -10,6 +10,7 @@ import { HomeCard, CardType } from '../models/home-card.model';
 import { CardFormattingService } from '../services/card-formatting.service';
 import { UserTypeCardComponent, UserType } from '../components/user-type-card/user-type-card.component';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
+import { DonateButtonService } from '../services/donate-button.service';
 import { SharingService } from '../services/sharing/sharing.service';
 import { AlertsModalService } from '../services/alerts-modal.service';
 import { PlatformApiService } from '../services/platform/platform-api.service';
@@ -49,6 +50,7 @@ export class HomePage implements OnInit {
     private platformApi: PlatformApiService,
     private cardFormatting: CardFormattingService,
     private donateActionSheetService: DonateActionSheetService,
+    private donateButtonService: DonateButtonService,
     private sharingService: SharingService,
     private alertsModalService: AlertsModalService
   ) {}
@@ -79,8 +81,7 @@ export class HomePage implements OnInit {
       .filter(option => option !== 'exploring' && ['get-help', 'volunteer', 'give'].includes(option))
       .map(option => option as UserType);
     
-    // Show donate button if user selected volunteer or give (donor)
-    this.showDonateButton = selectedOptions.includes('volunteer') || selectedOptions.includes('give');
+    this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
   }
 
   loadCtas() {

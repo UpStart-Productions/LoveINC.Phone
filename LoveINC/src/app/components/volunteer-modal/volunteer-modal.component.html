@@ -1,27 +1,62 @@
-<ion-header class="volunteer-modal-header">
+<ion-header>
   <ion-toolbar>
-    <ion-title>Volunteer</ion-title>
+    <ion-title>{{ showForm ? 'Sign up to volunteer' : 'Volunteer' }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="dismiss()">
-        <ion-icon name="close"></ion-icon>
+      <ion-button (click)="showForm ? onCancelForm() : dismiss()" fill="clear">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
-  @if (organization) {
-    <p class="app-body-secondary" style="margin-bottom: 16px;">{{ organization }}</p>
-  }
-  @for (pos of positions; track pos.id) {
-    <div class="volunteer-position">
-      <h3>{{ pos.title || 'Volunteer' }}</h3>
-      @if (pos.shortDescription || pos.description) {
-        <div class="volunteer-description" [innerHTML]="(pos.shortDescription ?? pos.description ?? '') | safeHtml"></div>
-      }
-      @if (pos.schedule || locationHours) {
-        <p class="volunteer-schedule"><strong>Schedule:</strong> {{ pos.schedule ?? locationHours }}</p>
-      }
-      <ion-button expand="block" (click)="onVolunteer(pos)">Volunteer</ion-button>
-    </div>
+  @if (showForm && selectedPosition) {
+    <p class="app-body-secondary m-b-18">{{ selectedPosition.title || 'Volunteer' }}</p>
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">First Name</ion-label>
+        <ion-input [(ngModel)]="firstName" type="text" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Last Name</ion-label>
+        <ion-input [(ngModel)]="lastName" type="text" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Email Address</ion-label>
+        <ion-input [(ngModel)]="email" type="email" required></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="block" (click)="onSubmitForm()" [disabled]="submitting">
+      {{ submitting ? 'Submitting...' : 'Submit' }}
+    </ion-button>
+    <ion-button expand="block" fill="clear" (click)="onCancelForm()">Cancel</ion-button>
+  } @else {
+    @for (pos of positions; track pos.id) {
+      <div class="volunteer-position">
+        <div class="volunteer-position-details">
+          <div class="volunteer-detail-row">
+            <ion-icon name="location-outline" class="volunteer-detail-icon"></ion-icon>
+            <div>
+              <span>{{ organizationName }}</span>
+              @if (address) {
+                <div class="volunteer-address">{{ address }}</div>
+              }
+            </div>
+          </div>
+          <div class="volunteer-detail-row">
+            <i-lucide name="heart-handshake" [size]="20" [style.color]="'var(--ion-color-dark)'" class="volunteer-detail-icon"></i-lucide>
+            <span>{{ pos.title || 'Volunteer' }}</span>
+          </div>
+          <div class="volunteer-detail-row">
+            <ion-icon name="time-outline" class="volunteer-detail-icon"></ion-icon>
+            <span>{{ pos.schedule ?? locationHours ?? '—' }}</span>
+          </div>
+        </div>
+        @if (pos.shortDescription || pos.description) {
+          <div class="volunteer-description" [innerHTML]="(pos.shortDescription ?? pos.description ?? '') | safeHtml"></div>
+        }
+        <p class="volunteer-disclaimer">We cannot guarantee open volunteer positions but we will save your information and be in touch soon.</p>
+        <ion-button expand="block" (click)="onVolunteer(pos)">Volunteer</ion-button>
+      </div>
+    }
   }
 </ion-content>

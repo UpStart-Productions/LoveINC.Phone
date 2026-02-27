@@ -94,6 +94,7 @@ export interface PlatformOffering {
   sessions?: Array<{ startDate: string; endDate: string; isCancelled?: boolean }>;
 }
 
+/** API may return camelCase or snake_case; we normalize in mapping */
 export interface PlatformVolunteerPosition {
   id: string;
   title?: string;
@@ -101,7 +102,14 @@ export interface PlatformVolunteerPosition {
   shortDescription?: string;
   description?: string;
   schedule?: string;
+  schedule_rule?: PlatformScheduleRule;
   scheduleRule?: PlatformScheduleRule;
+  days_of_week?: number[];
+  daysOfWeek?: number[];
+  start_time?: string;
+  startTime?: string;
+  end_time?: string;
+  endTime?: string;
   [key: string]: unknown;
 }
 

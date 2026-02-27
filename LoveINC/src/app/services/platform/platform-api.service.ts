@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map, catchError, of, tap } from 'rxjs';
+import { Observable, map, catchError, of, tap, firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import type {
   PlatformAddress,
@@ -125,6 +125,42 @@ export class PlatformApiService {
   getDonations(): Observable<PlatformDonation[]> {
     return this.get<{ donations: PlatformDonation[] }>('/donations').pipe(
       map((res) => res?.donations ?? [])
+    );
+  }
+
+  /** POST app user notification (e.g. volunteer interest) */
+  postAppUserNotification(payload: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    devicePlatform: string;
+    deviceModel: string;
+    itemType: string;
+    itemId: string;
+    itemTitle: string;
+  }): Promise<void> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const url = `${this.basePath}/app-user-notification`;
+    console.debug('PlatformApiService: app-user-notification POST', { url, payload });
+    return firstValueFrom(
+      this.http.post(url, payload, { headers: this.headers }).pipe(
+        tap(() => console.debug('PlatformApiService: app-user-notification OK')),
+        map(() => undefined),
+        catchError((err) => {
+          const status = err?.status ?? err?.error?.status;
+          const message = err?.error?.message ?? err?.message ?? JSON.stringify(err?.error);
+          console.error('PlatformApiService: app-user-notification failed', {
+            url,
+            payload,
+            status,
+            message,
+            err,
+          });
+          throw err;
+        })
+      )
     );
   }
 }

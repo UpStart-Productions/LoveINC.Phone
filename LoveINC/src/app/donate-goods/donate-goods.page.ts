@@ -14,14 +14,15 @@ import {
   IonSearchbar
 } from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular/standalone';
-import { AlertController, ActionSheetController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
+import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { SharingService } from '../services/sharing/sharing.service';
 import { AlertsModalService } from '../services/alerts-modal.service';
 import { PlatformApiService } from '../services/platform/platform-api.service';
-import type { PlatformAddress, PlatformDonation, PlatformScheduleRule } from '../services/platform/types';
+import type { PlatformAddress, PlatformDonation, PlatformScheduleRule, PlatformVolunteerPosition } from '../services/platform/types';
 import type { CardBadge } from '../components/card/card.component';
 
 /** Category → icon + color for donation badges (matches home card style) */
@@ -91,8 +92,8 @@ export class DonateGoodsPage implements OnInit {
     private router: Router,
     private alertController: AlertController,
     private modalController: ModalController,
-    private actionSheetController: ActionSheetController,
     private donateButtonService: DonateButtonService,
+    private volunteerActionSheetService: VolunteerActionSheetService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
     private alertsModalService: AlertsModalService
@@ -133,15 +134,21 @@ export class DonateGoodsPage implements OnInit {
       ? this.platformApi.resolveUploadUrl(d.photoUrl) || d.photoUrl
       : null;
     const badge = this.getDonationBadge(category, d.title);
-    const volunteerPositions = (d.volunteerPositions ?? []).map((v) => {
+    const positions = (d.volunteerPositions ?? (d as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as PlatformVolunteerPosition[];
+    const volunteerPositions = positions.map((v) => {
       const raw = v as Record<string, unknown>;
       const shortDesc = (v.shortDescription ?? v.short_description ?? raw['short_description'] ?? raw['shortDescription']) as string | undefined;
       const desc = (v.description ?? raw['description']) as string | undefined;
-      const sched = v.schedule ?? this.formatScheduleRule(v.scheduleRule) ?? (raw['schedule'] as string | undefined);
+      const rule = v.scheduleRule ?? v.schedule_rule ?? raw['schedule_rule'] ?? raw['scheduleRule'];
+      const schedStr = (v.schedule ?? raw['schedule']) as string | undefined;
+      const sched =
+        schedStr ??
+        (rule ? this.formatScheduleRule(this.normalizeScheduleRule(rule)) : null) ??
+        undefined;
       return {
         id: v.id,
-        title: v.title,
-        shortDescription: shortDesc,
+        title: (v.title ?? raw['title']) as string | undefined,
+        shortDescription: shortDesc ?? desc,
         description: desc,
         schedule: sched ?? undefined,
       };
@@ -176,6 +183,22 @@ export class DonateGoodsPage implements OnInit {
     if (!addr) return null;
     const parts = [addr.address, addr.city, addr.state, addr.zip].filter(Boolean);
     return parts.length ? parts.join(', ') : addr.locationName ?? null;
+  }
+
+  /** Normalize API schedule rule (snake_case or camelCase) to PlatformScheduleRule */
+  private normalizeScheduleRule(rule: unknown): PlatformScheduleRule | undefined {
+    if (!rule || typeof rule !== 'object') return undefined;
+    const r = rule as Record<string, unknown>;
+    const days = (r['daysOfWeek'] ?? r['days_of_week']) as number[] | undefined;
+    const start = (r['startTime'] ?? r['start_time']) as string | undefined;
+    const end = (r['endTime'] ?? r['end_time']) as string | undefined;
+    if (!days?.length && !start && !end) return undefined;
+    return {
+      ruleType: (r['ruleType'] ?? r['rule_type'] ?? 'recurring') as string,
+      daysOfWeek: days,
+      startTime: start,
+      endTime: end,
+    };
   }
 
   private formatScheduleRule(rule: PlatformScheduleRule | undefined): string | null {
@@ -336,31 +359,12 @@ export class DonateGoodsPage implements OnInit {
 
   async onVolunteerClick(location: DonationLocation) {
     if (!location.volunteerPositions?.length) return;
-    const buttons: Array<{ text: string; icon: string; handler?: () => void; role?: string }> = location.volunteerPositions.map((pos) => {
-      const subtitle = [pos.schedule ?? location.hours, pos.shortDescription ?? pos.description]
-        .filter(Boolean)
-        .join(' · ');
-      const text = subtitle ? `${pos.title || 'Volunteer'}\n${subtitle}` : (pos.title || 'Volunteer');
-      return {
-        text,
-        icon: 'heart-outline',
-        handler: () => {
-          // TODO: Navigate to volunteer flow or contact
-        },
-      };
+    await this.volunteerActionSheetService.openVolunteerActionSheet({
+      organizationName: location.organization,
+      address: location.address,
+      positions: location.volunteerPositions,
+      scheduleFallback: location.hours ?? undefined,
     });
-    buttons.push({
-      text: 'Cancel',
-      icon: 'close-outline',
-      role: 'cancel',
-    });
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Volunteer',
-      subHeader: location.organization,
-      buttons,
-      cssClass: 'volunteer-action-sheet services-action-sheet',
-    });
-    await actionSheet.present();
   }
 
   async onEmailClick(location: DonationLocation) {

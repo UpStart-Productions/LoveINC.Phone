@@ -141,10 +141,9 @@ export class OnboardingService {
    * Update specific onboarding data fields
    */
   updateOnboardingData(updates: Partial<OnboardingData>): void {
-    const currentData = this.getOnboardingData();
-    if (currentData) {
-      const updatedData = { ...currentData, ...updates };
-      localStorage.setItem(this.ONBOARDING_DATA_KEY, JSON.stringify(updatedData));
-    }
+    const currentData = this.getOnboardingData() ?? { selectedOptions: [] };
+    const updatedData = { ...currentData, ...updates };
+    localStorage.setItem(this.ONBOARDING_KEY, 'true');
+    localStorage.setItem(this.ONBOARDING_DATA_KEY, JSON.stringify(updatedData));
   }
 }
