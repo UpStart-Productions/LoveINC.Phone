@@ -2,6 +2,7 @@
 
 ## Platform and Data Storage (CRITICAL – Never Forget)
 - This project ONLY runs in the iOS/Android simulator or on a physical device. It NEVER runs on web.
+- NEVER add a dev proxy, proxy.conf.json, or proxyConfig. The app always calls APIs directly (https://api.grovlink.com, etc.). Do not reintroduce proxy-based routing.
 - Do NOT add web-specific code, browser fallbacks, or PWA support for data storage.
 - We ONLY use SQLite for relational data storage. Use @capacitor-community/sqlite.
 - Do NOT use localStorage, IndexedDB, or any browser storage as a fallback for SQLite.

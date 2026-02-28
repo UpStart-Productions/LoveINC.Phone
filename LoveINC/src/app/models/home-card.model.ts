@@ -27,6 +27,8 @@ export interface HomeCard {
   link: string;
   priority: number;
   badge: CardBadge;
+  volunteerPositions?: Array<{ id: string; title?: string; shortDescription?: string; description?: string; schedule?: string }>;
+  address?: string | null;
 }
 
 export const CardTypeLabels: Record<CardType, string> = {

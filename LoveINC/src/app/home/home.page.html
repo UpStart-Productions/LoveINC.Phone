@@ -48,6 +48,7 @@
       [title]="card.title"
       [subtitle]="card.subtitle"
       [description]="card.shortDescription"
+      [actionIcons]="getActionIcons(card)"
       [clickable]="true"
       (cardClick)="navigateToCard(card)"
       (shareClick)="onShareCard(card)">

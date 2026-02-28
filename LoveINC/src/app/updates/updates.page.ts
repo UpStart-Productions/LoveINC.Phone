@@ -18,6 +18,8 @@ import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { SharingService } from '../services/sharing/sharing.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
+import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
+import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 import {
   PlatformApiService,
   type PlatformClass,
@@ -36,6 +38,8 @@ export interface UpdateItem {
   shortDescription: string;
   description: string;
   startDate: string;
+  volunteerPositions?: Array<{ id: string; title?: string; shortDescription?: string; description?: string; schedule?: string }>;
+  address?: string | null;
 }
 
 @Component({
@@ -64,7 +68,9 @@ export class UpdatesPage implements OnInit {
     private platformApi: PlatformApiService,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
-    private sharingService: SharingService
+    private sharingService: SharingService,
+    private volunteerActionSheetService: VolunteerActionSheetService,
+    private scheduleFormatting: ScheduleFormattingService
   ) {}
 
   ngOnInit() {
@@ -131,6 +137,17 @@ export class UpdatesPage implements OnInit {
         ? `${format(start, 'h:mm a')} – ${format(end, 'h:mm a')}`
         : format(start, 'h:mm a');
     const subtitle = `${dateStr} • ${timeStr}`;
+    const rawPositions = (e.volunteerPositions ?? (e as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
+    const address = e.address ? this.formatAddress(e.address) : null;
+    const volunteerPositions = rawPositions.length
+      ? rawPositions.map((p) => {
+          const id = p['id'] as string;
+          const title = (p['title'] ?? p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
+          const shortDescription = (p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
+          const description = (p['description'] ?? p['description']) as string | undefined;
+          return { id, title, shortDescription, description, schedule: this.scheduleFormatting.getPositionSchedule(p) };
+        })
+      : undefined;
     return {
       id: e.id,
       type: 'event',
@@ -140,7 +157,14 @@ export class UpdatesPage implements OnInit {
       shortDescription: e.shortDescription ?? '',
       description: e.longDescription ?? e.shortDescription ?? '',
       startDate: e.startDate,
+      volunteerPositions,
+      address,
     };
+  }
+
+  private formatAddress(addr: { address?: string; city?: string; state?: string; zip?: string }): string {
+    const parts = [addr.address, addr.city, addr.state, addr.zip].filter(Boolean);
+    return parts.join(', ') || '';
   }
 
   private mapClassToUpdateItem(c: PlatformClass, startDate: string): UpdateItem {
@@ -149,6 +173,17 @@ export class UpdatesPage implements OnInit {
     const dateStr = format(start, 'EEEE, MMMM d, yyyy');
     const timeStr = session?.time ? ` • ${session.time}` : '';
     const subtitle = `${dateStr}${timeStr}`;
+    const rawPositions = (c.volunteerPositions ?? (c as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
+    const address = c.address ? this.formatAddress(c.address) : null;
+    const volunteerPositions = rawPositions.length
+      ? rawPositions.map((p) => {
+          const id = p['id'] as string;
+          const title = (p['title'] ?? p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
+          const shortDescription = (p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
+          const description = (p['description'] ?? p['description']) as string | undefined;
+          return { id, title, shortDescription, description, schedule: this.scheduleFormatting.getPositionSchedule(p) };
+        })
+      : undefined;
     return {
       id: c.id,
       type: 'class',
@@ -158,6 +193,8 @@ export class UpdatesPage implements OnInit {
       shortDescription: c.shortDescription ?? '',
       description: c.longDescription ?? c.shortDescription ?? '',
       startDate,
+      volunteerPositions,
+      address,
     };
   }
 
@@ -183,12 +220,28 @@ export class UpdatesPage implements OnInit {
   getActionIcons(item: UpdateItem): CardActionIcon[] {
     return [
       {
+        lucideIcon: 'heart-handshake',
+        handler: () => this.onVolunteerClick(item),
+        show: !!item.volunteerPositions?.length,
+        buttonClass: 'volunteer-button',
+      },
+      {
         icon: 'calendar-outline',
         handler: () => this.onCalendarClick(item),
         show: true,
         buttonClass: 'calendar-button',
       },
     ];
+  }
+
+  async onVolunteerClick(item: UpdateItem) {
+    if (!item.volunteerPositions?.length) return;
+    await this.volunteerActionSheetService.openVolunteerActionSheet({
+      organizationName: item.title,
+      address: item.address ?? null,
+      positions: item.volunteerPositions,
+      scheduleFallback: item.subtitle ?? undefined,
+    });
   }
 
   navigateToDetail(item: UpdateItem) {

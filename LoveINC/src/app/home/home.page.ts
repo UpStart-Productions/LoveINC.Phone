@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { startOfDay } from 'date-fns';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon } from '@ionic/angular/standalone';
-import { CardComponent } from '../components/card/card.component';
+import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { OnboardingService } from '../services/onboarding.service';
 import { HomeCard, CardType } from '../models/home-card.model';
@@ -13,9 +15,11 @@ import { DonateActionSheetService } from '../services/donate-action-sheet.servic
 import { DonateButtonService } from '../services/donate-button.service';
 import { SharingService } from '../services/sharing/sharing.service';
 import { PlatformApiService } from '../services/platform/platform-api.service';
-import type { PlatformCta, PlatformHomeFeedItem } from '../services/platform/types';
+import type { PlatformCta, PlatformClass, PlatformEvent, PlatformHomeFeedItem } from '../services/platform/types';
 import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.component';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
+import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
+import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 
 @Component({
   selector: 'app-home',
@@ -52,7 +56,9 @@ export class HomePage implements OnInit {
     private cardFormatting: CardFormattingService,
     private donateActionSheetService: DonateActionSheetService,
     private donateButtonService: DonateButtonService,
-    private sharingService: SharingService
+    private sharingService: SharingService,
+    private volunteerActionSheetService: VolunteerActionSheetService,
+    private scheduleFormatting: ScheduleFormattingService
   ) {}
 
   ngOnInit() {
@@ -131,20 +137,32 @@ export class HomePage implements OnInit {
   }
 
   loadCards() {
-    this.platformApi.getHomeFeed().subscribe({
-      next: (items) => {
-        const today = startOfDay(new Date()).getTime();
-        this.cards = items
-          .filter((item): item is typeof item & { type: CardType } =>
-            this.isSupportedCardType(item.type))
-          .filter((item) => this.isNotPastEventOrClass(item, today))
-          .map((item) => this.mapFeedItemToHomeCard(item))
-          .sort((a, b) => a.priority - b.priority);
-      },
-      error: (err) => {
-        console.error('Error loading home feed:', err);
-      },
-    });
+    forkJoin({
+      homeFeed: this.platformApi.getHomeFeed(),
+      events: this.platformApi.getEvents(),
+      classes: this.platformApi.getClasses(),
+    })
+      .pipe(
+        map(({ homeFeed, events, classes }) => {
+          const today = startOfDay(new Date()).getTime();
+          const eventMap = new Map<string, PlatformEvent>((events ?? []).map((e) => [e.id, e]));
+          const classMap = new Map<string, PlatformClass>((classes ?? []).map((c) => [c.id, c]));
+          return (homeFeed ?? [])
+            .filter((item): item is typeof item & { type: CardType } =>
+              this.isSupportedCardType(item.type))
+            .filter((item) => this.isNotPastEventOrClass(item, today))
+            .map((item) => this.mapFeedItemToHomeCard(item, eventMap, classMap))
+            .sort((a, b) => a.priority - b.priority);
+        })
+      )
+      .subscribe({
+        next: (cards) => {
+          this.cards = cards;
+        },
+        error: (err) => {
+          console.error('Error loading home feed:', err);
+        },
+      });
   }
 
   private isSupportedCardType(type: string): type is CardType {
@@ -162,8 +180,55 @@ export class HomePage implements OnInit {
     return new Date(startDate).getTime() >= todayMs;
   }
 
-  private mapFeedItemToHomeCard(item: PlatformHomeFeedItem & { type: CardType }): HomeCard {
+  private mapFeedItemToHomeCard(
+    item: PlatformHomeFeedItem & { type: CardType },
+    eventMap: Map<string, PlatformEvent>,
+    classMap: Map<string, PlatformClass>
+  ): HomeCard {
     const formatted = this.cardFormatting.formatForCard(item, item.type);
+    let positions: Array<{ id: string; title?: string; shortDescription?: string; description?: string; schedule?: string }> = [];
+    let address: string | null = null;
+
+    if (item.type === 'event') {
+      const event = eventMap.get(item.id);
+      if (event) {
+        const raw = (event.volunteerPositions ?? (event as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
+        positions = raw.map((p) => {
+          const id = p['id'] as string;
+          const title = (p['title'] ?? p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
+          const shortDescription = (p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
+          const description = (p['description'] ?? p['description']) as string | undefined;
+          return { id, title, shortDescription, description, schedule: this.scheduleFormatting.getPositionSchedule(p) };
+        });
+        address = event.address ? this.formatAddress(event.address) : null;
+      }
+    } else if (item.type === 'class') {
+      const cls = classMap.get(item.id);
+      if (cls) {
+        const raw = (cls.volunteerPositions ?? (cls as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
+        positions = raw.map((p) => {
+          const id = p['id'] as string;
+          const title = (p['title'] ?? p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
+          const shortDescription = (p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
+          const description = (p['description'] ?? p['description']) as string | undefined;
+          return { id, title, shortDescription, description, schedule: this.scheduleFormatting.getPositionSchedule(p) };
+        });
+        address = cls.address ? this.formatAddress(cls.address) : null;
+      }
+    }
+
+    if (!positions.length && !address) {
+      const itemRaw = (item.volunteerPositions ?? (item as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
+      positions = itemRaw.map((p) => {
+        const id = p['id'] as string;
+        const title = (p['title'] ?? p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
+        const shortDescription = (p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
+        const description = (p['description'] ?? p['description']) as string | undefined;
+        return { id, title, shortDescription, description, schedule: this.scheduleFormatting.getPositionSchedule(p) };
+      });
+      address = item.address ? this.formatAddress(item.address) : null;
+    }
+
     return {
       id: formatted.id,
       type: formatted.type,
@@ -174,7 +239,35 @@ export class HomePage implements OnInit {
       link: `/tabs/content-detail/${this.getContentDetailType(formatted.type)}/${formatted.id}`,
       priority: item.priority,
       badge: formatted.badge,
+      volunteerPositions: positions.length ? positions : undefined,
+      address,
     };
+  }
+
+  private formatAddress(addr: { address?: string; city?: string; state?: string; zip?: string }): string {
+    const parts = [addr.address, addr.city, addr.state, addr.zip].filter(Boolean);
+    return parts.join(', ') || '';
+  }
+
+  getActionIcons(card: HomeCard): CardActionIcon[] {
+    return [
+      {
+        lucideIcon: 'heart-handshake',
+        handler: () => this.onVolunteerClick(card),
+        show: !!card.volunteerPositions?.length,
+        buttonClass: 'volunteer-button',
+      },
+    ];
+  }
+
+  async onVolunteerClick(card: HomeCard) {
+    if (!card.volunteerPositions?.length) return;
+    await this.volunteerActionSheetService.openVolunteerActionSheet({
+      organizationName: card.title,
+      address: card.address ?? null,
+      positions: card.volunteerPositions,
+      scheduleFallback: card.subtitle ?? undefined,
+    });
   }
 
   private getContentDetailType(apiType: string): string {

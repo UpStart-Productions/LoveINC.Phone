@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  /** Nonprofit Mobile Platform API base URL (no trailing slash). Use /api in dev so the dev proxy forwards to api.grovlink.com and avoids CORS. */
-  apiBaseUrl: '/api',
+  /** Nonprofit Mobile Platform API base URL (no trailing slash) */
+  apiBaseUrl: 'https://api.grovlink.com/api',
   /** API key from admin (API Keys or Mobile App Config → API Key tab) */
   apiKey: 'npmp_q-ajDhD2sB4O4yy5e-m3PcXflfrePITRv9EhGiGXYXU',
   /** Customer slug (e.g. loveinc) */
@@ -16,7 +16,7 @@ export const environment = {
   esvApiKey: '553d5c04d7c08ee74b255e8276e3d2db447402c2',
   /** API.Bible key for verse-of-the-day (passages with notes). Get one at https://scripture.api.bible/ */
   apiBibleKey: 'JK00-xZNQRhob9CKqHbA7',
-  apiBibleBase: '/api/bible',
+  apiBibleBase: 'https://api.scripture.api.bible',
 };
 
 /*

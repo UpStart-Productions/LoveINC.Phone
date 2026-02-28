@@ -37,6 +37,7 @@ export interface PlatformEvent {
   endDate: string;
   photoUrl?: string;
   address?: PlatformAddress;
+  volunteerPositions?: PlatformVolunteerPosition[];
 }
 
 export interface PlatformClassNextSession {
@@ -71,6 +72,7 @@ export interface PlatformClass {
   attachments?: PlatformClassAttachment[];
   /** Alternative: schedule from offerings (scheduleRule + sessions) */
   offerings?: PlatformOffering[];
+  volunteerPositions?: PlatformVolunteerPosition[];
 }
 
 export interface PlatformScheduleRule {
@@ -229,5 +231,7 @@ export interface PlatformHomeFeedItem {
   actionType?: string;
   actionLabel?: string;
   actionValue?: string;
+  address?: PlatformAddress;
+  volunteerPositions?: PlatformVolunteerPosition[];
   [key: string]: unknown;
 }

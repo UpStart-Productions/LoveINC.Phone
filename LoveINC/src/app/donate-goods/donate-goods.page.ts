@@ -22,7 +22,8 @@ import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.
 import { SharingService } from '../services/sharing/sharing.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { PlatformApiService } from '../services/platform/platform-api.service';
-import type { PlatformAddress, PlatformDonation, PlatformScheduleRule, PlatformVolunteerPosition } from '../services/platform/types';
+import type { PlatformAddress, PlatformDonation, PlatformVolunteerPosition } from '../services/platform/types';
+import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 import type { CardBadge } from '../components/card/card.component';
 
 /** Category → icon + color for donation badges (matches home card style) */
@@ -96,7 +97,8 @@ export class DonateGoodsPage implements OnInit {
     private donateButtonService: DonateButtonService,
     private volunteerActionSheetService: VolunteerActionSheetService,
     private donateActionSheetService: DonateActionSheetService,
-    private sharingService: SharingService
+    private sharingService: SharingService,
+    private scheduleFormatting: ScheduleFormattingService
   ) {}
 
   ngOnInit() {
@@ -135,18 +137,12 @@ export class DonateGoodsPage implements OnInit {
       const raw = v as Record<string, unknown>;
       const shortDesc = (v.shortDescription ?? v.short_description ?? raw['short_description'] ?? raw['shortDescription']) as string | undefined;
       const desc = (v.description ?? raw['description']) as string | undefined;
-      const rule = v.scheduleRule ?? v.schedule_rule ?? raw['schedule_rule'] ?? raw['scheduleRule'];
-      const schedStr = (v.schedule ?? raw['schedule']) as string | undefined;
-      const sched =
-        schedStr ??
-        (rule ? this.formatScheduleRule(this.normalizeScheduleRule(rule)) : null) ??
-        undefined;
       return {
         id: v.id,
         title: (v.title ?? raw['title']) as string | undefined,
         shortDescription: shortDesc ?? desc,
         description: desc,
-        schedule: sched ?? undefined,
+        schedule: this.scheduleFormatting.getPositionSchedule(v) ?? undefined,
       };
     });
     return {
@@ -156,7 +152,7 @@ export class DonateGoodsPage implements OnInit {
       address: this.formatAddress(d.address),
       phone: d.provider?.phone ?? null,
       email: d.provider?.email ?? null,
-      hours: this.formatScheduleRule(d.scheduleRule),
+      hours: this.scheduleFormatting.formatScheduleRule(this.scheduleFormatting.normalizeScheduleRule(d.scheduleRule)) ?? null,
       acceptedItems,
       notes: d.shortDescription ?? d.longDescription ?? null,
       contact: null,
@@ -179,47 +175,6 @@ export class DonateGoodsPage implements OnInit {
     if (!addr) return null;
     const parts = [addr.address, addr.city, addr.state, addr.zip].filter(Boolean);
     return parts.length ? parts.join(', ') : addr.locationName ?? null;
-  }
-
-  /** Normalize API schedule rule (snake_case or camelCase) to PlatformScheduleRule */
-  private normalizeScheduleRule(rule: unknown): PlatformScheduleRule | undefined {
-    if (!rule || typeof rule !== 'object') return undefined;
-    const r = rule as Record<string, unknown>;
-    const days = (r['daysOfWeek'] ?? r['days_of_week']) as number[] | undefined;
-    const start = (r['startTime'] ?? r['start_time']) as string | undefined;
-    const end = (r['endTime'] ?? r['end_time']) as string | undefined;
-    if (!days?.length && !start && !end) return undefined;
-    return {
-      ruleType: (r['ruleType'] ?? r['rule_type'] ?? 'recurring') as string,
-      daysOfWeek: days,
-      startTime: start,
-      endTime: end,
-    };
-  }
-
-  private formatScheduleRule(rule: PlatformScheduleRule | undefined): string | null {
-    if (!rule) return null;
-    const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    if (rule.ruleType === 'by_appointment') return 'By appointment';
-    if (rule.daysOfWeek?.length) {
-      const names = rule.daysOfWeek.map((d) => DAY_NAMES[d] ?? '').filter(Boolean);
-      const days = names.length ? names.join(', ') : '';
-      const start12 = rule.startTime ? this.formatTime24To12(rule.startTime) : '';
-      const end12 = rule.endTime ? this.formatTime24To12(rule.endTime) : '';
-      const time = [start12, end12].filter(Boolean).join(' – ') || '';
-      return [days, time].filter(Boolean).join(' ') || null;
-    }
-    return null;
-  }
-
-  private formatTime24To12(time24: string): string {
-    const match = time24.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
-    if (!match) return time24;
-    let h = parseInt(match[1], 10);
-    const m = match[2];
-    const period = h >= 12 ? 'pm' : 'am';
-    h = h === 0 ? 12 : h > 12 ? h - 12 : h;
-    return `${h}:${m}${period}`;
   }
 
   groupLocationsByCategory() {

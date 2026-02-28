@@ -75,8 +75,7 @@ export class PlatformApiService {
         );
         if (err?.status === 0) {
           console.warn(
-            'PlatformApiService: Status 0 often means CORS blocked the response. ' +
-              'Ensure api.grovlink.com allows your origin (e.g. http://localhost:8100) or use a dev proxy.'
+            'PlatformApiService: Status 0 usually means network failure or blocked request.'
           );
         }
         return of(null as T);

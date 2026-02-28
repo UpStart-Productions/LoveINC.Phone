@@ -1,9 +1,0 @@
-{
-  "/api/bible": {
-    "target": "https://api.scripture.api.bible",
-    "secure": true,
-    "changeOrigin": true,
-    "pathRewrite": {"^/api/bible": ""}
-  },
-  "/api": {"target": "https://api.grovlink.com", "secure": true, "changeOrigin": true}
-}
