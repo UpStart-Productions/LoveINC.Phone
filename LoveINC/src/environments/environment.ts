@@ -13,7 +13,10 @@ export const environment = {
   /** Tenant/affiliate slug (e.g. newberg) */
   tenantSlug: 'newberg',
   /** ESV API key for verse-of-the-day (cross-refs, footnotes). Get one at https://api.esv.org/account/create-application/ */
-  esvApiKey: '',
+  esvApiKey: '553d5c04d7c08ee74b255e8276e3d2db447402c2',
+  /** API.Bible key for verse-of-the-day (passages with notes). Get one at https://scripture.api.bible/ */
+  apiBibleKey: 'JK00-xZNQRhob9CKqHbA7',
+  apiBibleBase: '/api/bible',
 };
 
 /*

@@ -12,4 +12,41 @@
   a {
     color: var(--ion-color-primary);
   }
+
+  /* YouVersion passage HTML: headings, verse labels, notes */
+  .yv-h {
+    font-weight: 600;
+    margin-bottom: 0.5em;
+    color: var(--app-text-primary);
+  }
+
+  .yv-vlbl {
+    font-weight: 600;
+    margin-right: 0.25em;
+  }
+
+  /* API.Bible passage HTML */
+  .v {
+    font-weight: 600;
+    margin-right: 0.25em;
+  }
+}
+
+.debug-api-response {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background: var(--ion-color-light);
+  border-radius: 4px;
+  font-size: 0.75rem;
+
+  summary {
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  pre {
+    margin: 0.5rem 0 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
 }

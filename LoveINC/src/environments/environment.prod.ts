@@ -5,5 +5,8 @@ export const environment = {
   customerSlug: 'loveinc',
   tenantSlug: 'newberg',
   /** ESV API key for verse-of-the-day (cross-refs, footnotes) */
-  esvApiKey: '',
+  esvApiKey: '553d5c04d7c08ee74b255e8276e3d2db447402c2',
+  /** API.Bible key for verse-of-the-day (passages with notes) */
+  apiBibleKey: 'JK00-xZNQRhob9CKqHbA7',
+  apiBibleBase: 'https://api.scripture.api.bible',
 };

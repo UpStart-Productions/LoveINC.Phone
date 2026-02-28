@@ -7,9 +7,6 @@ import { environment } from '../../environments/environment';
 export const VERSE_OF_THE_DAY_API_URL =
   'https://labs.bible.org/api/?passage=votd&type=json';
 
-/** ESV API base URL for passage HTML (cross-refs, footnotes) */
-export const ESV_API_PASSAGE_URL = 'https://api.esv.org/v3/passage/html/';
-
 /** Raw verse object from NET Bible API */
 export interface NetBibleVerse {
   bookname: string;
@@ -18,12 +15,14 @@ export interface NetBibleVerse {
   text: string;
 }
 
-/** ESV API passage response (documented at api.esv.org) */
-export interface EsvPassageResponse {
-  query: string;
-  canonical: string;
-  passage_meta: unknown[];
-  passages: string[];
+/** API.Bible passage response (api.scripture.api.bible) */
+export interface ApiBiblePassageResponse {
+  data: {
+    id: string;
+    reference: string;
+    content: string;
+    copyright?: string;
+  };
 }
 
 /** Normalized verse for display */
@@ -31,54 +30,94 @@ export interface VerseOfTheDay {
   reference: string;
   /** Plain text fallback (from NET Bible) */
   text: string;
-  /** HTML from ESV with cross-refs and footnotes when API key is configured */
+  /** HTML from API.Bible (passage with optional notes) */
   contentHtml?: string;
+  /** DEBUG: raw API.Bible response (remove after debugging) */
+  debugApiResponse?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class VerseOfTheDayService {
   constructor(private readonly http: HttpClient) {}
 
+  /** API.Bible Bible ID. KJV = de4e12af7f28f599-01 */
+  private readonly API_BIBLE_ID = 'de4e12af7f28f599-01';
+
   /**
-   * Fetches the verse of the day: (1) NET Bible for reference, (2) ESV for rich content.
-   * When esvApiKey is configured, uses ESV HTML (cross-refs, footnotes). Otherwise NET Bible text only.
+   * Fetches the verse of the day: (1) NET Bible for reference, (2) API.Bible for passage content (with notes).
    */
   getVerseOfTheDay(): Observable<VerseOfTheDay | null> {
     return this.http.get<NetBibleVerse[]>(VERSE_OF_THE_DAY_API_URL).pipe(
       map((verses) => this.buildReferenceAndText(verses)),
       switchMap((base) => {
         if (!base) return of(null);
-        const key = environment.esvApiKey?.trim();
-        if (!key) return of(base);
-
-        const params = new URLSearchParams({
-          q: base.reference,
-          'include-crossrefs': 'true',
-          'include-footnotes': 'true',
-          'include-footnote-body': 'true',
-          'include-passage-references': 'true',
-        });
-        const url = `${ESV_API_PASSAGE_URL}?${params}`;
-        const headers = new HttpHeaders({
-          Authorization: `Token ${key}`,
-        });
-
-        return this.http.get<EsvPassageResponse>(url, { headers }).pipe(
-          map((res) => ({
-            ...base,
-            contentHtml: res.passages?.join('')?.trim() || undefined,
-          })),
-          catchError((err) => {
-            console.warn('VerseOfTheDayService: ESV fetch failed, using NET Bible text', err?.message ?? err);
-            return of(base);
-          })
-        );
+        return this.enrichWithApiBible(base);
       }),
       catchError((err) => {
         console.warn('VerseOfTheDayService: failed to fetch verse', err?.message ?? err);
         return of(null);
       })
     );
+  }
+
+  private enrichWithApiBible(base: VerseOfTheDay): Observable<VerseOfTheDay> {
+    const key = (environment as { apiBibleKey?: string }).apiBibleKey?.trim();
+    if (!key) return of({ ...base, debugApiResponse: 'API.Bible SKIPPED: no apiBibleKey in environment' });
+
+    const passageId = this.toUsfmPassageId(base.reference);
+    if (!passageId) return of({ ...base, debugApiResponse: `API.Bible SKIPPED: could not parse passage ID from "${base.reference}"` });
+
+    const params = new URLSearchParams({
+      'include-notes': 'true',
+      'include-titles': 'true',
+    });
+    const apiBase = (environment as { apiBibleBase?: string }).apiBibleBase ?? 'https://api.scripture.api.bible';
+    const url = `${apiBase}/v1/bibles/${this.API_BIBLE_ID}/verses/${passageId}?${params}`;
+    const headers = new HttpHeaders({ 'api-key': key });
+
+    return this.http.get<ApiBiblePassageResponse>(url, { headers }).pipe(
+      map((res) => ({
+        ...base,
+        contentHtml: res.data?.content?.trim() || undefined,
+        debugApiResponse: JSON.stringify(res, null, 2),
+      })),
+      catchError((err) => {
+        const errMsg = err?.error ? JSON.stringify(err.error) : (err?.message ?? String(err));
+        return of({
+          ...base,
+          debugApiResponse: `API.Bible FAILED: ${errMsg}\nStatus: ${err?.status ?? 'unknown'}`,
+        });
+      })
+    );
+  }
+
+  /** Convert "Romans 5:1" or "Romans 5:1-3" to USFM "ROM.5.1" or "ROM.5.1-3" */
+  private toUsfmPassageId(reference: string): string | null {
+    const BOOK_TO_USFM: Record<string, string> = {
+      Genesis: 'GEN', Exodus: 'EXO', Leviticus: 'LEV', Numbers: 'NUM', Deuteronomy: 'DEU',
+      Joshua: 'JOS', Judges: 'JDG', Ruth: 'RUT', '1 Samuel': '1SA', '2 Samuel': '2SA',
+      '1 Kings': '1KI', '2 Kings': '2KI', '1 Chronicles': '1CH', '2 Chronicles': '2CH',
+      Ezra: 'EZR', Nehemiah: 'NEH', Esther: 'EST', Job: 'JOB', Psalm: 'PSA', Psalms: 'PSA',
+      Proverbs: 'PRO', Ecclesiastes: 'ECC', 'Song of Solomon': 'SNG', 'Song of Songs': 'SNG',
+      Isaiah: 'ISA', Jeremiah: 'JER', Lamentations: 'LAM', Ezekiel: 'EZK', Daniel: 'DAN',
+      Hosea: 'HOS', Joel: 'JOL', Amos: 'AMO', Obadiah: 'OBA', Jonah: 'JON', Micah: 'MIC',
+      Nahum: 'NAM', Habakkuk: 'HAB', Zephaniah: 'ZEP', Haggai: 'HAG', Zechariah: 'ZEC',
+      Malachi: 'MAL', Matthew: 'MAT', Mark: 'MRK', Luke: 'LUK', John: 'JHN', Acts: 'ACT',
+      Romans: 'ROM', '1 Corinthians': '1CO', '2 Corinthians': '2CO', Galatians: 'GAL',
+      Ephesians: 'EPH', Philippians: 'PHP', Colossians: 'COL',
+      '1 Thessalonians': '1TH', '2 Thessalonians': '2TH', '1 Timothy': '1TI', '2 Timothy': '2TI',
+      Titus: 'TIT', Philemon: 'PHM', Hebrews: 'HEB', James: 'JAS',
+      '1 Peter': '1PE', '2 Peter': '2PE', '1 John': '1JN', '2 John': '2JN', '3 John': '3JN',
+      Jude: 'JUD', Revelation: 'REV',
+    };
+
+    const match = reference.match(/^(.+?)\s+(\d+):(\d+)(?:-(\d+))?$/);
+    if (!match) return null;
+    const [, bookName, chapter, verse, verseEnd] = match;
+    const usfm = BOOK_TO_USFM[bookName.trim()];
+    if (!usfm) return null;
+    const passage = verseEnd ? `${usfm}.${chapter}.${verse}-${verseEnd}` : `${usfm}.${chapter}.${verse}`;
+    return passage;
   }
 
   private buildReferenceAndText(verses: NetBibleVerse[] | null): VerseOfTheDay | null {
