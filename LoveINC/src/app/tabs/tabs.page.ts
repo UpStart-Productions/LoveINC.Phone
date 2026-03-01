@@ -105,6 +105,14 @@ export class TabsPage implements OnInit, OnDestroy {
           }
         },
         {
+          text: 'I Need Assistance',
+          icon: 'help-buoy',
+          cssClass: 'assistance-button',
+          handler: () => {
+            this.router.navigate(['/assistance/intro']);
+          }
+        },
+        {
           text: 'Cancel',
           icon: 'close-outline',
           role: 'cancel'

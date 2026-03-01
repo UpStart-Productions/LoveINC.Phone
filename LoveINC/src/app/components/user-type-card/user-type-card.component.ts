@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { LucideAngularModule } from 'lucide-angular';
 import {
   IonItem,
   IonLabel,
@@ -26,7 +25,6 @@ interface UserTypeConfig {
   standalone: true,
   imports: [
     CommonModule,
-    LucideAngularModule,
     IonItem,
     IonLabel,
     IonIcon,
@@ -48,7 +46,7 @@ export class UserTypeCardComponent {
   private readonly userTypeConfigs: Record<UserType, UserTypeConfig> = {
     'get-help': {
       label: 'Get Help',
-      icon: 'hand-right-outline',
+      icon: 'people-circle-outline',
       color: 'var(--love-inc-blue)',
     },
     'volunteer': {

@@ -47,6 +47,7 @@ import {
   notificationsOutline,
   settingsOutline,
   helpCircleOutline,
+  helpBuoy,
   logOutOutline,
   chevronForwardOutline,
   // More Menu Icons
@@ -207,6 +208,7 @@ export class AppComponent implements OnInit, OnDestroy {
       notificationsOutline,
       settingsOutline,
       helpCircleOutline,
+      helpBuoy,
       logOutOutline,
       chevronForwardOutline,
       // More Menu Icons

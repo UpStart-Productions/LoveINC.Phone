@@ -8,7 +8,7 @@
       (ionClear)="onSearchClear()"
       [value]="searchQuery"
       showClearButton="always"
-      debounce="0">
+      [debounce]="150">
     </ion-searchbar>
     <ion-buttons slot="end">
       <app-notifications-button></app-notifications-button>

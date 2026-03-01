@@ -191,16 +191,18 @@ export class DonateGoodsPage implements OnInit {
     this.categoryOrder = Object.keys(this.groupedLocations);
   }
 
-  onSearchChange(event: any) {
-    // Handle ionInput events
-    let value = '';
-    if (event?.detail?.value !== undefined) {
-      value = event.detail.value;
-    } else if (event?.target?.value !== undefined) {
-      value = event.target.value;
+  onSearchChange(event: CustomEvent | Event) {
+    let value: string | null | undefined = '';
+    const customEvent = event as CustomEvent<{ value?: string }>;
+    if (customEvent?.detail?.value !== undefined) {
+      value = customEvent.detail.value;
+    } else {
+      const target = event?.target as HTMLIonSearchbarElement | undefined;
+      if (target?.value !== undefined && target?.value !== null) {
+        value = target.value;
+      }
     }
-    
-    const query = String(value || '').toLowerCase().trim();
+    const query = String(value ?? '').toLowerCase().trim();
     this.searchQuery = query;
     this.performSearch(query);
   }

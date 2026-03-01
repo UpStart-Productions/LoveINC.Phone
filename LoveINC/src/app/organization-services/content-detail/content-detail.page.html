@@ -130,6 +130,14 @@
           Donate Now
         </ion-button>
       </div>
+
+      <!-- Volunteer (Volunteer CTA) -->
+      <div class="action-buttons m-t-24" *ngIf="isVolunteer()">
+        <ion-button expand="block" color="primary" (click)="openVolunteerActionSheet()">
+          <ion-icon slot="start" name="heart-outline"></ion-icon>
+          Volunteer
+        </ion-button>
+      </div>
     </div>
   </div>
 </ion-content>

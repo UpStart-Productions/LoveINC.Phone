@@ -182,6 +182,10 @@ ion-accordion .ion-accordion-toggle-icon {
   .action-sheet-icon {
     font-size: var(--app-font-size-display-lg) !important;
   }
+
+  &.assistance-button .action-sheet-icon {
+    color: var(--love-inc-red) !important;
+  }
 }
 
 .share-action-sheet .action-sheet-button {

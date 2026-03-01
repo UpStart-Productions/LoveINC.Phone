@@ -25,6 +25,7 @@
       [title]="item.formatted.title"
       [subtitle]="item.formatted.subtitle"
       [description]="item.formatted.description"
+      [actionIcons]="getActionIcons(item)"
       [clickable]="true"
       (cardClick)="navigateToClassDetail(item.class)"
       (shareClick)="onShareClass(item.class)">

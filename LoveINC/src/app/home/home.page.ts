@@ -147,12 +147,14 @@ export class HomePage implements OnInit {
           const today = startOfDay(new Date()).getTime();
           const eventMap = new Map<string, PlatformEvent>((events ?? []).map((e) => [e.id, e]));
           const classMap = new Map<string, PlatformClass>((classes ?? []).map((c) => [c.id, c]));
-          return (homeFeed ?? [])
+          const cards = (homeFeed ?? [])
             .filter((item): item is typeof item & { type: CardType } =>
               this.isSupportedCardType(item.type))
+            .filter((item) => !this.isCtaCardType(item.type))
             .filter((item) => this.isNotPastEventOrClass(item, today))
             .map((item) => this.mapFeedItemToHomeCard(item, eventMap, classMap))
             .sort((a, b) => a.priority - b.priority);
+          return this.limitImpactStories(cards, 1);
         })
       )
       .subscribe({
@@ -170,6 +172,24 @@ export class HomePage implements OnInit {
       'event', 'class', 'impact', 'donation-drive', 'volunteer', 'fundraiser', 'awareness',
     ];
     return supported.includes(type as CardType);
+  }
+
+  /** Limit impact stories to a maximum count (keeps first by priority). */
+  private limitImpactStories(cards: HomeCard[], maxImpact: number): HomeCard[] {
+    let impactCount = 0;
+    return cards.filter((card) => {
+      if (card.type === 'impact') {
+        impactCount++;
+        return impactCount <= maxImpact;
+      }
+      return true;
+    });
+  }
+
+  /** Exclude CTA types from full cards; they are shown as small cards at the top. */
+  private isCtaCardType(type: CardType): boolean {
+    const ctaTypes: CardType[] = ['donation-drive', 'volunteer', 'fundraiser', 'awareness'];
+    return ctaTypes.includes(type);
   }
 
   /** Exclude events and classes that are in the past (before today). Other types are kept. */

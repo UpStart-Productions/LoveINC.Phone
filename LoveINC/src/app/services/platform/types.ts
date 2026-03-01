@@ -171,6 +171,8 @@ export interface PlatformCta {
   service?: { id: string; title: string };
   photoUrl?: string;
   events?: Array<{ id: string; title: string }>;
+  volunteerPositions?: PlatformVolunteerPosition[];
+  address?: PlatformAddress;
 }
 
 export interface PlatformImpactStory {

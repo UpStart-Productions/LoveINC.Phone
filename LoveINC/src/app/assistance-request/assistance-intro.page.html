@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>I Need Assistance</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <h2 class="m-b-18">Request Assistance</h2>
+  <p class="app-body-secondary m-b-24">
+    We're here to help. After you sign up, here's what you can expect:
+  </p>
+  <ul class="assistance-steps m-b-24">
+    <li>Our team will review your request within 1–2 business days.</li>
+    <li>We'll reach out by phone or email to learn more about your situation.</li>
+    <li>Together we'll connect you with the right resources and support.</li>
+  </ul>
+  <p class="app-body-secondary m-b-24">
+    Your information is kept confidential and used only to provide you with the best possible assistance.
+  </p>
+  <ion-button expand="block" color="primary" (click)="onGetStarted()">
+    Get Started
+  </ion-button>
+</ion-content>

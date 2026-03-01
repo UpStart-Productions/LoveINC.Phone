@@ -44,6 +44,9 @@ export interface ContentDetail {
   // Generic action fields
   actionButtonText?: string;
   actionButtonLink?: string;
+
+  // Volunteer CTA fields
+  volunteerPositions?: Array<{ id: string; title?: string; shortDescription?: string; description?: string; schedule?: string }>;
 }
 
 export type ContentType =

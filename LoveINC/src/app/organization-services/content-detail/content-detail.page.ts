@@ -20,6 +20,8 @@ import { AlertController } from '@ionic/angular';
 import { ContentDetail, ContentType } from './content-detail.model';
 import { SharingService } from '../../services/sharing/sharing.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
+import { VolunteerActionSheetService } from '../../services/volunteer-action-sheet.service';
+import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 import {
   PlatformApiService,
   type PlatformClass,
@@ -65,7 +67,9 @@ export class ContentDetailPage implements OnInit {
     private alertController: AlertController,
     private sharingService: SharingService,
     private platformApi: PlatformApiService,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private volunteerActionSheetService: VolunteerActionSheetService,
+    private scheduleFormatting: ScheduleFormattingService
   ) {}
 
   ngOnInit() {
@@ -407,6 +411,21 @@ export class ContentDetailPage implements OnInit {
   private mapPlatformCtaToContentDetail(c: PlatformCta): ContentDetail {
     const actionLink =
       c.actionType === 'openUrl' && c.actionValue ? c.actionValue : undefined;
+    const rawPositions = (c.volunteerPositions ?? (c as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
+    const volunteerPositions = rawPositions.length
+      ? rawPositions.map((p) => ({
+          id: (p['id'] ?? p['title'] ?? c.id) as string,
+          title: (p['title'] ?? p['shortDescription'] ?? p['short_description']) as string | undefined,
+          shortDescription: (p['shortDescription'] ?? p['short_description']) as string | undefined,
+          description: (p['description'] ?? p['shortDescription'] ?? p['short_description']) as string | undefined,
+          schedule: this.scheduleFormatting.getPositionSchedule(p),
+        }))
+      : c.type === 'volunteer_call'
+        ? [{ id: c.id, title: c.title, shortDescription: c.shortDescription, description: c.longDescription ?? c.shortDescription }]
+        : undefined;
+    const address = c.address
+      ? [c.address.address, c.address.city, c.address.state, c.address.zip].filter(Boolean).join(', ')
+      : undefined;
     return {
       id: c.id,
       title: c.title,
@@ -415,6 +434,8 @@ export class ContentDetailPage implements OnInit {
       subtitle: c.shortDescription,
       actionButtonText: c.actionLabel,
       actionButtonLink: actionLink,
+      volunteerPositions,
+      location: address,
     };
   }
 
@@ -690,8 +711,22 @@ export class ContentDetailPage implements OnInit {
     return this.contentType === 'donation-drive';
   }
 
+  isVolunteer(): boolean {
+    return this.contentType === 'volunteer' && !!(this.contentItem?.volunteerPositions?.length);
+  }
+
   openDonateActionSheet(): void {
     this.donateActionSheetService.openDonateActionSheet();
+  }
+
+  async openVolunteerActionSheet(): Promise<void> {
+    if (!this.contentItem?.volunteerPositions?.length) return;
+    await this.volunteerActionSheetService.openVolunteerActionSheet({
+      organizationName: this.contentItem.title,
+      address: this.contentItem.location ?? null,
+      positions: this.contentItem.volunteerPositions,
+      scheduleFallback: this.contentItem.subtitle ?? undefined,
+    });
   }
 
   hasClassDocuments(): boolean {

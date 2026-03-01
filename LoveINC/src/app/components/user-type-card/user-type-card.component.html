@@ -3,9 +3,7 @@
   button 
   detail="false"
   (click)="onCardClick()">
-  <i-lucide *ngIf="userType === 'get-help'" name="hand-helping" [size]="28" [style.color]="config.color" slot="start" class="user-type-icon m-r-18"></i-lucide>
-  <i-lucide *ngIf="userType === 'volunteer'" name="heart-handshake" [size]="28" [style.color]="config.color" slot="start" class="user-type-icon m-r-18"></i-lucide>
-  <ion-icon *ngIf="userType === 'give'" [name]="config.icon" slot="start" [style.color]="config.color" class="user-type-icon m-r-18"></ion-icon>
+  <ion-icon [name]="config.icon" slot="start" [style.color]="config.color" class="user-type-icon m-r-18"></ion-icon>
   <ion-label>
     <p>{{ displayDescription }}</p>
     @if (userType === 'give') {
