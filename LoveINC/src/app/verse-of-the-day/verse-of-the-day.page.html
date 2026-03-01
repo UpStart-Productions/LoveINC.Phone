@@ -22,12 +22,6 @@
       } @else {
         <p class="app-body">{{ verse.text }}</p>
       }
-      @if (verse.debugApiResponse) {
-        <details class="debug-api-response">
-          <summary>API.Bible response (debug)</summary>
-          <pre class="app-caption">{{ verse.debugApiResponse }}</pre>
-        </details>
-      }
     }
   </div>
 </ion-content>

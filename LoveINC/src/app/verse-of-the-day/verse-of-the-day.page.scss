@@ -30,23 +30,31 @@
     font-weight: 600;
     margin-right: 0.25em;
   }
-}
 
-.debug-api-response {
-  margin-top: 1.5rem;
-  padding: 0.75rem;
-  background: var(--ion-color-light);
-  border-radius: 4px;
-  font-size: 0.75rem;
-
-  summary {
-    font-weight: 600;
-    cursor: pointer;
+  /* API.Bible notes: inline glosses, cross-refs (include-notes=true) */
+  .add {
+    font-style: italic;
+    color: var(--app-text-secondary, var(--ion-color-medium));
   }
 
-  pre {
-    margin: 0.5rem 0 0;
-    white-space: pre-wrap;
-    word-break: break-all;
+  .f {
+    font-size: 0.85em;
+    color: var(--app-text-secondary, var(--ion-color-medium));
+  }
+
+  .ft .xt {
+    color: var(--ion-color-primary);
+  }
+
+  .s1 {
+    font-style: italic;
+    margin-bottom: 0.75em;
+    color: var(--app-text-secondary, var(--ion-color-medium));
+  }
+
+  .sr {
+    font-size: 0.9em;
+    margin-bottom: 0.5em;
+    color: var(--app-text-secondary, var(--ion-color-medium));
   }
 }

@@ -1,57 +1,120 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map, catchError, of, switchMap } from 'rxjs';
+import { Observable, map, catchError, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-/** NET Bible API base URL. Overridable via injection token when packaged. */
-export const VERSE_OF_THE_DAY_API_URL =
-  'https://labs.bible.org/api/?passage=votd&type=json';
-
-/** Raw verse object from NET Bible API */
-export interface NetBibleVerse {
-  bookname: string;
-  chapter: string;
-  verse: string;
-  text: string;
-}
-
-/** API.Bible passage response (api.scripture.api.bible) */
+/** API.Bible passage response (rest.api.bible) */
 export interface ApiBiblePassageResponse {
   data: {
     id: string;
-    reference: string;
+    orgId?: string;
+    bibleId: string;
+    bookId: string;
     content: string;
-    copyright?: string;
+    reference?: string;
   };
 }
 
 /** Normalized verse for display */
 export interface VerseOfTheDay {
   reference: string;
-  /** Plain text fallback (from NET Bible) */
+  /** Plain text fallback */
   text: string;
-  /** HTML from API.Bible (passage with optional notes) */
+  /** HTML from API.Bible (passage content) */
   contentHtml?: string;
-  /** DEBUG: raw API.Bible response (remove after debugging) */
-  debugApiResponse?: string;
 }
+
+/** Curated passages for verse of the day (one per day of month). USFM format. */
+const VOTD_PASSAGES = [
+  'JER.29.11',
+  'PSA.23.1',
+  '1CO.13.4-7',
+  'PHP.4.13',
+  'JHN.3.16',
+  'ROM.8.28',
+  'ISA.41.10',
+  'PSA.46.1',
+  'GAL.5.22-23',
+  'HEB.11.1',
+  '2TI.1.7',
+  '1CO.10.13',
+  'PRO.22.6',
+  'ISA.40.31',
+  'JOS.1.9',
+  'HEB.12.2',
+  'MAT.11.28',
+  'ROM.10.9-10',
+  'PHP.2.3-4',
+  'MAT.5.43-44',
+  'PSA.119.105',
+  'PRO.3.5-6',
+  'JHN.14.6',
+  'ROM.12.2',
+  'COL.3.23',
+  'PSA.27.1',
+  'MAT.28.19-20',
+  '2CO.5.17',
+  'EPH.2.8-9',
+  '1JN.4.7',
+  'REV.3.20',
+];
+
+/** USFM book code to display name */
+const USFM_TO_BOOK: Record<string, string> = {
+  GEN: 'Genesis', EXO: 'Exodus', LEV: 'Leviticus', NUM: 'Numbers', DEU: 'Deuteronomy',
+  JOS: 'Joshua', JDG: 'Judges', RUT: 'Ruth', '1SA': '1 Samuel', '2SA': '2 Samuel',
+  '1KI': '1 Kings', '2KI': '2 Kings', '1CH': '1 Chronicles', '2CH': '2 Chronicles',
+  EZR: 'Ezra', NEH: 'Nehemiah', EST: 'Esther', JOB: 'Job', PSA: 'Psalm', PRO: 'Proverbs',
+  ECC: 'Ecclesiastes', SNG: 'Song of Solomon', ISA: 'Isaiah', JER: 'Jeremiah',
+  LAM: 'Lamentations', EZK: 'Ezekiel', DAN: 'Daniel', HOS: 'Hosea', JOL: 'Joel',
+  AMO: 'Amos', OBA: 'Obadiah', JON: 'Jonah', MIC: 'Micah', NAH: 'Nahum',
+  HAB: 'Habakkuk', ZEP: 'Zephaniah', HAG: 'Haggai', ZEC: 'Zechariah', MAL: 'Malachi',
+  MAT: 'Matthew', MRK: 'Mark', LUK: 'Luke', JHN: 'John', ACT: 'Acts',
+  ROM: 'Romans', '1CO': '1 Corinthians', '2CO': '2 Corinthians', GAL: 'Galatians',
+  EPH: 'Ephesians', PHP: 'Philippians', COL: 'Colossians',
+  '1TH': '1 Thessalonians', '2TH': '2 Thessalonians', '1TI': '1 Timothy', '2TI': '2 Timothy',
+  TIT: 'Titus', PHM: 'Philemon', HEB: 'Hebrews', JAS: 'James',
+  '1PE': '1 Peter', '2PE': '2 Peter', '1JN': '1 John', '2JN': '2 John', '3JN': '3 John',
+  JUD: 'Jude', REV: 'Revelation',
+};
 
 @Injectable({ providedIn: 'root' })
 export class VerseOfTheDayService {
   constructor(private readonly http: HttpClient) {}
 
-  /** API.Bible Bible ID. KJV = de4e12af7f28f599-01 */
+  /** API.Bible Bible ID. KJV - no notes in API.Bible for available versions. */
   private readonly API_BIBLE_ID = 'de4e12af7f28f599-01';
 
   /**
-   * Fetches the verse of the day: (1) NET Bible for reference, (2) API.Bible for passage content (with notes).
+   * Fetches the verse of the day from API.Bible.
    */
   getVerseOfTheDay(): Observable<VerseOfTheDay | null> {
-    return this.http.get<NetBibleVerse[]>(VERSE_OF_THE_DAY_API_URL).pipe(
-      map((verses) => this.buildReferenceAndText(verses)),
-      switchMap((base) => {
-        if (!base) return of(null);
-        return this.enrichWithApiBible(base);
+    const key = (environment as { apiBibleKey?: string }).apiBibleKey?.trim();
+    if (!key) {
+      console.warn('VerseOfTheDayService: no apiBibleKey in environment');
+      return of(null);
+    }
+
+    const dayOfMonth = new Date().getDate();
+    const passageId = VOTD_PASSAGES[(dayOfMonth - 1) % VOTD_PASSAGES.length];
+    const reference = this.passageIdToReference(passageId);
+
+    const params = new URLSearchParams({
+      'include-notes': 'true',
+      'include-titles': 'true',
+    });
+    const apiBase = (environment as { apiBibleBase?: string }).apiBibleBase ?? 'https://rest.api.bible';
+    const url = `${apiBase}/v1/bibles/${this.API_BIBLE_ID}/passages/${passageId}?${params}`;
+    const headers = new HttpHeaders({ 'api-key': key });
+
+    return this.http.get<ApiBiblePassageResponse>(url, { headers }).pipe(
+      map((res) => {
+        const content = res.data?.content?.trim();
+        return {
+          reference: res.data?.reference ?? reference,
+          text: this.stripHtml(content ?? ''),
+          contentHtml: content || undefined,
+        };
       }),
       catchError((err) => {
         console.warn('VerseOfTheDayService: failed to fetch verse', err?.message ?? err);
@@ -60,75 +123,17 @@ export class VerseOfTheDayService {
     );
   }
 
-  private enrichWithApiBible(base: VerseOfTheDay): Observable<VerseOfTheDay> {
-    const key = (environment as { apiBibleKey?: string }).apiBibleKey?.trim();
-    if (!key) return of({ ...base, debugApiResponse: 'API.Bible SKIPPED: no apiBibleKey in environment' });
-
-    const passageId = this.toUsfmPassageId(base.reference);
-    if (!passageId) return of({ ...base, debugApiResponse: `API.Bible SKIPPED: could not parse passage ID from "${base.reference}"` });
-
-    const params = new URLSearchParams({
-      'include-notes': 'true',
-      'include-titles': 'true',
-    });
-    const apiBase = (environment as { apiBibleBase?: string }).apiBibleBase ?? 'https://api.scripture.api.bible';
-    const url = `${apiBase}/v1/bibles/${this.API_BIBLE_ID}/verses/${passageId}?${params}`;
-    const headers = new HttpHeaders({ 'api-key': key });
-
-    return this.http.get<ApiBiblePassageResponse>(url, { headers }).pipe(
-      map((res) => ({
-        ...base,
-        contentHtml: res.data?.content?.trim() || undefined,
-        debugApiResponse: JSON.stringify(res, null, 2),
-      })),
-      catchError((err) => {
-        const errMsg = err?.error ? JSON.stringify(err.error) : (err?.message ?? String(err));
-        return of({
-          ...base,
-          debugApiResponse: `API.Bible FAILED: ${errMsg}\nStatus: ${err?.status ?? 'unknown'}`,
-        });
-      })
-    );
+  /** Convert USFM passage ID (e.g. ROM.5.1 or ROM.5.1-3) to display reference */
+  private passageIdToReference(passageId: string): string {
+    const match = passageId.match(/^([1-3]?[A-Z0-9]+)\.(\d+)\.(\d+)(?:-(\d+))?$/);
+    if (!match) return passageId;
+    const [, usfm, chapter, verse, verseEnd] = match;
+    const book = USFM_TO_BOOK[usfm ?? ''] ?? usfm;
+    return verseEnd ? `${book} ${chapter}:${verse}-${verseEnd}` : `${book} ${chapter}:${verse}`;
   }
 
-  /** Convert "Romans 5:1" or "Romans 5:1-3" to USFM "ROM.5.1" or "ROM.5.1-3" */
-  private toUsfmPassageId(reference: string): string | null {
-    const BOOK_TO_USFM: Record<string, string> = {
-      Genesis: 'GEN', Exodus: 'EXO', Leviticus: 'LEV', Numbers: 'NUM', Deuteronomy: 'DEU',
-      Joshua: 'JOS', Judges: 'JDG', Ruth: 'RUT', '1 Samuel': '1SA', '2 Samuel': '2SA',
-      '1 Kings': '1KI', '2 Kings': '2KI', '1 Chronicles': '1CH', '2 Chronicles': '2CH',
-      Ezra: 'EZR', Nehemiah: 'NEH', Esther: 'EST', Job: 'JOB', Psalm: 'PSA', Psalms: 'PSA',
-      Proverbs: 'PRO', Ecclesiastes: 'ECC', 'Song of Solomon': 'SNG', 'Song of Songs': 'SNG',
-      Isaiah: 'ISA', Jeremiah: 'JER', Lamentations: 'LAM', Ezekiel: 'EZK', Daniel: 'DAN',
-      Hosea: 'HOS', Joel: 'JOL', Amos: 'AMO', Obadiah: 'OBA', Jonah: 'JON', Micah: 'MIC',
-      Nahum: 'NAM', Habakkuk: 'HAB', Zephaniah: 'ZEP', Haggai: 'HAG', Zechariah: 'ZEC',
-      Malachi: 'MAL', Matthew: 'MAT', Mark: 'MRK', Luke: 'LUK', John: 'JHN', Acts: 'ACT',
-      Romans: 'ROM', '1 Corinthians': '1CO', '2 Corinthians': '2CO', Galatians: 'GAL',
-      Ephesians: 'EPH', Philippians: 'PHP', Colossians: 'COL',
-      '1 Thessalonians': '1TH', '2 Thessalonians': '2TH', '1 Timothy': '1TI', '2 Timothy': '2TI',
-      Titus: 'TIT', Philemon: 'PHM', Hebrews: 'HEB', James: 'JAS',
-      '1 Peter': '1PE', '2 Peter': '2PE', '1 John': '1JN', '2 John': '2JN', '3 John': '3JN',
-      Jude: 'JUD', Revelation: 'REV',
-    };
-
-    const match = reference.match(/^(.+?)\s+(\d+):(\d+)(?:-(\d+))?$/);
-    if (!match) return null;
-    const [, bookName, chapter, verse, verseEnd] = match;
-    const usfm = BOOK_TO_USFM[bookName.trim()];
-    if (!usfm) return null;
-    const passage = verseEnd ? `${usfm}.${chapter}.${verse}-${verseEnd}` : `${usfm}.${chapter}.${verse}`;
-    return passage;
-  }
-
-  private buildReferenceAndText(verses: NetBibleVerse[] | null): VerseOfTheDay | null {
-    if (!verses?.length) return null;
-    const first = verses[0];
-    const last = verses[verses.length - 1];
-    const reference =
-      verses.length === 1
-        ? `${first.bookname} ${first.chapter}:${first.verse}`
-        : `${first.bookname} ${first.chapter}:${first.verse}-${last.verse}`;
-    const text = verses.map((v) => (v.text ?? '').trim()).join(' ').trim();
-    return { reference, text };
+  /** Strip HTML tags for plain text fallback */
+  private stripHtml(html: string): string {
+    return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
   }
 }
