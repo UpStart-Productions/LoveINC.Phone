@@ -4,57 +4,18 @@
   padding: 48px 0;
 }
 
-.verse-content {
-  font-size: var(--app-font-size-body);
-  line-height: var(--app-line-height-relaxed);
-  color: var(--app-text-primary);
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
 
-  a {
-    color: var(--ion-color-primary);
-  }
-
-  /* YouVersion passage HTML: headings, verse labels, notes */
-  .yv-h {
-    font-weight: 600;
-    margin-bottom: 0.5em;
-    color: var(--app-text-primary);
-  }
-
-  .yv-vlbl {
-    font-weight: 600;
-    margin-right: 0.25em;
-  }
-
-  /* API.Bible passage HTML */
-  .v {
-    font-weight: 600;
-    margin-right: 0.25em;
-  }
-
-  /* API.Bible notes: inline glosses, cross-refs (include-notes=true) */
-  .add {
-    font-style: italic;
-    color: var(--app-text-secondary, var(--ion-color-medium));
-  }
-
-  .f {
-    font-size: 0.85em;
-    color: var(--app-text-secondary, var(--ion-color-medium));
-  }
-
-  .ft .xt {
-    color: var(--ion-color-primary);
-  }
-
-  .s1 {
-    font-style: italic;
-    margin-bottom: 0.75em;
-    color: var(--app-text-secondary, var(--ion-color-medium));
-  }
-
-  .sr {
-    font-size: 0.9em;
-    margin-bottom: 0.5em;
-    color: var(--app-text-secondary, var(--ion-color-medium));
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 }

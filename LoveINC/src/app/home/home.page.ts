@@ -17,6 +17,7 @@ import { SharingService } from '../services/sharing/sharing.service';
 import { PlatformApiService } from '../services/platform/platform-api.service';
 import type { PlatformCta, PlatformClass, PlatformEvent, PlatformHomeFeedItem } from '../services/platform/types';
 import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.component';
+import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-widget/verse-of-the-day-widget.component';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
@@ -38,6 +39,7 @@ import { ScheduleFormattingService } from '../services/schedule-formatting.servi
     ExploreContainerComponent,
     UserTypeCardComponent,
     HomeCtaRowComponent,
+    VerseOfTheDayWidgetComponent,
     NotificationsButtonComponent,
   ],
 })

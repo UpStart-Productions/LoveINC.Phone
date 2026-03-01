@@ -92,6 +92,13 @@ span {
   color: var(--app-text-accent);
 }
 
+/* Plain text links – Love INC blue, no underline */
+.app-link {
+  color: var(--ion-color-primary);
+  text-decoration: none;
+  font-size: var(--app-font-size-body);
+}
+
 /* Pill button – typography */
 .pill-button {
   font-size: var(--app-font-size-title);

@@ -10,6 +10,7 @@ import {
   IonSpinner,
 } from '@ionic/angular/standalone';
 import { VerseOfTheDayService, VerseOfTheDay } from './verse-of-the-day.service';
+import { SafeResourceUrlPipe } from '../pipes/safe-resource-url.pipe';
 
 @Component({
   selector: 'app-verse-of-the-day',
@@ -25,6 +26,7 @@ import { VerseOfTheDayService, VerseOfTheDay } from './verse-of-the-day.service'
     IonBackButton,
     IonButtons,
     IonSpinner,
+    SafeResourceUrlPipe,
   ],
 })
 export class VerseOfTheDayPage implements OnInit {

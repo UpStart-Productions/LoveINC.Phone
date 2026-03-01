@@ -1,139 +1,169 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map, catchError, of } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Observable, from, map, catchError, of, firstValueFrom } from 'rxjs';
+import { GrovLinkDatabaseService } from '../services/grovlink-database.service';
 
-/** API.Bible passage response (rest.api.bible) */
-export interface ApiBiblePassageResponse {
-  data: {
-    id: string;
-    orgId?: string;
-    bibleId: string;
-    bookId: string;
-    content: string;
-    reference?: string;
-  };
+/** Christian Context API response (getcontext.xyz) */
+export interface ChristianContextResponse {
+  verse_category: string;
+  verse_reference: string;
+  verse_bookchapter: string;
+  verse_content: string;
+  verse_url: string;
+  commentary_reference?: string;
+  commentary_bookchapter?: string;
+  commentary_content?: string;
+  commentary_url?: string;
+  commentary_author?: string;
+  commentary_publisher?: string;
+  sermon_reference?: string;
+  sermon_bookchapter?: string;
+  sermon_content?: string;
+  sermon_url?: string;
+  sermon_author?: string;
+  sermon_publisher?: string;
 }
 
 /** Normalized verse for display */
 export interface VerseOfTheDay {
+  verseCategory: string;
   reference: string;
-  /** Plain text fallback */
-  text: string;
-  /** HTML from API.Bible (passage content) */
-  contentHtml?: string;
+  content: string;
+  verseUrl?: string;
+  commentaryTitle?: string;
+  commentaryUrl?: string;
+  commentaryAuthor?: string;
+  commentaryPublisher?: string;
+  sermonTitle?: string;
+  sermonUrl?: string;
+  sermonAuthor?: string;
+  sermonPublisher?: string;
+  /** YouTube embed URL for sermon (when sermon_url is YouTube) */
+  sermonEmbedUrl?: string;
 }
 
-/** Curated passages for verse of the day (one per day of month). USFM format. */
-const VOTD_PASSAGES = [
-  'JER.29.11',
-  'PSA.23.1',
-  '1CO.13.4-7',
-  'PHP.4.13',
-  'JHN.3.16',
-  'ROM.8.28',
-  'ISA.41.10',
-  'PSA.46.1',
-  'GAL.5.22-23',
-  'HEB.11.1',
-  '2TI.1.7',
-  '1CO.10.13',
-  'PRO.22.6',
-  'ISA.40.31',
-  'JOS.1.9',
-  'HEB.12.2',
-  'MAT.11.28',
-  'ROM.10.9-10',
-  'PHP.2.3-4',
-  'MAT.5.43-44',
-  'PSA.119.105',
-  'PRO.3.5-6',
-  'JHN.14.6',
-  'ROM.12.2',
-  'COL.3.23',
-  'PSA.27.1',
-  'MAT.28.19-20',
-  '2CO.5.17',
-  'EPH.2.8-9',
-  '1JN.4.7',
-  'REV.3.20',
+/** Themes from Christian Context API - one selected per month (hidden from user) */
+const THEMES = [
+  'Wisdom', 'Love', 'Faith', 'Peace', 'Hope', 'Joy', 'Trust', 'Grace',
+  'Courage', 'Forgiveness', 'Thankfulness', 'Patience', 'Contentment',
+  'Salvation', 'God\'s Love', 'Rest', 'Purpose', 'Transformation',
 ];
 
-/** USFM book code to display name */
-const USFM_TO_BOOK: Record<string, string> = {
-  GEN: 'Genesis', EXO: 'Exodus', LEV: 'Leviticus', NUM: 'Numbers', DEU: 'Deuteronomy',
-  JOS: 'Joshua', JDG: 'Judges', RUT: 'Ruth', '1SA': '1 Samuel', '2SA': '2 Samuel',
-  '1KI': '1 Kings', '2KI': '2 Kings', '1CH': '1 Chronicles', '2CH': '2 Chronicles',
-  EZR: 'Ezra', NEH: 'Nehemiah', EST: 'Esther', JOB: 'Job', PSA: 'Psalm', PRO: 'Proverbs',
-  ECC: 'Ecclesiastes', SNG: 'Song of Solomon', ISA: 'Isaiah', JER: 'Jeremiah',
-  LAM: 'Lamentations', EZK: 'Ezekiel', DAN: 'Daniel', HOS: 'Hosea', JOL: 'Joel',
-  AMO: 'Amos', OBA: 'Obadiah', JON: 'Jonah', MIC: 'Micah', NAH: 'Nahum',
-  HAB: 'Habakkuk', ZEP: 'Zephaniah', HAG: 'Haggai', ZEC: 'Zechariah', MAL: 'Malachi',
-  MAT: 'Matthew', MRK: 'Mark', LUK: 'Luke', JHN: 'John', ACT: 'Acts',
-  ROM: 'Romans', '1CO': '1 Corinthians', '2CO': '2 Corinthians', GAL: 'Galatians',
-  EPH: 'Ephesians', PHP: 'Philippians', COL: 'Colossians',
-  '1TH': '1 Thessalonians', '2TH': '2 Thessalonians', '1TI': '1 Timothy', '2TI': '2 Timothy',
-  TIT: 'Titus', PHM: 'Philemon', HEB: 'Hebrews', JAS: 'James',
-  '1PE': '1 Peter', '2PE': '2 Peter', '1JN': '1 John', '2JN': '2 John', '3JN': '3 John',
-  JUD: 'Jude', REV: 'Revelation',
-};
+const CONTEXT_API_BASE = 'https://getcontext.xyz/api/api.php';
+/** CORS proxy - Christian Context API does not send CORS headers */
+const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
 @Injectable({ providedIn: 'root' })
 export class VerseOfTheDayService {
-  constructor(private readonly http: HttpClient) {}
-
-  /** API.Bible Bible ID. KJV - no notes in API.Bible for available versions. */
-  private readonly API_BIBLE_ID = 'de4e12af7f28f599-01';
+  constructor(
+    private readonly http: HttpClient,
+    private readonly grovlinkDb: GrovLinkDatabaseService
+  ) {}
 
   /**
-   * Fetches the verse of the day from API.Bible.
+   * Fetches the verse of the day: checks cache first, then Christian Context API.
+   * Theme is selected by month (hidden from user). Cached per day for push notification consistency.
    */
   getVerseOfTheDay(): Observable<VerseOfTheDay | null> {
-    const key = (environment as { apiBibleKey?: string }).apiBibleKey?.trim();
-    if (!key) {
-      console.warn('VerseOfTheDayService: no apiBibleKey in environment');
-      return of(null);
-    }
-
-    const dayOfMonth = new Date().getDate();
-    const passageId = VOTD_PASSAGES[(dayOfMonth - 1) % VOTD_PASSAGES.length];
-    const reference = this.passageIdToReference(passageId);
-
-    const params = new URLSearchParams({
-      'include-notes': 'true',
-      'include-titles': 'true',
-    });
-    const apiBase = (environment as { apiBibleBase?: string }).apiBibleBase ?? 'https://rest.api.bible';
-    const url = `${apiBase}/v1/bibles/${this.API_BIBLE_ID}/passages/${passageId}?${params}`;
-    const headers = new HttpHeaders({ 'api-key': key });
-
-    return this.http.get<ApiBiblePassageResponse>(url, { headers }).pipe(
-      map((res) => {
-        const content = res.data?.content?.trim();
-        return {
-          reference: res.data?.reference ?? reference,
-          text: this.stripHtml(content ?? ''),
-          contentHtml: content || undefined,
-        };
-      }),
+    return from(this.getCachedOrFetch()).pipe(
       catchError((err) => {
-        console.warn('VerseOfTheDayService: failed to fetch verse', err?.message ?? err);
+        console.warn('VerseOfTheDayService: failed', err?.message ?? err);
         return of(null);
       })
     );
   }
 
-  /** Convert USFM passage ID (e.g. ROM.5.1 or ROM.5.1-3) to display reference */
-  private passageIdToReference(passageId: string): string {
-    const match = passageId.match(/^([1-3]?[A-Z0-9]+)\.(\d+)\.(\d+)(?:-(\d+))?$/);
-    if (!match) return passageId;
-    const [, usfm, chapter, verse, verseEnd] = match;
-    const book = USFM_TO_BOOK[usfm ?? ''] ?? usfm;
-    return verseEnd ? `${book} ${chapter}:${verse}-${verseEnd}` : `${book} ${chapter}:${verse}`;
+  private async getCachedOrFetch(): Promise<VerseOfTheDay | null> {
+    const dateKey = this.getDateKey();
+    const cached = await this.getCachedVerse(dateKey);
+    if (cached) return cached;
+
+    const theme = this.getThemeForMonth();
+    const apiUrl = `${CONTEXT_API_BASE}?query=${encodeURIComponent(theme)}`;
+    const url = `${CORS_PROXY}${encodeURIComponent(apiUrl)}`;
+    const response = await firstValueFrom(
+      this.http.get<ChristianContextResponse>(url).pipe(
+        map((res) => this.mapToVerseOfTheDay(res)),
+        catchError((err) => {
+          console.warn('VerseOfTheDayService: API failed', err?.message ?? err);
+          return of(null);
+        })
+      )
+    );
+
+    if (response) {
+      await this.saveCachedVerse(dateKey, response);
+      return response;
+    }
+    return null;
   }
 
-  /** Strip HTML tags for plain text fallback */
-  private stripHtml(html: string): string {
-    return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  private getDateKey(): string {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  private getThemeForMonth(): string {
+    const d = new Date();
+    const seed = d.getFullYear() * 12 + d.getMonth();
+    const index = seed % THEMES.length;
+    return THEMES[index];
+  }
+
+  private mapToVerseOfTheDay(res: ChristianContextResponse): VerseOfTheDay {
+    const sermonEmbedUrl = res.sermon_url ? this.youtubeToEmbedUrl(res.sermon_url) : undefined;
+    return {
+      verseCategory: res.verse_category ?? '',
+      reference: res.verse_reference ?? '',
+      content: res.verse_content ?? '',
+      verseUrl: res.verse_url?.trim() || undefined,
+      commentaryTitle: res.commentary_content?.trim() || undefined,
+      commentaryUrl: res.commentary_url?.trim() || undefined,
+      commentaryAuthor: res.commentary_author?.trim() || undefined,
+      commentaryPublisher: res.commentary_publisher?.trim() || undefined,
+      sermonTitle: res.sermon_content?.trim() || undefined,
+      sermonUrl: res.sermon_url?.trim() || undefined,
+      sermonAuthor: res.sermon_author?.trim() || undefined,
+      sermonPublisher: res.sermon_publisher?.trim() || undefined,
+      sermonEmbedUrl,
+    };
+  }
+
+  private youtubeToEmbedUrl(url: string): string | undefined {
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+    if (!match) return undefined;
+    return `https://www.youtube.com/embed/${match[1]}`;
+  }
+
+  private async getCachedVerse(dateKey: string): Promise<VerseOfTheDay | null> {
+    try {
+      const db = await this.grovlinkDb.getDbConnection();
+      const result = await db.query(
+        'SELECT json FROM verse_of_the_day_cache WHERE dateKey = ?',
+        [dateKey]
+      );
+      if (result?.values?.length) {
+        const row = result.values[0];
+        const json = Array.isArray(row) ? row[0] : (row as Record<string, unknown>)['json'];
+        if (typeof json === 'string') {
+          return JSON.parse(json) as VerseOfTheDay;
+        }
+      }
+    } catch (e) {
+      console.warn('VerseOfTheDayService: cache read failed', e);
+    }
+    return null;
+  }
+
+  private async saveCachedVerse(dateKey: string, verse: VerseOfTheDay): Promise<void> {
+    try {
+      const db = await this.grovlinkDb.getDbConnection();
+      await db.run(
+        'INSERT OR REPLACE INTO verse_of_the_day_cache (dateKey, json) VALUES (?, ?)',
+        [dateKey, JSON.stringify(verse)]
+      );
+    } catch (e) {
+      console.warn('VerseOfTheDayService: cache write failed', e);
+    }
   }
 }

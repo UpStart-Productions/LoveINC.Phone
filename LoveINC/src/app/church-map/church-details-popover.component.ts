@@ -34,7 +34,7 @@ import { PartnerChurch } from './church-map.page';
             <ion-label>
               <p>Phone</p>
               <h3>
-                <a [href]="'tel:' + church.phone" style="color: var(--ion-color-primary); text-decoration: none;">{{ church.phone }}</a>
+                <a [href]="'tel:' + church.phone" class="app-link">{{ church.phone }}</a>
               </h3>
             </ion-label>
           </ion-item>
@@ -44,7 +44,7 @@ import { PartnerChurch } from './church-map.page';
             <ion-label>
               <p>Website</p>
               <h3>
-                <a [href]="church.website" target="_blank" style="color: var(--ion-color-primary); text-decoration: none;">Visit Website</a>
+                <a [href]="church.website" target="_blank" class="app-link">Visit Website</a>
               </h3>
             </ion-label>
           </ion-item>

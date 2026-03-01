@@ -102,9 +102,9 @@
         <div *ngIf="hasClassDocuments()" class="class-documents-list">
           @for (doc of contentItem.classDocuments; track doc.title) {
             @if (doc.url) {
-              <a [href]="doc.url" target="_blank" class="document-link">{{ doc.title }}</a>
+              <a [href]="doc.url" target="_blank" class="app-link">{{ doc.title }}</a>
             } @else {
-              <span class="document-link">{{ doc.title }}</span>
+              <span class="app-body">{{ doc.title }}</span>
             }
           }
         </div>

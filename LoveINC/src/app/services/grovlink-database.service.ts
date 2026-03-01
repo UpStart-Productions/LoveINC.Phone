@@ -98,13 +98,18 @@ export class GrovLinkDatabaseService {
 
   private async createTables(): Promise<void> {
     const db = await this.getDbConnection();
-    const sql = `
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS read_notifications (
         id TEXT PRIMARY KEY,
         readAt TEXT NOT NULL
       );
-    `;
-    await db.execute(sql);
+    `);
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS verse_of_the_day_cache (
+        dateKey TEXT PRIMARY KEY,
+        json TEXT NOT NULL
+      );
+    `);
   }
 
   async getDbConnection(): Promise<SQLiteDBConnection> {

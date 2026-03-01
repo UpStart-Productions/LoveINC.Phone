@@ -14,13 +14,54 @@
         <ion-spinner name="crescent"></ion-spinner>
       </div>
     } @else if (error || !verse) {
-      <p class="app-body-secondary">Unable to load the verse of the day. Please try again later.</p>
+      <p class="app-body">Unable to load the verse of the day. Please try again later.</p>
     } @else {
-      <p class="app-caption m-b-12">{{ verse.reference }}</p>
-      @if (verse.contentHtml) {
-        <div class="verse-content" [innerHTML]="verse.contentHtml"></div>
-      } @else {
-        <p class="app-body">{{ verse.text }}</p>
+      <h2 class="m-b-12">{{ verse.reference }}</h2>
+      <p class="app-body-secondary m-b-12">{{ verse.content }}</p>
+      @if (verse.verseUrl) {
+        <a [href]="verse.verseUrl" target="_blank" rel="noopener noreferrer" class="app-body app-link m-t-12">
+          Read on Bible Gateway
+        </a>
+      }
+      @if (verse.commentaryUrl && verse.commentaryTitle) {
+        <div class="m-t-24">
+          <h2 class="m-b-12">Commentary</h2>
+          <a [href]="verse.commentaryUrl" target="_blank" rel="noopener noreferrer" class="app-body app-link">
+            {{ verse.commentaryTitle }}
+            @if (verse.commentaryAuthor || verse.commentaryPublisher) {
+              <span> — {{ verse.commentaryAuthor }}{{ verse.commentaryAuthor && verse.commentaryPublisher ? ', ' : '' }}{{ verse.commentaryPublisher }}</span>
+            }
+          </a>
+        </div>
+      }
+      @if (verse.sermonEmbedUrl) {
+        <div class="m-t-24">
+          <h2 class="m-b-12">Sermon</h2>
+          @if (verse.sermonTitle || verse.sermonAuthor) {
+            <p class="app-body-secondary m-b-12">
+              {{ verse.sermonTitle }}{{ verse.sermonTitle && verse.sermonAuthor ? ' — ' : '' }}{{ verse.sermonAuthor }}{{ verse.sermonAuthor && verse.sermonPublisher ? ', ' : '' }}{{ verse.sermonPublisher }}
+            </p>
+          }
+          <div class="video-container">
+            <iframe
+              [src]="verse.sermonEmbedUrl | safeResourceUrl"
+              title="Sermon video"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+      } @else if (verse.sermonUrl && verse.sermonTitle) {
+        <div class="m-t-24">
+          <h2 class="m-b-12">Sermon</h2>
+          <a [href]="verse.sermonUrl" target="_blank" rel="noopener noreferrer" class="app-body app-link">
+            {{ verse.sermonTitle }}
+            @if (verse.sermonAuthor || verse.sermonPublisher) {
+              <span> — {{ verse.sermonAuthor }}{{ verse.sermonAuthor && verse.sermonPublisher ? ', ' : '' }}{{ verse.sermonPublisher }}</span>
+            }
+          </a>
+        </div>
       }
     }
   </div>
