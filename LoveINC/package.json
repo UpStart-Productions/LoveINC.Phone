@@ -14,7 +14,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "build:goal-tracker": "ng-packagr -p packages/goal-tracker/ng-package.json && node packages/goal-tracker/scripts/fix-dist-package.js",
-    "build:verse-of-the-day": "ng-packagr -p packages/verse-of-the-day/ng-package.json && node packages/verse-of-the-day/scripts/fix-dist-package.js"
+    "build:verse-of-the-day": "ng-packagr -p packages/verse-of-the-day/ng-package.json && node packages/verse-of-the-day/scripts/fix-dist-package.js",
+    "cap:run:ios:live": "npx ionic cap run ios -l --external",
+    "postinstall": "patch-package"
   },
   "private": true,
   "dependencies": {
@@ -61,6 +63,7 @@
     "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "8.0.1",
     "@ionic/angular-toolkit": "^12.0.0",
+    "@ionic/cli": "^7.2.1",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
@@ -76,6 +79,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^20.0.0",
+    "patch-package": "^8.0.1",
     "typescript": "~5.9.0"
   },
   "description": "An Ionic project"

@@ -1,0 +1,14 @@
+diff --git a/node_modules/@ionic/cli/lib/project/angular/serve.js b/node_modules/@ionic/cli/lib/project/angular/serve.js
+index 6d1f604..ee72716 100644
+--- a/node_modules/@ionic/cli/lib/project/angular/serve.js
++++ b/node_modules/@ionic/cli/lib/project/angular/serve.js
+@@ -159,7 +159,8 @@ class AngularServeCLI extends serve_1.ServeCLI {
+         const strippedLine = (0, utils_terminal_1.stripAnsi)(line);
+         const compileMsgs = [
+             'Development Server is listening',
+-            'Watching for file changes'
++            'Watching for file changes',
++            'Local:'
+         ];
+         if (compileMsgs.some((msg) => strippedLine.includes(msg))) {
+             this.emit('ready');
