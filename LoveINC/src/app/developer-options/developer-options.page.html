@@ -29,6 +29,25 @@
     </ion-card-content>
   </ion-card>
 
+  <!-- Service Unlock Reset -->
+  <ion-card class="section-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="key-outline" class="section-icon"></ion-icon>
+        Service Unlock
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="m-b-18" style="color: var(--ion-color-medium);">
+        Clear intake unlock state to test the QR scan flow again.
+      </p>
+      <ion-button expand="block" fill="outline" (click)="clearServiceUnlock()">
+        <ion-icon slot="start" name="key-outline"></ion-icon>
+        Clear Service Unlock
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
   <!-- Test Push Notification -->
   <ion-card class="section-card">
     <ion-card-header>

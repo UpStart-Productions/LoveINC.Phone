@@ -1,0 +1,51 @@
+<ion-card class="section-card">
+  <ion-card-header>
+    <ion-card-title>
+      <ion-icon name="key-outline" class="section-icon"></ion-icon>
+      Service Access
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <div class="access-status m-b-18">
+      <ion-icon
+        [name]="isUnlocked ? 'checkmark-circle' : 'lock-closed-outline'"
+        [color]="isUnlocked ? 'success' : 'medium'"
+        class="status-icon"></ion-icon>
+      <div>
+        <p class="status-label">{{ isUnlocked ? 'Intake completed' : 'Intake required' }}</p>
+        <p class="status-detail">
+          {{ isUnlocked ? 'You can contact Gap Ministry providers directly.' : 'Scan the QR code from your intake materials to unlock.' }}
+        </p>
+      </div>
+    </div>
+    <ion-button
+      *ngIf="!isUnlocked"
+      expand="block"
+      fill="outline"
+      size="small"
+      (click)="goToScan()">
+      <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+      Scan QR Code
+    </ion-button>
+
+    <div class="vouchers-section m-t-24" *ngIf="vouchers.length">
+      <p class="vouchers-label">My Vouchers</p>
+      <ion-list lines="none">
+        <ion-item *ngFor="let v of vouchers" class="voucher-item">
+          <ion-icon
+            slot="start"
+            [name]="isVoucherValid(v) ? 'ticket-outline' : 'time-outline'"
+            [color]="isVoucherValid(v) ? 'success' : 'medium'"></ion-icon>
+          <ion-label>
+            <h3>{{ v.serviceLabel }}</h3>
+            <p>Valid until {{ formatDate(v.validUntil) }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+      <ion-button expand="block" fill="outline" size="small" (click)="requestVoucher()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Request Voucher
+      </ion-button>
+    </div>
+  </ion-card-content>
+</ion-card>

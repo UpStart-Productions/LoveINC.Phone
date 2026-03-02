@@ -19,6 +19,7 @@ import {
 import { OnboardingService } from '../services/onboarding.service';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor } from '@capacitor/core';
+import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 
 @Component({
   selector: 'app-developer-options',
@@ -44,7 +45,8 @@ export class DeveloperOptionsPage {
   constructor(
     private router: Router,
     private onboardingService: OnboardingService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private serviceUnlock: ServiceUnlockService
   ) {}
 
   resetOnboarding() {
@@ -81,6 +83,16 @@ export class DeveloperOptionsPage {
     // Get random notification
     const randomIndex = Math.floor(Math.random() * notifications.length);
     return notifications[randomIndex];
+  }
+
+  async clearServiceUnlock() {
+    await this.serviceUnlock.clearUnlock();
+    const alert = await this.alertController.create({
+      header: 'Service Unlock Cleared',
+      message: 'Intake unlock state has been reset. Go to Profile and scan again to re-unlock.',
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 
   async testLocalNotification() {

@@ -4,14 +4,14 @@ import { format } from 'date-fns';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OnboardingService } from '../services/onboarding.service';
-import { 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
-  IonContent, 
-  IonCard, 
-  IonCardHeader, 
-  IonCardTitle, 
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
   IonCardContent,
   IonList,
   IonItem,
@@ -23,6 +23,7 @@ import {
   IonSegment,
   IonSegmentButton
 } from '@ionic/angular/standalone';
+import { ServiceAccessSectionComponent } from '@upstart-productions/service-unlock';
 
 type UserType = 'client' | 'donor' | 'volunteer';
 
@@ -33,6 +34,7 @@ type UserType = 'client' | 'donor' | 'volunteer';
   imports: [
     CommonModule,
     FormsModule,
+    ServiceAccessSectionComponent,
     IonHeader, 
     IonToolbar, 
     IonTitle, 

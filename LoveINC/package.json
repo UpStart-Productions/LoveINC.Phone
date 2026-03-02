@@ -15,6 +15,7 @@
     "lint": "ng lint",
     "build:goal-tracker": "ng-packagr -p packages/goal-tracker/ng-package.json && node packages/goal-tracker/scripts/fix-dist-package.js",
     "build:verse-of-the-day": "ng-packagr -p packages/verse-of-the-day/ng-package.json && node packages/verse-of-the-day/scripts/fix-dist-package.js",
+    "build:service-unlock": "ng-packagr -p packages/service-unlock/ng-package.json && node packages/service-unlock/scripts/fix-dist-package.js",
     "cap:run:ios:live": "npx ionic cap run ios -l --external",
     "postinstall": "patch-package"
   },
@@ -41,6 +42,8 @@
     "@capacitor/status-bar": "8.0.0",
     "@ionic/angular": "^8.0.0",
     "@upstart-productions/goal-tracker": "file:packages/goal-tracker",
+    "@upstart-productions/service-unlock": "file:packages/service-unlock",
+    "@capacitor-mlkit/barcode-scanning": "^8.0.0",
     "capacitor-email-composer": "^8.0.0",
     "date-fns": "^4.1.0",
     "ionicons": "^7.0.0",

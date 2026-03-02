@@ -82,6 +82,11 @@ export const routes: Routes = [
           import('../profile/profile.page').then((m) => m.ProfilePage),
       },
       {
+        path: 'service-unlock/scan',
+        loadComponent: () =>
+          import('@upstart-productions/service-unlock').then((m) => m.ServiceUnlockScanPage),
+      },
+      {
         path: 'church-map',
         loadComponent: () =>
           import('../church-map/church-map.page').then((m) => m.ChurchMapPage),

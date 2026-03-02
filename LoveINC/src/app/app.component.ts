@@ -86,6 +86,13 @@ import {
   calculatorOutline,
   walletOutline,
   peopleCircleOutline as peopleCircleOutlineIcon,
+  // Service Unlock Icons
+  qrCodeOutline,
+  scanOutline,
+  keyOutline,
+  lockClosedOutline,
+  checkmarkCircle,
+  ticketOutline,
 } from 'ionicons/icons';
 @Component({
   selector: 'app-root',
@@ -246,6 +253,13 @@ export class AppComponent implements OnInit, OnDestroy {
       checkmarkDoneOutline,
       calculatorOutline,
       walletOutline,
+      // Service Unlock Icons
+      qrCodeOutline,
+      scanOutline,
+      keyOutline,
+      lockClosedOutline,
+      checkmarkCircle,
+      ticketOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });

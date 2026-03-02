@@ -1,0 +1,45 @@
+.success-state,
+.scan-prompt,
+.scanning-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.success-icon,
+.prompt-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.success-state h2,
+.scan-prompt h2 {
+  margin-bottom: 8px;
+}
+
+.success-state p,
+.scan-prompt p {
+  margin-bottom: 24px;
+  max-width: 320px;
+}
+
+.scan-prompt ion-button {
+  margin-top: 8px;
+}
+
+.unsupported,
+.error-message {
+  color: var(--ion-color-danger);
+  margin-top: 16px;
+}
+
+.scanning-state {
+  min-height: 200px;
+}
+
+.scanning-state ion-spinner {
+  margin-bottom: 16px;
+}

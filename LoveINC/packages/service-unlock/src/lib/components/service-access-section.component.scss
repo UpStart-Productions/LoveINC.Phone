@@ -1,0 +1,53 @@
+.section-icon {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.access-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.status-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.status-label {
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.status-detail {
+  margin: 0;
+  font-size: 0.9em;
+  color: var(--ion-color-medium);
+}
+
+.vouchers-section {
+  padding-top: 16px;
+  border-top: 1px solid var(--ion-color-light);
+}
+
+.vouchers-label {
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.voucher-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}
+
+.voucher-item {
+  margin-bottom: 4px;
+}
+
+.m-b-18 {
+  margin-bottom: 18px;
+}
+
+.m-t-24 {
+  margin-top: 24px;
+}

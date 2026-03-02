@@ -1,0 +1,37 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/profile"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Scan Intake QR</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div *ngIf="success" class="success-state">
+    <ion-icon name="checkmark-circle" color="success" class="success-icon"></ion-icon>
+    <h2>Access Unlocked</h2>
+    <p>You have completed intake. You can now contact Gap Ministry providers directly from the app.</p>
+    <ion-button expand="block" (click)="goBack()">Back to Profile</ion-button>
+  </div>
+
+  <div *ngIf="!success && !scanning" class="scan-prompt">
+    <ion-icon name="qr-code-outline" class="prompt-icon"></ion-icon>
+    <h2>Unlock Service Access</h2>
+    <p>Scan the QR code from your Love INC intake materials to unlock direct contact with Gap Ministry providers.</p>
+    <ion-button
+      *ngIf="supported"
+      expand="block"
+      (click)="startScan()">
+      <ion-icon slot="start" name="scan-outline"></ion-icon>
+      Scan QR Code
+    </ion-button>
+    <p *ngIf="!supported" class="unsupported">QR scanning is not supported on this device.</p>
+    <p *ngIf="error" class="error-message">{{ error }}</p>
+  </div>
+
+  <div *ngIf="scanning" class="scanning-state">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Point your camera at the QR code...</p>
+  </div>
+</ion-content>

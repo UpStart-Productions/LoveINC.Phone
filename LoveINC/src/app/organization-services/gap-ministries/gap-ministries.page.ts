@@ -22,6 +22,7 @@ import { SharingService } from '../../services/sharing/sharing.service';
 import { NotificationsButtonComponent } from '../../components/notifications-button/notifications-button.component';
 import { PlatformApiService } from '../../services/platform';
 import type { PlatformService, PlatformOffering, PlatformAddress } from '../../services/platform/types';
+import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 
 export interface GapService {
   id: string;
@@ -78,10 +79,12 @@ export class GapMinistriesPage implements OnInit {
     private modalController: ModalController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
-    private sharingService: SharingService
+    private sharingService: SharingService,
+    private serviceUnlock: ServiceUnlockService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.serviceUnlock.ensureInitialized();
     this.loadServices();
     const fromParam = this.route.snapshot.queryParamMap.get('from');
     this.fromServices = fromParam === 'services';
@@ -275,8 +278,19 @@ export class GapMinistriesPage implements OnInit {
   }
 
   async onPhoneClick(service: GapService) {
-    if (service.phone) {
+    const canContact = this.serviceUnlock.canContactProvider();
+    if (service.phone && canContact) {
       window.open(`tel:${service.phone}`, '_self');
+    } else if (service.phone && !canContact) {
+      const alert = await this.alertController.create({
+        header: 'Intake Required',
+        message: 'Complete intake to contact providers directly. Go to Profile to scan your intake QR code.',
+        buttons: [
+          { text: 'Contact Love INC', handler: () => { window.open('tel:5035373999', '_self'); } },
+          { text: 'OK' },
+        ],
+      });
+      await alert.present();
     } else {
       const alert = await this.alertController.create({
         header: 'Phone',

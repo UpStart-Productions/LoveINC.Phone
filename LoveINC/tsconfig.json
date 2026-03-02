@@ -5,7 +5,9 @@
     "baseUrl": "./",
     "paths": {
       "@upstart-productions/goal-tracker": ["packages/goal-tracker"],
-      "@upstart-productions/goal-tracker/*": ["packages/goal-tracker/*"]
+      "@upstart-productions/goal-tracker/*": ["packages/goal-tracker/*"],
+      "@upstart-productions/service-unlock": ["packages/service-unlock"],
+      "@upstart-productions/service-unlock/*": ["packages/service-unlock/*"]
     },
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
