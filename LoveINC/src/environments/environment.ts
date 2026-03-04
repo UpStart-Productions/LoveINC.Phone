@@ -6,6 +6,8 @@ export const environment = {
   production: false,
   /** Nonprofit Mobile Platform API base URL (no trailing slash) */
   apiBaseUrl: 'https://api.grovlink.com/api',
+  /** YouTube embed proxy (fixes Error 152/153 in Capacitor) */
+  youtubeEmbedBaseUrl: 'https://api.grovlink.com/embed',
   /** API key from admin (API Keys or Mobile App Config → API Key tab) */
   apiKey: 'npmp_q-ajDhD2sB4O4yy5e-m3PcXflfrePITRv9EhGiGXYXU',
   /** Customer slug (e.g. loveinc) */

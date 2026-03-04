@@ -43,9 +43,16 @@
               {{ verse.sermonTitle }}{{ verse.sermonTitle && verse.sermonAuthor ? ' — ' : '' }}{{ verse.sermonAuthor }}{{ verse.sermonAuthor && verse.sermonPublisher ? ', ' : '' }}{{ verse.sermonPublisher }}
             </p>
           }
-          @if (sermonVideoId) {
-            <div class="video-wrapper">
-              <div id="sermon-youtube-player" class="video-container"></div>
+          @if (sermonEmbedUrl) {
+            <div class="video-container">
+              <iframe
+                [src]="sermonEmbedUrl | safeResourceUrl"
+                title="Sermon video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                referrerpolicy="strict-origin-when-cross-origin"
+              ></iframe>
             </div>
           } @else if (verse.sermonUrl) {
             <a [href]="verse.sermonUrl" target="_blank" rel="noopener noreferrer" class="app-body app-link">

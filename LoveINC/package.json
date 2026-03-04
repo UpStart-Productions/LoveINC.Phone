@@ -42,7 +42,6 @@
     "@capacitor/share": "^8.0.0",
     "@capacitor/splash-screen": "^8.0.0",
     "@capacitor/status-bar": "8.0.0",
-    "@capgo/capacitor-youtube-player": "^8.1.19",
     "@ionic/angular": "^8.0.0",
     "@upstart-productions/goal-tracker": "file:packages/goal-tracker",
     "@upstart-productions/service-unlock": "file:packages/service-unlock",
