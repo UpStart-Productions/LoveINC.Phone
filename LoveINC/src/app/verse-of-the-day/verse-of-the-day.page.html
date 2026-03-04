@@ -15,6 +15,7 @@
       </div>
     } @else if (error || !verse) {
       <p class="app-body">Unable to load the verse of the day. Please try again later.</p>
+      <ion-button (click)="loadVerse()" fill="outline" class="m-t-12">Retry</ion-button>
     } @else {
       <h2 class="m-b-12">{{ verse.reference }}</h2>
       <p class="app-body-secondary m-b-12">{{ verse.content }}</p>
@@ -34,7 +35,7 @@
           </a>
         </div>
       }
-      @if (verse.sermonEmbedUrl) {
+      @if (verse.sermonUrl && verse.sermonTitle) {
         <div class="m-t-24">
           <h2 class="m-b-12">Sermon</h2>
           @if (verse.sermonTitle || verse.sermonAuthor) {
@@ -42,25 +43,20 @@
               {{ verse.sermonTitle }}{{ verse.sermonTitle && verse.sermonAuthor ? ' — ' : '' }}{{ verse.sermonAuthor }}{{ verse.sermonAuthor && verse.sermonPublisher ? ', ' : '' }}{{ verse.sermonPublisher }}
             </p>
           }
-          <div class="video-container">
-            <iframe
-              [src]="verse.sermonEmbedUrl | safeResourceUrl"
-              title="Sermon video"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>
-        </div>
-      } @else if (verse.sermonUrl && verse.sermonTitle) {
-        <div class="m-t-24">
-          <h2 class="m-b-12">Sermon</h2>
-          <a [href]="verse.sermonUrl" target="_blank" rel="noopener noreferrer" class="app-body app-link">
-            {{ verse.sermonTitle }}
-            @if (verse.sermonAuthor || verse.sermonPublisher) {
-              <span> — {{ verse.sermonAuthor }}{{ verse.sermonAuthor && verse.sermonPublisher ? ', ' : '' }}{{ verse.sermonPublisher }}</span>
-            }
-          </a>
+          @if (sermonVideoId) {
+            <div class="video-wrapper">
+              <div id="sermon-youtube-player" class="video-container"></div>
+            </div>
+          } @else if (verse.sermonUrl) {
+            <a [href]="verse.sermonUrl" target="_blank" rel="noopener noreferrer" class="app-body app-link">
+              <ion-icon name="play-circle-outline" class="m-r-4"></ion-icon>
+              {{ verse.sermonTitle }}
+              @if (verse.sermonAuthor || verse.sermonPublisher) {
+                <span> — {{ verse.sermonAuthor }}{{ verse.sermonAuthor && verse.sermonPublisher ? ', ' : '' }}{{ verse.sermonPublisher }}</span>
+              }
+              <span class="app-body-secondary"> (Watch on YouTube)</span>
+            </a>
+          }
         </div>
       }
     }

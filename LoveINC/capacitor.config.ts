@@ -5,6 +5,9 @@ const config: CapacitorConfig = {
   appName: 'Love INC',
   webDir: 'www',
   plugins: {
+    CapacitorHttp: {
+      enabled: true,
+    },
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert'],
     },

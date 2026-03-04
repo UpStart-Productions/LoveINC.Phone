@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, from, map, catchError, of, firstValueFrom } from 'rxjs';
+import { CapacitorHttp } from '@capacitor/core';
+import { Observable, from, catchError, of } from 'rxjs';
 import { GrovLinkDatabaseService } from '../services/grovlink-database.service';
 
 /** Christian Context API response (getcontext.xyz) */
@@ -50,15 +50,10 @@ const THEMES = [
 ];
 
 const CONTEXT_API_BASE = 'https://getcontext.xyz/api/api.php';
-/** CORS proxy - Christian Context API does not send CORS headers */
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
 @Injectable({ providedIn: 'root' })
 export class VerseOfTheDayService {
-  constructor(
-    private readonly http: HttpClient,
-    private readonly grovlinkDb: GrovLinkDatabaseService
-  ) {}
+  constructor(private readonly grovlinkDb: GrovLinkDatabaseService) {}
 
   /**
    * Fetches the verse of the day: checks cache first, then Christian Context API.
@@ -79,17 +74,14 @@ export class VerseOfTheDayService {
     if (cached) return cached;
 
     const theme = this.getThemeForMonth();
-    const apiUrl = `${CONTEXT_API_BASE}?query=${encodeURIComponent(theme)}`;
-    const url = `${CORS_PROXY}${encodeURIComponent(apiUrl)}`;
-    const response = await firstValueFrom(
-      this.http.get<ChristianContextResponse>(url).pipe(
-        map((res) => this.mapToVerseOfTheDay(res)),
-        catchError((err) => {
-          console.warn('VerseOfTheDayService: API failed', err?.message ?? err);
-          return of(null);
-        })
-      )
-    );
+    const url = `${CONTEXT_API_BASE}?query=${encodeURIComponent(theme)}`;
+    let response: VerseOfTheDay | null = null;
+    try {
+      const { data } = await CapacitorHttp.get({ url });
+      response = this.mapToVerseOfTheDay(data as ChristianContextResponse);
+    } catch (err) {
+      console.warn('VerseOfTheDayService: API failed', (err as Error)?.message ?? err);
+    }
 
     if (response) {
       await this.saveCachedVerse(dateKey, response);
@@ -132,7 +124,7 @@ export class VerseOfTheDayService {
   private youtubeToEmbedUrl(url: string): string | undefined {
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
     if (!match) return undefined;
-    return `https://www.youtube.com/embed/${match[1]}`;
+    return `https://www.youtube-nocookie.com/embed/${match[1]}`;
   }
 
   private async getCachedVerse(dateKey: string): Promise<VerseOfTheDay | null> {
@@ -146,13 +138,28 @@ export class VerseOfTheDayService {
         const row = result.values[0];
         const json = Array.isArray(row) ? row[0] : (row as Record<string, unknown>)['json'];
         if (typeof json === 'string') {
-          return JSON.parse(json) as VerseOfTheDay;
+          const verse = JSON.parse(json) as VerseOfTheDay;
+          return this.normalizeEmbedUrl(verse);
         }
       }
     } catch (e) {
       console.warn('VerseOfTheDayService: cache read failed', e);
     }
     return null;
+  }
+
+  /** Fix YouTube Error 153: use youtube-nocookie.com for cached verses with old URL */
+  private normalizeEmbedUrl(verse: VerseOfTheDay): VerseOfTheDay {
+    if (verse.sermonEmbedUrl?.includes('youtube.com/embed/')) {
+      verse = {
+        ...verse,
+        sermonEmbedUrl: verse.sermonEmbedUrl.replace(
+          'youtube.com/embed/',
+          'youtube-nocookie.com/embed/'
+        ),
+      };
+    }
+    return verse;
   }
 
   private async saveCachedVerse(dateKey: string, verse: VerseOfTheDay): Promise<void> {

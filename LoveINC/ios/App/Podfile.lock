@@ -29,6 +29,8 @@ PODS:
     - Capacitor
   - CapacitorStatusBar (8.0.0):
     - Capacitor
+  - CapgoCapacitorYoutubePlayer (8.1.19):
+    - Capacitor
   - GoogleDataTransport (10.1.0):
     - nanopb (~> 3.30910.0)
     - PromisesObjC (~> 2.4)
@@ -97,6 +99,7 @@ DEPENDENCIES:
   - "CapacitorShare (from `../../node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
+  - "CapgoCapacitorYoutubePlayer (from `../../node_modules/@capgo/capacitor-youtube-player`)"
 
 SPEC REPOS:
   trunk:
@@ -143,6 +146,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/splash-screen"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
+  CapgoCapacitorYoutubePlayer:
+    :path: "../../node_modules/@capgo/capacitor-youtube-player"
 
 SPEC CHECKSUMS:
   Capacitor: ff35b0f66370b84aa238251b35b91886a3207c16
@@ -159,6 +164,7 @@ SPEC CHECKSUMS:
   CapacitorShare: 12f1d192170cbcf9f108fd675ac8e343761a4638
   CapacitorSplashScreen: 422880d7117605c30699eb4b21644b62db42e86c
   CapacitorStatusBar: 312e2e67928dfe9514c4a8916a1fd610552f5f35
+  CapgoCapacitorYoutubePlayer: a757b8c67596b6a0472af969ff81b1336ad1f05b
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleMLKit: ddd51d7dff36ff28defa69afedd9cdce684fd857
   GoogleToolboxForMac: d1a2cbf009c453f4d6ded37c105e2f67a32206d8
@@ -173,6 +179,6 @@ SPEC CHECKSUMS:
   SQLCipher: eb79c64049cb002b4e9fcb30edb7979bf4706dfc
   ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
 
-PODFILE CHECKSUM: 25c32b47851c5006fcc0a2d6105969d63e0b9bea
+PODFILE CHECKSUM: cfde270dbbebba8db33159795eefc32cd9368e23
 
 COCOAPODS: 1.16.2

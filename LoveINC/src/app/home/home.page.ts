@@ -21,7 +21,6 @@ import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-wid
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
-import { PushRegistrationService } from '../services/push-registration.service';
 
 @Component({
   selector: 'app-home',
@@ -46,7 +45,7 @@ import { PushRegistrationService } from '../services/push-registration.service';
 })
 export class HomePage implements OnInit {
   cards: HomeCard[] = [];
-  welcomeTitle: string = 'Welcome to Love INC.';
+  welcomeTitle: string = 'Welcome to Love INC';
   selectedUserTypes: UserType[] = [];
   giveCtas: PlatformCta[] = [];
   volunteerCtas: PlatformCta[] = [];
@@ -61,8 +60,7 @@ export class HomePage implements OnInit {
     private donateButtonService: DonateButtonService,
     private sharingService: SharingService,
     private volunteerActionSheetService: VolunteerActionSheetService,
-    private scheduleFormatting: ScheduleFormattingService,
-    private pushRegistration: PushRegistrationService
+    private scheduleFormatting: ScheduleFormattingService
   ) {}
 
   ngOnInit() {
@@ -75,20 +73,13 @@ export class HomePage implements OnInit {
     if (firstName) {
       this.welcomeTitle = `Welcome, ${firstName}!`;
     } else {
-      this.welcomeTitle = 'Welcome to Love INC.';
+      this.welcomeTitle = 'Welcome to Love INC';
     }
     
     // For testing - add to window for easy access in console
     (window as any).clearOnboarding = () => {
       this.onboardingService.clearOnboarding();
     };
-  }
-
-  ionViewDidEnter(): void {
-    // Request push permission when user actually lands on home (after onboarding).
-    // ionViewDidEnter fires when the view is active, not during preload.
-    // Short delay so user sees the home screen before the prompt.
-    setTimeout(() => this.pushRegistration.register().catch(() => {}), 500);
   }
 
   loadUserTypes() {

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/c
 import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { OnboardingService } from './services/onboarding.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
+import { PushRegistrationService } from './services/push-registration.service';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { App } from '@capacitor/app';
 import { addIcons } from 'ionicons';
@@ -107,7 +108,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private onboardingService: OnboardingService,
     private platform: Platform,
-    private grovlinkDb: GrovLinkDatabaseService
+    private grovlinkDb: GrovLinkDatabaseService,
+    private pushRegistration: PushRegistrationService
   ) {
     // Initialize all icons for app-wide use
     this.initializeIcons();
@@ -158,6 +160,13 @@ export class AppComponent implements OnInit, OnDestroy {
       // App plugin might not be available in browser
       console.log('App plugin not available');
     }
+
+    // Request push permission 1 minute after app launch (only if onboarding complete)
+    setTimeout(() => {
+      if (this.onboardingService.hasCompletedOnboarding()) {
+        this.pushRegistration.register().catch(() => {});
+      }
+    }, 60_000);
   }
 
   async ngOnDestroy() {
