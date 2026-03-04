@@ -135,6 +135,49 @@ export class PlatformApiService {
     );
   }
 
+  /**
+   * Register device for push notifications. Calls POST /public/:customerSlug/push/register.
+   * Platform: 'ios' or 'android'. Token: APNs or FCM device token.
+   */
+  registerPushDevice(params: {
+    platform: 'ios' | 'android';
+    token: string;
+    tenantSlug?: string;
+  }): Promise<{ ok: boolean }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const { apiBaseUrl, apiKey, customerSlug } = environment;
+    const url = `${apiBaseUrl.replace(/\/$/, '')}/public/${customerSlug}/push/register`;
+    const body: { platform: string; token: string; tenantSlug?: string } = {
+      platform: params.platform,
+      token: params.token,
+    };
+    if (params.tenantSlug?.trim()) {
+      body.tenantSlug = params.tenantSlug.trim();
+    }
+    const headers = new HttpHeaders({
+      'x-api-key': apiKey,
+      'Content-Type': 'application/json',
+    });
+    return firstValueFrom(
+      this.http.post<{ ok: boolean }>(url, body, { headers }).pipe(
+        tap(() => console.debug('PlatformApiService: push/register OK')),
+        catchError((err) => {
+          const status = err?.status ?? err?.error?.status;
+          const message = err?.error?.message ?? err?.message ?? JSON.stringify(err?.error);
+          console.error('PlatformApiService: push/register failed', {
+            url,
+            status,
+            message,
+            err,
+          });
+          throw err;
+        })
+      )
+    );
+  }
+
   /** POST app user notification (e.g. volunteer interest) */
   postAppUserNotification(payload: {
     firstName: string;

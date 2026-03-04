@@ -5,6 +5,9 @@ const config: CapacitorConfig = {
   appName: 'Love INC',
   webDir: 'www',
   plugins: {
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
     CapacitorSQLite: {
       iosDatabaseLocation: 'Library/CapacitorDatabase',
       iosIsEncryption: false,
