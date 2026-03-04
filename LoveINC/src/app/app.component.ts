@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/c
 import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { OnboardingService } from './services/onboarding.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
-import { PushRegistrationService } from './services/push-registration.service';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { App } from '@capacitor/app';
 import { addIcons } from 'ionicons';
@@ -108,8 +107,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private onboardingService: OnboardingService,
     private platform: Platform,
-    private grovlinkDb: GrovLinkDatabaseService,
-    private pushRegistration: PushRegistrationService
+    private grovlinkDb: GrovLinkDatabaseService
   ) {
     // Initialize all icons for app-wide use
     this.initializeIcons();
@@ -133,18 +131,12 @@ export class AppComponent implements OnInit, OnDestroy {
       console.warn('GrovLink DB init deferred:', err);
     });
 
-    // Register for push notifications (iOS/Android only)
-    this.pushRegistration.register().catch((err) => {
-      console.warn('Push registration deferred:', err);
-    });
-
     // Hide splash screen only on initial app launch, not when app comes back to foreground
     if (!AppComponent.splashScreenHidden) {
       try {
         await SplashScreen.hide();
         AppComponent.splashScreenHidden = true;
       } catch (error) {
-        // Splash screen might not be available in web browser
         console.log('Splash screen not available (likely running in browser)');
         AppComponent.splashScreenHidden = true;
       }

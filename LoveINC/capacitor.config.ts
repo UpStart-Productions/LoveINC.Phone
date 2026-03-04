@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.loveinc.app',
+  appId: 'com.loveincnewberg.app',
   appName: 'Love INC',
   webDir: 'www',
   plugins: {

@@ -21,6 +21,7 @@ import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-wid
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
+import { PushRegistrationService } from '../services/push-registration.service';
 
 @Component({
   selector: 'app-home',
@@ -60,14 +61,15 @@ export class HomePage implements OnInit {
     private donateButtonService: DonateButtonService,
     private sharingService: SharingService,
     private volunteerActionSheetService: VolunteerActionSheetService,
-    private scheduleFormatting: ScheduleFormattingService
+    private scheduleFormatting: ScheduleFormattingService,
+    private pushRegistration: PushRegistrationService
   ) {}
 
   ngOnInit() {
     this.loadCards();
     this.loadUserTypes();
     this.loadCtas();
-    
+
     // Set welcome title based on first name
     const firstName = this.onboardingService.getUserFirstName();
     if (firstName) {
@@ -80,6 +82,13 @@ export class HomePage implements OnInit {
     (window as any).clearOnboarding = () => {
       this.onboardingService.clearOnboarding();
     };
+  }
+
+  ionViewDidEnter(): void {
+    // Request push permission when user actually lands on home (after onboarding).
+    // ionViewDidEnter fires when the view is active, not during preload.
+    // Short delay so user sees the home screen before the prompt.
+    setTimeout(() => this.pushRegistration.register().catch(() => {}), 500);
   }
 
   loadUserTypes() {

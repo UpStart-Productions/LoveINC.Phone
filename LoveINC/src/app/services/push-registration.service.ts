@@ -6,32 +6,20 @@ import { environment } from '../../environments/environment';
 
 /**
  * Registers the device for push notifications with the backend.
- * Runs only on native platforms (iOS/Android). Calls the platform API
- * to register the FCM/APNs token with the Nonprofit Mobile Platform.
+ * Called when the user opens the Notifications modal (bell icon) so the
+ * permission request runs in a responsive context (user-initiated).
  */
 @Injectable({ providedIn: 'root' })
 export class PushRegistrationService {
   constructor(private readonly platformApi: PlatformApiService) {}
 
-  /**
-   * Request permission, get the device token, and register with the backend.
-   * Call this after platform.ready() when running on a native device.
-   */
   async register(): Promise<void> {
-    if (!Capacitor.isNativePlatform()) {
-      return;
-    }
+    if (!Capacitor.isNativePlatform()) return;
     const platform = Capacitor.getPlatform() as 'ios' | 'android';
-    if (platform !== 'ios' && platform !== 'android') {
-      return;
-    }
-    if (!environment.apiKey?.trim()) {
-      console.warn('PushRegistrationService: apiKey not configured, skipping');
-      return;
-    }
+    if (platform !== 'ios' && platform !== 'android') return;
+    if (!environment.apiKey?.trim()) return;
 
     try {
-      // Add listeners before register() so we capture the token when it arrives
       let resolveToken!: (value: string) => void;
       let rejectToken!: (reason: Error) => void;
       const regPromise = new Promise<string>((resolve, reject) => {
@@ -45,31 +33,20 @@ export class PushRegistrationService {
         rejectToken(new Error(err.error ?? 'Registration failed'))
       );
 
-      let permStatus = await PushNotifications.checkPermissions();
-      if (permStatus.receive === 'prompt') {
-        permStatus = await PushNotifications.requestPermissions();
-      }
-      if (permStatus.receive !== 'granted') {
-        console.log('PushRegistrationService: permission denied');
-        return;
-      }
+      const permStatus = await PushNotifications.requestPermissions();
+      if (permStatus.receive !== 'granted') return;
 
       await PushNotifications.register();
       const token = await regPromise;
-
-      if (!token?.trim()) {
-        console.warn('PushRegistrationService: empty token received');
-        return;
-      }
+      if (!token?.trim()) return;
 
       await this.platformApi.registerPushDevice({
         platform,
         token,
         tenantSlug: environment.tenantSlug,
       });
-      console.log('PushRegistrationService: registered successfully');
-    } catch (err) {
-      console.error('PushRegistrationService: registration failed', err);
+    } catch {
+      // Silently ignore - user may have denied or registration may fail
     }
   }
 }
