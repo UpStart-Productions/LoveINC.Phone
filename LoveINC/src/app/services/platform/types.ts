@@ -198,6 +198,8 @@ export interface PlatformNotificationMeta {
   itemType: string;
   itemId: string;
   tenantSlug: string;
+  /** CTA type (donation_drive, volunteer_call, fundraiser, awareness) — present when itemType is 'cta' */
+  ctaType?: string;
 }
 
 export interface PlatformNotification {

@@ -1,10 +1,14 @@
 import { Component, OnInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Router } from '@angular/router';
 import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
+import { Capacitor } from '@capacitor/core';
+import { PushNotifications } from '@capacitor/push-notifications';
+import { SplashScreen } from '@capacitor/splash-screen';
+import { App } from '@capacitor/app';
 import { OnboardingService } from './services/onboarding.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
 import { PushRegistrationService } from './services/push-registration.service';
-import { SplashScreen } from '@capacitor/splash-screen';
-import { App } from '@capacitor/app';
+import { mapNotificationMetaToContentType } from './utils/notification-deeplink';
 import { addIcons } from 'ionicons';
 import {
   // Tab Bar Icons
@@ -109,7 +113,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private onboardingService: OnboardingService,
     private platform: Platform,
     private grovlinkDb: GrovLinkDatabaseService,
-    private pushRegistration: PushRegistrationService
+    private pushRegistration: PushRegistrationService,
+    private router: Router
   ) {
     // Initialize all icons for app-wide use
     this.initializeIcons();
@@ -167,6 +172,29 @@ export class AppComponent implements OnInit, OnDestroy {
         this.pushRegistration.register().catch(() => {});
       }
     }, 60_000);
+
+    // Handle push notification taps (deep link to content)
+    if (Capacitor.isNativePlatform()) {
+      PushNotifications.addListener(
+        'pushNotificationActionPerformed',
+        (action) => {
+          const data = action.notification?.data as Record<string, string> | undefined;
+          if (!data?.itemType || !data?.itemId) return;
+          const meta = {
+            itemType: data.itemType,
+            itemId: data.itemId,
+            tenantSlug: data.tenantSlug,
+            ctaType: data.ctaType,
+          };
+          const routeType = mapNotificationMetaToContentType(meta);
+          if (routeType) {
+            this.router.navigate(['/tabs/content-detail', routeType, meta.itemId]);
+          }
+        }
+      ).catch((err) => {
+        console.warn('Push notification listener not available:', err);
+      });
+    }
   }
 
   async ngOnDestroy() {

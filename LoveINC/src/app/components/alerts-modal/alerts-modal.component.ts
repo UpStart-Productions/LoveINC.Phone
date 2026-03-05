@@ -4,7 +4,7 @@ import { ModalController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { NotificationsService, type AppNotification } from '../../services/notifications.service';
-import type { ContentType } from '../../organization-services/content-detail/content-detail.model';
+import { mapNotificationMetaToContentType } from '../../utils/notification-deeplink';
 import {
   IonHeader,
   IonToolbar,
@@ -118,31 +118,10 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
     }
 
     const { meta } = notification;
-    if (meta?.itemType && meta?.itemId) {
-      const routeType = this.mapItemTypeToRoute(meta.itemType);
+    const routeType = mapNotificationMetaToContentType(meta);
+    if (routeType && meta?.itemId) {
       await this.modalController.dismiss();
       this.router.navigate(['/tabs/content-detail', routeType, meta.itemId]);
     }
-  }
-
-  private mapItemTypeToRoute(itemType: string): ContentType {
-    const mapping: Record<string, ContentType> = {
-      event: 'event',
-      class: 'class',
-      'impact-story': 'impact-story',
-      impactStory: 'impact-story',
-      'gap-ministry': 'gap-ministry',
-      gapMinistry: 'gap-ministry',
-      'donation-opportunity': 'donation-opportunity',
-      donationOpportunity: 'donation-opportunity',
-      volunteer: 'volunteer',
-      'donation-drive': 'donation-drive',
-      donationDrive: 'donation-drive',
-      'church-partner': 'church-partner',
-      churchPartner: 'church-partner',
-      fundraiser: 'fundraiser',
-      awareness: 'awareness',
-    };
-    return mapping[itemType] ?? 'event';
   }
 }
