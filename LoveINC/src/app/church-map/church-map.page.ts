@@ -25,6 +25,7 @@ import { ChurchDetailsPopoverComponent } from './church-details-popover.componen
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
+import { GoogleMapsLoaderService } from '../services/google-maps-loader.service';
 
 declare var google: any;
 
@@ -70,6 +71,7 @@ export class ChurchMapPage implements OnInit, OnDestroy, AfterViewInit {
   popover: any = null;
   router = this.routerInstance;
   showDonateButton: boolean = false;
+  mapLoadError = false;
 
   constructor(
     private routerInstance: Router,
@@ -77,7 +79,8 @@ export class ChurchMapPage implements OnInit, OnDestroy, AfterViewInit {
     private ngZone: NgZone,
     private popoverController: PopoverController,
     private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private googleMapsLoader: GoogleMapsLoaderService
   ) {}
 
   ngOnInit() {
@@ -125,16 +128,17 @@ export class ChurchMapPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async initMap() {
-    // Wait for Google Maps to load
-    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+    const mapElement = document.getElementById('map');
+    if (!mapElement) {
       setTimeout(() => this.initMap(), 100);
       return;
     }
 
-    // Check if map element exists
-    const mapElement = document.getElementById('map');
-    if (!mapElement) {
-      setTimeout(() => this.initMap(), 100);
+    try {
+      await this.googleMapsLoader.load();
+    } catch (err) {
+      console.warn('ChurchMap: Google Maps failed to load', err);
+      this.ngZone.run(() => (this.mapLoadError = true));
       return;
     }
 

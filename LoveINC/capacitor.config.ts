@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.loveincnewberg.app',
+  appId: 'org.loveincnewberg.app',
   appName: 'Love INC',
   webDir: 'www',
   plugins: {
@@ -17,7 +17,7 @@ const config: CapacitorConfig = {
       androidIsEncryption: false,
     },
     SplashScreen: {
-      launchShowDuration: 2000,
+      launchShowDuration: 3000,
       launchAutoHide: true,
       backgroundColor: '#ffffff',
       androidSplashResourceName: 'splash',

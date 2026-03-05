@@ -18,6 +18,7 @@ import {
   IonSpinner,
 } from '@ionic/angular/standalone';
 import { PopoverController } from '@ionic/angular/standalone';
+import { GoogleMapsLoaderService } from '../../services/google-maps-loader.service';
 
 declare var google: any;
 
@@ -47,13 +48,15 @@ export class DonationLocationMapModalComponent implements AfterViewInit, OnDestr
 
   loading = true;
   geocodeError = false;
+  mapLoadError = false;
   private map: any = null;
   private popover: any = null;
 
   constructor(
     private modalController: ModalController,
     private popoverController: PopoverController,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private googleMapsLoader: GoogleMapsLoaderService
   ) {}
 
   async dismiss() {
@@ -71,15 +74,21 @@ export class DonationLocationMapModalComponent implements AfterViewInit, OnDestr
     }
   }
 
-  private initMap() {
-    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+  private async initMap() {
+    const mapEl = document.getElementById('donation-map');
+    if (!mapEl) {
       setTimeout(() => this.initMap(), 100);
       return;
     }
 
-    const mapEl = document.getElementById('donation-map');
-    if (!mapEl) {
-      setTimeout(() => this.initMap(), 100);
+    try {
+      await this.googleMapsLoader.load();
+    } catch (err) {
+      console.warn('DonationLocationMapModal: Google Maps failed to load', err);
+      this.ngZone.run(() => {
+        this.loading = false;
+        this.mapLoadError = true;
+      });
       return;
     }
 

@@ -128,11 +128,6 @@ export class AppComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     await this.platform.ready();
 
-    // Pre-initialize GrovLink database so SQLite is ready when notifications are used
-    this.grovlinkDb.getDbConnection().catch((err) => {
-      console.warn('GrovLink DB init deferred:', err);
-    });
-
     // Hide splash screen only on initial app launch, not when app comes back to foreground
     if (!AppComponent.splashScreenHidden) {
       try {
@@ -143,6 +138,11 @@ export class AppComponent implements OnInit, OnDestroy {
         AppComponent.splashScreenHidden = true;
       }
     }
+
+    // Pre-initialize GrovLink database so SQLite is ready when notifications are used
+    this.grovlinkDb.getDbConnection().catch((err) => {
+      console.warn('GrovLink DB init deferred:', err);
+    });
 
     // Listen for app state changes to prevent splash screen from showing on resume
     try {

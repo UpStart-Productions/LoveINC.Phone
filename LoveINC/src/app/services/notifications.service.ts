@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, switchMap, map, from } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap, map, from, catchError, of } from 'rxjs';
 import { PlatformApiService, type PlatformNotification } from './platform/platform-api.service';
 import { GrovLinkDatabaseService } from './grovlink-database.service';
 
@@ -19,7 +19,7 @@ export class NotificationsService {
         switchMap((apiNotifications) =>
           from(this.grovlinkDb.getReadNotificationIds()).pipe(
             map((readIds) =>
-              apiNotifications.map((n) => ({
+              (apiNotifications ?? []).map((n) => ({
                 ...n,
                 read: readIds.has(n.id),
               }))
@@ -27,7 +27,11 @@ export class NotificationsService {
           )
         )
       )
-    )
+    ),
+    catchError((err) => {
+      console.warn('NotificationsService: failed to load', err?.message ?? err);
+      return of([]);
+    })
   );
 
   readonly unreadCount$: Observable<number> = this.notifications$.pipe(

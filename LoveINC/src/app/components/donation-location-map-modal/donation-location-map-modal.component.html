@@ -10,6 +10,9 @@
 </ion-header>
 <ion-content [fullscreen]="true">
   <div id="donation-map" class="map-container"></div>
+  <div *ngIf="mapLoadError" class="map-message">
+    <p>Map could not load. Check your connection and try again.</p>
+  </div>
   <div *ngIf="geocodeError" class="map-message">
     <p>Could not find location on map.</p>
     <p class="app-body-secondary">{{ address }}</p>

@@ -1,5 +1,5 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { RouteReuseStrategy, provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
+import { RouteReuseStrategy, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
@@ -33,11 +33,18 @@ import {
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
+window.addEventListener('error', (e) => {
+  console.error('[App] Uncaught error:', e.error ?? e.message, e.filename, e.lineno);
+});
+window.addEventListener('unhandledrejection', (e) => {
+  console.error('[App] Unhandled rejection:', e.reason);
+});
+
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular({ mode: 'ios' }),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
+    provideRouter(routes),
     provideHttpClient(),
     importProvidersFrom(
       LucideAngularModule.pick({
