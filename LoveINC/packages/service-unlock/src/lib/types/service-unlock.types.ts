@@ -26,3 +26,11 @@ export interface Voucher {
 export interface UnlockPhraseProvider {
   getUnlockPhrase(): Promise<string | null>;
 }
+
+/**
+ * Provider for validating intake phrase via API.
+ * Host app wires this to their platform API; it fetches user email from Profile.
+ */
+export interface IntakeValidateProvider {
+  validate(phrase: string): Promise<{ success: boolean; message?: string }>;
+}

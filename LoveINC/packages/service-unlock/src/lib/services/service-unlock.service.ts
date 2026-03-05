@@ -2,7 +2,7 @@ import { Injectable, InjectionToken, Optional, Inject } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { ServiceUnlockDatabaseService } from './service-unlock-database.service';
-import type { UnlockPhraseProvider, Voucher } from '../types/service-unlock.types';
+import type { IntakeValidateProvider, UnlockPhraseProvider, Voucher } from '../types/service-unlock.types';
 
 /** Default mock phrase when no API provider is configured. */
 export const DEFAULT_MOCK_PHRASE = 'Love INC Loves You';
@@ -10,6 +10,11 @@ export const DEFAULT_MOCK_PHRASE = 'Love INC Loves You';
 /** Injection token for the unlock phrase provider. Host app provides this when API is ready. */
 export const UNLOCK_PHRASE_PROVIDER = new InjectionToken<UnlockPhraseProvider>(
   'ServiceUnlock.UnlockPhraseProvider'
+);
+
+/** Injection token for intake phrase validation via API. Host app provides this to wire API. */
+export const INTAKE_VALIDATE_PROVIDER = new InjectionToken<IntakeValidateProvider>(
+  'ServiceUnlock.IntakeValidateProvider'
 );
 
 /** Mock vouchers for UI development until API is wired. */
@@ -43,7 +48,8 @@ export class ServiceUnlockService {
 
   constructor(
     private db: ServiceUnlockDatabaseService,
-    @Optional() @Inject(UNLOCK_PHRASE_PROVIDER) private phraseProvider: UnlockPhraseProvider | null
+    @Optional() @Inject(UNLOCK_PHRASE_PROVIDER) private phraseProvider: UnlockPhraseProvider | null,
+    @Optional() @Inject(INTAKE_VALIDATE_PROVIDER) private intakeValidateProvider: IntakeValidateProvider | null
   ) {}
 
   /** Whether the user has completed intake (unlocked). */
@@ -76,20 +82,27 @@ export class ServiceUnlockService {
     return DEFAULT_MOCK_PHRASE;
   }
 
-  /** Validate decoded QR content and unlock if it matches. */
+  /** Validate decoded QR content via API and unlock on success. */
   async unlockWithPhrase(decoded: string): Promise<{ success: boolean; message?: string }> {
-    const phrase = await this.getUnlockPhrase();
-    if (!phrase?.trim()) {
-      return { success: false, message: 'Unlock phrase not available. Try again later.' };
+    if (!this.intakeValidateProvider) {
+      return { success: false, message: 'Intake validation not configured. Please update the app.' };
     }
-    const normalized = (decoded ?? '').trim().toLowerCase();
-    const expected = phrase.trim().toLowerCase();
-    if (normalized !== expected) {
-      return { success: false, message: 'Invalid QR code. Please scan the QR from your intake materials.' };
+    const phrase = (decoded ?? '').trim();
+    if (!phrase) {
+      return { success: false, message: 'No QR code detected. Please try again.' };
     }
-    await this.db.setUnlockState();
-    this.unlockState$.next(true);
-    return { success: true };
+    try {
+      const result = await this.intakeValidateProvider.validate(phrase);
+      if (result.success) {
+        await this.db.setUnlockState();
+        this.unlockState$.next(true);
+        return { success: true };
+      }
+      return { success: false, message: result.message ?? 'Validation failed.' };
+    } catch (err) {
+      const message = (err as Error)?.message ?? 'Unable to validate. Please check your connection and try again.';
+      return { success: false, message };
+    }
   }
 
   /** Clear unlock state (e.g. for testing). */

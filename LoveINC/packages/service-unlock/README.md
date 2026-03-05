@@ -49,24 +49,39 @@ Import `ServiceAccessSectionComponent` in your Profile page.
 
 **Android:** Add `android.permission.CAMERA` and ML Kit metadata to `AndroidManifest.xml` (see @capacitor-mlkit/barcode-scanning docs).
 
-### 5. Unlock phrase provider (optional)
+### 5. Intake validate provider (required for API)
 
-When API is ready, provide the unlock phrase:
+When using the API for intake validation, provide `INTAKE_VALIDATE_PROVIDER`:
 
 ```typescript
 providers: [
   {
-    provide: UNLOCK_PHRASE_PROVIDER,
-    useValue: {
-      getUnlockPhrase: () => platformApi.getMobileConfig().pipe(
-        map(c => c.intakeUnlockPhrase)
-      ).toPromise()
-    }
-  }
+    provide: INTAKE_VALIDATE_PROVIDER,
+    useFactory: (platformApi: PlatformApiService, userProfile: UserProfileService) => ({
+      validate: async (phrase: string) => {
+        const profile = userProfile.getProfile();
+        if (!profile.email?.trim()) {
+          return { success: false, message: 'Please add your email in Profile to complete intake validation.' };
+        }
+        try {
+          const result = await platformApi.validateIntakePhrase({
+            phrase,
+            email: profile.email,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+          });
+          return { success: result.success };
+        } catch (err) {
+          return { success: false, message: (err as Error)?.message };
+        }
+      },
+    }),
+    deps: [PlatformApiService, UserProfileService],
+  },
 ]
 ```
 
-Until then, the package uses mock phrase `"Love INC Loves You"`.
+The API endpoint is `POST /public/:customerSlug/:tenantSlug/intake/validate` with body `{ phrase, email, firstName?, lastName? }`.
 
 ## Usage
 

@@ -53,6 +53,7 @@ Import from `'../../services/platform'` or `'../../services/platform-api.service
 | `GET /ctas` | ✅ | `getCtas()` | Home, CTAs |
 | `GET /impact-stories` | ✅ | `getImpactStories()` | Impact Stories page |
 | `GET /home-feed` | ✅ | `getHomeFeed()` | Home page |
+| `POST /intake/validate` | ✅ | `validateIntakePhrase()` | Service unlock (QR scan) |
 
 ## Home Feed
 

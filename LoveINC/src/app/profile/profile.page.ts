@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { format } from 'date-fns';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OnboardingService } from '../services/onboarding.service';
+import { UserProfileService } from '../services/user-profile.service';
 import {
   IonHeader,
   IonToolbar,
@@ -23,7 +24,9 @@ import {
   IonSegment,
   IonSegmentButton
 } from '@ionic/angular/standalone';
+import { AlertController } from '@ionic/angular/standalone';
 import { ServiceAccessSectionComponent } from '@upstart-productions/service-unlock';
+import { Subscription } from 'rxjs';
 
 type UserType = 'client' | 'donor' | 'volunteer';
 
@@ -35,13 +38,13 @@ type UserType = 'client' | 'donor' | 'volunteer';
     CommonModule,
     FormsModule,
     ServiceAccessSectionComponent,
-    IonHeader, 
-    IonToolbar, 
-    IonTitle, 
-    IonContent, 
-    IonCard, 
-    IonCardHeader, 
-    IonCardTitle, 
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
     IonCardContent,
     IonList,
     IonItem,
@@ -54,9 +57,12 @@ type UserType = 'client' | 'donor' | 'volunteer';
     IonSegmentButton
   ],
 })
-export class ProfilePage {
+export class ProfilePage implements OnInit, OnDestroy {
   selectedUserType: UserType = 'client';
-  
+
+  profileInfo = { email: '', firstName: '', lastName: '' };
+  private profileSub?: Subscription;
+
   userProfile = {
     name: 'Guest User',
     email: '',
@@ -96,8 +102,60 @@ export class ProfilePage {
 
   constructor(
     private router: Router,
-    private onboardingService: OnboardingService
+    private onboardingService: OnboardingService,
+    private userProfileService: UserProfileService,
+    private alertController: AlertController
   ) {}
+
+  ngOnInit(): void {
+    const p = this.userProfileService.getProfile();
+    this.profileInfo = { email: p.email ?? '', firstName: p.firstName ?? '', lastName: p.lastName ?? '' };
+    this.profileSub = this.userProfileService.getProfile$().subscribe((prof) => {
+      this.profileInfo = { email: prof.email ?? '', firstName: prof.firstName ?? '', lastName: prof.lastName ?? '' };
+      this.updateDisplayProfile();
+    });
+    this.updateDisplayProfile();
+  }
+
+  ngOnDestroy(): void {
+    this.profileSub?.unsubscribe();
+  }
+
+  private updateDisplayProfile(): void {
+    const p = this.profileInfo;
+    const name = [p.firstName, p.lastName].filter(Boolean).join(' ') || 'Guest User';
+    this.userProfile = {
+      ...this.userProfile,
+      name,
+      email: p.email,
+    };
+  }
+
+  async editProfile(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Account Information',
+      message: 'Email is required for intake validation. Add your email before scanning the QR code.',
+      inputs: [
+        { name: 'email', type: 'email', placeholder: 'Email', value: this.profileInfo.email },
+        { name: 'firstName', type: 'text', placeholder: 'First name (optional)', value: this.profileInfo.firstName },
+        { name: 'lastName', type: 'text', placeholder: 'Last name (optional)', value: this.profileInfo.lastName },
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Save',
+          handler: (data) => {
+            this.userProfileService.setProfile({
+              email: (data.email ?? '').trim(),
+              firstName: (data.firstName ?? '').trim() || undefined,
+              lastName: (data.lastName ?? '').trim() || undefined,
+            });
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
 
   get currentEngagement() {
     switch (this.selectedUserType) {

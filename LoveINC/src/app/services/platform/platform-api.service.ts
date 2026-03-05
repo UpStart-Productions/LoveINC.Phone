@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map, catchError, of, tap, firstValueFrom } from 'rxjs';
+import { Observable, map, catchError, of, tap, firstValueFrom, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import type {
   PlatformAddress,
@@ -175,6 +175,48 @@ export class PlatformApiService {
           throw err;
         })
       )
+    );
+  }
+
+  /**
+   * Validate intake phrase and complete intake. Creates/updates AppUser and CustomerIntakeCompletion.
+   * POST /public/:customerSlug/:tenantSlug/intake/validate
+   */
+  validateIntakePhrase(params: {
+    phrase: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+  }): Promise<{ success: boolean; intakeCompleted: boolean }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const url = `${this.basePath}/intake/validate`;
+    const body: Record<string, string> = {
+      phrase: params.phrase.trim(),
+      email: params.email.trim(),
+    };
+    if (params['firstName']?.trim()) body['firstName'] = params['firstName'].trim();
+    if (params['lastName']?.trim()) body['lastName'] = params['lastName'].trim();
+
+    return firstValueFrom(
+      this.http
+        .post<{ success: boolean; intakeCompleted: boolean }>(url, body, {
+          headers: this.headers,
+          responseType: 'json',
+        })
+        .pipe(
+          tap((res) => console.debug('PlatformApiService: intake/validate OK', res)),
+          catchError((err) => {
+            const status = err?.status ?? err?.error?.status;
+            const message =
+              typeof err?.error === 'string'
+                ? err.error
+                : err?.error?.message ?? err?.message ?? 'Unable to validate. Please check your connection and try again.';
+            console.error('PlatformApiService: intake/validate failed', { url, status, message, err });
+            return throwError(() => new Error(message));
+          })
+        )
     );
   }
 
