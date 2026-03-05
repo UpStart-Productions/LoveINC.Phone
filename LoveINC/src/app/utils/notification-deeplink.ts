@@ -26,7 +26,8 @@ export function mapNotificationMetaToContentType(meta: NotificationMeta | null |
       fundraiser: 'fundraiser',
       awareness: 'awareness',
     };
-    return (ctaType && ctaMapping[ctaType]) ?? 'donation-drive';
+    const mapped = ctaType ? ctaMapping[ctaType] : null;
+    return mapped ?? 'donation-drive';
   }
 
   const mapping: Record<string, ContentType> = {

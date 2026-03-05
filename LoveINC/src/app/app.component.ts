@@ -179,12 +179,12 @@ export class AppComponent implements OnInit, OnDestroy {
         'pushNotificationActionPerformed',
         (action) => {
           const data = action.notification?.data as Record<string, string> | undefined;
-          if (!data?.itemType || !data?.itemId) return;
+          if (!data?.['itemType'] || !data?.['itemId']) return;
           const meta = {
-            itemType: data.itemType,
-            itemId: data.itemId,
-            tenantSlug: data.tenantSlug,
-            ctaType: data.ctaType,
+            itemType: data['itemType'],
+            itemId: data['itemId'],
+            tenantSlug: data['tenantSlug'],
+            ctaType: data['ctaType'],
           };
           const routeType = mapNotificationMetaToContentType(meta);
           if (routeType) {
