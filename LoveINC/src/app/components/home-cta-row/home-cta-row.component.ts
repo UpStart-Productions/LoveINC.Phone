@@ -62,6 +62,8 @@ export class HomeCtaRowComponent {
 
   onCardClick() {
     if (!this.cta?.id) return;
-    this.router.navigate(['/tabs/content-detail', this.contentDetailType, this.cta.id]);
+    this.router.navigate(['/tabs/content-detail', this.contentDetailType, this.cta.id], {
+      queryParams: { from: 'home' },
+    });
   }
 }

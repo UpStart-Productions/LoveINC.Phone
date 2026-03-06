@@ -93,7 +93,7 @@ export class ContentDetailPage implements OnInit {
   private getDefaultBackRoute(): string {
     switch (this.contentType) {
       case 'event':
-        return '/tabs/updates';
+        return '/tabs/home';
       case 'class':
         return '/tabs/transformation-classes';
       case 'impact-story':

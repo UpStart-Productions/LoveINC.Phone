@@ -307,7 +307,9 @@ export class HomePage implements OnInit {
 
   navigateToCard(card: HomeCard) {
     const detailType = this.getContentDetailType(card.type);
-    this.router.navigate(['/tabs/content-detail', detailType, card.id]);
+    this.router.navigate(['/tabs/content-detail', detailType, card.id], {
+      queryParams: { from: 'home' },
+    });
   }
 
   async onShareCard(card: HomeCard) {
