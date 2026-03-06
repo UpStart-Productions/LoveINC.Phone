@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -34,24 +34,32 @@ import { Capacitor } from '@capacitor/core';
     IonSpinner,
   ],
 })
-export class ServiceUnlockScanPage implements OnInit {
+export class ServiceUnlockScanPage implements OnInit, OnDestroy {
   scanning = false;
   error: string | null = null;
   success = false;
   supported = false;
+
+  private destroyed = false;
 
   constructor(
     private service: ServiceUnlockService,
     private router: Router
   ) {}
 
+  ngOnDestroy(): void {
+    this.destroyed = true;
+  }
+
   async ngOnInit(): Promise<void> {
     await this.service.ensureInitialized();
+    if (this.destroyed) return;
     if (this.service.isUnlocked) {
       this.success = true;
       return;
     }
     const { supported } = await BarcodeScanner.isSupported();
+    if (this.destroyed) return;
     this.supported = supported;
   }
 
@@ -61,12 +69,15 @@ export class ServiceUnlockScanPage implements OnInit {
 
     try {
       if (!Capacitor.isNativePlatform()) {
-        this.error = 'QR scanning is only available on iOS or Android.';
+        if (!this.destroyed) {
+          this.error = 'QR scanning is only available on iOS or Android.';
+        }
         this.scanning = false;
         return;
       }
 
       const { supported } = await BarcodeScanner.isSupported();
+      if (this.destroyed) return;
       if (!supported) {
         this.error = 'Barcode scanning is not supported on this device.';
         this.scanning = false;
@@ -74,8 +85,10 @@ export class ServiceUnlockScanPage implements OnInit {
       }
 
       const { camera } = await BarcodeScanner.checkPermissions();
+      if (this.destroyed) return;
       if (camera !== 'granted' && camera !== 'limited') {
         const status = await BarcodeScanner.requestPermissions();
+        if (this.destroyed) return;
         if (status.camera !== 'granted' && status.camera !== 'limited') {
           this.error = 'Camera permission is required to scan the QR code.';
           this.scanning = false;
@@ -88,6 +101,8 @@ export class ServiceUnlockScanPage implements OnInit {
         autoZoom: true,
       });
 
+      if (this.destroyed) return;
+
       const barcode = barcodes[0];
       const decoded = barcode?.rawValue ?? barcode?.displayValue ?? '';
 
@@ -98,15 +113,20 @@ export class ServiceUnlockScanPage implements OnInit {
       }
 
       const result = await this.service.unlockWithPhrase(decoded);
+      if (this.destroyed) return;
       if (result.success) {
         this.success = true;
       } else {
         this.error = result.message ?? 'Invalid QR code.';
       }
     } catch (e) {
-      this.error = (e as Error)?.message ?? 'Scan failed. Please try again.';
+      if (!this.destroyed) {
+        this.error = (e as Error)?.message ?? 'Scan failed. Please try again.';
+      }
     } finally {
-      this.scanning = false;
+      if (!this.destroyed) {
+        this.scanning = false;
+      }
     }
   }
 

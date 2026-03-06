@@ -6,8 +6,10 @@ import { PushNotifications } from '@capacitor/push-notifications';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { App } from '@capacitor/app';
 import { OnboardingService } from './services/onboarding.service';
+import { UserProfileService } from './services/user-profile.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
 import { PushRegistrationService } from './services/push-registration.service';
+import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { mapNotificationMetaToContentType } from './utils/notification-deeplink';
 import { addIcons } from 'ionicons';
 import {
@@ -111,10 +113,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private onboardingService: OnboardingService,
+    private userProfileService: UserProfileService,
     private platform: Platform,
     private grovlinkDb: GrovLinkDatabaseService,
     private pushRegistration: PushRegistrationService,
-    private router: Router
+    private router: Router,
+    private serviceUnlock: ServiceUnlockService
   ) {
     // Initialize all icons for app-wide use
     this.initializeIcons();
@@ -144,6 +148,19 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     }
 
+    // Sync onboarding name/email to UserProfileService if profile is empty
+    const profile = this.userProfileService.getProfile();
+    if (!profile.email?.trim() && !profile.firstName?.trim() && !profile.lastName?.trim()) {
+      const onboarding = this.onboardingService.getOnboardingData();
+      if (onboarding?.firstName || onboarding?.lastName || onboarding?.email) {
+        this.userProfileService.setProfile({
+          firstName: onboarding.firstName ?? '',
+          lastName: onboarding.lastName ?? '',
+          email: onboarding.email ?? '',
+        });
+      }
+    }
+
     // Pre-initialize GrovLink database so SQLite is ready when notifications are used
     this.grovlinkDb.getDbConnection().catch((err) => {
       console.warn('GrovLink DB init deferred:', err);
@@ -158,6 +175,18 @@ export class AppComponent implements OnInit, OnDestroy {
             await SplashScreen.hide();
           } catch (error) {
             // Ignore errors - splash might already be hidden
+          }
+          // Re-initialize DB connections and service unlock state after resume
+          // (iOS may have suspended or invalidated connections when backgrounded)
+          try {
+            await this.grovlinkDb.getDbConnection();
+          } catch (err) {
+            console.warn('GrovLink DB reconnect on resume:', err);
+          }
+          try {
+            await this.serviceUnlock.ensureInitialized(true);
+          } catch (err) {
+            console.warn('Service unlock re-init on resume:', err);
           }
         }
       });

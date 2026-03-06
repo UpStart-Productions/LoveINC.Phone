@@ -10,14 +10,12 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-  IonInput,
-  IonItem,
-  IonLabel,
-  IonList,
 } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
+import { UserProfileFormComponent, type UserProfileFormValue } from '../user-profile-form/user-profile-form.component';
 import { OnboardingService } from '../../services/onboarding.service';
+import { UserProfileService } from '../../services/user-profile.service';
 import { PlatformApiService } from '../../services/platform/platform-api.service';
 import { DeviceInfoService } from '../../services/device-info.service';
 
@@ -45,10 +43,7 @@ export interface VolunteerPosition {
     IonButtons,
     IonButton,
     IonIcon,
-    IonInput,
-    IonItem,
-    IonLabel,
-    IonList,
+    UserProfileFormComponent,
     SafeHtmlPipe,
   ],
 })
@@ -69,13 +64,16 @@ export class VolunteerModalComponent {
     private modalController: ModalController,
     private toastController: ToastController,
     private onboardingService: OnboardingService,
+    private userProfileService: UserProfileService,
     private platformApi: PlatformApiService,
     private deviceInfo: DeviceInfoService,
   ) {}
 
   hasUserInfo(): boolean {
-    const data = this.onboardingService.getOnboardingData();
-    return !!(data?.firstName?.trim() && data?.lastName?.trim() && data?.email?.trim());
+    return this.userProfileService.hasCompleteProfile() ||
+      !!(this.onboardingService.getOnboardingData()?.firstName?.trim() &&
+        this.onboardingService.getOnboardingData()?.lastName?.trim() &&
+        this.onboardingService.getOnboardingData()?.email?.trim());
   }
 
   async dismiss() {
@@ -88,24 +86,22 @@ export class VolunteerModalComponent {
     } else {
       this.selectedPosition = position;
       this.showForm = true;
-      const data = this.onboardingService.getOnboardingData();
-      this.firstName = data?.firstName ?? '';
-      this.lastName = data?.lastName ?? '';
-      this.email = data?.email ?? '';
+      const profile = this.userProfileService.getProfile();
+      const onboarding = this.onboardingService.getOnboardingData();
+      this.firstName = profile.firstName ?? onboarding?.firstName ?? '';
+      this.lastName = profile.lastName ?? onboarding?.lastName ?? '';
+      this.email = profile.email ?? onboarding?.email ?? '';
     }
   }
 
-  async onSubmitForm() {
+  async onSubmitForm(value: UserProfileFormValue) {
     if (!this.selectedPosition || this.submitting) return;
-    const fn = this.firstName.trim();
-    const ln = this.lastName.trim();
-    const em = this.email.trim();
-    if (!fn || !ln || !em || !this.isValidEmail(em)) {
-      await this.showToast('Please enter a valid first name, last name, and email.', 'danger');
-      return;
-    }
     this.submitting = true;
-    this.onboardingService.updateOnboardingData({ firstName: fn, lastName: ln, email: em });
+    this.firstName = value.firstName;
+    this.lastName = value.lastName;
+    this.email = value.email;
+    this.userProfileService.setProfile(value);
+    this.onboardingService.updateOnboardingData(value);
     await this.submitAndDismiss(this.selectedPosition);
     this.submitting = false;
   }
@@ -113,10 +109,6 @@ export class VolunteerModalComponent {
   onCancelForm() {
     this.showForm = false;
     this.selectedPosition = null;
-  }
-
-  private isValidEmail(email: string): boolean {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
   private async submitAndDismiss(position: VolunteerPosition) {
@@ -148,18 +140,17 @@ export class VolunteerModalComponent {
 
   private getFirstName(): string {
     if (this.showForm) return this.firstName.trim();
-    return this.onboardingService.getUserFirstName() ?? '';
+    return this.userProfileService.getProfile().firstName ?? this.onboardingService.getUserFirstName() ?? '';
   }
 
   private getLastName(): string {
     if (this.showForm) return this.lastName.trim();
-    const data = this.onboardingService.getOnboardingData();
-    return data?.lastName?.trim() ?? '';
+    return this.userProfileService.getProfile().lastName ?? this.onboardingService.getOnboardingData()?.lastName?.trim() ?? '';
   }
 
   private getEmail(): string {
     if (this.showForm) return this.email.trim();
-    return this.onboardingService.getUserEmail() ?? '';
+    return this.userProfileService.getProfile().email ?? this.onboardingService.getUserEmail() ?? '';
   }
 
   private async showToast(message: string, color: 'success' | 'danger') {

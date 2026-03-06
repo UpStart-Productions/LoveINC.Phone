@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { format } from 'date-fns';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OnboardingService } from '../services/onboarding.service';
 import { UserProfileService } from '../services/user-profile.service';
@@ -14,18 +12,14 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-  IonList,
-  IonItem,
-  IonLabel,
   IonIcon,
   IonButton,
   IonButtons,
-  IonBackButton,
-  IonSegment,
-  IonSegmentButton
+  IonBackButton
 } from '@ionic/angular/standalone';
-import { AlertController } from '@ionic/angular/standalone';
+import { ModalController } from '@ionic/angular/standalone';
 import { ServiceAccessSectionComponent } from '@upstart-productions/service-unlock';
+import { UserProfileFormModalComponent } from '../components/user-profile-form-modal/user-profile-form-modal.component';
 import { Subscription } from 'rxjs';
 
 type UserType = 'client' | 'donor' | 'volunteer';
@@ -36,7 +30,6 @@ type UserType = 'client' | 'donor' | 'volunteer';
   styleUrls: ['profile.page.scss'],
   imports: [
     CommonModule,
-    FormsModule,
     ServiceAccessSectionComponent,
     IonHeader,
     IonToolbar,
@@ -46,15 +39,10 @@ type UserType = 'client' | 'donor' | 'volunteer';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonList,
-    IonItem,
-    IonLabel,
     IonIcon,
     IonButton,
     IonButtons,
-    IonBackButton,
-    IonSegment,
-    IonSegmentButton
+    IonBackButton
   ],
 })
 export class ProfilePage implements OnInit, OnDestroy {
@@ -64,13 +52,11 @@ export class ProfilePage implements OnInit, OnDestroy {
   private profileSub?: Subscription;
 
   userProfile = {
-    name: 'Guest User',
+    name: '',
     email: '',
-    phone: '',
-    memberSince: format(new Date(), 'MMM d, yyyy')
   };
 
-  // Client-specific data
+  // Client-specific data (used when My Engagement is re-enabled)
   clientData = {
     engagement: {
       classesCompleted: 2,
@@ -104,7 +90,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     private router: Router,
     private onboardingService: OnboardingService,
     private userProfileService: UserProfileService,
-    private alertController: AlertController
+    private modalController: ModalController
   ) {}
 
   ngOnInit(): void {
@@ -123,7 +109,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   private updateDisplayProfile(): void {
     const p = this.profileInfo;
-    const name = [p.firstName, p.lastName].filter(Boolean).join(' ') || 'Guest User';
+    const name = [p.firstName, p.lastName].filter(Boolean).join(' ') || '';
     this.userProfile = {
       ...this.userProfile,
       name,
@@ -131,31 +117,58 @@ export class ProfilePage implements OnInit, OnDestroy {
     };
   }
 
-  async editProfile(): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Account Information',
-      message: 'Email is required for intake validation. Add your email before scanning the QR code.',
-      inputs: [
-        { name: 'email', type: 'email', placeholder: 'Email', value: this.profileInfo.email },
-        { name: 'firstName', type: 'text', placeholder: 'First name (optional)', value: this.profileInfo.firstName },
-        { name: 'lastName', type: 'text', placeholder: 'Last name (optional)', value: this.profileInfo.lastName },
-      ],
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        {
-          text: 'Save',
-          handler: (data) => {
-            this.userProfileService.setProfile({
-              email: (data.email ?? '').trim(),
-              firstName: (data.firstName ?? '').trim() || undefined,
-              lastName: (data.lastName ?? '').trim() || undefined,
-            });
-          },
-        },
-      ],
-    });
-    await alert.present();
+  get displayName(): string {
+    return [this.profileInfo.firstName, this.profileInfo.lastName].filter(Boolean).join(' ') || '';
   }
+
+  async editProfile(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: UserProfileFormModalComponent,
+      componentProps: {
+        headerTitle: 'Your information',
+        message: 'Email is required for intake validation.',
+        firstName: this.profileInfo.firstName,
+        lastName: this.profileInfo.lastName,
+        email: this.profileInfo.email,
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+      this.userProfileService.setProfile({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+      });
+    }
+  }
+
+  onScanRequested = async (): Promise<void> => {
+    if (this.userProfileService.hasCompleteProfile()) {
+      this.router.navigate(['/tabs/service-unlock/scan']);
+      return;
+    }
+    const modal = await this.modalController.create({
+      component: UserProfileFormModalComponent,
+      componentProps: {
+        headerTitle: 'Complete your profile',
+        message: 'Please enter your first name, last name, and email to scan the QR code.',
+        firstName: this.profileInfo.firstName,
+        lastName: this.profileInfo.lastName,
+        email: this.profileInfo.email,
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+      this.userProfileService.setProfile({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+      });
+      this.router.navigate(['/tabs/service-unlock/scan']);
+    }
+  };
 
   get currentEngagement() {
     switch (this.selectedUserType) {
@@ -235,27 +248,11 @@ export class ProfilePage implements OnInit, OnDestroy {
     return this.selectedUserType === 'donor';
   }
 
-  navigateToSettings() {
-    console.log('Navigate to Settings');
-  }
-
-  navigateToNotifications() {
-    console.log('Navigate to Notifications');
-  }
-
-  navigateToHelp() {
-    console.log('Navigate to Help');
-  }
-
   navigateToSandbox() {
     this.router.navigate(['/sandbox']);
   }
 
   navigateToDeveloperOptions() {
     this.router.navigate(['/tabs/developer-options']);
-  }
-
-  logout() {
-    console.log('Logout');
   }
 }

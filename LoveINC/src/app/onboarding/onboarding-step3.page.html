@@ -13,62 +13,27 @@
   <!-- Content Container -->
   <div class="content-container">
     <!-- Form -->
+    <app-user-profile-form
+      [firstName]="firstName"
+      [lastName]="lastName"
+      [email]="email"
+      saveLabel="Complete"
+      [showCancel]="false"
+      (save)="onFormSave($event)">
+    </app-user-profile-form>
+
     <ion-list>
-      <ion-item>
-        <ion-label position="stacked">First Name</ion-label>
-        <ion-input
-          [(ngModel)]="firstName"
-          type="text"
-          name="firstName"
-          autocapitalize="words"
-          required>
-        </ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Last Name</ion-label>
-        <ion-input
-          [(ngModel)]="lastName"
-          type="text"
-          name="lastName"
-          autocapitalize="words"
-          required>
-        </ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Email Address</ion-label>
-        <ion-input
-          [(ngModel)]="email"
-          type="email"
-          name="email"
-          required>
-        </ion-input>
-      </ion-item>
-
-      <ion-item button="false" detail="false" lines="full">
-        <ion-checkbox 
-          slot="start" 
-          [(ngModel)]="wantsNewsletter"
-          name="wantsNewsletter">
-        </ion-checkbox>
-        <ion-label (click)="wantsNewsletter = !wantsNewsletter">
-          I would like to receive Love INC newsletter
-        </ion-label>
-      </ion-item>
+    <ion-item button="false" detail="false" lines="full" class="newsletter-item">
+      <ion-checkbox 
+        slot="start" 
+        [(ngModel)]="wantsNewsletter"
+        name="wantsNewsletter">
+      </ion-checkbox>
+      <ion-label (click)="wantsNewsletter = !wantsNewsletter">
+        I would like to receive Love INC newsletter
+      </ion-label>
+    </ion-item>
     </ion-list>
-
-    <!-- Complete Button -->
-    <ion-button 
-      expand="block" 
-      size="large"
-      color="primary"
-      class="pill-button"
-      [disabled]="!canComplete()"
-      (click)="onComplete()">
-      <ion-icon slot="start" name="checkmark-outline"></ion-icon>
-      Complete
-    </ion-button>
 
     <!-- Skip Link -->
     <div class="exploring-link">

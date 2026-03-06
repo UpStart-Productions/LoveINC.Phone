@@ -29,21 +29,28 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Service Unlock Reset -->
+  <!-- Service Unlock / Access -->
   <ion-card class="section-card">
     <ion-card-header>
       <ion-card-title>
         <ion-icon name="key-outline" class="section-icon"></ion-icon>
-        Service Unlock
+        Service Access
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <p class="m-b-18" style="color: var(--ion-color-medium);">
         Clear intake unlock state to test the QR scan flow again.
       </p>
-      <ion-button expand="block" fill="outline" (click)="clearServiceUnlock()">
+      <ion-button expand="block" fill="outline" (click)="clearAccess()">
         <ion-icon slot="start" name="key-outline"></ion-icon>
-        Clear Service Unlock
+        Clear Access
+      </ion-button>
+      <p class="m-b-18 m-t-18" style="color: var(--ion-color-medium);">
+        Clear vouchers to test the voucher flow from scratch.
+      </p>
+      <ion-button expand="block" fill="outline" (click)="clearVouchers()">
+        <ion-icon slot="start" name="ticket-outline"></ion-icon>
+        Clear Vouchers
       </ion-button>
     </ion-card-content>
   </ion-card>

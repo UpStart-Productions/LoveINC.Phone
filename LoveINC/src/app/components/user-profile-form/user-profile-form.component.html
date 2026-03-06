@@ -1,0 +1,41 @@
+<ion-list>
+  <ion-item>
+    <ion-label position="stacked">First Name</ion-label>
+    <ion-input
+      [(ngModel)]="firstName"
+      type="text"
+      name="firstName"
+      autocapitalize="words"
+      required>
+    </ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Last Name</ion-label>
+    <ion-input
+      [(ngModel)]="lastName"
+      type="text"
+      name="lastName"
+      autocapitalize="words"
+      required>
+    </ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Email Address</ion-label>
+    <ion-input
+      [(ngModel)]="email"
+      type="email"
+      name="email"
+      required>
+    </ion-input>
+  </ion-item>
+</ion-list>
+
+<ion-button expand="block" (click)="onSubmit()" [disabled]="!canSave || submitting">
+  {{ submitting ? 'Saving...' : saveLabel }}
+</ion-button>
+
+@if (showCancel) {
+  <ion-button expand="block" fill="clear" (click)="onCancel()">Cancel</ion-button>
+}

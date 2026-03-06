@@ -11,24 +11,15 @@
 <ion-content class="ion-padding">
   @if (showForm && selectedPosition) {
     <p class="app-body-secondary m-b-18">{{ selectedPosition.title || 'Volunteer' }}</p>
-    <ion-list>
-      <ion-item>
-        <ion-label position="stacked">First Name</ion-label>
-        <ion-input [(ngModel)]="firstName" type="text" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Last Name</ion-label>
-        <ion-input [(ngModel)]="lastName" type="text" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Email Address</ion-label>
-        <ion-input [(ngModel)]="email" type="email" required></ion-input>
-      </ion-item>
-    </ion-list>
-    <ion-button expand="block" (click)="onSubmitForm()" [disabled]="submitting">
-      {{ submitting ? 'Submitting...' : 'Submit' }}
-    </ion-button>
-    <ion-button expand="block" fill="clear" (click)="onCancelForm()">Cancel</ion-button>
+    <app-user-profile-form
+      [firstName]="firstName"
+      [lastName]="lastName"
+      [email]="email"
+      saveLabel="Submit"
+      [showCancel]="true"
+      (save)="onSubmitForm($event)"
+      (cancel)="onCancelForm()">
+    </app-user-profile-form>
   } @else {
     @for (pos of positions; track pos.id) {
       <div class="volunteer-position">

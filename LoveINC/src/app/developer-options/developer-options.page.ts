@@ -85,11 +85,21 @@ export class DeveloperOptionsPage {
     return notifications[randomIndex];
   }
 
-  async clearServiceUnlock() {
+  async clearAccess() {
     await this.serviceUnlock.clearUnlock();
     const alert = await this.alertController.create({
-      header: 'Service Unlock Cleared',
+      header: 'Access Cleared',
       message: 'Intake unlock state has been reset. Go to Profile and scan again to re-unlock.',
+      buttons: ['OK'],
+    });
+    await alert.present();
+  }
+
+  async clearVouchers() {
+    this.serviceUnlock.clearVouchers();
+    const alert = await this.alertController.create({
+      header: 'Vouchers Cleared',
+      message: 'Vouchers have been cleared. (Mock data will reappear on next app load.)',
       buttons: ['OK'],
     });
     await alert.present();

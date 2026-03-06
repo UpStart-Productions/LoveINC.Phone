@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import {
   IonCard,
   IonCardHeader,
@@ -33,7 +34,7 @@ import type { Voucher } from '../types/service-unlock.types';
     IonButton,
   ],
 })
-export class ServiceAccessSectionComponent implements OnInit {
+export class ServiceAccessSectionComponent implements OnInit, OnDestroy {
   isUnlocked = false;
   vouchers: Voucher[] = [
     {
@@ -56,6 +57,11 @@ export class ServiceAccessSectionComponent implements OnInit {
     },
   ];
 
+  private subs: Subscription[] = [];
+
+  /** If provided, called when Scan QR Code is clicked instead of navigating. Use to show profile form first. */
+  @Input() scanClickHandler?: () => void | Promise<void>;
+
   constructor(
     private service: ServiceUnlockService,
     private router: Router
@@ -63,8 +69,15 @@ export class ServiceAccessSectionComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.service.ensureInitialized();
-    this.service.isUnlocked$.subscribe((u) => (this.isUnlocked = u));
-    this.service.getVouchers().subscribe((v) => (this.vouchers = v));
+    this.subs.push(
+      this.service.isUnlocked$.subscribe((u) => (this.isUnlocked = u)),
+      this.service.getVouchers().subscribe((v) => (this.vouchers = v))
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach((s) => s.unsubscribe());
+    this.subs = [];
   }
 
   isVoucherValid(v: Voucher): boolean {
@@ -79,8 +92,12 @@ export class ServiceAccessSectionComponent implements OnInit {
     });
   }
 
-  goToScan(): void {
-    this.router.navigate(['/tabs/service-unlock/scan']);
+  async goToScan(): Promise<void> {
+    if (this.scanClickHandler) {
+      await this.scanClickHandler();
+    } else {
+      this.router.navigate(['/tabs/service-unlock/scan']);
+    }
   }
 
   requestVoucher(): void {

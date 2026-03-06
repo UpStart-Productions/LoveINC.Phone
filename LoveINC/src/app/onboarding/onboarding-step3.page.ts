@@ -4,15 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IonContent,
-  IonButton,
   IonIcon,
-  IonInput,
   IonItem,
   IonLabel,
   IonCheckbox,
-  IonList
+  IonList,
 } from '@ionic/angular/standalone';
 import { OnboardingService, OnboardingData } from '../services/onboarding.service';
+import { UserProfileService } from '../services/user-profile.service';
+import { UserProfileFormComponent, type UserProfileFormValue } from '../components/user-profile-form/user-profile-form.component';
 
 @Component({
   selector: 'app-onboarding-step3',
@@ -23,13 +23,12 @@ import { OnboardingService, OnboardingData } from '../services/onboarding.servic
     CommonModule,
     FormsModule,
     IonContent,
-    IonButton,
     IonIcon,
-    IonInput,
     IonItem,
     IonLabel,
     IonCheckbox,
-    IonList
+    IonList,
+    UserProfileFormComponent,
   ]
 })
 export class OnboardingStep3Page {
@@ -40,45 +39,37 @@ export class OnboardingStep3Page {
 
   constructor(
     private router: Router,
-    private onboardingService: OnboardingService
+    private onboardingService: OnboardingService,
+    private userProfileService: UserProfileService
   ) {}
 
-  canComplete(): boolean {
-    return this.firstName.trim().length > 0 && 
-           this.lastName.trim().length > 0 && 
-           this.email.trim().length > 0 &&
-           this.isValidEmail(this.email);
-  }
+  onFormSave(value: UserProfileFormValue) {
+    this.firstName = value.firstName;
+    this.lastName = value.lastName;
+    this.email = value.email;
 
-  isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
+    // Get selections from step 2
+    const selectionsStr = sessionStorage.getItem('loveinc_temp_selections');
+    const selections = selectionsStr ? JSON.parse(selectionsStr) : [];
 
-  onComplete() {
-    if (this.canComplete()) {
-      // Get selections from step 2
-      const selectionsStr = sessionStorage.getItem('loveinc_temp_selections');
-      const selections = selectionsStr ? JSON.parse(selectionsStr) : [];
+    // Create onboarding data
+    const data: OnboardingData = {
+      selectedOptions: selections,
+      firstName: value.firstName,
+      lastName: value.lastName,
+      email: value.email,
+      wantsNewsletter: this.wantsNewsletter
+    };
 
-      // Create onboarding data
-      const data: OnboardingData = {
-        selectedOptions: selections,
-        firstName: this.firstName.trim(),
-        lastName: this.lastName.trim(),
-        email: this.email.trim(),
-        wantsNewsletter: this.wantsNewsletter
-      };
+    // Save and complete onboarding
+    this.onboardingService.setOnboardingCompleted(data);
+    this.userProfileService.setProfile(value);
 
-      // Save and complete onboarding
-      this.onboardingService.setOnboardingCompleted(data);
+    // Clean up temporary storage
+    sessionStorage.removeItem('loveinc_temp_selections');
 
-      // Clean up temporary storage
-      sessionStorage.removeItem('loveinc_temp_selections');
-
-      // Navigate to main app
-      this.router.navigate(['/tabs']);
-    }
+    // Navigate to main app
+    this.router.navigate(['/tabs']);
   }
 
   onSkip() {

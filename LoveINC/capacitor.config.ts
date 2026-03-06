@@ -4,6 +4,10 @@ const config: CapacitorConfig = {
   appId: 'org.loveincnewberg.app',
   appName: 'Love INC',
   webDir: 'www',
+  backgroundColor: '#ffffff',
+  ios: {
+    backgroundColor: '#ffffff',
+  },
   plugins: {
     CapacitorHttp: {
       enabled: true,

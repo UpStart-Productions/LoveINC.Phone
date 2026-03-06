@@ -63,8 +63,9 @@ export class ServiceUnlockService {
   }
 
   /** Initialize and load unlock state from DB. Call once at app startup or when entering Profile. */
-  async ensureInitialized(): Promise<void> {
-    if (this.initialized) return;
+  async ensureInitialized(force = false): Promise<void> {
+    if (this.initialized && !force) return;
+    if (force) this.initialized = false;
     try {
       const state = await this.db.getUnlockState();
       this.unlockState$.next(!!state);
@@ -119,9 +120,21 @@ export class ServiceUnlockService {
     return this.isUnlocked;
   }
 
+  private vouchers$ = new BehaviorSubject<Voucher[]>(MOCK_VOUCHERS);
+
   /** Get vouchers. Mock data until API is wired. */
   getVouchers(): Observable<Voucher[]> {
-    return of(MOCK_VOUCHERS);
+    return this.vouchers$.asObservable();
+  }
+
+  /** Clear vouchers (e.g. for testing). Resets to empty until app reload or API refetch. */
+  clearVouchers(): void {
+    this.vouchers$.next([]);
+  }
+
+  /** Reset vouchers to mock data (after clear, for testing). */
+  resetVouchers(): void {
+    this.vouchers$.next([...MOCK_VOUCHERS]);
   }
 
   /** Whether the user has a valid (approved, not expired) voucher for the given service. */
