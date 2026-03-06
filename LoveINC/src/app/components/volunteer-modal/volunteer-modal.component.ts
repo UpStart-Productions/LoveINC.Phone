@@ -18,6 +18,7 @@ import { OnboardingService } from '../../services/onboarding.service';
 import { UserProfileService } from '../../services/user-profile.service';
 import { PlatformApiService } from '../../services/platform/platform-api.service';
 import { DeviceInfoService } from '../../services/device-info.service';
+import { DeviceIdService } from '../../services/device-id.service';
 
 export interface VolunteerPosition {
   id: string;
@@ -67,6 +68,7 @@ export class VolunteerModalComponent {
     private userProfileService: UserProfileService,
     private platformApi: PlatformApiService,
     private deviceInfo: DeviceInfoService,
+    private deviceId: DeviceIdService,
   ) {}
 
   hasUserInfo(): boolean {
@@ -123,6 +125,7 @@ export class VolunteerModalComponent {
         itemType: 'volunteer_position',
         itemId: position.id,
         itemTitle: position.title ?? 'Volunteer',
+        deviceId: this.deviceId.getDeviceId(),
       });
       await this.modalController.dismiss({ position });
       await this.showToast('Thanks! We\'ll be in touch about this volunteer opportunity.', 'success');

@@ -106,9 +106,9 @@
     <ion-button
       expand="block"
       color="primary"
-      [disabled]="!canSubmit()"
+      [disabled]="!canSubmit() || submitting"
       (click)="onSubmit()">
-      Submit
+      {{ submitting ? 'Submitting...' : 'Submit' }}
     </ion-button>
   </div>
 </ion-content>

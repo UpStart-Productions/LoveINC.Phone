@@ -12,6 +12,9 @@ import {
 } from '@ionic/angular/standalone';
 import { OnboardingService, OnboardingData } from '../services/onboarding.service';
 import { UserProfileService } from '../services/user-profile.service';
+import { PlatformApiService } from '../services/platform/platform-api.service';
+import { DeviceIdService } from '../services/device-id.service';
+import { DeviceInfoService } from '../services/device-info.service';
 import { UserProfileFormComponent, type UserProfileFormValue } from '../components/user-profile-form/user-profile-form.component';
 
 @Component({
@@ -36,17 +39,24 @@ export class OnboardingStep3Page {
   lastName: string = '';
   email: string = '';
   wantsNewsletter: boolean = false;
+  submitting = false;
 
   constructor(
     private router: Router,
     private onboardingService: OnboardingService,
-    private userProfileService: UserProfileService
+    private userProfileService: UserProfileService,
+    private platformApi: PlatformApiService,
+    private deviceId: DeviceIdService,
+    private deviceInfo: DeviceInfoService,
   ) {}
 
-  onFormSave(value: UserProfileFormValue) {
+  async onFormSave(value: UserProfileFormValue) {
     this.firstName = value.firstName;
     this.lastName = value.lastName;
     this.email = value.email;
+
+    if (this.submitting) return;
+    this.submitting = true;
 
     // Get selections from step 2
     const selectionsStr = sessionStorage.getItem('loveinc_temp_selections');
@@ -61,14 +71,28 @@ export class OnboardingStep3Page {
       wantsNewsletter: this.wantsNewsletter
     };
 
-    // Save and complete onboarding
+    // Save and complete onboarding locally first
     this.onboardingService.setOnboardingCompleted(data);
     this.userProfileService.setProfile(value);
-
-    // Clean up temporary storage
     sessionStorage.removeItem('loveinc_temp_selections');
 
-    // Navigate to main app
+    // Register with API (non-blocking; user proceeds even if this fails)
+    try {
+      const { platform, model } = await this.deviceInfo.getDeviceInfo();
+      await this.platformApi.registerAppUser({
+        firstName: value.firstName?.trim(),
+        lastName: value.lastName?.trim(),
+        email: value.email?.trim(),
+        deviceId: this.deviceId.getDeviceId(),
+        devicePlatform: platform,
+        deviceModel: model,
+      });
+    } catch (err) {
+      console.warn('Onboarding: API register failed (continuing)', err);
+    } finally {
+      this.submitting = false;
+    }
+
     this.router.navigate(['/tabs']);
   }
 

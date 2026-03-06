@@ -7,6 +7,9 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import { App } from '@capacitor/app';
 import { OnboardingService } from './services/onboarding.service';
 import { UserProfileService } from './services/user-profile.service';
+import { AppUserDataService } from './services/app-user-data.service';
+import { DeviceIdService } from './services/device-id.service';
+import { PlatformApiService } from './services/platform/platform-api.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
 import { PushRegistrationService } from './services/push-registration.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
@@ -114,6 +117,9 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private onboardingService: OnboardingService,
     private userProfileService: UserProfileService,
+    private appUserData: AppUserDataService,
+    private deviceId: DeviceIdService,
+    private platformApi: PlatformApiService,
     private platform: Platform,
     private grovlinkDb: GrovLinkDatabaseService,
     private pushRegistration: PushRegistrationService,
@@ -160,6 +166,35 @@ export class AppComponent implements OnInit, OnDestroy {
         });
       }
     }
+
+    // Fetch app user data from API (deviceId + email if available) for UI config
+    this.platformApi
+      .getAppUser({
+        deviceId: this.deviceId.getDeviceId(),
+        email: this.onboardingService.getOnboardingData()?.email ?? profile.email,
+      })
+      .subscribe({
+        next: (res) => {
+          if (res?.user) {
+            this.appUserData.setData(res.user);
+            // Sync server profile to local if local is empty
+            const p = this.userProfileService.getProfile();
+            if (!p.email?.trim() && res.user.email) {
+              this.userProfileService.setProfile({
+                firstName: res.user.firstName ?? '',
+                lastName: res.user.lastName ?? '',
+                email: res.user.email ?? '',
+              });
+            }
+          } else {
+            this.appUserData.clear();
+          }
+        },
+        error: (err) => {
+          console.warn('App: getAppUser failed', err);
+          this.appUserData.clear();
+        },
+      });
 
     // Pre-initialize GrovLink database so SQLite is ready when notifications are used
     this.grovlinkDb.getDbConnection().catch((err) => {

@@ -220,6 +220,121 @@ export class PlatformApiService {
     );
   }
 
+  /**
+   * Register app user (onboarding). POST /public/:customerSlug/:tenantSlug/app-users
+   */
+  registerAppUser(payload: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    deviceId?: string;
+    devicePlatform?: string;
+    deviceModel?: string;
+  }): Promise<{ id: string }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const url = `${this.basePath}/app-users`;
+    const body: Record<string, string> = {};
+    if (payload.firstName?.trim()) body['firstName'] = payload.firstName.trim();
+    if (payload.lastName?.trim()) body['lastName'] = payload.lastName.trim();
+    if (payload.email?.trim()) body['email'] = payload.email.trim().toLowerCase();
+    if (payload.deviceId?.trim()) body['deviceId'] = payload.deviceId.trim();
+    if (payload.devicePlatform?.trim()) body['devicePlatform'] = payload.devicePlatform.trim();
+    if (payload.deviceModel?.trim()) body['deviceModel'] = payload.deviceModel.trim();
+
+    return firstValueFrom(
+      this.http.post<{ id: string }>(url, body, { headers: this.headers }).pipe(
+        tap((res) => console.debug('PlatformApiService: app-users register OK', res)),
+        catchError((err) => {
+          const status = err?.status ?? err?.error?.status;
+          const message = err?.error?.message ?? err?.message ?? JSON.stringify(err?.error);
+          console.error('PlatformApiService: app-users register failed', { url, status, message, err });
+          throw err;
+        })
+      )
+    );
+  }
+
+  /**
+   * Submit pre-intake (I need assistance form). POST /public/:customerSlug/:tenantSlug/pre-intake
+   */
+  postPreIntake(payload: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    city: string;
+    reason: string;
+    comments?: string;
+    deviceId?: string;
+    newsletterOptIn?: boolean;
+    textOptIn?: boolean;
+  }): Promise<{ id: string }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const url = `${this.basePath}/pre-intake`;
+    const body: Record<string, unknown> = {
+      firstName: payload.firstName.trim(),
+      lastName: payload.lastName.trim(),
+      email: payload.email.trim().toLowerCase(),
+      city: payload.city.trim(),
+      reason: payload.reason.trim(),
+      newsletterOptIn: payload.newsletterOptIn ?? false,
+      textOptIn: payload.textOptIn ?? false,
+    };
+    if (payload.phone?.trim()) body['phone'] = payload.phone.trim();
+    if (payload.comments?.trim()) body['comments'] = payload.comments.trim();
+    if (payload.deviceId?.trim()) body['deviceId'] = payload.deviceId.trim();
+
+    return firstValueFrom(
+      this.http.post<{ id: string }>(url, body, { headers: this.headers }).pipe(
+        tap((res) => console.debug('PlatformApiService: pre-intake OK', res)),
+        catchError((err) => {
+          const status = err?.status ?? err?.error?.status;
+          const message = err?.error?.message ?? err?.message ?? JSON.stringify(err?.error);
+          console.error('PlatformApiService: pre-intake failed', { url, status, message, err });
+          throw err;
+        })
+      )
+    );
+  }
+
+  /**
+   * Get app user data (for UI config on load). GET /public/:customerSlug/:tenantSlug/app-user
+   * Pass deviceId and/or email as query params.
+   */
+  getAppUser(params: { deviceId?: string; email?: string }): Observable<{
+    user: {
+      id: string;
+      firstName: string | null;
+      lastName: string | null;
+      email: string | null;
+      activities: { activityType: string; itemType: string | null; itemId: string | null }[];
+      intakeCompleted: boolean;
+    } | null;
+  }> {
+    const q = new URLSearchParams();
+    if (params.deviceId?.trim()) q.set('deviceId', params.deviceId.trim());
+    if (params.email?.trim()) q.set('email', params.email.trim().toLowerCase());
+    const query = q.toString();
+    const path = `/app-user${query ? `?${query}` : ''}`;
+    type AppUserResponse = {
+      user: {
+        id: string;
+        firstName: string | null;
+        lastName: string | null;
+        email: string | null;
+        activities: { activityType: string; itemType: string | null; itemId: string | null }[];
+        intakeCompleted: boolean;
+      } | null;
+    };
+    return this.get<AppUserResponse>(path).pipe(
+      map((res): AppUserResponse => (res != null ? res : { user: null }))
+    );
+  }
+
   /** POST app user notification (e.g. volunteer interest) */
   postAppUserNotification(payload: {
     firstName: string;
@@ -230,6 +345,7 @@ export class PlatformApiService {
     itemType: string;
     itemId: string;
     itemTitle: string;
+    deviceId?: string;
   }): Promise<void> {
     if (!environment.apiKey) {
       return Promise.reject(new Error('API key not configured'));

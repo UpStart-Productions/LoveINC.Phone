@@ -36,11 +36,11 @@ export class UserProfileFormComponent {
   @Input() email = '';
   @Input() saveLabel = 'Save';
   @Input() showCancel = false;
+  /** When true, disables save and shows "Saving...". Parent sets this during async save. */
+  @Input() submitting = false;
 
   @Output() save = new EventEmitter<UserProfileFormValue>();
   @Output() cancel = new EventEmitter<void>();
-
-  submitting = false;
 
   get canSave(): boolean {
     const fn = this.firstName?.trim() ?? '';
@@ -51,12 +51,10 @@ export class UserProfileFormComponent {
 
   onSubmit(): void {
     if (!this.canSave || this.submitting) return;
-    this.submitting = true;
     const fn = this.firstName.trim();
     const ln = this.lastName.trim();
     const em = this.email.trim();
     this.save.emit({ firstName: fn, lastName: ln, email: em });
-    this.submitting = false;
   }
 
   onCancel(): void {
