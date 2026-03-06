@@ -11,7 +11,7 @@
   </div>
 
   <!-- Content Container -->
-  <div class="content-container">
+  <div class="content-container onboarding-form-step">
     <!-- Form -->
     <app-user-profile-form
       [firstName]="firstName"
@@ -20,20 +20,21 @@
       saveLabel="Complete"
       [showCancel]="false"
       (save)="onFormSave($event)">
+      <div betweenFormAndButton>
+        <ion-list>
+          <ion-item button="false" detail="false" lines="full" class="newsletter-item more-space">
+            <ion-checkbox
+              slot="start"
+              [(ngModel)]="wantsNewsletter"
+              name="wantsNewsletter">
+            </ion-checkbox>
+            <ion-label (click)="wantsNewsletter = !wantsNewsletter">
+              I would like to receive Love INC newsletter
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
     </app-user-profile-form>
-
-    <ion-list>
-    <ion-item button="false" detail="false" lines="full" class="newsletter-item">
-      <ion-checkbox 
-        slot="start" 
-        [(ngModel)]="wantsNewsletter"
-        name="wantsNewsletter">
-      </ion-checkbox>
-      <ion-label (click)="wantsNewsletter = !wantsNewsletter">
-        I would like to receive Love INC newsletter
-      </ion-label>
-    </ion-item>
-    </ion-list>
 
     <!-- Skip Link -->
     <div class="exploring-link">

@@ -70,7 +70,7 @@
 .content-container {
   margin-top: calc(30vh + 2rem + 44px);
   background: white;
-  padding: 16px 0;
+  padding: 16px 24px;
   min-height: calc(100vh - 30vh - 2rem - 44px);
 }
 
@@ -97,6 +97,7 @@ ion-checkbox {
 .exploring-link {
   text-align: center;
   margin-top: 8px;
+  padding-bottom: 48px;
 }
 
 .link-button {

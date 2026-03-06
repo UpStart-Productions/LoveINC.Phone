@@ -2,6 +2,137 @@
  * Form Element Styles
  * ----------------------------------------------------------------------------- */
 
+/* -----------------------------------------------------------------------------
+ * Onboarding Form - SuperSimpleWorkout-style (scoped to onboarding step 3 only)
+ * ----------------------------------------------------------------------------- */
+.onboarding-form-step {
+  ion-input {
+    --background: var(--ion-background-color);
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: var(--ion-color-medium);
+    --border-radius: 10px;
+    --padding-start: 9px;
+    --padding-end: 0;
+    background-color: var(--ion-background-color);
+    border: 1px solid var(--ion-color-medium);
+    border-radius: 10px;
+    padding-left: 9px !important;
+    padding-right: 0 !important;
+  }
+
+  .input-text-size {
+    font-size: 0.85rem;
+  }
+
+  ion-input input,
+  ion-input input::placeholder {
+    font-size: 0.85rem;
+  }
+
+  ion-item ion-label {
+    color: var(--ion-color-dark);
+    font-size: 0.85rem;
+  }
+
+  ion-item {
+    --inner-padding-top: 6px;
+    --inner-padding-bottom: 6px;
+    --border-width: 0;
+    --inner-border-width: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  ion-item:has(ion-input) {
+    --inner-padding-start: 0;
+    --inner-padding-end: 0;
+  }
+
+  ion-item.more-space {
+    --inner-padding-top: 12px;
+    --inner-padding-bottom: 12px;
+  }
+
+  ion-list {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * Assistance Form - SuperSimpleWorkout-style (scoped to Request Assistance page)
+ * Includes ion-select and ion-textarea in addition to ion-input
+ * ----------------------------------------------------------------------------- */
+.assistance-form-step {
+  ion-input,
+  ion-select,
+  ion-textarea {
+    --background: var(--ion-background-color);
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: var(--ion-color-medium);
+    --border-radius: 10px;
+    --padding-start: 9px;
+    --padding-end: 0;
+    background-color: var(--ion-background-color);
+    border: 1px solid var(--ion-color-medium);
+    border-radius: 10px;
+    padding-left: 9px !important;
+    padding-right: 0 !important;
+  }
+
+  .input-text-size {
+    font-size: 0.85rem;
+  }
+
+  ion-input input,
+  ion-input input::placeholder,
+  ion-textarea textarea,
+  ion-textarea textarea::placeholder {
+    font-size: 0.85rem;
+  }
+
+  ion-item ion-label {
+    color: var(--ion-color-dark);
+    font-size: 0.85rem;
+  }
+
+  ion-item {
+    --inner-padding-top: 6px;
+    --inner-padding-bottom: 6px;
+    --border-width: 0;
+    --inner-border-width: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  ion-item:has(ion-input),
+  ion-item:has(ion-select),
+  ion-item:has(ion-textarea) {
+    --inner-padding-start: 0;
+    --inner-padding-end: 0;
+  }
+
+  ion-item.more-space {
+    --inner-padding-top: 12px;
+    --inner-padding-bottom: 12px;
+  }
+
+  ion-list {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
 /* Live search searchbar styling */
 ion-searchbar.live-search {
   --background: rgba(var(--ion-color-primary-contrast-rgb), 0.1);

@@ -32,6 +32,8 @@
   </ion-item>
 </ion-list>
 
+<ng-content select="[betweenFormAndButton]"></ng-content>
+
 <ion-button expand="block" (click)="onSubmit()" [disabled]="!canSave || submitting">
   {{ submitting ? 'Saving...' : saveLabel }}
 </ion-button>
