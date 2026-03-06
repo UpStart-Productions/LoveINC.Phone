@@ -47,6 +47,9 @@ export interface ContentDetail {
 
   // Volunteer CTA fields
   volunteerPositions?: Array<{ id: string; title?: string; shortDescription?: string; description?: string; schedule?: string }>;
+
+  // Donation drive CTA: linked donation location for context-aware "Donate Now"
+  donation?: { id: string; title: string };
 }
 
 export type ContentType =

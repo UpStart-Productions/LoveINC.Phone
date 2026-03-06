@@ -21,6 +21,12 @@
 
 <ion-content [fullscreen]="true">
   <div class="content-wrapper">
+    @if (isFilteredByDonation) {
+      <ion-button fill="clear" size="small" (click)="clearDonationFilter()">
+        <ion-icon name="list-outline" slot="start"></ion-icon>
+        Show all locations
+      </ion-button>
+    }
     <div *ngFor="let category of categoryOrder">
       <div *ngIf="groupedLocations[category]?.length" class="category-section">
         <app-card

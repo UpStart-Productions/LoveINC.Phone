@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { 
   IonHeader, 
   IonToolbar, 
@@ -88,9 +88,16 @@ export class DonateGoodsPage implements OnInit {
   categoryOrder: string[] = [];
   searchQuery: string = '';
   showDonateButton: boolean = false;
+  /** When set (from donation-drive context), pre-filter to this location */
+  private donationIdFilter: string | null = null;
+
+  get isFilteredByDonation(): boolean {
+    return !!this.donationIdFilter;
+  }
 
   constructor(
     private platformApi: PlatformApiService,
+    private route: ActivatedRoute,
     private router: Router,
     private alertController: AlertController,
     private modalController: ModalController,
@@ -110,11 +117,24 @@ export class DonateGoodsPage implements OnInit {
     this.donateActionSheetService.openDonateActionSheet();
   }
 
+  clearDonationFilter() {
+    this.donationIdFilter = null;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { donationId: null },
+      queryParamsHandling: 'merge',
+    });
+    this.applyDonationFilter();
+    this.groupLocationsByCategory();
+  }
+
   loadLocations() {
+    const donationId = this.route.snapshot.queryParamMap.get('donationId');
+    this.donationIdFilter = donationId?.trim() || null;
     this.platformApi.getDonations().subscribe({
       next: (data) => {
         this.locations = data.map((d) => this.mapPlatformDonationToLocation(d));
-        this.filteredLocations = this.locations;
+        this.applyDonationFilter();
         this.groupLocationsByCategory();
       },
       error: (err) => {
@@ -212,9 +232,21 @@ export class DonateGoodsPage implements OnInit {
     this.performSearch('');
   }
 
+  private applyDonationFilter(): void {
+    if (this.donationIdFilter) {
+      const match = this.locations.find((loc) => loc.id === this.donationIdFilter);
+      this.filteredLocations = match ? [match] : this.locations;
+      if (!match) {
+        console.warn('DonateGoodsPage: donationId not found, showing all locations', this.donationIdFilter);
+      }
+    } else {
+      this.filteredLocations = [...this.locations];
+    }
+  }
+
   private performSearch(query: string) {
     if (!query) {
-      this.filteredLocations = [...this.locations];
+      this.applyDonationFilter();
     } else {
       this.filteredLocations = this.locations.filter(location => {
         // Search across all fields

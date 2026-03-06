@@ -436,6 +436,7 @@ export class ContentDetailPage implements OnInit {
       actionButtonLink: actionLink,
       volunteerPositions,
       location: address,
+      donation: c.donation,
     };
   }
 
@@ -716,7 +717,15 @@ export class ContentDetailPage implements OnInit {
   }
 
   openDonateActionSheet(): void {
-    this.donateActionSheetService.openDonateActionSheet();
+    if (this.isDonationDrive() && this.contentItem?.donation?.id) {
+      this.router.navigate(['/tabs/donate-goods'], {
+        queryParams: { donationId: this.contentItem.donation.id },
+      });
+    } else if (this.isDonationDrive()) {
+      this.router.navigate(['/tabs/donate-goods']);
+    } else {
+      this.donateActionSheetService.openDonateActionSheet();
+    }
   }
 
   async openVolunteerActionSheet(): Promise<void> {

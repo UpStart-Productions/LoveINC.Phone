@@ -169,6 +169,14 @@ export interface PlatformCta {
   actionLabel?: string;
   actionValue?: string;
   service?: { id: string; title: string };
+  providerOffering?: {
+    id: string;
+    service: { id: string; title: string };
+    provider: { id: string; name: string };
+  };
+  /** Linked donation location for donation_drive CTAs; enables context-aware Donate Now */
+  donation?: { id: string; title: string };
+  class?: { id: string; title: string };
   photoUrl?: string;
   events?: Array<{ id: string; title: string }>;
   volunteerPositions?: PlatformVolunteerPosition[];
