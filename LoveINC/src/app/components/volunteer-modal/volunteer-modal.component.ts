@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular/standalone';
@@ -10,6 +10,12 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonCheckbox,
+  IonSelect,
+  IonSelectOption,
 } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
@@ -24,6 +30,7 @@ export interface VolunteerPosition {
   id: string;
   title?: string;
   shortDescription?: string;
+  longDescription?: string;
   description?: string;
   schedule?: string;
 }
@@ -44,11 +51,17 @@ export interface VolunteerPosition {
     IonButtons,
     IonButton,
     IonIcon,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonCheckbox,
+    IonSelect,
+    IonSelectOption,
     UserProfileFormComponent,
     SafeHtmlPipe,
   ],
 })
-export class VolunteerModalComponent {
+export class VolunteerModalComponent implements OnInit {
   @Input() organizationName = '';
   @Input() address: string | null = null;
   @Input() locationHours: string | null = null;
@@ -59,6 +72,7 @@ export class VolunteerModalComponent {
   firstName = '';
   lastName = '';
   email = '';
+  wantsNewsletter = false;
   submitting = false;
 
   constructor(
@@ -70,6 +84,19 @@ export class VolunteerModalComponent {
     private deviceInfo: DeviceInfoService,
     private deviceId: DeviceIdService,
   ) {}
+
+  ngOnInit() {
+    if (!this.hasUserInfo() && this.positions?.length > 0) {
+      this.showForm = true;
+      this.selectedPosition = this.positions[0];
+      const profile = this.userProfileService.getProfile();
+      const onboarding = this.onboardingService.getOnboardingData();
+      this.firstName = profile.firstName ?? onboarding?.firstName ?? '';
+      this.lastName = profile.lastName ?? onboarding?.lastName ?? '';
+      this.email = profile.email ?? onboarding?.email ?? '';
+      this.wantsNewsletter = onboarding?.wantsNewsletter ?? false;
+    }
+  }
 
   hasUserInfo(): boolean {
     return this.userProfileService.hasCompleteProfile() ||
@@ -83,17 +110,7 @@ export class VolunteerModalComponent {
   }
 
   async onVolunteer(position: VolunteerPosition) {
-    if (this.hasUserInfo()) {
-      await this.submitAndDismiss(position);
-    } else {
-      this.selectedPosition = position;
-      this.showForm = true;
-      const profile = this.userProfileService.getProfile();
-      const onboarding = this.onboardingService.getOnboardingData();
-      this.firstName = profile.firstName ?? onboarding?.firstName ?? '';
-      this.lastName = profile.lastName ?? onboarding?.lastName ?? '';
-      this.email = profile.email ?? onboarding?.email ?? '';
-    }
+    await this.submitAndDismiss(position);
   }
 
   async onSubmitForm(value: UserProfileFormValue) {
@@ -103,7 +120,12 @@ export class VolunteerModalComponent {
     this.lastName = value.lastName;
     this.email = value.email;
     this.userProfileService.setProfile(value);
-    this.onboardingService.updateOnboardingData(value);
+    this.onboardingService.updateOnboardingData({
+      firstName: value.firstName,
+      lastName: value.lastName,
+      email: value.email,
+      wantsNewsletter: this.wantsNewsletter,
+    });
     await this.submitAndDismiss(this.selectedPosition);
     this.submitting = false;
   }
@@ -111,6 +133,16 @@ export class VolunteerModalComponent {
   onCancelForm() {
     this.showForm = false;
     this.selectedPosition = null;
+    this.dismiss();
+  }
+
+  onPositionChange(event: Event) {
+    const ev = event as CustomEvent<{ value: string }>;
+    const id = ev.detail?.value;
+    if (id) {
+      const pos = this.positions.find((p) => p.id === id);
+      if (pos) this.selectedPosition = pos;
+    }
   }
 
   private async submitAndDismiss(position: VolunteerPosition) {

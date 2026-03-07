@@ -14,7 +14,6 @@ import {
   IonSearchbar
 } from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular/standalone';
-import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
@@ -79,7 +78,6 @@ interface DonationLocation {
     CardComponent,
     NotificationsButtonComponent,
   ],
-  providers: [AlertController]
 })
 export class DonateGoodsPage implements OnInit {
   locations: DonationLocation[] = [];
@@ -99,7 +97,6 @@ export class DonateGoodsPage implements OnInit {
     private platformApi: PlatformApiService,
     private route: ActivatedRoute,
     private router: Router,
-    private alertController: AlertController,
     private modalController: ModalController,
     private donateButtonService: DonateButtonService,
     private volunteerActionSheetService: VolunteerActionSheetService,
@@ -155,13 +152,14 @@ export class DonateGoodsPage implements OnInit {
     const positions = (d.volunteerPositions ?? (d as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as PlatformVolunteerPosition[];
     const volunteerPositions = positions.map((v) => {
       const raw = v as Record<string, unknown>;
-      const shortDesc = (v.shortDescription ?? v.short_description ?? raw['short_description'] ?? raw['shortDescription']) as string | undefined;
-      const desc = (v.description ?? raw['description']) as string | undefined;
+      const shortDesc = (raw['shortDescription'] ?? raw['short_description']) as string | undefined;
+      const longDesc = (raw['longDescription'] ?? raw['long_description']) as string | undefined;
       return {
         id: v.id,
         title: (v.title ?? raw['title']) as string | undefined,
-        shortDescription: shortDesc ?? desc,
-        description: desc,
+        shortDescription: shortDesc,
+        longDescription: longDesc,
+        description: longDesc,
         schedule: this.scheduleFormatting.getPositionSchedule(v) ?? undefined,
       };
     });
@@ -320,25 +318,9 @@ export class DonateGoodsPage implements OnInit {
     await modal.present();
   }
 
-  async onPhoneClick(location: DonationLocation) {
+  onPhoneClick(location: DonationLocation) {
     if (location.phone) {
-      const alert = await this.alertController.create({
-        header: 'Phone',
-        message: `Call ${location.organization} at ${location.phone}`,
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel'
-          },
-          {
-            text: 'Call',
-            handler: () => {
-              window.location.href = `tel:${location.phone}`;
-            }
-          }
-        ]
-      });
-      await alert.present();
+      window.location.href = `tel:${location.phone}`;
     }
   }
 
@@ -352,25 +334,9 @@ export class DonateGoodsPage implements OnInit {
     });
   }
 
-  async onEmailClick(location: DonationLocation) {
+  onEmailClick(location: DonationLocation) {
     if (location.email) {
-      const alert = await this.alertController.create({
-        header: 'Email',
-        message: `Email ${location.organization} at ${location.email}`,
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel'
-          },
-          {
-            text: 'Email',
-            handler: () => {
-              window.location.href = `mailto:${location.email}`;
-            }
-          }
-        ]
-      });
-      await alert.present();
+      window.location.href = `mailto:${location.email}`;
     }
   }
 

@@ -30,7 +30,7 @@
       
       <p *ngIf="contentItem.subtitle && contentType !== 'event' && contentType !== 'class'" class="app-title m-b-24 content-subtitle">{{ contentItem.subtitle }}</p>
       
-      <div class="app-body-secondary m-b-24" [innerHTML]="contentItem.description"></div>
+      <div *ngIf="contentItem.description" class="app-body-secondary m-b-24" [innerHTML]="contentItem.description"></div>
 
       <ion-list lines="none">
         <!-- Instructor (for classes) -->
@@ -78,6 +78,15 @@
             <h3>Date & Time</h3>
             <p *ngIf="contentItem.eventDate">{{ contentItem.eventDate }}</p>
             <p *ngIf="contentItem.eventTime">{{ contentItem.eventTime }}</p>
+          </ion-label>
+        </ion-item>
+
+        <!-- CTA Date Range (donation-drive, volunteer, fundraiser, awareness) -->
+        <ion-item *ngIf="hasCtaDateRange()">
+          <ion-icon slot="start" name="calendar-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Dates</h3>
+            <p>{{ formatCtaDateRange() }}</p>
           </ion-label>
         </ion-item>
 

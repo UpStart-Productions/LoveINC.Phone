@@ -130,7 +130,8 @@ export class TransformationClassesPage implements OnInit {
           id: (p['id'] ?? p['title'] ?? c.id) as string,
           title: (p['title'] ?? p['shortDescription'] ?? p['short_description']) as string | undefined,
           shortDescription: (p['shortDescription'] ?? p['short_description']) as string | undefined,
-          description: (p['description'] ?? p['shortDescription'] ?? p['short_description']) as string | undefined,
+          longDescription: (p['longDescription'] ?? p['long_description']) as string | undefined,
+          description: (p['longDescription'] ?? p['long_description']) as string | undefined,
           schedule: this.scheduleFormatting.getPositionSchedule(p),
         }))
       : undefined;

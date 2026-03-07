@@ -417,11 +417,12 @@ export class ContentDetailPage implements OnInit {
           id: (p['id'] ?? p['title'] ?? c.id) as string,
           title: (p['title'] ?? p['shortDescription'] ?? p['short_description']) as string | undefined,
           shortDescription: (p['shortDescription'] ?? p['short_description']) as string | undefined,
-          description: (p['description'] ?? p['shortDescription'] ?? p['short_description']) as string | undefined,
+          longDescription: (p['longDescription'] ?? p['long_description']) as string | undefined,
+          description: (p['longDescription'] ?? p['long_description']) as string | undefined,
           schedule: this.scheduleFormatting.getPositionSchedule(p),
         }))
       : c.type === 'volunteer_call'
-        ? [{ id: c.id, title: c.title, shortDescription: c.shortDescription, description: c.longDescription ?? c.shortDescription }]
+        ? [{ id: c.id, title: c.title, shortDescription: c.shortDescription, longDescription: c.longDescription, description: c.longDescription }]
         : undefined;
     const address = c.address
       ? [c.address.address, c.address.city, c.address.state, c.address.zip].filter(Boolean).join(', ')
@@ -429,7 +430,7 @@ export class ContentDetailPage implements OnInit {
     return {
       id: c.id,
       title: c.title,
-      description: c.longDescription ?? c.shortDescription ?? '',
+      description: c.longDescription ?? '',
       photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',
       subtitle: c.shortDescription,
       actionButtonText: c.actionLabel,
@@ -437,6 +438,8 @@ export class ContentDetailPage implements OnInit {
       volunteerPositions,
       location: address,
       donation: c.donation,
+      startDate: c.startDate,
+      endDate: c.endDate,
     };
   }
 
@@ -702,6 +705,17 @@ export class ContentDetailPage implements OnInit {
 
   hasEventDateTime(): boolean {
     return !!(this.contentItem?.eventDate || this.contentItem?.eventTime);
+  }
+
+  hasCtaDateRange(): boolean {
+    return !!(this.contentItem?.startDate && this.contentItem?.endDate);
+  }
+
+  formatCtaDateRange(): string {
+    if (!this.contentItem?.startDate || !this.contentItem?.endDate) return '';
+    const start = format(new Date(this.contentItem.startDate), 'MMMM d, yyyy');
+    const end = format(new Date(this.contentItem.endDate), 'MMMM d, yyyy');
+    return `${start} – ${end}`;
   }
 
   hasActionButton(): boolean {

@@ -144,8 +144,8 @@ export class UpdatesPage implements OnInit {
           const id = p['id'] as string;
           const title = (p['title'] ?? p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
           const shortDescription = (p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
-          const description = (p['description'] ?? p['description']) as string | undefined;
-          return { id, title, shortDescription, description, schedule: this.scheduleFormatting.getPositionSchedule(p) };
+          const longDescription = (p['longDescription'] ?? p['long_description']) as string | undefined;
+          return { id, title, shortDescription, longDescription, description: longDescription, schedule: this.scheduleFormatting.getPositionSchedule(p) };
         })
       : undefined;
     return {
@@ -180,8 +180,8 @@ export class UpdatesPage implements OnInit {
           const id = p['id'] as string;
           const title = (p['title'] ?? p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
           const shortDescription = (p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
-          const description = (p['description'] ?? p['description']) as string | undefined;
-          return { id, title, shortDescription, description, schedule: this.scheduleFormatting.getPositionSchedule(p) };
+          const longDescription = (p['longDescription'] ?? p['long_description']) as string | undefined;
+          return { id, title, shortDescription, longDescription, description: longDescription, schedule: this.scheduleFormatting.getPositionSchedule(p) };
         })
       : undefined;
     return {

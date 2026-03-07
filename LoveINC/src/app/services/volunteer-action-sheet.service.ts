@@ -7,6 +7,7 @@ export interface VolunteerPositionInfo {
   id: string;
   title?: string;
   shortDescription?: string;
+  longDescription?: string;
   description?: string;
   schedule?: string;
 }

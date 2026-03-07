@@ -208,7 +208,7 @@ export class HomePage implements OnInit {
     classMap: Map<string, PlatformClass>
   ): HomeCard {
     const formatted = this.cardFormatting.formatForCard(item, item.type);
-    let positions: Array<{ id: string; title?: string; shortDescription?: string; description?: string; schedule?: string }> = [];
+    let positions: Array<{ id: string; title?: string; shortDescription?: string; longDescription?: string; description?: string; schedule?: string }> = [];
     let address: string | null = null;
 
     if (item.type === 'event') {
@@ -219,8 +219,8 @@ export class HomePage implements OnInit {
           const id = p['id'] as string;
           const title = (p['title'] ?? p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
           const shortDescription = (p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
-          const description = (p['description'] ?? p['description']) as string | undefined;
-          return { id, title, shortDescription, description, schedule: this.scheduleFormatting.getPositionSchedule(p) };
+          const longDescription = (p['longDescription'] ?? p['long_description']) as string | undefined;
+          return { id, title, shortDescription, longDescription, description: longDescription, schedule: this.scheduleFormatting.getPositionSchedule(p) };
         });
         address = event.address ? this.formatAddress(event.address) : null;
       }
@@ -232,8 +232,8 @@ export class HomePage implements OnInit {
           const id = p['id'] as string;
           const title = (p['title'] ?? p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
           const shortDescription = (p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
-          const description = (p['description'] ?? p['description']) as string | undefined;
-          return { id, title, shortDescription, description, schedule: this.scheduleFormatting.getPositionSchedule(p) };
+          const longDescription = (p['longDescription'] ?? p['long_description']) as string | undefined;
+          return { id, title, shortDescription, longDescription, description: longDescription, schedule: this.scheduleFormatting.getPositionSchedule(p) };
         });
         address = cls.address ? this.formatAddress(cls.address) : null;
       }
@@ -245,8 +245,8 @@ export class HomePage implements OnInit {
         const id = p['id'] as string;
         const title = (p['title'] ?? p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
         const shortDescription = (p['shortDescription'] ?? p['short_description'] ?? p['shortDescription']) as string | undefined;
-        const description = (p['description'] ?? p['description']) as string | undefined;
-        return { id, title, shortDescription, description, schedule: this.scheduleFormatting.getPositionSchedule(p) };
+        const longDescription = (p['longDescription'] ?? p['long_description'] ?? p['description']) as string | undefined;
+        return { id, title, shortDescription, longDescription, description: longDescription, schedule: this.scheduleFormatting.getPositionSchedule(p) };
       });
       address = item.address ? this.formatAddress(item.address) : null;
     }

@@ -3,10 +3,12 @@
  * ----------------------------------------------------------------------------- */
 
 /* -----------------------------------------------------------------------------
- * Onboarding Form - SuperSimpleWorkout-style (scoped to onboarding step 3 only)
+ * Onboarding Form - SuperSimpleWorkout-style
+ * Used by onboarding step 3 and volunteer signup form
  * ----------------------------------------------------------------------------- */
 .onboarding-form-step {
-  ion-input {
+  ion-input,
+  ion-select {
     --background: var(--ion-background-color);
     --border-width: 1px;
     --border-style: solid;
@@ -46,7 +48,8 @@
     margin-right: 0;
   }
 
-  ion-item:has(ion-input) {
+  ion-item:has(ion-input),
+  ion-item:has(ion-select) {
     --inner-padding-start: 0;
     --inner-padding-end: 0;
   }
@@ -61,6 +64,16 @@
     margin-right: 0;
     padding-left: 0;
     padding-right: 0;
+  }
+
+  ion-checkbox {
+    pointer-events: auto;
+    cursor: pointer;
+
+    &::part(container) {
+      pointer-events: auto;
+      cursor: pointer;
+    }
   }
 }
 

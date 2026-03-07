@@ -97,8 +97,36 @@ export class OnboardingStep3Page {
   }
 
   onSkip() {
-    this.onboardingService.skipOnboarding();
+    const selectionsStr = sessionStorage.getItem('loveinc_temp_selections');
+    const selections = selectionsStr ? JSON.parse(selectionsStr) : [];
+    sessionStorage.removeItem('loveinc_temp_selections');
+
+    if (selections.length > 0) {
+      this.onboardingService.setOnboardingCompleted({
+        selectedOptions: selections,
+        firstName: '',
+        lastName: '',
+        email: '',
+        wantsNewsletter: false,
+      });
+      this.registerDevice();
+    } else {
+      this.onboardingService.skipOnboarding();
+    }
     this.router.navigate(['/tabs']);
+  }
+
+  private async registerDevice() {
+    try {
+      const { platform, model } = await this.deviceInfo.getDeviceInfo();
+      await this.platformApi.registerAppUser({
+        deviceId: this.deviceId.getDeviceId(),
+        devicePlatform: platform,
+        deviceModel: model,
+      });
+    } catch (err) {
+      console.warn('Onboarding: API register failed (continuing)', err);
+    }
   }
 
   toggleNewsletter() {

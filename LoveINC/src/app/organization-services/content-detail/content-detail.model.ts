@@ -46,10 +46,14 @@ export interface ContentDetail {
   actionButtonLink?: string;
 
   // Volunteer CTA fields
-  volunteerPositions?: Array<{ id: string; title?: string; shortDescription?: string; description?: string; schedule?: string }>;
+  volunteerPositions?: Array<{ id: string; title?: string; shortDescription?: string; longDescription?: string; description?: string; schedule?: string }>;
 
   // Donation drive CTA: linked donation location for context-aware "Donate Now"
   donation?: { id: string; title: string };
+
+  // CTA (donation-drive, volunteer, fundraiser, awareness): date range
+  startDate?: string;
+  endDate?: string;
 }
 
 export type ContentType =
