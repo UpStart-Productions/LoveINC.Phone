@@ -313,6 +313,194 @@ export class PlatformApiService {
   }
 
   /**
+   * Get full app user profile (voucher requests, notifications). GET app-user/profile
+   */
+  getAppUserProfile(params: { deviceId?: string; email?: string }): Observable<{
+    profile: {
+      id: string;
+      firstName: string | null;
+      lastName: string | null;
+      email: string | null;
+      emailVerifiedAt: string | null;
+      activities: { activityType: string; itemType: string | null; itemId: string | null }[];
+      intakeCompleted: boolean;
+      voucherRequests: {
+        id: string;
+        voucherId: string;
+        voucherTitle: string;
+        status: string;
+        approvedAt: string | null;
+        deniedAt: string | null;
+        expiresAt: string | null;
+        createdAt: string;
+      }[];
+      notifications: {
+        id: string;
+        type: string;
+        title: string;
+        body: string | null;
+        meta: unknown;
+        readAt: string | null;
+        createdAt: string;
+      }[];
+    } | null;
+  }> {
+    const q = new URLSearchParams();
+    if (params.deviceId?.trim()) q.set('deviceId', params.deviceId.trim());
+    if (params.email?.trim()) q.set('email', params.email.trim().toLowerCase());
+    const query = q.toString();
+    const path = `/app-user/profile${query ? `?${query}` : ''}`;
+    type ProfileResponse = {
+      profile: {
+        id: string;
+        firstName: string | null;
+        lastName: string | null;
+        email: string | null;
+        emailVerifiedAt: string | null;
+        activities: { activityType: string; itemType: string | null; itemId: string | null }[];
+        intakeCompleted: boolean;
+        voucherRequests: {
+          id: string;
+          voucherId: string;
+          voucherTitle: string;
+          status: string;
+          approvedAt: string | null;
+          deniedAt: string | null;
+          expiresAt: string | null;
+          createdAt: string;
+        }[];
+        notifications: {
+          id: string;
+          type: string;
+          title: string;
+          body: string | null;
+          meta: unknown;
+          readAt: string | null;
+          createdAt: string;
+        }[];
+      } | null;
+    };
+    return this.get<ProfileResponse>(path).pipe(
+      map((res): ProfileResponse => (res != null ? res : { profile: null }))
+    );
+  }
+
+  /**
+   * Send magic link (verify or restore). POST magic-link/send
+   */
+  sendMagicLink(params: {
+    purpose: 'verify' | 'restore';
+    email: string;
+    deviceId?: string;
+  }): Promise<{ sent: boolean; error?: string }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const url = `${this.basePath}/magic-link/send`;
+    const body: Record<string, string> = {
+      purpose: params.purpose,
+      email: params.email.trim().toLowerCase(),
+    };
+    if (params.deviceId?.trim()) body['deviceId'] = params.deviceId.trim();
+
+    return firstValueFrom(
+      this.http.post<{ sent: boolean; error?: string }>(url, body, { headers: this.headers }).pipe(
+        tap((res) => console.debug('PlatformApiService: magic-link/send OK', res)),
+        catchError((err) => {
+          const message = err?.error?.error ?? err?.message ?? 'Failed to send';
+          return throwError(() => new Error(message));
+        })
+      )
+    );
+  }
+
+  /**
+   * Send change-email magic link. POST magic-link/change-email
+   */
+  sendChangeEmailMagicLink(params: {
+    newEmail: string;
+    deviceId?: string;
+    email?: string;
+  }): Promise<{ sent: boolean; error?: string }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const url = `${this.basePath}/magic-link/change-email`;
+    const body: Record<string, string> = {
+      newEmail: params.newEmail.trim().toLowerCase(),
+    };
+    if (params.deviceId?.trim()) body['deviceId'] = params.deviceId.trim();
+    if (params.email?.trim()) body['email'] = params.email.trim().toLowerCase();
+
+    return firstValueFrom(
+      this.http.post<{ sent: boolean; error?: string }>(url, body, { headers: this.headers }).pipe(
+        tap((res) => console.debug('PlatformApiService: magic-link/change-email OK', res)),
+        catchError((err) => {
+          const message = err?.error?.error ?? err?.message ?? 'Failed to send';
+          return throwError(() => new Error(message));
+        })
+      )
+    );
+  }
+
+  /**
+   * Mark app user notification as read. PATCH app-user/notifications/:id/read
+   */
+  markNotificationRead(
+    notificationId: string,
+    params: { deviceId?: string; email?: string }
+  ): Promise<{ ok: boolean }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const q = new URLSearchParams();
+    if (params.deviceId?.trim()) q.set('deviceId', params.deviceId.trim());
+    if (params.email?.trim()) q.set('email', params.email.trim().toLowerCase());
+    const query = q.toString();
+    const url = `${this.basePath}/app-user/notifications/${encodeURIComponent(notificationId)}/read${query ? `?${query}` : ''}`;
+    return firstValueFrom(
+      this.http.patch<{ ok: boolean }>(url, {}, { headers: this.headers }).pipe(
+        tap(() => console.debug('PlatformApiService: mark notification read OK')),
+        catchError((err) => {
+          console.error('PlatformApiService: mark notification read failed', err);
+          return of({ ok: false });
+        })
+      )
+    );
+  }
+
+  /**
+   * Verify magic link token (when app opens via deep link). GET public-magic-link/verify?token=xxx
+   * No API key required.
+   */
+  verifyMagicLink(token: string): Promise<{
+    ok: boolean;
+    appUserId?: string;
+    email?: string;
+    customerSlug?: string;
+    tenantSlug?: string;
+    firstName?: string | null;
+    lastName?: string | null;
+  }> {
+    const { apiBaseUrl } = environment;
+    const base = apiBaseUrl.replace(/\/$/, '');
+    const url = `${base}/public-magic-link/verify?token=${encodeURIComponent(token)}`;
+    return firstValueFrom(
+      this.http
+        .get<{ ok: boolean; appUserId?: string; email?: string; customerSlug?: string; tenantSlug?: string; firstName?: string | null; lastName?: string | null }>(url, {
+          headers: new HttpHeaders({ Accept: 'application/json' }),
+        })
+        .pipe(
+          tap((res) => console.debug('PlatformApiService: magic-link/verify OK', res)),
+          catchError((err) => {
+            const message = err?.error?.error ?? err?.message ?? 'Verification failed';
+            return throwError(() => new Error(message));
+          })
+        )
+    );
+  }
+
+  /**
    * Get app user data (for UI config on load). GET /public/:customerSlug/:tenantSlug/app-user
    * Pass deviceId and/or email as query params.
    */
