@@ -19,16 +19,48 @@
           <p class="app-body-secondary m-b-12">{{ userProfile.email }}</p>
         }
       }
+      @if (showVerifyEmail) {
+        <ion-button fill="outline" size="small" class="mb-3" (click)="sendVerifyEmail()" [disabled]="verifyingEmail">
+          {{ verifyingEmail ? 'Sending…' : 'Verify Email' }}
+        </ion-button>
+      }
       <ion-button fill="clear" size="small" (click)="editProfile()">
         {{ (displayName || userProfile.email) ? 'Edit' : 'Add your information' }}
       </ion-button>
     </ion-card-content>
   </ion-card>
 
+  <!-- Notifications -->
+  @if (notifications.length) {
+    <ion-card class="section-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="notifications-outline" class="section-icon"></ion-icon>
+          Notifications
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list lines="none">
+          @for (n of notifications; track n.id) {
+            <ion-item [class.read]="n.readAt" (click)="markNotificationRead(n.id)">
+              <ion-label>
+                <h3>{{ n.title }}</h3>
+                @if (n.body) {
+                  <p>{{ n.body }}</p>
+                }
+              </ion-label>
+            </ion-item>
+          }
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  }
+
   <!-- Service Access -->
   <app-service-access-section
     class="m-18"
-    [scanClickHandler]="onScanRequested">
+    [scanClickHandler]="onScanRequested"
+    [apiVouchers]="profileVouchers">
   </app-service-access-section>
 
   <!-- Settings -->

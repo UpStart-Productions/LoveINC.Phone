@@ -241,7 +241,7 @@ export class PlatformApiService {
     deviceId?: string;
     devicePlatform?: string;
     deviceModel?: string;
-  }): Promise<{ id: string }> {
+  }): Promise<{ id: string; magicLinkSent?: boolean }> {
     if (!environment.apiKey) {
       return Promise.reject(new Error('API key not configured'));
     }
@@ -255,7 +255,7 @@ export class PlatformApiService {
     if (payload.deviceModel?.trim()) body['deviceModel'] = payload.deviceModel.trim();
 
     return firstValueFrom(
-      this.http.post<{ id: string }>(url, body, { headers: this.headers }).pipe(
+      this.http.post<{ id: string; magicLinkSent?: boolean }>(url, body, { headers: this.headers }).pipe(
         tap((res) => console.debug('PlatformApiService: app-users register OK', res)),
         catchError((err) => {
           const status = err?.status ?? err?.error?.status;
@@ -510,6 +510,7 @@ export class PlatformApiService {
       firstName: string | null;
       lastName: string | null;
       email: string | null;
+      emailVerifiedAt: string | null;
       activities: { activityType: string; itemType: string | null; itemId: string | null }[];
       intakeCompleted: boolean;
     } | null;
@@ -525,6 +526,7 @@ export class PlatformApiService {
         firstName: string | null;
         lastName: string | null;
         email: string | null;
+        emailVerifiedAt: string | null;
         activities: { activityType: string; itemType: string | null; itemId: string | null }[];
         intakeCompleted: boolean;
       } | null;

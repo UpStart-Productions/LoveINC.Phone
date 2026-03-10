@@ -9,6 +9,7 @@ import {
   IonLabel,
   IonCheckbox,
   IonList,
+  AlertController,
 } from '@ionic/angular/standalone';
 import { OnboardingService, OnboardingData } from '../services/onboarding.service';
 import { UserProfileService } from '../services/user-profile.service';
@@ -48,6 +49,7 @@ export class OnboardingStep3Page {
     private platformApi: PlatformApiService,
     private deviceId: DeviceIdService,
     private deviceInfo: DeviceInfoService,
+    private alertController: AlertController,
   ) {}
 
   async onFormSave(value: UserProfileFormValue) {
@@ -77,9 +79,10 @@ export class OnboardingStep3Page {
     sessionStorage.removeItem('loveinc_temp_selections');
 
     // Register with API (non-blocking; user proceeds even if this fails)
+    let magicLinkSent = false;
     try {
       const { platform, model } = await this.deviceInfo.getDeviceInfo();
-      await this.platformApi.registerAppUser({
+      const res = await this.platformApi.registerAppUser({
         firstName: value.firstName?.trim(),
         lastName: value.lastName?.trim(),
         email: value.email?.trim(),
@@ -87,10 +90,20 @@ export class OnboardingStep3Page {
         devicePlatform: platform,
         deviceModel: model,
       });
+      magicLinkSent = res.magicLinkSent ?? false;
     } catch (err) {
       console.warn('Onboarding: API register failed (continuing)', err);
     } finally {
       this.submitting = false;
+    }
+
+    if (magicLinkSent && value.email?.trim()) {
+      const alert = await this.alertController.create({
+        header: 'Check your email',
+        message: 'We sent a confirmation link to ' + value.email.trim() + '. Click the link to verify your email address.',
+        buttons: ['OK'],
+      });
+      await alert.present();
     }
 
     this.router.navigate(['/tabs']);

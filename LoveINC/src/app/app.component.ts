@@ -168,33 +168,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     // Fetch app user data from API (deviceId + email if available) for UI config
-    this.platformApi
-      .getAppUser({
-        deviceId: this.deviceId.getDeviceId(),
-        email: this.onboardingService.getOnboardingData()?.email ?? profile.email,
-      })
-      .subscribe({
-        next: (res) => {
-          if (res?.user) {
-            this.appUserData.setData(res.user);
-            // Sync server profile to local if local is empty
-            const p = this.userProfileService.getProfile();
-            if (!p.email?.trim() && res.user.email) {
-              this.userProfileService.setProfile({
-                firstName: res.user.firstName ?? '',
-                lastName: res.user.lastName ?? '',
-                email: res.user.email ?? '',
-              });
-            }
-          } else {
-            this.appUserData.clear();
-          }
-        },
-        error: (err) => {
-          console.warn('App: getAppUser failed', err);
-          this.appUserData.clear();
-        },
-      });
+    this.syncAppUserFromApi();
 
     // Pre-initialize GrovLink database so SQLite is ready when notifications are used
     this.grovlinkDb.getDbConnection().catch((err) => {
@@ -223,6 +197,8 @@ export class AppComponent implements OnInit, OnDestroy {
           } catch (err) {
             console.warn('Service unlock re-init on resume:', err);
           }
+          // Refetch app user from API when app becomes active
+          this.syncAppUserFromApi();
         }
       });
     } catch (error) {
@@ -259,6 +235,42 @@ export class AppComponent implements OnInit, OnDestroy {
         console.warn('Push notification listener not available:', err);
       });
     }
+  }
+
+  private syncAppUserFromApi(): void {
+    const profile = this.userProfileService.getProfile();
+    const email = this.onboardingService.getOnboardingData()?.email ?? profile.email;
+    this.platformApi
+      .getAppUser({
+        deviceId: this.deviceId.getDeviceId(),
+        email: email?.trim() || undefined,
+      })
+      .subscribe({
+        next: (res) => {
+          if (res?.user) {
+            this.appUserData.setData(res.user);
+            // Sync server profile to UserProfileService when API returns
+            this.userProfileService.setProfile({
+              firstName: res.user.firstName ?? '',
+              lastName: res.user.lastName ?? '',
+              email: res.user.email ?? '',
+            });
+          } else {
+            // No user from API - fall back to local storage (already in AppUserDataService)
+            const local = this.appUserData.getData();
+            if (!local) {
+              this.appUserData.clear();
+            }
+          }
+        },
+        error: () => {
+          // On failure, keep existing local storage data (already loaded in AppUserDataService)
+          const local = this.appUserData.getData();
+          if (!local) {
+            this.appUserData.clear();
+          }
+        },
+      });
   }
 
   async ngOnDestroy() {

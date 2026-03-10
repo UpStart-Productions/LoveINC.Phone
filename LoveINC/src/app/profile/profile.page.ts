@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OnboardingService } from '../services/onboarding.service';
 import { UserProfileService } from '../services/user-profile.service';
+import { AppUserDataService } from '../services/app-user-data.service';
+import { PlatformApiService } from '../services/platform/platform-api.service';
+import { DeviceIdService } from '../services/device-id.service';
+import { DeviceInfoService } from '../services/device-info.service';
 import {
   IonHeader,
   IonToolbar,
@@ -15,10 +19,14 @@ import {
   IonIcon,
   IonButton,
   IonButtons,
-  IonBackButton
+  IonBackButton,
+  IonList,
+  IonItem,
+  IonLabel,
 } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular/standalone';
-import { ServiceAccessSectionComponent } from '@upstart-productions/service-unlock';
+import { ModalController, AlertController } from '@ionic/angular/standalone';
+import { ServiceAccessSectionComponent } from '../../../packages/service-unlock/src/lib/components/service-access-section.component';
+import type { Voucher } from '../../../packages/service-unlock/src/lib/types/service-unlock.types';
 import { UserProfileFormModalComponent } from '../components/user-profile-form-modal/user-profile-form-modal.component';
 import { Subscription } from 'rxjs';
 
@@ -42,7 +50,10 @@ type UserType = 'client' | 'donor' | 'volunteer';
     IonIcon,
     IonButton,
     IonButtons,
-    IonBackButton
+    IonBackButton,
+    IonList,
+    IonItem,
+    IonLabel,
   ],
 })
 export class ProfilePage implements OnInit, OnDestroy {
@@ -55,6 +66,10 @@ export class ProfilePage implements OnInit, OnDestroy {
     name: '',
     email: '',
   };
+
+  emailVerifiedAt: string | null = null;
+  profileVouchers: Voucher[] | null = null;
+  notifications: Array<{ id: string; type: string; title: string; body: string | null; readAt: string | null; createdAt: string }> = [];
 
   // Client-specific data (used when My Engagement is re-enabled)
   clientData = {
@@ -90,7 +105,12 @@ export class ProfilePage implements OnInit, OnDestroy {
     private router: Router,
     private onboardingService: OnboardingService,
     private userProfileService: UserProfileService,
-    private modalController: ModalController
+    private appUserData: AppUserDataService,
+    private platformApi: PlatformApiService,
+    private deviceId: DeviceIdService,
+    private deviceInfo: DeviceInfoService,
+    private modalController: ModalController,
+    private alertController: AlertController
   ) {}
 
   ngOnInit(): void {
@@ -101,6 +121,48 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.updateDisplayProfile();
     });
     this.updateDisplayProfile();
+    const appUser = this.appUserData.getData();
+    if (appUser?.emailVerifiedAt) {
+      this.emailVerifiedAt = appUser.emailVerifiedAt;
+    }
+    this.loadProfile();
+  }
+
+  private loadProfile(): void {
+    const deviceId = this.deviceId.getDeviceId();
+    const email = this.userProfileService.getProfile().email?.trim();
+    if (!deviceId && !email) return;
+    this.platformApi.getAppUserProfile({ deviceId: deviceId || undefined, email: email || undefined }).subscribe({
+      next: (res) => {
+        if (res?.profile) {
+          this.emailVerifiedAt = res.profile.emailVerifiedAt;
+          this.profileVouchers = (res.profile.voucherRequests ?? []).map((vr) => ({
+            id: vr.id,
+            serviceId: vr.voucherId,
+            serviceLabel: vr.voucherTitle,
+            status: this.mapVoucherStatus(vr.status, vr.deniedAt, vr.expiresAt),
+            requestedAt: vr.createdAt,
+            approvedAt: vr.approvedAt ?? undefined,
+            validUntil: vr.expiresAt ?? vr.createdAt,
+          }));
+          this.notifications = (res.profile.notifications ?? []).map((n) => ({
+            id: n.id,
+            type: n.type,
+            title: n.title,
+            body: n.body,
+            readAt: n.readAt,
+            createdAt: n.createdAt,
+          }));
+        }
+      },
+    });
+  }
+
+  private mapVoucherStatus(status: string, deniedAt: string | null, expiresAt: string | null): 'pending' | 'approved' | 'expired' {
+    if (deniedAt) return 'expired';
+    if (status === 'approved') return 'approved';
+    if (expiresAt && new Date(expiresAt) < new Date()) return 'expired';
+    return 'pending';
   }
 
   ngOnDestroy(): void {
@@ -140,6 +202,36 @@ export class ProfilePage implements OnInit, OnDestroy {
         lastName: data.lastName,
         email: data.email,
       });
+      await this.saveProfileToApi(data.firstName ?? '', data.lastName ?? '', data.email ?? '');
+    }
+  }
+
+  private async saveProfileToApi(firstName: string, lastName: string, email: string): Promise<void> {
+    try {
+      const { platform, model } = await this.deviceInfo.getDeviceInfo();
+      await this.platformApi.registerAppUser({
+        firstName: firstName.trim() || undefined,
+        lastName: lastName.trim() || undefined,
+        email: email.trim() || undefined,
+        deviceId: this.deviceId.getDeviceId(),
+        devicePlatform: platform,
+        deviceModel: model,
+      });
+      this.platformApi
+        .getAppUser({
+          deviceId: this.deviceId.getDeviceId(),
+          email: email.trim() || undefined,
+        })
+        .subscribe({
+          next: (res) => {
+            if (res?.user) {
+              this.appUserData.setData(res.user);
+            }
+          },
+        });
+      this.loadProfile();
+    } catch (err) {
+      console.warn('Profile: save to API failed', err);
     }
   }
 
@@ -246,6 +338,63 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   get isDonorValue1(): boolean {
     return this.selectedUserType === 'donor';
+  }
+
+  get showVerifyEmail(): boolean {
+    return !!(
+      this.userProfile.email?.trim() &&
+      !this.emailVerifiedAt
+    );
+  }
+
+  verifyingEmail = false;
+
+  async sendVerifyEmail(): Promise<void> {
+    const email = this.userProfile.email?.trim();
+    if (!email || this.verifyingEmail) return;
+    this.verifyingEmail = true;
+    try {
+      const res = await this.platformApi.sendMagicLink({
+        purpose: 'verify',
+        email,
+        deviceId: this.deviceId.getDeviceId(),
+      });
+      if (res.sent) {
+        const alert = await this.alertController.create({
+          header: 'Check your email',
+          message: 'We sent a verification link to ' + email + '. Click the link to verify your email.',
+          buttons: ['OK'],
+        });
+        await alert.present();
+      } else {
+        const alert = await this.alertController.create({
+          header: 'Could not send email',
+          message: res.error ?? 'Please try again later.',
+          buttons: ['OK'],
+        });
+        await alert.present();
+      }
+    } catch (err) {
+      const msg = (err as Error)?.message ?? 'Please check your connection and try again.';
+      const alert = await this.alertController.create({
+        header: 'Could not send email',
+        message: msg,
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } finally {
+      this.verifyingEmail = false;
+    }
+  }
+
+  async markNotificationRead(notificationId: string): Promise<void> {
+    await this.platformApi.markNotificationRead(notificationId, {
+      deviceId: this.deviceId.getDeviceId(),
+      email: this.userProfileService.getProfile().email?.trim(),
+    });
+    this.notifications = this.notifications.map((n) =>
+      n.id === notificationId ? { ...n, readAt: new Date().toISOString() } : n
+    );
   }
 
   navigateToSandbox() {
