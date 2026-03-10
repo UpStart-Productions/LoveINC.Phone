@@ -23,6 +23,17 @@ import { NotificationsButtonComponent } from '../../components/notifications-but
 import { PlatformApiService } from '../../services/platform';
 import type { PlatformService, PlatformOffering, PlatformAddress } from '../../services/platform/types';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
+import { AppUserDataService } from '../../services/app-user-data.service';
+import { UserProfileService } from '../../services/user-profile.service';
+import { OnboardingService } from '../../services/onboarding.service';
+import { DeviceIdService } from '../../services/device-id.service';
+import { ToastController } from '@ionic/angular/standalone';
+import { ActionSheetController } from '@ionic/angular/standalone';
+
+export interface GapServiceVoucher {
+  id: string;
+  title: string;
+}
 
 export interface GapService {
   id: string;
@@ -37,6 +48,12 @@ export interface GapService {
   phone?: string;
   email?: string;
   photoUrl?: string;
+  /** True when this service/offering has vouchers. Used for voucher icon visibility. */
+  voucherRequired?: boolean;
+  /** Service id (for standalone) or parent service id (for offering). Used when navigating to voucher flow. */
+  serviceId?: string;
+  /** Vouchers available for this service/offering. */
+  vouchers?: GapServiceVoucher[];
 }
 
 @Component({
@@ -59,11 +76,13 @@ export interface GapService {
     CardComponent,
     NotificationsButtonComponent,
   ],
-  providers: [AlertController]
+  providers: [AlertController, ActionSheetController, ToastController]
 })
 export class GapMinistriesPage implements OnInit {
   services: GapService[] = [];
   groupedServices: { [key: string]: GapService[] } = {};
+  /** Org-level: when true, user must complete intake before accessing voucher-gated services. */
+  intakeRequired = false;
   scheduleOrder = [
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
     'By Appointment',
@@ -80,11 +99,18 @@ export class GapMinistriesPage implements OnInit {
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
-    private serviceUnlock: ServiceUnlockService
+    private serviceUnlock: ServiceUnlockService,
+    private appUserData: AppUserDataService,
+    private userProfile: UserProfileService,
+    private onboarding: OnboardingService,
+    private deviceId: DeviceIdService,
+    private toastController: ToastController,
+    private actionSheetController: ActionSheetController
   ) {}
 
   async ngOnInit() {
     await this.serviceUnlock.ensureInitialized();
+    this.loadClientAccess();
     this.loadServices();
     const fromParam = this.route.snapshot.queryParamMap.get('from');
     this.fromServices = fromParam === 'services';
@@ -96,6 +122,17 @@ export class GapMinistriesPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
+  }
+
+  loadClientAccess() {
+    this.platformApi.getClientAccess().subscribe({
+      next: (res) => {
+        this.intakeRequired = res?.intakeRequired ?? false;
+      },
+      error: (err) => {
+        console.error('Error loading client access:', err);
+      },
+    });
   }
 
   loadServices() {
@@ -139,6 +176,9 @@ export class GapMinistriesPage implements OnInit {
             phone: off.provider?.phone,
             email: off.provider?.email,
             photoUrl,
+            voucherRequired: off.voucherRequired ?? false,
+            serviceId: svc.id,
+            vouchers: (off.vouchers ?? []).map((v) => ({ id: v.id, title: v.title })),
           });
         }
       } else {
@@ -152,6 +192,9 @@ export class GapMinistriesPage implements OnInit {
           contact: 'Contact Love INC',
           contactMethod: 'call_loveinc',
           notes: svc.shortDescription ?? null,
+          voucherRequired: svc.voucherRequired ?? false,
+          serviceId: svc.id,
+          vouchers: (svc.vouchers ?? []).map((v) => ({ id: v.id, title: v.title })),
         });
       }
     }
@@ -249,13 +292,88 @@ export class GapMinistriesPage implements OnInit {
       '</div>';
   }
 
+  /** Show voucher icon when: (org requires intake AND user completed) OR (org doesn't require intake). */
+  private get showVoucherIcon(): boolean {
+    const intakeCompleted =
+      this.appUserData.hasIntakeCompleted() || this.serviceUnlock.isUnlocked;
+    return !this.intakeRequired || intakeCompleted;
+  }
+
   getActionIcons(service: GapService): CardActionIcon[] {
-    return [
+    const showVoucher =
+      !!service.voucherRequired && this.showVoucherIcon;
+    const icons: CardActionIcon[] = [
       { icon: 'location-outline', handler: () => this.onMapPinClick(service), show: !!service.address, buttonClass: 'map-button' },
       { icon: 'call-outline', handler: () => this.onPhoneClick(service), show: true, buttonClass: 'phone-button' },
+      { icon: 'ticket-outline', handler: () => this.onVoucherClick(service), show: showVoucher, buttonClass: 'voucher-button' },
       { lucideIcon: 'heart-handshake', handler: () => this.onVolunteerClick(service), show: true, buttonClass: 'volunteer-button' },
       { icon: 'calendar-outline', handler: () => this.onCalendarClick(service), show: true, buttonClass: 'calendar-button' },
     ];
+    return icons;
+  }
+
+  async onVoucherClick(service: GapService): Promise<void> {
+    const vouchers = service.vouchers ?? [];
+    if (vouchers.length === 0) return;
+    let voucher: GapServiceVoucher;
+    if (vouchers.length === 1) {
+      voucher = vouchers[0];
+    } else {
+      const chosen = await new Promise<GapServiceVoucher | null>((resolve) => {
+        const buttons: Array<{ text: string; role?: string; handler?: () => void }> = vouchers.map((v) => ({
+          text: v.title,
+          handler: () => resolve(v),
+        }));
+        buttons.push({ text: 'Cancel', role: 'cancel', handler: () => resolve(null) });
+        this.actionSheetController
+          .create({ header: 'Select voucher', buttons })
+          .then((sheet) => {
+            sheet.present();
+            sheet.onDidDismiss().then((ev) => {
+              if (ev.role === 'cancel') resolve(null);
+            });
+          });
+      });
+      if (!chosen) return;
+      voucher = chosen;
+    }
+    const alert = await this.alertController.create({
+      header: voucher.title,
+      message: 'Are you sure you want to request this voucher?',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Request',
+          handler: async () => {
+            try {
+              const profile = this.userProfile.getProfile();
+              const onboardingData = this.onboarding.getOnboardingData();
+              await this.platformApi.postVoucherRequest({
+                voucherId: voucher.id,
+                email: profile.email || onboardingData?.email || undefined,
+                firstName: profile.firstName || onboardingData?.firstName || undefined,
+                lastName: profile.lastName || onboardingData?.lastName || undefined,
+                deviceId: this.deviceId.getDeviceId(),
+              });
+              const toast = await this.toastController.create({
+                message: 'Voucher has been requested',
+                duration: 3000,
+                color: 'success',
+              });
+              await toast.present();
+            } catch (err) {
+              const toast = await this.toastController.create({
+                message: (err as Error)?.message ?? 'Failed to request voucher',
+                duration: 3000,
+                color: 'danger',
+              });
+              await toast.present();
+            }
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 
   async onMapPinClick(service: GapService) {

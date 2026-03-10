@@ -94,6 +94,9 @@ export interface PlatformOffering {
   photoUrl?: string;
   scheduleRule?: PlatformScheduleRule;
   sessions?: Array<{ startDate: string; endDate: string; isCancelled?: boolean }>;
+  /** Derived: true when offering has at least one voucher */
+  voucherRequired?: boolean;
+  vouchers?: PlatformVoucher[];
 }
 
 /** API may return camelCase or snake_case; we normalize in mapping */
@@ -134,6 +137,15 @@ export interface PlatformServiceItem {
   sortOrder: number;
 }
 
+export interface PlatformVoucher {
+  id: string;
+  title: string;
+  shortDescription?: string;
+  voucherExpiryDays?: number;
+  itemIds?: string[];
+  itemLabels?: string[];
+}
+
 export interface PlatformService {
   id: string;
   slug?: string;
@@ -143,7 +155,12 @@ export interface PlatformService {
   photoUrl?: string;
   items: PlatformServiceItem[];
   offerings: PlatformOffering[];
+  /** Derived: true when service or any offering has vouchers */
+  voucherRequired?: boolean;
+  /** Vouchers for standalone service (no offerings) */
+  vouchers?: PlatformVoucher[];
 }
+
 
 export type PlatformCtaType =
   | 'donation_drive'

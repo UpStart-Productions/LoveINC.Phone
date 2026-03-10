@@ -54,6 +54,11 @@ export interface ContentDetail {
   // CTA (donation-drive, volunteer, fundraiser, awareness): date range
   startDate?: string;
   endDate?: string;
+
+  // Gap ministry / service: voucher visibility and request
+  voucherRequired?: boolean;
+  serviceId?: string;
+  vouchers?: Array<{ id: string; title: string }>;
 }
 
 export type ContentType =

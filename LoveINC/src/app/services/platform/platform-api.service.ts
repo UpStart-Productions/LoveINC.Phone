@@ -27,6 +27,7 @@ export type {
   PlatformOffering,
   PlatformOrganization,
   PlatformService,
+  PlatformVoucher,
 } from './types';
 
 @Injectable({ providedIn: 'root' })
@@ -85,6 +86,16 @@ export class PlatformApiService {
 
   getOrganization(): Observable<PlatformOrganization | null> {
     return this.get<PlatformOrganization>('/organization');
+  }
+
+  /**
+   * Get client access settings (intake required). Used for voucher icon visibility.
+   * GET /public/:customerSlug/:tenantSlug/client-access
+   */
+  getClientAccess(): Observable<{ intakeRequired: boolean }> {
+    return this.get<{ intakeRequired: boolean }>('/client-access').pipe(
+      map((res) => res ?? { intakeRequired: false })
+    );
   }
 
   getEvents(): Observable<PlatformEvent[]> {
@@ -332,6 +343,45 @@ export class PlatformApiService {
     };
     return this.get<AppUserResponse>(path).pipe(
       map((res): AppUserResponse => (res != null ? res : { user: null }))
+    );
+  }
+
+  /**
+   * Request a voucher. POST /public/:customerSlug/:tenantSlug/voucher-request
+   */
+  postVoucherRequest(payload: {
+    voucherId: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    deviceId?: string;
+    devicePlatform?: string;
+    deviceModel?: string;
+  }): Promise<{ id: string }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const url = `${this.basePath}/voucher-request`;
+    const body: Record<string, string> = {
+      voucherId: payload.voucherId.trim(),
+    };
+    if (payload.email?.trim()) body['email'] = payload.email.trim().toLowerCase();
+    if (payload.firstName?.trim()) body['firstName'] = payload.firstName.trim();
+    if (payload.lastName?.trim()) body['lastName'] = payload.lastName.trim();
+    if (payload.deviceId?.trim()) body['deviceId'] = payload.deviceId.trim();
+    if (payload.devicePlatform?.trim()) body['devicePlatform'] = payload.devicePlatform.trim();
+    if (payload.deviceModel?.trim()) body['deviceModel'] = payload.deviceModel.trim();
+
+    return firstValueFrom(
+      this.http.post<{ id: string }>(url, body, { headers: this.headers }).pipe(
+        tap((res) => console.debug('PlatformApiService: voucher-request OK', res)),
+        catchError((err) => {
+          const status = err?.status ?? err?.error?.status;
+          const message = err?.error?.message ?? err?.message ?? JSON.stringify(err?.error);
+          console.error('PlatformApiService: voucher-request failed', { url, status, message, err });
+          return throwError(() => new Error(message));
+        })
+      )
     );
   }
 

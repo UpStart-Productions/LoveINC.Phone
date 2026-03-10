@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { format, parse, addDays } from 'date-fns';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -19,6 +20,13 @@ import {
 import { AlertController } from '@ionic/angular';
 import { ContentDetail, ContentType } from './content-detail.model';
 import { SharingService } from '../../services/sharing/sharing.service';
+import { AppUserDataService } from '../../services/app-user-data.service';
+import { ServiceUnlockService } from '@upstart-productions/service-unlock';
+import { UserProfileService } from '../../services/user-profile.service';
+import { OnboardingService } from '../../services/onboarding.service';
+import { DeviceIdService } from '../../services/device-id.service';
+import { ToastController } from '@ionic/angular/standalone';
+import { ActionSheetController } from '@ionic/angular/standalone';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { VolunteerActionSheetService } from '../../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
@@ -51,14 +59,20 @@ import {
     IonLabel,
     IonList
   ],
-  providers: [AlertController]
+  providers: [AlertController, ActionSheetController, ToastController]
 })
-export class ContentDetailPage implements OnInit {
+export class ContentDetailPage implements OnInit, OnDestroy {
   contentItem: ContentDetail | null = null;
   contentType: ContentType = 'class';
   contentId: string = '';
   backRoute: string = '/tabs/home';
   pageTitle: string = 'Details';
+
+  /** Org-level: when true, user must complete intake before accessing voucher-gated services. */
+  intakeRequired = false;
+  /** User has completed intake (from API or local unlock state). */
+  intakeCompleted = false;
+  private subs: Subscription[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -69,13 +83,39 @@ export class ContentDetailPage implements OnInit {
     private platformApi: PlatformApiService,
     private donateActionSheetService: DonateActionSheetService,
     private volunteerActionSheetService: VolunteerActionSheetService,
-    private scheduleFormatting: ScheduleFormattingService
+    private scheduleFormatting: ScheduleFormattingService,
+    private appUserData: AppUserDataService,
+    private serviceUnlock: ServiceUnlockService,
+    private userProfile: UserProfileService,
+    private onboarding: OnboardingService,
+    private deviceId: DeviceIdService,
+    private toastController: ToastController,
+    private actionSheetController: ActionSheetController
   ) {}
 
   ngOnInit() {
     this.contentType = (this.route.snapshot.paramMap.get('type') as ContentType) || 'class';
     this.contentId = this.route.snapshot.paramMap.get('id') || '';
-    
+    if (this.contentType === 'gap-ministry') {
+      this.serviceUnlock.ensureInitialized().catch(() => {});
+      this.intakeCompleted =
+        this.appUserData.hasIntakeCompleted() || this.serviceUnlock.isUnlocked;
+      this.subs.push(
+        this.appUserData.getData$().subscribe((u) => {
+          this.intakeCompleted =
+            !!u?.intakeCompleted || this.serviceUnlock.isUnlocked;
+        }),
+        this.serviceUnlock.isUnlocked$.subscribe((u) => {
+          this.intakeCompleted = this.appUserData.hasIntakeCompleted() || u;
+        })
+      );
+      this.platformApi.getClientAccess().subscribe({
+        next: (res) => {
+          this.intakeRequired = res?.intakeRequired ?? false;
+        },
+        error: () => {},
+      });
+    }
     // Determine back route based on content type or query param
     const fromParam = this.route.snapshot.queryParamMap.get('from');
     if (fromParam) {
@@ -336,6 +376,12 @@ export class ContentDetailPage implements OnInit {
       service.longDescription ??
       service.shortDescription ??
       '';
+    const voucherRequired = isOffering
+      ? (item as PlatformOffering).voucherRequired ?? false
+      : (item as PlatformService).voucherRequired ?? false;
+    const vouchers = isOffering
+      ? (item as PlatformOffering).vouchers?.map((v) => ({ id: v.id, title: v.title })) ?? []
+      : (item as PlatformService).vouchers?.map((v) => ({ id: v.id, title: v.title })) ?? [];
     return {
       id: isOffering ? (item as PlatformOffering).id : (item as PlatformService).id,
       title,
@@ -344,6 +390,9 @@ export class ContentDetailPage implements OnInit {
       subtitle: subtitle || undefined,
       location,
       nextSession,
+      voucherRequired,
+      serviceId: service.id,
+      vouchers: vouchers.length ? vouchers : undefined,
     };
   }
 
@@ -764,6 +813,79 @@ export class ContentDetailPage implements OnInit {
     return !!(this.contentItem?.cost && this.contentItem.cost.trim().length > 0);
   }
 
+  /** Show voucher icon when gap-ministry has vouchers and user has access. */
+  showVoucherIcon(): boolean {
+    if (this.contentType !== 'gap-ministry' || !this.contentItem?.voucherRequired) {
+      return false;
+    }
+    return !this.intakeRequired || this.intakeCompleted;
+  }
+
+  async onVoucherClick(): Promise<void> {
+    const vouchers = this.contentItem?.vouchers ?? [];
+    if (vouchers.length === 0) return;
+    type V = { id: string; title: string };
+    let voucher: V;
+    if (vouchers.length === 1) {
+      voucher = vouchers[0];
+    } else {
+      const chosen = await new Promise<V | null>((resolve) => {
+        const buttons: Array<{ text: string; role?: string; handler?: () => void }> = vouchers.map((v) => ({
+          text: v.title,
+          handler: () => resolve(v),
+        }));
+        buttons.push({ text: 'Cancel', role: 'cancel', handler: () => resolve(null) });
+        this.actionSheetController
+          .create({ header: 'Select voucher', buttons })
+          .then((sheet) => {
+            sheet.present();
+            sheet.onDidDismiss().then((ev) => {
+              if (ev.role === 'cancel') resolve(null);
+            });
+          });
+      });
+      if (!chosen) return;
+      voucher = chosen;
+    }
+    const alert = await this.alertController.create({
+      header: voucher.title,
+      message: 'Are you sure you want to request this voucher?',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Request',
+          handler: async () => {
+            try {
+              const profile = this.userProfile.getProfile();
+              const onboardingData = this.onboarding.getOnboardingData();
+              await this.platformApi.postVoucherRequest({
+                voucherId: voucher.id,
+                email: profile.email || onboardingData?.email || undefined,
+                firstName: profile.firstName || onboardingData?.firstName || undefined,
+                lastName: profile.lastName || onboardingData?.lastName || undefined,
+                deviceId: this.deviceId.getDeviceId(),
+              });
+              const toast = await this.toastController.create({
+                message: 'Voucher has been requested',
+                duration: 3000,
+                color: 'success',
+              });
+              await toast.present();
+            } catch (err) {
+              const toast = await this.toastController.create({
+                message: (err as Error)?.message ?? 'Failed to request voucher',
+                duration: 3000,
+                color: 'danger',
+              });
+              await toast.present();
+            }
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
   formatDuration(): string {
     const mins = this.contentItem?.durationMinutes ?? 0;
     if (mins >= 60) {
@@ -826,6 +948,11 @@ export class ContentDetailPage implements OnInit {
     }
     
     return html;
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach((s) => s.unsubscribe());
+    this.subs = [];
   }
 
   private getContentTypeLabel(): string {
