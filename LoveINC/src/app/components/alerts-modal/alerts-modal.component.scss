@@ -105,8 +105,8 @@ ion-header {
   flex-direction: column;
   
   &.unread {
-    --background: var(--ion-color-light-shade);
-    background: var(--ion-color-light-shade);
+    --background: var(--ion-color-light);
+    background: var(--ion-color-light);
   }
   
   &.read {
@@ -129,6 +129,10 @@ ion-header {
   .notification-content {
     width: 100%;
     margin-top: 0;
+
+    p {
+      color: var(--app-text-primary);
+    }
   }
 
   .notification-header h2 {

@@ -68,8 +68,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   backRoute: string = '/tabs/home';
   pageTitle: string = 'Details';
 
-  /** Org-level: when true, user must complete intake before accessing voucher-gated services. */
-  intakeRequired = false;
+  /** Org-level: when true, user must complete intake before accessing voucher-gated services. Default true until API responds (conservative: hide voucher icons until we know). */
+  intakeRequired = true;
   /** User has completed intake (from API or local unlock state). */
   intakeCompleted = false;
   private subs: Subscription[] = [];

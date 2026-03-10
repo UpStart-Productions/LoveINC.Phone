@@ -10,6 +10,9 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <div *ngIf="loading" class="loading p-48 p-l-24 p-r-24">
     <ion-spinner name="crescent" class="m-b-18"></ion-spinner>
     <p>Loading notifications...</p>

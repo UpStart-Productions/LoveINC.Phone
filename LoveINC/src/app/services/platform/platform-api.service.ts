@@ -241,18 +241,20 @@ export class PlatformApiService {
     deviceId?: string;
     devicePlatform?: string;
     deviceModel?: string;
+    newsletterOptIn?: boolean;
   }): Promise<{ id: string; magicLinkSent?: boolean }> {
     if (!environment.apiKey) {
       return Promise.reject(new Error('API key not configured'));
     }
     const url = `${this.basePath}/app-users`;
-    const body: Record<string, string> = {};
+    const body: Record<string, string | boolean> = {};
     if (payload.firstName?.trim()) body['firstName'] = payload.firstName.trim();
     if (payload.lastName?.trim()) body['lastName'] = payload.lastName.trim();
     if (payload.email?.trim()) body['email'] = payload.email.trim().toLowerCase();
     if (payload.deviceId?.trim()) body['deviceId'] = payload.deviceId.trim();
     if (payload.devicePlatform?.trim()) body['devicePlatform'] = payload.devicePlatform.trim();
     if (payload.deviceModel?.trim()) body['deviceModel'] = payload.deviceModel.trim();
+    if (payload.newsletterOptIn !== undefined) body['newsletterOptIn'] = payload.newsletterOptIn;
 
     return firstValueFrom(
       this.http.post<{ id: string; magicLinkSent?: boolean }>(url, body, { headers: this.headers }).pipe(
@@ -333,6 +335,8 @@ export class PlatformApiService {
         deniedAt: string | null;
         expiresAt: string | null;
         createdAt: string;
+        providerOffering?: string | null;
+        location?: string | null;
       }[];
       notifications: {
         id: string;
@@ -368,6 +372,8 @@ export class PlatformApiService {
           deniedAt: string | null;
           expiresAt: string | null;
           createdAt: string;
+          providerOffering?: string | null;
+          location?: string | null;
         }[];
         notifications: {
           id: string;

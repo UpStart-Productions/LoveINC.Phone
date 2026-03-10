@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Voucher Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()" fill="clear">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  @if (voucher) {
+    <div class="voucher-detail">
+      <h3 class="m-b-12">{{ voucher.serviceLabel }}</h3>
+      @if (voucher.providerOffering) {
+        <p class="app-body-secondary m-b-6">
+          <strong>Provider offering:</strong> {{ voucher.providerOffering }}
+        </p>
+      }
+      @if (voucher.location) {
+        <p class="app-body-secondary m-b-6">
+          <strong>Location:</strong> {{ voucher.location }}
+        </p>
+      }
+      @if (voucher.expiresAt) {
+        <p class="app-body-secondary m-b-6">
+          <strong>Valid until:</strong> {{ formatDate(voucher.expiresAt) }}
+        </p>
+      }
+      @if (!voucher.providerOffering && !voucher.location && !voucher.expiresAt) {
+        <p class="app-body-secondary">No additional details available.</p>
+      }
+    </div>
+  }
+</ion-content>

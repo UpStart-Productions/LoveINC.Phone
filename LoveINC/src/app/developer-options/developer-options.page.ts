@@ -17,6 +17,7 @@ import {
   AlertController
 } from '@ionic/angular/standalone';
 import { OnboardingService } from '../services/onboarding.service';
+import { AppUserDataService } from '../services/app-user-data.service';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor } from '@capacitor/core';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
@@ -46,7 +47,8 @@ export class DeveloperOptionsPage {
     private router: Router,
     private onboardingService: OnboardingService,
     private alertController: AlertController,
-    private serviceUnlock: ServiceUnlockService
+    private serviceUnlock: ServiceUnlockService,
+    private appUserData: AppUserDataService
   ) {}
 
   resetOnboarding() {
@@ -87,9 +89,10 @@ export class DeveloperOptionsPage {
 
   async clearAccess() {
     await this.serviceUnlock.clearUnlock();
+    this.appUserData.clear();
     const alert = await this.alertController.create({
       header: 'Access Cleared',
-      message: 'Intake unlock state has been reset. Go to Profile and scan again to re-unlock.',
+      message: 'Intake state has been reset (local unlock + cached app user data). You should now see "Intake required" and no voucher icons. If you refresh the app, it will re-fetch from the API—if you completed intake before, you may see access again.',
       buttons: ['OK'],
     });
     await alert.present();

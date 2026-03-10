@@ -81,8 +81,8 @@ export interface GapService {
 export class GapMinistriesPage implements OnInit {
   services: GapService[] = [];
   groupedServices: { [key: string]: GapService[] } = {};
-  /** Org-level: when true, user must complete intake before accessing voucher-gated services. */
-  intakeRequired = false;
+  /** Org-level: when true, user must complete intake before accessing voucher-gated services. Default true until API responds (conservative: hide voucher icons until we know). */
+  intakeRequired = true;
   scheduleOrder = [
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
     'By Appointment',

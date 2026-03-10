@@ -89,6 +89,7 @@ export class OnboardingStep3Page {
         deviceId: this.deviceId.getDeviceId(),
         devicePlatform: platform,
         deviceModel: model,
+        newsletterOptIn: this.wantsNewsletter,
       });
       magicLinkSent = res.magicLinkSent ?? false;
     } catch (err) {
@@ -136,6 +137,7 @@ export class OnboardingStep3Page {
         deviceId: this.deviceId.getDeviceId(),
         devicePlatform: platform,
         deviceModel: model,
+        newsletterOptIn: false,
       });
     } catch (err) {
       console.warn('Onboarding: API register failed (continuing)', err);

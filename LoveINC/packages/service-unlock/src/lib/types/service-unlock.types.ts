@@ -17,6 +17,12 @@ export interface Voucher {
   requestedAt: string;
   approvedAt?: string;
   validUntil: string;
+  /** When present, voucher has an explicit expiry date to display */
+  expiresAt?: string;
+  /** Provider offering name, when available from API */
+  providerOffering?: string | null;
+  /** Location/address, when available from API */
+  location?: string | null;
 }
 
 /**

@@ -8,18 +8,18 @@
   <ion-card-content>
     <div class="access-status m-b-18">
       <ion-icon
-        [name]="isUnlocked ? 'checkmark-circle' : 'lock-closed-outline'"
-        [color]="isUnlocked ? 'success' : 'medium'"
+        [name]="accessStatus === 'required' ? 'lock-closed-outline' : 'checkmark-circle'"
+        [color]="accessStatus === 'required' ? 'medium' : 'success'"
         class="status-icon"></ion-icon>
       <div>
-        <p class="status-label">{{ isUnlocked ? 'Intake completed' : 'Intake required' }}</p>
+        <p class="status-label">{{ accessStatus === 'full_access' ? 'Full access' : (accessStatus === 'completed' ? 'Intake completed' : 'Intake required') }}</p>
         <p class="status-detail">
-          {{ isUnlocked ? 'You can contact Gap Ministry providers directly.' : 'Scan the QR code from your intake materials to unlock.' }}
+          {{ accessStatus === 'full_access' ? 'Your organization does not require intake. You can contact Gap Ministry providers directly.' : (accessStatus === 'completed' ? 'You can contact Gap Ministry providers directly.' : 'Scan the QR code from your intake materials to unlock.') }}
         </p>
       </div>
     </div>
     <ion-button
-      *ngIf="!isUnlocked"
+      *ngIf="accessStatus === 'required'"
       expand="block"
       fill="outline"
       size="small"
@@ -29,23 +29,27 @@
     </ion-button>
 
     <div class="vouchers-section m-t-24" *ngIf="vouchers.length">
-      <p class="vouchers-label">My Vouchers</p>
+      <p class="vouchers-label">
+        <ion-icon
+          [name]="hasAnyValidVoucher ? 'ticket-outline' : 'time-outline'"
+          [color]="hasAnyValidVoucher ? 'success' : 'medium'"
+          class="vouchers-label-icon"></ion-icon>
+        My Vouchers
+      </p>
       <ion-list lines="none">
-        <ion-item *ngFor="let v of vouchers" class="voucher-item">
+        <ion-item *ngFor="let v of vouchers" class="voucher-item" button (click)="openVoucherModal(v)">
           <ion-icon
             slot="start"
             [name]="isVoucherValid(v) ? 'ticket-outline' : 'time-outline'"
             [color]="isVoucherValid(v) ? 'success' : 'medium'"></ion-icon>
           <ion-label>
             <h3>{{ v.serviceLabel }}</h3>
-            <p>Valid until {{ formatDate(v.validUntil) }}</p>
+            @if (v.validUntil && hasExpiry(v)) {
+              <p>Valid until {{ formatDate(v.validUntil) }}</p>
+            }
           </ion-label>
         </ion-item>
       </ion-list>
-      <ion-button expand="block" fill="outline" size="small" (click)="requestVoucher()">
-        <ion-icon slot="start" name="add-outline"></ion-icon>
-        Request Voucher
-      </ion-button>
     </div>
   </ion-card-content>
 </ion-card>

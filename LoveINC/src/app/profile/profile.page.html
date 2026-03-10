@@ -8,8 +8,20 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <!-- Name and Email (if present) with Edit -->
   <ion-card class="section-card">
+    <ion-card-header class="header-with-action">
+      <ion-card-title>
+        <ion-icon name="person-outline" class="section-icon"></ion-icon>
+        Your Information
+      </ion-card-title>
+      <ion-button fill="clear" size="small" (click)="editProfile()">
+        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-card-header>
     <ion-card-content>
       @if (displayName || userProfile.email) {
         @if (displayName) {
@@ -18,15 +30,14 @@
         @if (userProfile.email) {
           <p class="app-body-secondary m-b-12">{{ userProfile.email }}</p>
         }
+      } @else {
+        <p class="app-body-secondary m-b-12">Add your information to get started.</p>
       }
       @if (showVerifyEmail) {
         <ion-button fill="outline" size="small" class="mb-3" (click)="sendVerifyEmail()" [disabled]="verifyingEmail">
           {{ verifyingEmail ? 'Sending…' : 'Verify Email' }}
         </ion-button>
       }
-      <ion-button fill="clear" size="small" (click)="editProfile()">
-        {{ (displayName || userProfile.email) ? 'Edit' : 'Add your information' }}
-      </ion-button>
     </ion-card-content>
   </ion-card>
 
@@ -42,7 +53,7 @@
       <ion-card-content>
         <ion-list lines="none">
           @for (n of notifications; track n.id) {
-            <ion-item [class.read]="n.readAt" (click)="markNotificationRead(n.id)">
+            <ion-item [class.read]="n.readAt" button (click)="onNotificationTap(n)">
               <ion-label>
                 <h3>{{ n.title }}</h3>
                 @if (n.body) {
@@ -60,7 +71,10 @@
   <app-service-access-section
     class="m-18"
     [scanClickHandler]="onScanRequested"
-    [apiVouchers]="profileVouchers">
+    [apiVouchers]="profileVouchers"
+    [apiIntakeCompleted]="apiIntakeCompleted"
+    [intakeRequired]="intakeRequired"
+    (voucherTap)="openVoucherModal($event)">
   </app-service-access-section>
 
   <!-- Settings -->

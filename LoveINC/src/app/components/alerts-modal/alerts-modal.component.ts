@@ -17,6 +17,8 @@ import {
   IonItem,
   IonLabel,
   IonSpinner,
+  IonRefresher,
+  IonRefresherContent,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -30,6 +32,8 @@ import {
     IonToolbar,
     IonTitle,
     IonContent,
+    IonRefresher,
+    IonRefresherContent,
     IonButtons,
     IonButton,
     IonIcon,
@@ -51,6 +55,7 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.notificationsService.refresh();
     this.notificationsService.notifications$
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -76,6 +81,12 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
 
   close(): void {
     this.modalController.dismiss();
+  }
+
+  async onRefresh(event: Event): Promise<void> {
+    const refresher = (event as CustomEvent).target as HTMLIonRefresherElement;
+    this.notificationsService.refresh();
+    refresher?.complete?.();
   }
 
   formatDate(dateStr: string): string {
@@ -114,9 +125,21 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
     this.notifications = this.notifications.filter((n) => n.id !== notification.id);
 
     if (!notification.read) {
-      await this.notificationsService.markAsRead(notification.id);
+      if (notification.source === 'user') {
+        await this.notificationsService.markUserNotificationAsRead(notification.id);
+      } else {
+        await this.notificationsService.markAsRead(notification.id);
+      }
     }
 
+    // User notifications (e.g. voucher approved) — dismiss and optionally go to profile
+    if (notification.source === 'user') {
+      await this.modalController.dismiss();
+      this.router.navigate(['/tabs/profile']);
+      return;
+    }
+
+    // Content notifications — deep link to event, class, CTA, service
     const { meta } = notification;
     const routeType = mapNotificationMetaToContentType(meta);
     if (routeType && meta?.itemId) {

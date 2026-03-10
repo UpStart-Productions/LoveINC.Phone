@@ -23,12 +23,15 @@ import {
   IonList,
   IonItem,
   IonLabel,
+  IonRefresher,
+  IonRefresherContent,
 } from '@ionic/angular/standalone';
 import { ModalController, AlertController } from '@ionic/angular/standalone';
 import { ServiceAccessSectionComponent } from '../../../packages/service-unlock/src/lib/components/service-access-section.component';
 import type { Voucher } from '../../../packages/service-unlock/src/lib/types/service-unlock.types';
 import { UserProfileFormModalComponent } from '../components/user-profile-form-modal/user-profile-form-modal.component';
-import { Subscription } from 'rxjs';
+import { VoucherDetailModalComponent } from '../components/voucher-detail-modal/voucher-detail-modal.component';
+import { Subscription, firstValueFrom } from 'rxjs';
 
 type UserType = 'client' | 'donor' | 'volunteer';
 
@@ -40,6 +43,8 @@ type UserType = 'client' | 'donor' | 'volunteer';
     CommonModule,
     ServiceAccessSectionComponent,
     IonHeader,
+    IonRefresher,
+    IonRefresherContent,
     IonToolbar,
     IonTitle,
     IonContent,
@@ -69,7 +74,17 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   emailVerifiedAt: string | null = null;
   profileVouchers: Voucher[] | null = null;
-  notifications: Array<{ id: string; type: string; title: string; body: string | null; readAt: string | null; createdAt: string }> = [];
+  profileIntakeCompleted = false;
+  intakeRequired = true;
+  notifications: Array<{
+    id: string;
+    type: string;
+    title: string;
+    body: string | null;
+    readAt: string | null;
+    createdAt: string;
+    meta?: { voucherRequestId?: string; voucherId?: string; voucherTitle?: string };
+  }> = [];
 
   // Client-specific data (used when My Engagement is re-enabled)
   clientData = {
@@ -128,14 +143,27 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.loadProfile();
   }
 
+  ionViewWillEnter(): void {
+    this.loadProfile();
+  }
+
   private loadProfile(): void {
     const deviceId = this.deviceId.getDeviceId();
-    const email = this.userProfileService.getProfile().email?.trim();
+    const profile = this.userProfileService.getProfile();
+    const onboarding = this.onboardingService.getOnboardingData();
+    const email = (profile.email ?? onboarding?.email)?.trim();
+    this.platformApi.getClientAccess().subscribe({
+      next: (res) => {
+        this.intakeRequired = res?.intakeRequired ?? true;
+      },
+      error: () => {},
+    });
     if (!deviceId && !email) return;
     this.platformApi.getAppUserProfile({ deviceId: deviceId || undefined, email: email || undefined }).subscribe({
       next: (res) => {
         if (res?.profile) {
           this.emailVerifiedAt = res.profile.emailVerifiedAt;
+          this.profileIntakeCompleted = res.profile.intakeCompleted ?? false;
           this.profileVouchers = (res.profile.voucherRequests ?? []).map((vr) => ({
             id: vr.id,
             serviceId: vr.voucherId,
@@ -144,6 +172,9 @@ export class ProfilePage implements OnInit, OnDestroy {
             requestedAt: vr.createdAt,
             approvedAt: vr.approvedAt ?? undefined,
             validUntil: vr.expiresAt ?? vr.createdAt,
+            expiresAt: vr.expiresAt ?? undefined,
+            providerOffering: vr.providerOffering ?? undefined,
+            location: vr.location ?? undefined,
           }));
           this.notifications = (res.profile.notifications ?? []).map((n) => ({
             id: n.id,
@@ -152,10 +183,54 @@ export class ProfilePage implements OnInit, OnDestroy {
             body: n.body,
             readAt: n.readAt,
             createdAt: n.createdAt,
+            meta: n.meta as { voucherRequestId?: string; voucherId?: string; voucherTitle?: string } | undefined,
           }));
         }
       },
     });
+  }
+
+  async onRefresh(event: Event): Promise<void> {
+    const refresher = (event as CustomEvent).target as HTMLIonRefresherElement;
+    const deviceId = this.deviceId.getDeviceId();
+    const profile = this.userProfileService.getProfile();
+    const onboarding = this.onboardingService.getOnboardingData();
+    const email = (profile.email ?? onboarding?.email)?.trim();
+    if (deviceId || email) {
+      try {
+        const res = await firstValueFrom(
+          this.platformApi.getAppUserProfile({ deviceId: deviceId || undefined, email: email || undefined })
+        );
+        if (res?.profile) {
+          this.emailVerifiedAt = res.profile.emailVerifiedAt ?? null;
+          this.profileIntakeCompleted = res.profile.intakeCompleted ?? false;
+          this.profileVouchers = (res.profile.voucherRequests ?? []).map((vr) => ({
+            id: vr.id,
+            serviceId: vr.voucherId,
+            serviceLabel: vr.voucherTitle,
+            status: this.mapVoucherStatus(vr.status, vr.deniedAt, vr.expiresAt),
+            requestedAt: vr.createdAt,
+            approvedAt: vr.approvedAt ?? undefined,
+            validUntil: vr.expiresAt ?? vr.createdAt,
+            expiresAt: vr.expiresAt ?? undefined,
+            providerOffering: vr.providerOffering ?? undefined,
+            location: vr.location ?? undefined,
+          }));
+          this.notifications = (res.profile.notifications ?? []).map((n) => ({
+            id: n.id,
+            type: n.type,
+            title: n.title,
+            body: n.body,
+            readAt: n.readAt,
+            createdAt: n.createdAt,
+            meta: n.meta as { voucherRequestId?: string; voucherId?: string; voucherTitle?: string } | undefined,
+          }));
+        }
+      } catch {
+        // Ignore
+      }
+    }
+    refresher?.complete?.();
   }
 
   private mapVoucherStatus(status: string, deniedAt: string | null, expiresAt: string | null): 'pending' | 'approved' | 'expired' {
@@ -181,6 +256,10 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   get displayName(): string {
     return [this.profileInfo.firstName, this.profileInfo.lastName].filter(Boolean).join(' ') || '';
+  }
+
+  get apiIntakeCompleted(): boolean {
+    return this.profileIntakeCompleted || this.appUserData.hasIntakeCompleted();
   }
 
   async editProfile(): Promise<void> {
@@ -209,6 +288,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   private async saveProfileToApi(firstName: string, lastName: string, email: string): Promise<void> {
     try {
       const { platform, model } = await this.deviceInfo.getDeviceInfo();
+      const wantsNewsletter = this.onboardingService.wantsNewsletter();
       await this.platformApi.registerAppUser({
         firstName: firstName.trim() || undefined,
         lastName: lastName.trim() || undefined,
@@ -216,6 +296,7 @@ export class ProfilePage implements OnInit, OnDestroy {
         deviceId: this.deviceId.getDeviceId(),
         devicePlatform: platform,
         deviceModel: model,
+        newsletterOptIn: wantsNewsletter,
       });
       this.platformApi
         .getAppUser({
@@ -395,6 +476,24 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.notifications = this.notifications.map((n) =>
       n.id === notificationId ? { ...n, readAt: new Date().toISOString() } : n
     );
+  }
+
+  async onNotificationTap(n: (typeof this.notifications)[0]): Promise<void> {
+    await this.markNotificationRead(n.id);
+    if (n.type === 'voucher_approved' && n.meta?.voucherRequestId && this.profileVouchers?.length) {
+      const voucher = this.profileVouchers.find((v) => v.id === n.meta!.voucherRequestId);
+      if (voucher) {
+        await this.openVoucherModal(voucher);
+      }
+    }
+  }
+
+  async openVoucherModal(voucher: Voucher): Promise<void> {
+    const modal = await this.modalController.create({
+      component: VoucherDetailModalComponent,
+      componentProps: { voucher },
+    });
+    await modal.present();
   }
 
   navigateToSandbox() {
