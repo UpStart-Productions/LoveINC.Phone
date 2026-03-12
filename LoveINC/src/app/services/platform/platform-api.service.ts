@@ -6,6 +6,7 @@ import type {
   PlatformAddress,
   PlatformClass,
   PlatformCta,
+  PlatformCustomer,
   PlatformDonation,
   PlatformEvent,
   PlatformHomeFeedItem,
@@ -86,6 +87,34 @@ export class PlatformApiService {
 
   getOrganization(): Observable<PlatformOrganization | null> {
     return this.get<PlatformOrganization>('/organization');
+  }
+
+  /**
+   * Get customer-level organization. Use for Service Access messaging (customer name, not affiliate).
+   * GET /public/:customerSlug/customer
+   */
+  getCustomer(): Observable<PlatformCustomer | null> {
+    const { apiBaseUrl, apiKey, customerSlug } = environment;
+    const basePath = `${apiBaseUrl.replace(/\/$/, '')}/public/${customerSlug}`;
+    const url = `${basePath}/customer`;
+    if (!apiKey) {
+      return of(null);
+    }
+    return this.http
+      .get<PlatformCustomer>(url, {
+        headers: this.headers,
+      })
+      .pipe(
+        tap((res) => {
+          if (res != null) {
+            console.debug('PlatformApiService: /customer OK', res);
+          }
+        }),
+        catchError((err) => {
+          console.warn('PlatformApiService: getCustomer failed, using organization fallback', err?.status);
+          return of(null);
+        })
+      );
   }
 
   /**
@@ -341,6 +370,17 @@ export class PlatformApiService {
         providerOffering?: string | null;
         location?: { address: string; locationName: string | null; city: string; state: string; zip: string } | null;
       }[];
+      volunteerRequests: {
+        id: string;
+        itemType: string;
+        itemId: string;
+        itemTitle: string | null;
+        status: string;
+        approvedAt: string | null;
+        deniedAt: string | null;
+        completedAt: string | null;
+        createdAt: string;
+      }[];
       notifications: {
         id: string;
         type: string;
@@ -380,6 +420,17 @@ export class PlatformApiService {
           createdAt: string;
           providerOffering?: string | null;
           location?: { address: string; locationName: string | null; city: string; state: string; zip: string } | null;
+        }[];
+        volunteerRequests: {
+          id: string;
+          itemType: string;
+          itemId: string;
+          itemTitle: string | null;
+          status: string;
+          approvedAt: string | null;
+          deniedAt: string | null;
+          completedAt: string | null;
+          createdAt: string;
         }[];
         notifications: {
           id: string;
@@ -610,6 +661,58 @@ export class PlatformApiService {
           const status = err?.status ?? err?.error?.status;
           const message = err?.error?.message ?? err?.message ?? JSON.stringify(err?.error);
           console.error('PlatformApiService: voucher redeem failed', { url, status, message, err });
+          return throwError(() => new Error(message));
+        })
+      )
+    );
+  }
+
+  /**
+   * Mark volunteer request complete. PATCH volunteer-requests/:id/complete
+   */
+  markVolunteerRequestComplete(
+    volunteerRequestId: string,
+    params: { deviceId?: string; email?: string }
+  ): Promise<{ ok: boolean; error?: string }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const q = new URLSearchParams();
+    if (params.deviceId?.trim()) q.set('deviceId', params.deviceId.trim());
+    if (params.email?.trim()) q.set('email', params.email.trim().toLowerCase());
+    const query = q.toString();
+    const url = `${this.basePath}/volunteer-requests/${encodeURIComponent(volunteerRequestId)}/complete${query ? `?${query}` : ''}`;
+    return firstValueFrom(
+      this.http.patch<{ ok: boolean; error?: string }>(url, {}, { headers: this.headers }).pipe(
+        tap((res) => console.debug('PlatformApiService: volunteer-request complete OK', res)),
+        catchError((err) => {
+          const message = err?.error?.error ?? err?.message ?? 'Failed to mark complete';
+          return throwError(() => new Error(message));
+        })
+      )
+    );
+  }
+
+  /**
+   * Delete volunteer request. DELETE volunteer-requests/:id
+   */
+  deleteVolunteerRequest(
+    volunteerRequestId: string,
+    params: { deviceId?: string; email?: string }
+  ): Promise<{ ok: boolean; error?: string }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const q = new URLSearchParams();
+    if (params.deviceId?.trim()) q.set('deviceId', params.deviceId.trim());
+    if (params.email?.trim()) q.set('email', params.email.trim().toLowerCase());
+    const query = q.toString();
+    const url = `${this.basePath}/volunteer-requests/${encodeURIComponent(volunteerRequestId)}${query ? `?${query}` : ''}`;
+    return firstValueFrom(
+      this.http.delete<{ ok: boolean; error?: string }>(url, { headers: this.headers }).pipe(
+        tap((res) => console.debug('PlatformApiService: volunteer-request delete OK', res)),
+        catchError((err) => {
+          const message = err?.error?.error ?? err?.message ?? 'Failed to delete';
           return throwError(() => new Error(message));
         })
       )

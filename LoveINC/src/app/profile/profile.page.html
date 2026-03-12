@@ -59,7 +59,36 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p class="app-body-secondary">Volunteer positions you've been approved for will appear here.</p>
+      @if (profileVolunteerRequests?.length) {
+        <div class="volunteer-requests">
+          @for (vr of profileVolunteerRequests; track vr.id) {
+            <div class="volunteer-request-row">
+              <span>{{ vr.itemTitle ?? 'Volunteer opportunity' }}</span>
+              <div class="volunteer-request-actions">
+                @if (!vr.completedAt) {
+                  <ion-button
+                    fill="clear"
+                    size="small"
+                    (click)="onVolunteerMarkComplete(vr)"
+                    [disabled]="volunteerActionLoading === vr.id">
+                    {{ volunteerActionLoading === vr.id ? '…' : 'Mark Complete' }}
+                  </ion-button>
+                }
+                <ion-button
+                  fill="clear"
+                  size="small"
+                  color="danger"
+                  (click)="onVolunteerDelete(vr)"
+                  [disabled]="volunteerActionLoading === vr.id">
+                  {{ volunteerActionLoading === vr.id ? '…' : 'Delete' }}
+                </ion-button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="app-body-secondary">Volunteer positions you've been approved for will appear here.</p>
+      }
     </ion-card-content>
   </ion-card>
 
@@ -68,7 +97,7 @@
     [scanClickHandler]="onScanRequested"
     [apiIntakeCompleted]="apiIntakeCompleted"
     [intakeRequired]="intakeRequired"
-    [customerName]="organizationName">
+    [customerName]="customerName">
   </app-service-access-section>
 
   <!-- Settings -->

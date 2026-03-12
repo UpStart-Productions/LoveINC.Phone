@@ -25,6 +25,15 @@ export interface PlatformOrganization {
   state: string;
   zip: string;
   website?: string;
+  /** Customer name when this org is the affiliate/tenant. Use for Service Access messaging. */
+  customerName?: string;
+  customer?: { name: string };
+}
+
+export interface PlatformCustomer {
+  id: string;
+  slug: string;
+  name: string;
 }
 
 export interface PlatformEvent {

@@ -77,9 +77,17 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   emailVerifiedAt: string | null = null;
   profileVouchers: Voucher[] | null = null;
+  profileVolunteerRequests: {
+    id: string;
+    itemTitle: string | null;
+    completedAt: string | null;
+  }[] | null = null;
   profileIntakeCompleted = false;
+  volunteerActionLoading: string | null = null;
   intakeRequired = true;
   organizationName = 'Love INC';
+  /** Customer name for Service Access (prefer over affiliate/org name). */
+  customerName = 'Love INC';
   private dismissedIds = new Set<string>();
 
   // Client-specific data (used when My Engagement is re-enabled)
@@ -134,6 +142,14 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.platformApi.getOrganization().subscribe({
       next: (org) => {
         if (org?.name) this.organizationName = org.name;
+        const customerFromOrg = org?.customerName ?? org?.customer?.name;
+        if (customerFromOrg) this.customerName = customerFromOrg;
+      },
+      error: () => {},
+    });
+    this.platformApi.getCustomer().subscribe({
+      next: (customer) => {
+        if (customer?.name) this.customerName = customer.name;
       },
       error: () => {},
     });
@@ -187,6 +203,11 @@ export class ProfilePage implements OnInit, OnDestroy {
             providerOffering: vr.providerOffering ?? undefined,
             location: vr.location ?? undefined,
           }));
+          this.profileVolunteerRequests = (res.profile.volunteerRequests ?? []).map((vr) => ({
+            id: vr.id,
+            itemTitle: vr.itemTitle,
+            completedAt: vr.completedAt,
+          }));
         }
       },
     });
@@ -220,6 +241,11 @@ export class ProfilePage implements OnInit, OnDestroy {
             photoUrl: vr.photoUrl ? this.platformApi.resolveUploadUrl(vr.photoUrl) : undefined,
             providerOffering: vr.providerOffering ?? undefined,
             location: vr.location ?? undefined,
+          }));
+          this.profileVolunteerRequests = (res.profile.volunteerRequests ?? []).map((vr) => ({
+            id: vr.id,
+            itemTitle: vr.itemTitle,
+            completedAt: vr.completedAt,
           }));
         }
       } catch {
@@ -268,6 +294,47 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   onVoucherRemove(v: Voucher): void {
     this.dismissedVouchers.dismiss(v.id);
+  }
+
+  private getProfileParams(): { deviceId?: string; email?: string } {
+    const deviceId = this.deviceId.getDeviceId();
+    const profile = this.userProfileService.getProfile();
+    const onboarding = this.onboardingService.getOnboardingData();
+    const email = (profile.email ?? onboarding?.email)?.trim();
+    return { deviceId: deviceId || undefined, email: email || undefined };
+  }
+
+  async onVolunteerMarkComplete(vr: { id: string; itemTitle: string | null; completedAt: string | null }): Promise<void> {
+    if (this.volunteerActionLoading || vr.completedAt) return;
+    const params = this.getProfileParams();
+    if (!params.deviceId && !params.email) return;
+    this.volunteerActionLoading = vr.id;
+    try {
+      const res = await this.platformApi.markVolunteerRequestComplete(vr.id, params);
+      if (res.ok) {
+        this.loadProfile();
+      }
+    } catch {
+      // Error logged by API
+    } finally {
+      this.volunteerActionLoading = null;
+    }
+  }
+
+  async onVolunteerDelete(vr: { id: string; itemTitle: string | null; completedAt: string | null }): Promise<void> {
+    const params = this.getProfileParams();
+    if (!params.deviceId && !params.email) return;
+    this.volunteerActionLoading = vr.id;
+    try {
+      const res = await this.platformApi.deleteVolunteerRequest(vr.id, params);
+      if (res.ok) {
+        this.loadProfile();
+      }
+    } catch {
+      // Error logged by API
+    } finally {
+      this.volunteerActionLoading = null;
+    }
   }
 
   get apiIntakeCompleted(): boolean {

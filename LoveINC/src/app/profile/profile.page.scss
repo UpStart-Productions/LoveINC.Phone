@@ -67,6 +67,32 @@ ion-item {
   gap: 24px;
 }
 
+.volunteer-requests {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.volunteer-request-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ion-color-light-shade);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.volunteer-request-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
 .engagement-item {
   text-align: center;
   background: var(--ion-color-light);
