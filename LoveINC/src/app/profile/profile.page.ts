@@ -56,8 +56,6 @@ type UserType = 'client' | 'donor' | 'volunteer';
     IonButton,
     IonButtons,
     IonBackButton,
-    IonList,
-    IonItem,
     IonLabel,
   ],
 })
@@ -76,15 +74,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   profileVouchers: Voucher[] | null = null;
   profileIntakeCompleted = false;
   intakeRequired = true;
-  notifications: Array<{
-    id: string;
-    type: string;
-    title: string;
-    body: string | null;
-    readAt: string | null;
-    createdAt: string;
-    meta?: { voucherRequestId?: string; voucherId?: string; voucherTitle?: string };
-  }> = [];
+  organizationName = 'Love INC';
 
   // Client-specific data (used when My Engagement is re-enabled)
   clientData = {
@@ -129,6 +119,12 @@ export class ProfilePage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.platformApi.getOrganization().subscribe({
+      next: (org) => {
+        if (org?.name) this.organizationName = org.name;
+      },
+      error: () => {},
+    });
     const p = this.userProfileService.getProfile();
     this.profileInfo = { email: p.email ?? '', firstName: p.firstName ?? '', lastName: p.lastName ?? '' };
     this.profileSub = this.userProfileService.getProfile$().subscribe((prof) => {
@@ -173,17 +169,10 @@ export class ProfilePage implements OnInit, OnDestroy {
             approvedAt: vr.approvedAt ?? undefined,
             validUntil: vr.expiresAt ?? vr.createdAt,
             expiresAt: vr.expiresAt ?? undefined,
+            shortDescription: vr.shortDescription ?? undefined,
+            photoUrl: vr.photoUrl ? this.platformApi.resolveUploadUrl(vr.photoUrl) : undefined,
             providerOffering: vr.providerOffering ?? undefined,
             location: vr.location ?? undefined,
-          }));
-          this.notifications = (res.profile.notifications ?? []).map((n) => ({
-            id: n.id,
-            type: n.type,
-            title: n.title,
-            body: n.body,
-            readAt: n.readAt,
-            createdAt: n.createdAt,
-            meta: n.meta as { voucherRequestId?: string; voucherId?: string; voucherTitle?: string } | undefined,
           }));
         }
       },
@@ -213,17 +202,10 @@ export class ProfilePage implements OnInit, OnDestroy {
             approvedAt: vr.approvedAt ?? undefined,
             validUntil: vr.expiresAt ?? vr.createdAt,
             expiresAt: vr.expiresAt ?? undefined,
+            shortDescription: vr.shortDescription ?? undefined,
+            photoUrl: vr.photoUrl ? this.platformApi.resolveUploadUrl(vr.photoUrl) : undefined,
             providerOffering: vr.providerOffering ?? undefined,
             location: vr.location ?? undefined,
-          }));
-          this.notifications = (res.profile.notifications ?? []).map((n) => ({
-            id: n.id,
-            type: n.type,
-            title: n.title,
-            body: n.body,
-            readAt: n.readAt,
-            createdAt: n.createdAt,
-            meta: n.meta as { voucherRequestId?: string; voucherId?: string; voucherTitle?: string } | undefined,
           }));
         }
       } catch {
@@ -468,39 +450,15 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
   }
 
-  async markNotificationRead(notificationId: string): Promise<void> {
-    await this.platformApi.markNotificationRead(notificationId, {
-      deviceId: this.deviceId.getDeviceId(),
-      email: this.userProfileService.getProfile().email?.trim(),
-    });
-    this.notifications = this.notifications.map((n) =>
-      n.id === notificationId ? { ...n, readAt: new Date().toISOString() } : n
-    );
-  }
-
-  async onNotificationTap(n: (typeof this.notifications)[0]): Promise<void> {
-    await this.markNotificationRead(n.id);
-    if (n.type === 'voucher_approved' && n.meta?.voucherRequestId && this.profileVouchers?.length) {
-      const voucher = this.profileVouchers.find((v) => v.id === n.meta!.voucherRequestId);
-      if (voucher) {
-        await this.openVoucherModal(voucher);
-      }
-    }
-  }
-
   async openVoucherModal(voucher: Voucher): Promise<void> {
     const modal = await this.modalController.create({
       component: VoucherDetailModalComponent,
       componentProps: { voucher },
+      cssClass: 'voucher-detail-modal-sheet',
+      presentingElement: await this.modalController.getTop(),
+      showBackdrop: true,
+      backdropDismiss: true,
     });
     await modal.present();
-  }
-
-  navigateToSandbox() {
-    this.router.navigate(['/sandbox']);
-  }
-
-  navigateToDeveloperOptions() {
-    this.router.navigate(['/tabs/developer-options']);
   }
 }

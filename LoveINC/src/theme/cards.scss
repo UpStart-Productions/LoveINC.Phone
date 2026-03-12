@@ -99,6 +99,12 @@ ion-card-content span {
   text-indent: 0 !important;
 }
 
+/* Voucher cards: override reset above so photos have left spacing */
+ion-card-content .voucher-card {
+  padding-left: 12px !important;
+  padding-right: 16px !important;
+}
+
 /* -----------------------------------------------------------------------------
  * Cards container (home, updates, etc.)
  * ----------------------------------------------------------------------------- */

@@ -330,6 +330,8 @@ export class PlatformApiService {
         id: string;
         voucherId: string;
         voucherTitle: string;
+        shortDescription?: string | null;
+        photoUrl?: string | null;
         status: string;
         approvedAt: string | null;
         deniedAt: string | null;
@@ -367,6 +369,8 @@ export class PlatformApiService {
           id: string;
           voucherId: string;
           voucherTitle: string;
+          shortDescription?: string | null;
+          photoUrl?: string | null;
           status: string;
           approvedAt: string | null;
           deniedAt: string | null;

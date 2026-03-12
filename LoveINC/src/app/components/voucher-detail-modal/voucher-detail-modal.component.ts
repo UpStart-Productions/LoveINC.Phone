@@ -1,11 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
-  IonButtons,
   IonButton,
   IonIcon,
 } from '@ionic/angular/standalone';
@@ -19,11 +15,7 @@ import type { Voucher } from '@upstart-productions/service-unlock/src/lib/types/
   standalone: true,
   imports: [
     CommonModule,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
-    IonButtons,
     IonButton,
     IonIcon,
   ],
@@ -33,15 +25,19 @@ export class VoucherDetailModalComponent {
 
   constructor(private modalController: ModalController) {}
 
-  formatDate(iso: string): string {
-    return new Date(iso).toLocaleDateString(undefined, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
+  formatExpDay(iso: string): string {
+    return new Date(iso).getDate().toString();
+  }
+
+  formatExpMonth(iso: string): string {
+    return new Date(iso).toLocaleDateString(undefined, { month: 'short' });
   }
 
   close(): void {
+    this.modalController.dismiss();
+  }
+
+  redeem(): void {
     this.modalController.dismiss();
   }
 }

@@ -7,9 +7,6 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-  IonList,
-  IonItem,
-  IonLabel,
   IonIcon,
   IonButton,
 } from '@ionic/angular/standalone';
@@ -26,6 +23,7 @@ const MOCK_VOUCHERS: Voucher[] = [
     approvedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
     validUntil: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
     expiresAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+    shortDescription: 'Essential supplies for families with young children',
   },
   {
     id: 'mock-2',
@@ -36,6 +34,7 @@ const MOCK_VOUCHERS: Voucher[] = [
     approvedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     validUntil: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
     expiresAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    shortDescription: 'Bedding and household linens',
   },
 ];
 
@@ -50,9 +49,6 @@ const MOCK_VOUCHERS: Voucher[] = [
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonList,
-    IonItem,
-    IonLabel,
     IonIcon,
     IonButton,
   ],
@@ -74,6 +70,9 @@ export class ServiceAccessSectionComponent implements OnInit, OnDestroy, OnChang
 
   /** When false, org does not require intake—user has full access without scanning. */
   @Input() intakeRequired = true;
+
+  /** Customer/organization name for intake-completed message (e.g. "Love INC"). */
+  @Input() customerName = 'Love INC';
 
   /** Emitted when a voucher is tapped. Host app can open modal. */
   @Output() voucherTap = new EventEmitter<Voucher>();
@@ -144,6 +143,14 @@ export class ServiceAccessSectionComponent implements OnInit, OnDestroy, OnChang
       day: 'numeric',
       year: 'numeric',
     });
+  }
+
+  formatExpDay(iso: string): string {
+    return new Date(iso).getDate().toString();
+  }
+
+  formatExpMonth(iso: string): string {
+    return new Date(iso).toLocaleDateString(undefined, { month: 'short' }).toUpperCase();
   }
 
   async goToScan(): Promise<void> {

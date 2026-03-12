@@ -1,35 +1,41 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Voucher Details</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="close()" fill="clear">
-        <ion-icon name="close" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-<ion-content class="ion-padding">
+<ion-content class="ion-padding voucher-modal-content">
   @if (voucher) {
-    <div class="voucher-detail">
-      <h3 class="m-b-12">{{ voucher.serviceLabel }}</h3>
+    <ion-button class="voucher-modal-close-btn" fill="clear" (click)="close()">
+      <ion-icon name="close" slot="icon-only"></ion-icon>
+    </ion-button>
+    <div class="voucher-modal-top">
+      <div class="voucher-modal-photo">
+        @if (voucher.photoUrl) {
+          <img [src]="voucher.photoUrl" [alt]="voucher.serviceLabel" />
+        } @else {
+          <ion-icon name="ticket-outline"></ion-icon>
+        }
+      </div>
+      <h2 class="voucher-modal-title">{{ voucher.serviceLabel }}</h2>
+    </div>
+    <div class="voucher-modal-card">
+      @if (voucher.expiresAt) {
+        <div class="voucher-modal-exp">
+          <span class="exp-label">Expiring</span>
+          <span class="exp-date">{{ formatExpDay(voucher.expiresAt) }} {{ formatExpMonth(voucher.expiresAt) }}</span>
+        </div>
+      }
+      @if (voucher.shortDescription) {
+        <p class="voucher-modal-desc">{{ voucher.shortDescription }}</p>
+      }
       @if (voucher.providerOffering) {
-        <p class="app-body-secondary m-b-6">
-          <strong>Provider offering:</strong> {{ voucher.providerOffering }}
+        <p class="voucher-modal-row">
+          <strong>Provider:</strong> {{ voucher.providerOffering }}
         </p>
       }
       @if (voucher.location) {
-        <p class="app-body-secondary m-b-6">
+        <p class="voucher-modal-row">
           <strong>Location:</strong> {{ voucher.location }}
         </p>
       }
-      @if (voucher.expiresAt) {
-        <p class="app-body-secondary m-b-6">
-          <strong>Valid until:</strong> {{ formatDate(voucher.expiresAt) }}
-        </p>
-      }
-      @if (!voucher.providerOffering && !voucher.location && !voucher.expiresAt) {
-        <p class="app-body-secondary">No additional details available.</p>
-      }
     </div>
+    <ion-button expand="block" class="voucher-modal-redeem" (click)="redeem()">
+      Redeem Voucher
+    </ion-button>
   }
 </ion-content>

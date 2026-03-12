@@ -1,20 +1,30 @@
+:host {
+  ion-card.section-card,
+  app-service-access-section ::ng-deep ion-card.section-card {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  ion-card.section-card:first-child {
+    margin-top: 0;
+  }
+
+  app-service-access-section {
+    display: block;
+  }
+}
+
 .section-icon {
   margin-right: 8px;
   vertical-align: middle;
 }
 
-.header-with-action {
+.title-with-edit {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-
-  ion-card-title {
-    flex: 1;
-  }
 
   ion-button {
-    margin: 0;
+    margin-left: 8px;
   }
 }
 
@@ -74,27 +84,3 @@ ion-item {
   }
 }
 
-.developer-section {
-  text-align: center;
-  
-  .developer-label {
-    font-size: var(--app-font-size-caption);
-    color: var(--app-text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  
-  .reset-link {
-    background: none;
-    border: none;
-    color: var(--app-text-secondary);
-    font-size: var(--app-font-size-caption);
-    text-decoration: underline;
-    cursor: pointer;
-    opacity: 0.7;
-
-    &:active {
-      opacity: 0.4;
-    }
-  }
-}

@@ -267,6 +267,28 @@ ion-popover.location-popover::part(content) {
   color: var(--ion-color-danger) !important;
 }
 
+/* Voucher detail modal sheet (non-fullscreen) */
+ion-modal.voucher-detail-modal-sheet {
+  --width: calc(100% - 16px);
+  --height: 85vh;
+  --max-width: calc(100% - 16px);
+  --max-height: 85vh;
+  --border-radius: 24px 24px 0 0;
+  --box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+
+  &::part(content) {
+    position: absolute;
+    bottom: 0;
+    left: 8px;
+    right: 8px;
+    margin: 0 auto;
+  }
+
+  &::part(backdrop) {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
 /* Alerts modal sheet */
 ion-modal.alerts-modal-sheet {
   --width: calc(100% - 16px);

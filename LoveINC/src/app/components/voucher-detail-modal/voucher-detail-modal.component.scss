@@ -1,5 +1,89 @@
-.voucher-detail {
-  h3 {
-    margin: 0;
+.voucher-modal-content {
+  position: relative;
+}
+
+.voucher-modal-close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+}
+
+.voucher-modal-top {
+  padding: 48px 16px 24px;
+  text-align: center;
+}
+
+.voucher-modal-photo {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ion-color-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
+
+  ion-icon {
+    font-size: 40px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.voucher-modal-title {
+  margin: 0;
+  font-size: var(--app-font-size-display);
+  font-weight: var(--app-font-weight-semibold);
+}
+
+.voucher-modal-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.voucher-modal-exp {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ion-color-light);
+
+  .exp-label {
+    display: block;
+    font-size: 0.75em;
+    color: var(--ion-color-medium);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .exp-date {
+    font-weight: 600;
+  }
+}
+
+.voucher-modal-desc {
+  margin: 0 0 12px 0;
+  color: var(--app-text-secondary);
+  line-height: 1.4;
+}
+
+.voucher-modal-row {
+  margin: 0 0 8px 0;
+  font-size: 0.9em;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.voucher-modal-redeem {
+  margin-top: 8px;
 }

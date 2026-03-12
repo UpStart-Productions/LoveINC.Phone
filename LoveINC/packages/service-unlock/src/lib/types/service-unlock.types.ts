@@ -19,6 +19,10 @@ export interface Voucher {
   validUntil: string;
   /** When present, voucher has an explicit expiry date to display */
   expiresAt?: string;
+  /** Short description from voucher */
+  shortDescription?: string | null;
+  /** Service/voucher photo URL, when available from API */
+  photoUrl?: string | null;
   /** Provider offering name, when available from API */
   providerOffering?: string | null;
   /** Location/address, when available from API */

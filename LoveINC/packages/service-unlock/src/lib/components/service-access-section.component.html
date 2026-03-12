@@ -14,7 +14,7 @@
       <div>
         <p class="status-label">{{ accessStatus === 'full_access' ? 'Full access' : (accessStatus === 'completed' ? 'Intake completed' : 'Intake required') }}</p>
         <p class="status-detail">
-          {{ accessStatus === 'full_access' ? 'Your organization does not require intake. You can contact Gap Ministry providers directly.' : (accessStatus === 'completed' ? 'You can contact Gap Ministry providers directly.' : 'Scan the QR code from your intake materials to unlock.') }}
+          {{ accessStatus === 'full_access' ? 'Your organization does not require intake. You can contact Gap Ministry providers directly.' : (accessStatus === 'completed' ? ('You can now contact and receive services from ' + customerName + ' providers directly. You can also receive vouchers if they are required for some services.') : 'Scan the QR code from your intake materials to unlock.') }}
         </p>
       </div>
     </div>
@@ -36,20 +36,23 @@
           class="vouchers-label-icon"></ion-icon>
         My Vouchers
       </p>
-      <ion-list lines="none">
-        <ion-item *ngFor="let v of vouchers" class="voucher-item" button (click)="openVoucherModal(v)">
-          <ion-icon
-            slot="start"
-            [name]="isVoucherValid(v) ? 'ticket-outline' : 'time-outline'"
-            [color]="isVoucherValid(v) ? 'success' : 'medium'"></ion-icon>
-          <ion-label>
-            <h3>{{ v.serviceLabel }}</h3>
-            @if (v.validUntil && hasExpiry(v)) {
-              <p>Valid until {{ formatDate(v.validUntil) }}</p>
-            }
-          </ion-label>
-        </ion-item>
-      </ion-list>
+      <div class="voucher-cards">
+        <div *ngFor="let v of vouchers" class="voucher-card" (click)="openVoucherModal(v)">
+          <div class="voucher-card-photo">
+            <img *ngIf="v.photoUrl" [src]="v.photoUrl" [alt]="v.serviceLabel" />
+            <ion-icon *ngIf="!v.photoUrl" name="ticket-outline" class="voucher-card-placeholder"></ion-icon>
+          </div>
+          <div class="voucher-card-center">
+            <h3 class="voucher-card-title">{{ v.serviceLabel }}</h3>
+            <p *ngIf="v.shortDescription" class="voucher-card-desc">{{ v.shortDescription }}</p>
+          </div>
+          <div *ngIf="v.expiresAt" class="voucher-card-exp">
+            <span class="exp-label">EXP</span>
+            <span class="exp-day">{{ formatExpDay(v.expiresAt) }}</span>
+            <span class="exp-month">{{ formatExpMonth(v.expiresAt) }}</span>
+          </div>
+        </div>
+      </div>
     </div>
   </ion-card-content>
 </ion-card>
