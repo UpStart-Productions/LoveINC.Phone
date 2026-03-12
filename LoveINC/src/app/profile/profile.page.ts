@@ -31,6 +31,8 @@ import { ServiceAccessSectionComponent } from '../../../packages/service-unlock/
 import type { Voucher } from '../../../packages/service-unlock/src/lib/types/service-unlock.types';
 import { UserProfileFormModalComponent } from '../components/user-profile-form-modal/user-profile-form-modal.component';
 import { VoucherDetailModalComponent } from '../components/voucher-detail-modal/voucher-detail-modal.component';
+import { VoucherModalService } from '../services/voucher-modal.service';
+import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
 import { Subscription, firstValueFrom } from 'rxjs';
 
 type UserType = 'client' | 'donor' | 'volunteer';
@@ -64,6 +66,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   profileInfo = { email: '', firstName: '', lastName: '' };
   private profileSub?: Subscription;
+  private dismissedSub?: Subscription;
 
   userProfile = {
     name: '',
@@ -73,8 +76,10 @@ export class ProfilePage implements OnInit, OnDestroy {
   emailVerifiedAt: string | null = null;
   profileVouchers: Voucher[] | null = null;
   profileIntakeCompleted = false;
+  debugDeviceId = '';
   intakeRequired = true;
   organizationName = 'Love INC';
+  private dismissedIds = new Set<string>();
 
   // Client-specific data (used when My Engagement is re-enabled)
   clientData = {
@@ -107,6 +112,8 @@ export class ProfilePage implements OnInit, OnDestroy {
   };
 
   constructor(
+    private voucherModalService: VoucherModalService,
+    private dismissedVouchers: DismissedVouchersService,
     private router: Router,
     private onboardingService: OnboardingService,
     private userProfileService: UserProfileService,
@@ -119,6 +126,10 @@ export class ProfilePage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.dismissedIds = this.dismissedVouchers.getDismissed();
+    this.dismissedSub = this.dismissedVouchers.getDismissed$().subscribe((ids) => {
+      this.dismissedIds = ids;
+    });
     this.platformApi.getOrganization().subscribe({
       next: (org) => {
         if (org?.name) this.organizationName = org.name;
@@ -145,6 +156,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   private loadProfile(): void {
     const deviceId = this.deviceId.getDeviceId();
+    this.debugDeviceId = deviceId ?? '';
     const profile = this.userProfileService.getProfile();
     const onboarding = this.onboardingService.getOnboardingData();
     const email = (profile.email ?? onboarding?.email)?.trim();
@@ -224,6 +236,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.profileSub?.unsubscribe();
+    this.dismissedSub?.unsubscribe();
   }
 
   private updateDisplayProfile(): void {
@@ -238,6 +251,15 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   get displayName(): string {
     return [this.profileInfo.firstName, this.profileInfo.lastName].filter(Boolean).join(' ') || '';
+  }
+
+  get displayVouchers(): Voucher[] | null {
+    if (!this.profileVouchers) return null;
+    return this.profileVouchers.filter((v) => !this.dismissedIds.has(v.id));
+  }
+
+  onVoucherRemove(v: Voucher): void {
+    this.dismissedVouchers.dismiss(v.id);
   }
 
   get apiIntakeCompleted(): boolean {
@@ -451,6 +473,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   async openVoucherModal(voucher: Voucher): Promise<void> {
+    this.voucherModalService.setVoucher(voucher);
     const modal = await this.modalController.create({
       component: VoucherDetailModalComponent,
       componentProps: { voucher },
@@ -458,7 +481,10 @@ export class ProfilePage implements OnInit, OnDestroy {
       presentingElement: await this.modalController.getTop(),
       showBackdrop: true,
       backdropDismiss: true,
+      breakpoints: [0, 1],
+      initialBreakpoint: 1,
     });
     await modal.present();
+    modal.onDidDismiss().then(() => this.voucherModalService.clear());
   }
 }

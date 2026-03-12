@@ -25,8 +25,16 @@ export interface Voucher {
   photoUrl?: string | null;
   /** Provider offering name, when available from API */
   providerOffering?: string | null;
-  /** Location/address, when available from API */
-  location?: string | null;
+  /** Raw location from API; app formats for display */
+  location?: VoucherLocation | null;
+}
+
+export interface VoucherLocation {
+  address: string;
+  locationName: string | null;
+  city: string;
+  state: string;
+  zip: string;
 }
 
 /**

@@ -56,6 +56,8 @@ const MOCK_VOUCHERS: Voucher[] = [
 export class ServiceAccessSectionComponent implements OnInit, OnDestroy, OnChanges {
   isUnlocked = false;
   vouchers: Voucher[] = [];
+  /** Voucher IDs whose photo failed to load - show placeholder instead */
+  photoLoadFailed = new Set<string>();
 
   private subs: Subscription[] = [];
 
@@ -74,8 +76,11 @@ export class ServiceAccessSectionComponent implements OnInit, OnDestroy, OnChang
   /** Customer/organization name for intake-completed message (e.g. "Love INC"). */
   @Input() customerName = 'Love INC';
 
-  /** Emitted when a voucher is tapped. Host app can open modal. */
+  /** Emitted when a valid voucher is tapped. Host app can open modal. */
   @Output() voucherTap = new EventEmitter<Voucher>();
+
+  /** Emitted when user taps delete on an expired/used voucher. Host app should remove from local display. */
+  @Output() voucherRemove = new EventEmitter<Voucher>();
 
   constructor(
     private service: ServiceUnlockService,
@@ -114,6 +119,7 @@ export class ServiceAccessSectionComponent implements OnInit, OnDestroy, OnChang
 
   private applyVouchers(): void {
     this.vouchers = this.apiVouchers !== null ? [...this.apiVouchers] : [...MOCK_VOUCHERS];
+    this.photoLoadFailed.clear();
   }
 
   ngOnDestroy(): void {
@@ -125,6 +131,10 @@ export class ServiceAccessSectionComponent implements OnInit, OnDestroy, OnChang
     return v.status === 'approved' && new Date(v.validUntil) > new Date();
   }
 
+  isVoucherExpiredOrUsed(v: Voucher): boolean {
+    return v.status === 'expired';
+  }
+
   hasExpiry(v: Voucher): boolean {
     return !!v.expiresAt;
   }
@@ -133,8 +143,23 @@ export class ServiceAccessSectionComponent implements OnInit, OnDestroy, OnChang
     return this.vouchers.some((v) => this.isVoucherValid(v));
   }
 
-  openVoucherModal(v: Voucher): void {
-    this.voucherTap.emit(v);
+  onVoucherCardClick(v: Voucher): void {
+    if (!this.isVoucherExpiredOrUsed(v)) {
+      this.voucherTap.emit(v);
+    }
+  }
+
+  onRemoveVoucher(event: Event, v: Voucher): void {
+    event.stopPropagation();
+    this.voucherRemove.emit(v);
+  }
+
+  hasPhotoLoadFailed(id: string): boolean {
+    return this.photoLoadFailed.has(id);
+  }
+
+  markPhotoFailed(id: string): void {
+    this.photoLoadFailed.add(id);
   }
 
   formatDate(iso: string): string {

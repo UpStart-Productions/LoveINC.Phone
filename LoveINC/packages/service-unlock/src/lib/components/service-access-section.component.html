@@ -37,20 +37,30 @@
         My Vouchers
       </p>
       <div class="voucher-cards">
-        <div *ngFor="let v of vouchers" class="voucher-card" (click)="openVoucherModal(v)">
+        <div
+          *ngFor="let v of vouchers"
+          class="voucher-card"
+          [class.voucher-card--expired]="isVoucherExpiredOrUsed(v)"
+          (click)="onVoucherCardClick(v)">
           <div class="voucher-card-photo">
-            <img *ngIf="v.photoUrl" [src]="v.photoUrl" [alt]="v.serviceLabel" />
-            <ion-icon *ngIf="!v.photoUrl" name="ticket-outline" class="voucher-card-placeholder"></ion-icon>
+            <img *ngIf="v.photoUrl && !hasPhotoLoadFailed(v.id)" [src]="v.photoUrl" [alt]="v.serviceLabel" (error)="markPhotoFailed(v.id)" />
+            <ion-icon *ngIf="!v.photoUrl || hasPhotoLoadFailed(v.id)" name="ticket-outline" class="voucher-card-placeholder"></ion-icon>
           </div>
           <div class="voucher-card-center">
             <h3 class="voucher-card-title">{{ v.serviceLabel }}</h3>
             <p *ngIf="v.shortDescription" class="voucher-card-desc">{{ v.shortDescription }}</p>
           </div>
-          <div *ngIf="v.expiresAt" class="voucher-card-exp">
-            <span class="exp-label">EXP</span>
-            <span class="exp-day">{{ formatExpDay(v.expiresAt) }}</span>
-            <span class="exp-month">{{ formatExpMonth(v.expiresAt) }}</span>
-          </div>
+          @if (isVoucherExpiredOrUsed(v) || v.expiresAt) {
+            <div class="voucher-card-exp">
+              @if (isVoucherExpiredOrUsed(v)) {
+                <ion-icon name="trash-outline" class="voucher-card-delete" (click)="onRemoveVoucher($event, v)"></ion-icon>
+              } @else {
+                <span class="exp-label">EXP</span>
+                <span class="exp-day">{{ formatExpDay(v.expiresAt!) }}</span>
+                <span class="exp-month">{{ formatExpMonth(v.expiresAt!) }}</span>
+              }
+            </div>
+          }
         </div>
       </div>
     </div>

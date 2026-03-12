@@ -338,7 +338,7 @@ export class PlatformApiService {
         expiresAt: string | null;
         createdAt: string;
         providerOffering?: string | null;
-        location?: string | null;
+        location?: { address: string; locationName: string | null; city: string; state: string; zip: string } | null;
       }[];
       notifications: {
         id: string;
@@ -377,7 +377,7 @@ export class PlatformApiService {
           expiresAt: string | null;
           createdAt: string;
           providerOffering?: string | null;
-          location?: string | null;
+          location?: { address: string; locationName: string | null; city: string; state: string; zip: string } | null;
         }[];
         notifications: {
           id: string;

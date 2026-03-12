@@ -267,14 +267,14 @@ ion-popover.location-popover::part(content) {
   color: var(--ion-color-danger) !important;
 }
 
-/* Voucher detail modal sheet (non-fullscreen) */
+/* Voucher detail modal sheet (non-fullscreen, swipe to close) */
 ion-modal.voucher-detail-modal-sheet {
   --width: calc(100% - 16px);
   --height: 85vh;
   --max-width: calc(100% - 16px);
   --max-height: 85vh;
   --border-radius: 24px 24px 0 0;
-  --box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+  --box-shadow: none !important;
 
   &::part(content) {
     position: absolute;
@@ -282,6 +282,9 @@ ion-modal.voucher-detail-modal-sheet {
     left: 8px;
     right: 8px;
     margin: 0 auto;
+    border-radius: 24px 24px 0 0 !important;
+    box-shadow: none !important;
+    overflow: hidden;
   }
 
   &::part(backdrop) {

@@ -102,7 +102,11 @@ ion-card-content span {
 /* Voucher cards: override reset above so photos have left spacing */
 ion-card-content .voucher-card {
   padding-left: 12px !important;
-  padding-right: 16px !important;
+  padding-right: 8px !important;
+}
+
+ion-card-content .voucher-card-exp .exp-day {
+  color: var(--ion-color-dark) !important;
 }
 
 /* -----------------------------------------------------------------------------

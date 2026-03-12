@@ -9,17 +9,18 @@
   z-index: 10;
 }
 
-.voucher-modal-top {
-  padding: 48px 16px 24px;
-  text-align: center;
+.voucher-modal-header {
+  position: relative;
+  height: 150px;
+  margin: -16px -16px 16px -16px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
 }
 
-.voucher-modal-photo {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 12px;
-  border-radius: 12px;
-  overflow: hidden;
+.voucher-modal-header-photo {
+  position: absolute;
+  inset: 0;
   background: var(--ion-color-light);
   display: flex;
   align-items: center;
@@ -32,15 +33,24 @@
   }
 
   ion-icon {
-    font-size: 40px;
+    font-size: 48px;
     color: var(--ion-color-medium);
   }
 }
 
 .voucher-modal-title {
+  position: relative;
+  z-index: 1;
   margin: 0;
+  padding: 12px 16px;
   font-size: var(--app-font-size-display);
   font-weight: var(--app-font-weight-semibold);
+  width: 100%;
+}
+
+.voucher-modal-header--has-photo .voucher-modal-title {
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .voucher-modal-card {
@@ -51,28 +61,59 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.voucher-modal-exp {
+.voucher-modal-desc-exp-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--ion-color-light);
+}
+
+.voucher-modal-desc-exp-center {
+  flex: 1;
+  min-width: 0;
+
+  .voucher-modal-desc {
+    margin: 0;
+    color: var(--app-text-secondary);
+    line-height: 1.4;
+  }
+}
+
+.voucher-modal-exp {
+  flex-shrink: 0;
+  width: 70px;
+  min-width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 12px;
+  border-left: 1px dashed var(--ion-color-medium);
 
   .exp-label {
-    display: block;
-    font-size: 0.75em;
+    font-size: 0.7em;
     color: var(--ion-color-medium);
     text-transform: uppercase;
-    margin-bottom: 2px;
   }
 
-  .exp-date {
-    font-weight: 600;
+  .exp-day {
+    font-size: 1.25em;
+    font-weight: 700;
+  }
+
+  .exp-month {
+    font-size: 0.75em;
+    text-transform: uppercase;
   }
 }
 
 .voucher-modal-desc {
-  margin: 0 0 12px 0;
+  margin: 0;
   color: var(--app-text-secondary);
   line-height: 1.4;
+}
+
+.voucher-modal-address {
+  white-space: pre-line;
 }
 
 .voucher-modal-row {
@@ -82,6 +123,86 @@
   &:last-child {
     margin-bottom: 0;
   }
+}
+
+.voucher-modal-location-block {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ion-color-light);
+}
+
+.voucher-modal-location-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.voucher-modal-location-icon {
+  flex-shrink: 0;
+  font-size: 20px;
+  color: var(--ion-color-primary);
+  margin-top: 2px;
+}
+
+.voucher-modal-location-text {
+  flex: 1;
+  line-height: 1.4;
+  color: var(--app-text-secondary);
+}
+
+.voucher-modal-map-section {
+  position: relative;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ion-color-light);
+}
+
+.voucher-modal-map-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 16px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--ion-color-light-shade);
+
+  ion-icon {
+    font-size: 18px;
+    color: var(--ion-color-primary);
+  }
+}
+
+.voucher-modal-map-container {
+  width: 100%;
+  height: 180px;
+  min-height: 180px;
+}
+
+.voucher-modal-map-loading,
+.voucher-modal-map-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--ion-color-light);
+  color: var(--ion-color-medium);
+}
+
+.voucher-modal-map-message {
+  padding: 16px;
+  text-align: center;
 }
 
 .voucher-modal-redeem {

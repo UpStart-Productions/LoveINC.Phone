@@ -44,12 +44,26 @@
   <!-- Service Access -->
   <app-service-access-section
     [scanClickHandler]="onScanRequested"
-    [apiVouchers]="profileVouchers"
+    [apiVouchers]="displayVouchers"
     [apiIntakeCompleted]="apiIntakeCompleted"
     [intakeRequired]="intakeRequired"
     [customerName]="organizationName"
-    (voucherTap)="openVoucherModal($event)">
+    (voucherTap)="openVoucherModal($event)"
+    (voucherRemove)="onVoucherRemove($event)">
   </app-service-access-section>
+
+  <!-- DEBUG: Voucher data - scroll down. Run curl with deviceId to verify API. Remove after fixing. -->
+  @if (profileVouchers && profileVouchers.length > 0) {
+    <ion-card class="section-card">
+      <ion-card-header>
+        <ion-card-title>Debug: Voucher Data</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Device ID:</strong> {{ debugDeviceId || '(none)' }}</p>
+        <pre style="font-size: 11px; overflow-x: auto; white-space: pre-wrap; max-height: 200px;">{{ profileVouchers[0] | json }}</pre>
+      </ion-card-content>
+    </ion-card>
+  }
 
   <!-- Settings -->
   <ion-card class="section-card">

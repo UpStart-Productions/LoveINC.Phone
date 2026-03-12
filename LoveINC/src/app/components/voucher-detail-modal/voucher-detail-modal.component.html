@@ -1,39 +1,73 @@
 <ion-content class="ion-padding voucher-modal-content">
-  @if (voucher) {
+  @if (displayVoucher) {
     <ion-button class="voucher-modal-close-btn" fill="clear" (click)="close()">
       <ion-icon name="close" slot="icon-only"></ion-icon>
     </ion-button>
-    <div class="voucher-modal-top">
-      <div class="voucher-modal-photo">
-        @if (voucher.photoUrl) {
-          <img [src]="voucher.photoUrl" [alt]="voucher.serviceLabel" />
+    <div class="voucher-modal-header" [class.voucher-modal-header--has-photo]="displayVoucher.photoUrl && !modalPhotoLoadFailed">
+      <div class="voucher-modal-header-photo">
+        @if (displayVoucher.photoUrl && !modalPhotoLoadFailed) {
+          <img [src]="displayVoucher.photoUrl" [alt]="displayVoucher.serviceLabel" (error)="modalPhotoLoadFailed = true" />
         } @else {
           <ion-icon name="ticket-outline"></ion-icon>
         }
       </div>
-      <h2 class="voucher-modal-title">{{ voucher.serviceLabel }}</h2>
+      <h2 class="voucher-modal-title">{{ displayVoucher.serviceLabel }}</h2>
     </div>
     <div class="voucher-modal-card">
-      @if (voucher.expiresAt) {
-        <div class="voucher-modal-exp">
-          <span class="exp-label">Expiring</span>
-          <span class="exp-date">{{ formatExpDay(voucher.expiresAt) }} {{ formatExpMonth(voucher.expiresAt) }}</span>
+      @if (displayVoucher.shortDescription || displayVoucher.expiresAt) {
+        <div class="voucher-modal-desc-exp-row">
+          <div class="voucher-modal-desc-exp-center">
+            @if (displayVoucher.shortDescription) {
+              <p class="voucher-modal-desc">{{ displayVoucher.shortDescription }}</p>
+            }
+          </div>
+          @if (displayVoucher.expiresAt) {
+            <div class="voucher-modal-exp">
+              <span class="exp-label">EXP</span>
+              <span class="exp-day">{{ formatExpDay(displayVoucher.expiresAt) }}</span>
+              <span class="exp-month">{{ formatExpMonth(displayVoucher.expiresAt) }}</span>
+            </div>
+          }
         </div>
       }
-      @if (voucher.shortDescription) {
-        <p class="voucher-modal-desc">{{ voucher.shortDescription }}</p>
-      }
-      @if (voucher.providerOffering) {
-        <p class="voucher-modal-row">
-          <strong>Provider:</strong> {{ voucher.providerOffering }}
-        </p>
-      }
-      @if (voucher.location) {
-        <p class="voucher-modal-row">
-          <strong>Location:</strong> {{ voucher.location }}
-        </p>
+      @if (displayVoucher.providerOffering || displayVoucher.location) {
+        <div class="voucher-modal-location-block">
+          @if (displayVoucher.providerOffering) {
+            <div class="voucher-modal-location-row">
+              <ion-icon name="business-outline" class="voucher-modal-location-icon"></ion-icon>
+              <span class="voucher-modal-location-text">{{ displayVoucher.providerOffering }}</span>
+            </div>
+          }
+          @if (displayVoucher.location) {
+            <div class="voucher-modal-location-row">
+              <ion-icon name="location-outline" class="voucher-modal-location-icon"></ion-icon>
+              <span class="voucher-modal-location-text voucher-modal-address">{{ formatLocation(displayVoucher.location) }}</span>
+            </div>
+          }
+        </div>
       }
     </div>
+    @if (displayVoucher.location) {
+      <div class="voucher-modal-map-section">
+        <p class="voucher-modal-map-label">
+          <ion-icon name="map-outline"></ion-icon>
+          Provider Location
+        </p>
+        <div id="voucher-map" class="voucher-modal-map-container"></div>
+        @if (mapLoadError) {
+          <p class="voucher-modal-map-message">Map could not load.</p>
+        }
+        @if (geocodeError) {
+          <p class="voucher-modal-map-message">Could not find location on map.</p>
+        }
+        @if (mapLoading) {
+          <div class="voucher-modal-map-loading">
+            <ion-spinner name="crescent"></ion-spinner>
+            <span>Loading map…</span>
+          </div>
+        }
+      </div>
+    }
     <ion-button expand="block" class="voucher-modal-redeem" (click)="redeem()">
       Redeem Voucher
     </ion-button>
