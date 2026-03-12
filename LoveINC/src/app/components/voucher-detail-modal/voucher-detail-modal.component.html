@@ -68,8 +68,14 @@
         }
       </div>
     }
-    <ion-button expand="block" class="voucher-modal-redeem" (click)="redeem()">
-      Redeem Voucher
-    </ion-button>
+    @if (canRedeem) {
+      <ion-button expand="block" class="voucher-modal-redeem" (click)="redeem()" [disabled]="redeeming">
+        @if (redeeming) {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          Redeem Voucher
+        }
+      </ion-button>
+    }
   }
 </ion-content>

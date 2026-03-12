@@ -12,9 +12,10 @@ import {
   IonIcon,
   IonSpinner,
 } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular/standalone';
+import { ModalController, AlertController } from '@ionic/angular/standalone';
 import { GoogleMapsLoaderService } from '../../services/google-maps-loader.service';
 import { VoucherModalService } from '../../services/voucher-modal.service';
+import { PlatformApiService } from '../../services/platform/platform-api.service';
 import type { Voucher, VoucherLocation } from '@upstart-productions/service-unlock/src/lib/types/service-unlock.types';
 
 declare var google: any;
@@ -34,8 +35,11 @@ declare var google: any;
 })
 export class VoucherDetailModalComponent implements AfterViewInit, OnDestroy {
   @Input() voucher!: Voucher;
+  @Input() deviceId?: string | null;
+  @Input() email?: string | null;
 
   mapLoading = true;
+  redeeming = false;
   mapLoadError = false;
   geocodeError = false;
   modalPhotoLoadFailed = false;
@@ -43,9 +47,11 @@ export class VoucherDetailModalComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private modalController: ModalController,
+    private alertController: AlertController,
     private ngZone: NgZone,
     private googleMapsLoader: GoogleMapsLoaderService,
-    private voucherModalService: VoucherModalService
+    private voucherModalService: VoucherModalService,
+    private platformApi: PlatformApiService
   ) {}
 
   /** Resolved voucher: prefer service (set before modal open) for reliable location/providerOffering */
@@ -83,8 +89,44 @@ export class VoucherDetailModalComponent implements AfterViewInit, OnDestroy {
     this.modalController.dismiss();
   }
 
-  redeem(): void {
-    this.modalController.dismiss();
+  /** Whether this voucher can be redeemed (approved and not expired/redeemed). */
+  get canRedeem(): boolean {
+    const v = this.displayVoucher;
+    if (!v || v.status !== 'approved') return false;
+    if (v.expiresAt && new Date(v.expiresAt) <= new Date()) return false;
+    return true;
+  }
+
+  async redeem(): Promise<void> {
+    const v = this.displayVoucher;
+    if (!v || !this.canRedeem) return;
+    if (!this.deviceId && !this.email?.trim()) {
+      const alert = await this.alertController.create({
+        header: 'Cannot redeem',
+        message: 'Please complete your profile with an email to redeem vouchers.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+      return;
+    }
+    this.redeeming = true;
+    try {
+      await this.platformApi.redeemVoucher(v.id, {
+        deviceId: this.deviceId ?? undefined,
+        email: this.email?.trim() || undefined,
+      });
+      this.modalController.dismiss({ redeemed: true });
+    } catch (err) {
+      const msg = (err as Error)?.message ?? 'Could not redeem voucher. Please try again.';
+      const alert = await this.alertController.create({
+        header: 'Redeem failed',
+        message: msg,
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } finally {
+      this.redeeming = false;
+    }
   }
 
   ngAfterViewInit(): void {

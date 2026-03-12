@@ -13,12 +13,14 @@ export interface Voucher {
   id: string;
   serviceId: string;
   serviceLabel: string;
-  status: 'pending' | 'approved' | 'expired';
+  status: 'pending' | 'approved' | 'expired' | 'redeemed';
   requestedAt: string;
   approvedAt?: string;
   validUntil: string;
   /** When present, voucher has an explicit expiry date to display */
   expiresAt?: string;
+  /** When present, voucher was redeemed at this time (shown on activities) */
+  redeemedAt?: string | null;
   /** Short description from voucher */
   shortDescription?: string | null;
   /** Service/voucher photo URL, when available from API */

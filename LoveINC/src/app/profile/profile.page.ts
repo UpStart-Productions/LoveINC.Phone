@@ -176,11 +176,12 @@ export class ProfilePage implements OnInit, OnDestroy {
             id: vr.id,
             serviceId: vr.voucherId,
             serviceLabel: vr.voucherTitle,
-            status: this.mapVoucherStatus(vr.status, vr.deniedAt, vr.expiresAt),
+            status: this.mapVoucherStatus(vr.status, vr.deniedAt, vr.expiresAt, vr.redeemedAt),
             requestedAt: vr.createdAt,
             approvedAt: vr.approvedAt ?? undefined,
             validUntil: vr.expiresAt ?? vr.createdAt,
             expiresAt: vr.expiresAt ?? undefined,
+            redeemedAt: vr.redeemedAt ?? undefined,
             shortDescription: vr.shortDescription ?? undefined,
             photoUrl: vr.photoUrl ? this.platformApi.resolveUploadUrl(vr.photoUrl) : undefined,
             providerOffering: vr.providerOffering ?? undefined,
@@ -209,11 +210,12 @@ export class ProfilePage implements OnInit, OnDestroy {
             id: vr.id,
             serviceId: vr.voucherId,
             serviceLabel: vr.voucherTitle,
-            status: this.mapVoucherStatus(vr.status, vr.deniedAt, vr.expiresAt),
+            status: this.mapVoucherStatus(vr.status, vr.deniedAt, vr.expiresAt, vr.redeemedAt),
             requestedAt: vr.createdAt,
             approvedAt: vr.approvedAt ?? undefined,
             validUntil: vr.expiresAt ?? vr.createdAt,
             expiresAt: vr.expiresAt ?? undefined,
+            redeemedAt: vr.redeemedAt ?? undefined,
             shortDescription: vr.shortDescription ?? undefined,
             photoUrl: vr.photoUrl ? this.platformApi.resolveUploadUrl(vr.photoUrl) : undefined,
             providerOffering: vr.providerOffering ?? undefined,
@@ -227,7 +229,13 @@ export class ProfilePage implements OnInit, OnDestroy {
     refresher?.complete?.();
   }
 
-  private mapVoucherStatus(status: string, deniedAt: string | null, expiresAt: string | null): 'pending' | 'approved' | 'expired' {
+  private mapVoucherStatus(
+    status: string,
+    deniedAt: string | null,
+    expiresAt: string | null,
+    redeemedAt?: string | null
+  ): 'pending' | 'approved' | 'expired' | 'redeemed' {
+    if (status === 'redeemed' || redeemedAt) return 'redeemed';
     if (deniedAt) return 'expired';
     if (status === 'approved') return 'approved';
     if (expiresAt && new Date(expiresAt) < new Date()) return 'expired';
@@ -474,9 +482,16 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   async openVoucherModal(voucher: Voucher): Promise<void> {
     this.voucherModalService.setVoucher(voucher);
+    const profile = this.userProfileService.getProfile();
+    const onboarding = this.onboardingService.getOnboardingData();
+    const email = (profile.email ?? onboarding?.email)?.trim();
     const modal = await this.modalController.create({
       component: VoucherDetailModalComponent,
-      componentProps: { voucher },
+      componentProps: {
+        voucher,
+        deviceId: this.deviceId.getDeviceId(),
+        email: email || undefined,
+      },
       cssClass: 'voucher-detail-modal-sheet',
       presentingElement: await this.modalController.getTop(),
       showBackdrop: true,
@@ -485,6 +500,11 @@ export class ProfilePage implements OnInit, OnDestroy {
       initialBreakpoint: 1,
     });
     await modal.present();
-    modal.onDidDismiss().then(() => this.voucherModalService.clear());
+    modal.onDidDismiss().then((result) => {
+      this.voucherModalService.clear();
+      if (result.data?.redeemed) {
+        this.loadProfile();
+      }
+    });
   }
 }

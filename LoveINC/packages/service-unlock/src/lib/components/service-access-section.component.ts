@@ -132,7 +132,7 @@ export class ServiceAccessSectionComponent implements OnInit, OnDestroy, OnChang
   }
 
   isVoucherExpiredOrUsed(v: Voucher): boolean {
-    return v.status === 'expired';
+    return v.status === 'expired' || v.status === 'redeemed';
   }
 
   hasExpiry(v: Voucher): boolean {

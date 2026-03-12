@@ -335,6 +335,7 @@ export class PlatformApiService {
         status: string;
         approvedAt: string | null;
         deniedAt: string | null;
+        redeemedAt: string | null;
         expiresAt: string | null;
         createdAt: string;
         providerOffering?: string | null;
@@ -374,6 +375,7 @@ export class PlatformApiService {
           status: string;
           approvedAt: string | null;
           deniedAt: string | null;
+          redeemedAt: string | null;
           expiresAt: string | null;
           createdAt: string;
           providerOffering?: string | null;
@@ -579,6 +581,35 @@ export class PlatformApiService {
           const status = err?.status ?? err?.error?.status;
           const message = err?.error?.message ?? err?.message ?? JSON.stringify(err?.error);
           console.error('PlatformApiService: voucher-request failed', { url, status, message, err });
+          return throwError(() => new Error(message));
+        })
+      )
+    );
+  }
+
+  /**
+   * Redeem a voucher. POST /public/:customerSlug/:tenantSlug/voucher-request/:id/redeem
+   * Requires deviceId or email in query params (same auth as profile).
+   */
+  redeemVoucher(
+    voucherRequestId: string,
+    params: { deviceId?: string; email?: string }
+  ): Promise<{ ok: boolean }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const q = new URLSearchParams();
+    if (params.deviceId?.trim()) q.set('deviceId', params.deviceId.trim());
+    if (params.email?.trim()) q.set('email', params.email.trim().toLowerCase());
+    const query = q.toString();
+    const url = `${this.basePath}/voucher-request/${voucherRequestId}/redeem${query ? `?${query}` : ''}`;
+    return firstValueFrom(
+      this.http.post<{ ok: boolean }>(url, {}, { headers: this.headers }).pipe(
+        tap((res) => console.debug('PlatformApiService: voucher redeem OK', res)),
+        catchError((err) => {
+          const status = err?.status ?? err?.error?.status;
+          const message = err?.error?.message ?? err?.message ?? JSON.stringify(err?.error);
+          console.error('PlatformApiService: voucher redeem failed', { url, status, message, err });
           return throwError(() => new Error(message));
         })
       )
