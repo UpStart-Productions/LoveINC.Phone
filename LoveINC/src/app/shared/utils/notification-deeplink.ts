@@ -1,4 +1,4 @@
-import type { ContentType } from '../organization-services/content-detail/content-detail.model';
+import type { ContentType } from '../../organization-services/content-detail/content-detail.model';
 
 export interface NotificationMeta {
   itemType: string;

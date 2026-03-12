@@ -12,7 +12,7 @@ import {
   IonIcon,
 } from '@ionic/angular/standalone';
 import { VerseOfTheDayService, VerseOfTheDay } from './verse-of-the-day.service';
-import { SafeResourceUrlPipe } from '../pipes/safe-resource-url.pipe';
+import { SafeResourceUrlPipe } from '../shared/pipes/safe-resource-url.pipe';
 import { environment } from '../../environments/environment';
 
 @Component({

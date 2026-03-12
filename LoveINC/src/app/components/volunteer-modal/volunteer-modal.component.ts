@@ -18,7 +18,7 @@ import {
   IonSelectOption,
 } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
-import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
+import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 import { UserProfileFormComponent, type UserProfileFormValue } from '../user-profile-form/user-profile-form.component';
 import { OnboardingService } from '../../services/onboarding.service';
 import { UserProfileService } from '../../services/user-profile.service';

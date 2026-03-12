@@ -4,7 +4,7 @@ import { ModalController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { NotificationsService, type AppNotification } from '../../services/notifications.service';
-import { mapNotificationMetaToContentType } from '../../utils/notification-deeplink';
+import { mapNotificationMetaToContentType } from '../../shared/utils/notification-deeplink';
 import {
   IonHeader,
   IonToolbar,

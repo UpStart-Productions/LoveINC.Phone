@@ -11,7 +11,7 @@ import {
   IonButton,
 } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
-import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
+import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 
 export interface CardActionIcon {
   icon?: string;

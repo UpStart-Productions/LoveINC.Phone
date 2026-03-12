@@ -8,7 +8,7 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, Ion
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { OnboardingService } from '../services/onboarding.service';
-import { HomeCard, CardType } from '../models/home-card.model';
+import { HomeCard, CardType } from '../shared/models/home-card.model';
 import { CardFormattingService } from '../services/card-formatting.service';
 import { UserTypeCardComponent, UserType } from '../components/user-type-card/user-type-card.component';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';

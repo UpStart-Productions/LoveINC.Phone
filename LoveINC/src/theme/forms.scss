@@ -3,85 +3,12 @@
  * ----------------------------------------------------------------------------- */
 
 /* -----------------------------------------------------------------------------
- * Onboarding Form - SuperSimpleWorkout-style
- * Used by onboarding step 3 and volunteer signup form
+ * Global Form Styles - SuperSimpleWorkout-style
+ * Applies to any form (ion-item with ion-input, ion-select, ion-textarea) anywhere in the app
  * ----------------------------------------------------------------------------- */
-.onboarding-form-step {
-  ion-input,
-  ion-select {
-    --background: var(--ion-background-color);
-    --border-width: 1px;
-    --border-style: solid;
-    --border-color: var(--ion-color-medium);
-    --border-radius: 10px;
-    --padding-start: 9px;
-    --padding-end: 0;
-    background-color: var(--ion-background-color);
-    border: 1px solid var(--ion-color-medium);
-    border-radius: 10px;
-    padding-left: 9px !important;
-    padding-right: 0 !important;
-  }
-
-  .input-text-size {
-    font-size: 0.85rem;
-  }
-
-  ion-input input,
-  ion-input input::placeholder {
-    font-size: 0.85rem;
-  }
-
-  ion-item ion-label {
-    color: var(--ion-color-dark);
-    font-size: 0.85rem;
-  }
-
-  ion-item {
-    --inner-padding-top: 6px;
-    --inner-padding-bottom: 6px;
-    --border-width: 0;
-    --inner-border-width: 0;
-    --padding-start: 0;
-    --padding-end: 0;
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  ion-item:has(ion-input),
-  ion-item:has(ion-select) {
-    --inner-padding-start: 0;
-    --inner-padding-end: 0;
-  }
-
-  ion-item.more-space {
-    --inner-padding-top: 12px;
-    --inner-padding-bottom: 12px;
-  }
-
-  ion-list {
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  ion-checkbox {
-    pointer-events: auto;
-    cursor: pointer;
-
-    &::part(container) {
-      pointer-events: auto;
-      cursor: pointer;
-    }
-  }
-}
-
-/* -----------------------------------------------------------------------------
- * Assistance Form - SuperSimpleWorkout-style (scoped to Request Assistance page)
- * Includes ion-select and ion-textarea in addition to ion-input
- * ----------------------------------------------------------------------------- */
-.assistance-form-step {
+ion-item:has(ion-input),
+ion-item:has(ion-select),
+ion-item:has(ion-textarea) {
   ion-input,
   ion-select,
   ion-textarea {
@@ -90,17 +17,21 @@
     --border-style: solid;
     --border-color: var(--ion-color-medium);
     --border-radius: 10px;
-    --padding-start: 9px;
     --padding-end: 0;
     background-color: var(--ion-background-color);
     border: 1px solid var(--ion-color-medium);
     border-radius: 10px;
-    padding-left: 9px !important;
     padding-right: 0 !important;
   }
 
-  .input-text-size {
-    font-size: 0.85rem;
+  ion-input {
+    --padding-start: 15px;
+    padding-left: 15px !important;
+  }
+
+  ion-select,
+  ion-textarea {
+    --padding-start: 15px;
   }
 
   ion-input input,
@@ -110,40 +41,77 @@
     font-size: 0.85rem;
   }
 
-  ion-item ion-label {
+  ion-input input,
+  ion-input .native-input,
+  ion-input::part(native),
+  ion-textarea textarea {
+    padding-left: 15px !important;
+    padding-inline-start: 15px !important;
+  }
+
+  ion-label {
     color: var(--ion-color-dark);
     font-size: 0.85rem;
   }
 
-  ion-item {
-    --inner-padding-top: 6px;
-    --inner-padding-bottom: 6px;
-    --border-width: 0;
-    --inner-border-width: 0;
-    --padding-start: 0;
-    --padding-end: 0;
-    margin-left: 0;
-    margin-right: 0;
-  }
+  --inner-padding-top: 6px;
+  --inner-padding-bottom: 6px;
+  --border-width: 0;
+  --inner-border-width: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
 
-  ion-item:has(ion-input),
-  ion-item:has(ion-select),
-  ion-item:has(ion-textarea) {
-    --inner-padding-start: 0;
-    --inner-padding-end: 0;
-  }
+ion-item.more-space {
+  --inner-padding-top: 12px;
+  --inner-padding-bottom: 12px;
+}
 
-  ion-item.more-space {
-    --inner-padding-top: 12px;
-    --inner-padding-bottom: 12px;
-  }
+ion-list:has(ion-item:has(ion-input)),
+ion-list:has(ion-item:has(ion-select)),
+ion-list:has(ion-item:has(ion-textarea)) {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
 
-  ion-list {
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 0;
-    padding-right: 0;
+ion-item:has(ion-checkbox) ion-checkbox {
+  pointer-events: auto;
+  cursor: pointer;
+
+  &::part(container) {
+    pointer-events: auto;
+    cursor: pointer;
   }
+}
+
+/* Form validation error state - obvious to users */
+ion-input.ion-invalid.ion-touched,
+ion-select.ion-invalid.ion-touched,
+ion-textarea.ion-invalid.ion-touched {
+  --border-color: var(--ion-color-danger);
+  --highlight-color-invalid: var(--ion-color-danger);
+  border-color: var(--ion-color-danger) !important;
+  box-shadow: 0 0 0 2px rgba(var(--ion-color-danger-rgb), 0.2);
+}
+
+/* Error text below the form field border */
+.form-field-with-error {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form-error-text {
+  color: var(--ion-color-danger);
+  font-size: 0.75rem;
+  margin: 4px 0 0 0;
+  padding: 0;
 }
 
 /* Live search searchbar styling */

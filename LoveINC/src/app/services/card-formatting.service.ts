@@ -5,7 +5,7 @@ import {
   CardTypeLabels,
   CardTypeIcons,
   CardTypeColors,
-} from '../models/home-card.model';
+} from '../shared/models/home-card.model';
 import { PlatformApiService } from './platform/platform-api.service';
 import type {
   PlatformClass,

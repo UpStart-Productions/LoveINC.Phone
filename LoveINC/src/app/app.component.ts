@@ -13,7 +13,7 @@ import { PlatformApiService } from './services/platform/platform-api.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
 import { PushRegistrationService } from './services/push-registration.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
-import { mapNotificationMetaToContentType } from './utils/notification-deeplink';
+import { mapNotificationMetaToContentType } from './shared/utils/notification-deeplink';
 import { addIcons } from 'ionicons';
 import {
   // Tab Bar Icons

@@ -1,0 +1,122 @@
+<div class="contact-assistance-form">
+  <ion-list>
+    <ion-item>
+      <ion-label position="stacked">First Name</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="form.firstName"
+        name="firstName"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Last Name</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="form.lastName"
+        name="lastName"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">City of Residence</ion-label>
+      <ion-select
+        [(ngModel)]="form.city"
+        name="city"
+        placeholder="Select a city"
+        required>
+        <ion-select-option value="Newberg">Newberg</ion-select-option>
+        <ion-select-option value="St. Paul">St. Paul</ion-select-option>
+        <ion-select-option value="Yamhill">Yamhill</ion-select-option>
+        <ion-select-option value="Carlton">Carlton</ion-select-option>
+        <ion-select-option value="Sherwood">Sherwood</ion-select-option>
+        <ion-select-option value="Donald">Donald</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Phone</ion-label>
+      <div class="form-field-with-error">
+        <ion-input
+          type="tel"
+          [(ngModel)]="form.phone"
+          name="phone"
+          appPhoneFormatter
+          appPhoneValidator
+          #phone="ngModel"
+          [class.ion-invalid]="phone.invalid && phone.touched"
+          [class.ion-touched]="phone.touched">
+        </ion-input>
+        @if (getPhoneError(phone)) {
+          <p class="form-error-text">{{ getPhoneError(phone) }}</p>
+        }
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Email</ion-label>
+      <div class="form-field-with-error">
+        <ion-input
+          type="email"
+          [(ngModel)]="form.email"
+          name="email"
+          appEmailValidator
+          required
+          #email="ngModel"
+          [class.ion-invalid]="email.invalid && email.touched"
+          [class.ion-touched]="email.touched">
+        </ion-input>
+        @if (getEmailError(email)) {
+          <p class="form-error-text">{{ getEmailError(email) }}</p>
+        }
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Reason for Contact</ion-label>
+      <ion-select
+        [(ngModel)]="form.reason"
+        name="reason"
+        placeholder="Select a reason"
+        required>
+        <ion-select-option value="become-client">Become a client</ion-select-option>
+        <ion-select-option value="signup-service">Already a client, need to sign up for service</ion-select-option>
+        <ion-select-option value="hesed-house">Hesed House</ion-select-option>
+        <ion-select-option value="second-choice">Second Choice</ion-select-option>
+        <ion-select-option value="relational-ministry">Relational Ministry</ion-select-option>
+        <ion-select-option value="volunteer">Volunteer</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Questions or Concerns</ion-label>
+      <ion-textarea
+        [(ngModel)]="form.comments"
+        name="comments"
+        rows="4"
+        placeholder="Enter your questions or concerns here...">
+      </ion-textarea>
+    </ion-item>
+
+    <ion-item button="false" detail="false" lines="full" class="more-space">
+      <ion-checkbox
+        slot="start"
+        [(ngModel)]="form.wantsNewsletter"
+        name="wantsNewsletter">
+      </ion-checkbox>
+      <ion-label (click)="form.wantsNewsletter = !form.wantsNewsletter">
+        I would like to receive Love INC newsletter
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-button
+    expand="block"
+    color="primary"
+    [disabled]="!canSubmit() || submitting"
+    (click)="onSubmit()">
+    {{ submitting ? 'Submitting...' : 'Submit' }}
+  </ion-button>
+</div>
