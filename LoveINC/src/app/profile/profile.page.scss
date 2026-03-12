@@ -1,6 +1,7 @@
 :host {
   ion-card.section-card,
-  app-service-access-section ::ng-deep ion-card.section-card {
+  app-service-access-section ::ng-deep ion-card.section-card,
+  app-vouchers-panel ::ng-deep ion-card.section-card {
     margin-top: 8px;
     margin-bottom: 8px;
   }

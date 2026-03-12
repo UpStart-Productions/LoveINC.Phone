@@ -51,19 +51,9 @@ interface MoreItem {
 export class MorePage implements OnInit {
   moreItems: MoreItem[] = [
     {
-      name: 'Profile',
+      name: 'My Profile',
       icon: 'person-circle-outline',
       route: '/tabs/profile',
-    },
-    {
-      name: 'FAQ',
-      icon: 'help-circle-outline',
-      route: '/tabs/faq',
-    },
-    {
-      name: 'Impact Stories',
-      icon: 'heart-outline',
-      route: '/tabs/impact-stories',
     },
     {
       name: 'Verse of the Day',
@@ -71,19 +61,14 @@ export class MorePage implements OnInit {
       route: '/tabs/verse-of-the-day',
     },
     {
-      name: 'Videos',
-      icon: 'play-circle-outline',
-      route: '/tabs/videos',
+      name: 'Impact Stories',
+      icon: 'heart-outline',
+      route: '/tabs/impact-stories',
     },
     {
-      name: 'Tools',
-      icon: 'construct-outline',
-      route: '/tabs/tools',
-    },
-    {
-      name: 'Saved Items',
-      icon: 'bookmark-outline',
-      route: '/tabs/saved-items',
+      name: 'FAQ',
+      icon: 'help-circle-outline',
+      route: '/tabs/faq',
     },
     {
       name: 'Church Partnerships',
@@ -92,15 +77,25 @@ export class MorePage implements OnInit {
       route: '/tabs/church-partnerships',
     },
     {
-      name: 'Settings',
-      icon: 'settings-outline',
-      route: '/tabs/settings',
+      name: 'Tools',
+      icon: 'construct-outline',
+      route: '/tabs/tools',
     },
     {
       name: 'Developer Options',
       icon: 'code-outline',
       route: '/tabs/developer-options',
     },
+    // {
+    //   name: 'Saved Items',
+    //   icon: 'bookmark-outline',
+    //   route: '/tabs/saved-items',
+    // },
+    // {
+    //   name: 'Settings',
+    //   icon: 'settings-outline',
+    //   route: '/tabs/settings',
+    // },
   ];
 
   showDonateButton: boolean = false;

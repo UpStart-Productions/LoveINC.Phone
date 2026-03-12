@@ -41,29 +41,35 @@
     </ion-card-content>
   </ion-card>
 
+  <!-- My Vouchers -->
+  @if (displayVouchers?.length) {
+    <app-vouchers-panel
+      [apiVouchers]="displayVouchers"
+      (voucherTap)="openVoucherModal($event)"
+      (voucherRemove)="onVoucherRemove($event)">
+    </app-vouchers-panel>
+  }
+
+  <!-- My Service -->
+  <ion-card class="section-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="heart-outline" class="section-icon"></ion-icon>
+        My Service
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="app-body-secondary">Volunteer positions you've been approved for will appear here.</p>
+    </ion-card-content>
+  </ion-card>
+
   <!-- Service Access -->
   <app-service-access-section
     [scanClickHandler]="onScanRequested"
-    [apiVouchers]="displayVouchers"
     [apiIntakeCompleted]="apiIntakeCompleted"
     [intakeRequired]="intakeRequired"
-    [customerName]="organizationName"
-    (voucherTap)="openVoucherModal($event)"
-    (voucherRemove)="onVoucherRemove($event)">
+    [customerName]="organizationName">
   </app-service-access-section>
-
-  <!-- DEBUG: Voucher data - scroll down. Run curl with deviceId to verify API. Remove after fixing. -->
-  @if (profileVouchers && profileVouchers.length > 0) {
-    <ion-card class="section-card">
-      <ion-card-header>
-        <ion-card-title>Debug: Voucher Data</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p><strong>Device ID:</strong> {{ debugDeviceId || '(none)' }}</p>
-        <pre style="font-size: 11px; overflow-x: auto; white-space: pre-wrap; max-height: 200px;">{{ profileVouchers[0] | json }}</pre>
-      </ion-card-content>
-    </ion-card>
-  }
 
   <!-- Settings -->
   <ion-card class="section-card">

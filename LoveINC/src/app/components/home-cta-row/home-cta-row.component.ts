@@ -22,7 +22,7 @@ export class HomeCtaRowComponent {
   }
 
   get pillText(): string {
-    return this.ctaContext === 'volunteer' ? 'Join' : 'Donate';
+    return this.ctaContext === 'volunteer' ? 'Serve' : 'Donate';
   }
 
   get accentColor(): string {

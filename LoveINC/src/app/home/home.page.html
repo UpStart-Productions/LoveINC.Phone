@@ -16,7 +16,9 @@
   <!-- User Type Cards - only get-help (volunteer/give shown via CTA rows below when API has CTAs) -->
   <app-user-type-card
     *ngFor="let userType of selectedUserTypesForUserCards"
-    [userType]="userType">
+    [userType]="userType"
+    [getHelpDescription]="clientSupportCardDescription"
+    [getHelpAction]="clientSupportCardAction">
   </app-user-type-card>
 
   <!-- Volunteer CTAs from API (only when user selected volunteer and there are active CTAs) -->

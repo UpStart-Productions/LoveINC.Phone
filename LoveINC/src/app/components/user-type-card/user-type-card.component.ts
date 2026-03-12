@@ -36,6 +36,10 @@ export class UserTypeCardComponent {
   @Input() userType!: UserType;
   @Input() servicesCount?: number = 3; // Default for client
   @Input() volunteerOpportunitiesCount?: number = 2; // Default for volunteer
+  /** Override description for get-help card (context-aware). */
+  @Input() getHelpDescription?: string;
+  /** Override action for get-help card: 'profile' | 'gap-ministries'. */
+  @Input() getHelpAction?: 'profile' | 'gap-ministries';
   @Output() cardClick = new EventEmitter<void>();
 
   constructor(
@@ -105,7 +109,7 @@ export class UserTypeCardComponent {
   get displayDescription(): string {
     switch (this.userType) {
       case 'get-help':
-        return this.clientDescription;
+        return this.getHelpDescription ?? this.clientDescription;
       case 'volunteer':
         return this.volunteerDescription;
       case 'give':
@@ -130,7 +134,13 @@ export class UserTypeCardComponent {
 
   onCardClick() {
     if (this.userType === 'get-help') {
-      this.router.navigate(['/tabs/services']);
+      if (this.getHelpAction === 'profile') {
+        this.router.navigate(['/tabs/profile']);
+      } else if (this.getHelpAction === 'gap-ministries') {
+        this.router.navigate(['/tabs/gap-ministries']);
+      } else {
+        this.router.navigate(['/tabs/services']);
+      }
     } else if (this.userType === 'give') {
       this.donateActionSheetService.openDonateActionSheet();
     } else {
@@ -147,7 +157,7 @@ export class UserTypeCardComponent {
       case 'get-help':
         return 'Support';
       case 'volunteer':
-        return 'Join';
+        return 'Serve';
       case 'give':
         return 'Donate';
       default:

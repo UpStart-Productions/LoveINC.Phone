@@ -1,3 +1,15 @@
+ion-list {
+  padding-top: 10px;
+}
+
+ion-list ion-item {
+  margin-bottom: 12px;
+
+  &:not(.profile-item) {
+    margin-left: 5px;
+  }
+}
+
 .item-icon-slot {
   display: flex;
   align-items: center;
@@ -12,6 +24,15 @@
   }
 }
 
+.profile-item .item-icon-slot {
+  width: 34px;
+  min-width: 34px;
+
+  ion-icon {
+    font-size: calc(var(--app-font-size-display-lg) * 1.21);
+  }
+}
+
 .profile-initial-avatar {
   display: flex;
   align-items: center;
@@ -23,4 +44,10 @@
   color: white;
   font-size: var(--app-font-size-body);
   font-weight: var(--app-font-weight-semibold);
+}
+
+.profile-item .profile-initial-avatar {
+  width: 34px;
+  height: 34px;
+  font-size: calc(var(--app-font-size-body) * 1.21);
 }

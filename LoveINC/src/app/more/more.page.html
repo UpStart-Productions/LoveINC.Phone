@@ -18,11 +18,12 @@
       button
       detail="true"
       *ngFor="let item of moreItems"
+      [class.profile-item]="item.name === 'My Profile'"
       (click)="handleItemClick(item)">
       <div slot="start" class="item-icon-slot">
-        <div *ngIf="item.name === 'Profile' && userFirstInitial" class="profile-initial-avatar">{{ userFirstInitial }}</div>
-        <i-lucide *ngIf="!(item.name === 'Profile' && userFirstInitial) && item.lucideIcon" [name]="item.lucideIcon" [size]="24" color="var(--ion-color-primary)"></i-lucide>
-        <ion-icon *ngIf="!(item.name === 'Profile' && userFirstInitial) && !item.lucideIcon" [name]="item.icon"></ion-icon>
+        <div *ngIf="item.name === 'My Profile' && userFirstInitial" class="profile-initial-avatar">{{ userFirstInitial }}</div>
+        <i-lucide *ngIf="!(item.name === 'My Profile' && userFirstInitial) && item.lucideIcon" [name]="item.lucideIcon" [size]="24" color="var(--ion-color-primary)"></i-lucide>
+        <ion-icon *ngIf="!(item.name === 'My Profile' && userFirstInitial) && !item.lucideIcon" [name]="item.icon"></ion-icon>
       </div>
       <ion-label>{{ item.name }}</ion-label>
     </ion-item>

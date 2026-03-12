@@ -15,3 +15,4 @@ export {
 
 export { ServiceUnlockScanPage } from './lib/service-unlock-scan.page';
 export { ServiceAccessSectionComponent } from './lib/components/service-access-section.component';
+export { VouchersPanelComponent } from './lib/components/vouchers-panel.component';

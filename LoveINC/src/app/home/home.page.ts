@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { forkJoin, combineLatest } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import { startOfDay } from 'date-fns';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon } from '@ionic/angular/standalone';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
@@ -21,6 +21,19 @@ import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-wid
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
+import { DeviceIdService } from '../services/device-id.service';
+import { UserProfileService } from '../services/user-profile.service';
+import { AppUserDataService } from '../services/app-user-data.service';
+import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
+
+const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
+const BROWSE_SERVICES_MAX_DISPLAYS = 3;
+
+export type ClientSupportCardState =
+  | 'intake_required'
+  | 'has_vouchers'
+  | 'browse_services'
+  | 'browse_services_hidden';
 
 @Component({
   selector: 'app-home',
@@ -28,9 +41,9 @@ import { ScheduleFormattingService } from '../services/schedule-formatting.servi
   styleUrls: ['home.page.scss'],
   imports: [
     CommonModule,
-    IonHeader, 
-    IonToolbar, 
-    IonTitle, 
+    IonHeader,
+    IonToolbar,
+    IonTitle,
     IonContent,
     IonButton,
     IonButtons,
@@ -51,6 +64,10 @@ export class HomePage implements OnInit {
   volunteerCtas: PlatformCta[] = [];
   showDonateButton: boolean = false;
 
+  /** Client support card: set when get-help selected and client context loaded. */
+  clientSupportCardState: ClientSupportCardState | null = null;
+  clientSupportVoucherCount = 0;
+
   constructor(
     private onboardingService: OnboardingService,
     private router: Router,
@@ -60,7 +77,11 @@ export class HomePage implements OnInit {
     private donateButtonService: DonateButtonService,
     private sharingService: SharingService,
     private volunteerActionSheetService: VolunteerActionSheetService,
-    private scheduleFormatting: ScheduleFormattingService
+    private scheduleFormatting: ScheduleFormattingService,
+    private deviceIdService: DeviceIdService,
+    private userProfileService: UserProfileService,
+    private appUserDataService: AppUserDataService,
+    private dismissedVouchersService: DismissedVouchersService
   ) {}
 
   ngOnInit() {
@@ -75,7 +96,11 @@ export class HomePage implements OnInit {
     } else {
       this.welcomeTitle = 'Welcome to Love INC';
     }
-    
+
+    if (this.selectedUserTypes.includes('get-help')) {
+      this.loadClientContext();
+    }
+
     // For testing - add to window for easy access in console
     (window as any).clearOnboarding = () => {
       this.onboardingService.clearOnboarding();
@@ -88,8 +113,95 @@ export class HomePage implements OnInit {
     this.selectedUserTypes = selectedOptions
       .filter(option => option !== 'exploring' && ['get-help', 'volunteer', 'give'].includes(option))
       .map(option => option as UserType);
-    
+
     this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
+  }
+
+  private loadClientContext(): void {
+    const deviceId = this.deviceIdService.getDeviceId();
+    const profile = this.userProfileService.getProfile();
+    const onboarding = this.onboardingService.getOnboardingData();
+    const email = (profile.email ?? onboarding?.email)?.trim();
+    if (!deviceId && !email) {
+      const count = this.getBrowseServicesDisplayCount();
+      if (count >= BROWSE_SERVICES_MAX_DISPLAYS) {
+        this.clientSupportCardState = 'browse_services_hidden';
+      } else {
+        this.clientSupportCardState = 'browse_services';
+        this.incrementBrowseServicesDisplayCount();
+      }
+      return;
+    }
+
+    combineLatest({
+      clientAccess: this.platformApi.getClientAccess(),
+      appUserProfile: this.platformApi.getAppUserProfile({
+        deviceId: deviceId || undefined,
+        email: email || undefined,
+      }),
+    })
+      .pipe(take(1))
+      .subscribe({
+        next: ({ clientAccess, appUserProfile }) => {
+          const intakeRequired = clientAccess?.intakeRequired ?? true;
+          const profileIntakeCompleted = appUserProfile?.profile?.intakeCompleted ?? false;
+          const apiIntakeCompleted =
+            profileIntakeCompleted || this.appUserDataService.hasIntakeCompleted();
+
+          const voucherRequests = appUserProfile?.profile?.voucherRequests ?? [];
+          const dismissedIds = this.dismissedVouchersService.getDismissed();
+          const validVouchers = voucherRequests.filter((vr) => {
+            if (dismissedIds.has(vr.id)) return false;
+            if (vr.status !== 'approved') return false;
+            if (vr.deniedAt) return false;
+            const expiresAt = vr.expiresAt ?? vr.createdAt;
+            return new Date(expiresAt) > new Date();
+          });
+          this.clientSupportVoucherCount = validVouchers.length;
+
+          if (intakeRequired && !apiIntakeCompleted) {
+            this.clientSupportCardState = 'intake_required';
+            return;
+          }
+          if (this.clientSupportVoucherCount > 0) {
+            this.clientSupportCardState = 'has_vouchers';
+            return;
+          }
+
+          const count = this.getBrowseServicesDisplayCount();
+          if (count >= BROWSE_SERVICES_MAX_DISPLAYS) {
+            this.clientSupportCardState = 'browse_services_hidden';
+          } else {
+            this.clientSupportCardState = 'browse_services';
+            this.incrementBrowseServicesDisplayCount();
+          }
+        },
+        error: () => {
+          this.clientSupportCardState = 'browse_services';
+        },
+      });
+  }
+
+  private getBrowseServicesDisplayCount(): number {
+    try {
+      const raw = localStorage.getItem(CLIENT_SUPPORT_CARD_STORAGE_KEY);
+      if (raw) {
+        const n = parseInt(raw, 10);
+        return Number.isNaN(n) ? 0 : Math.max(0, n);
+      }
+    } catch {
+      // ignore
+    }
+    return 0;
+  }
+
+  private incrementBrowseServicesDisplayCount(): void {
+    try {
+      const count = this.getBrowseServicesDisplayCount();
+      localStorage.setItem(CLIENT_SUPPORT_CARD_STORAGE_KEY, String(count + 1));
+    } catch {
+      // ignore
+    }
   }
 
   loadCtas() {
@@ -123,7 +235,31 @@ export class HomePage implements OnInit {
   }
 
   get selectedUserTypesForUserCards(): UserType[] {
-    return this.selectedUserTypes.filter((t) => t === 'get-help');
+    const hasGetHelp = this.selectedUserTypes.includes('get-help');
+    if (!hasGetHelp) return [];
+    if (this.clientSupportCardState === 'browse_services_hidden') return [];
+    if (this.clientSupportCardState === null) return [];
+    return ['get-help'];
+  }
+
+  get clientSupportCardDescription(): string {
+    switch (this.clientSupportCardState) {
+      case 'intake_required':
+        return 'Complete intake to unlock services.';
+      case 'has_vouchers':
+        return `You have ${this.clientSupportVoucherCount} active voucher${this.clientSupportVoucherCount === 1 ? '' : 's'}.`;
+      case 'browse_services':
+        return 'Browse Gap Ministries and classes.';
+      default:
+        return 'Browse Gap Ministries and classes.';
+    }
+  }
+
+  get clientSupportCardAction(): 'profile' | 'gap-ministries' {
+    return this.clientSupportCardState === 'has_vouchers' ||
+      this.clientSupportCardState === 'intake_required'
+      ? 'profile'
+      : 'gap-ministries';
   }
 
   get showGiveCtas(): boolean {

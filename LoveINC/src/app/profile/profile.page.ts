@@ -28,6 +28,7 @@ import {
 } from '@ionic/angular/standalone';
 import { ModalController, AlertController } from '@ionic/angular/standalone';
 import { ServiceAccessSectionComponent } from '../../../packages/service-unlock/src/lib/components/service-access-section.component';
+import { VouchersPanelComponent } from '../../../packages/service-unlock/src/lib/components/vouchers-panel.component';
 import type { Voucher } from '../../../packages/service-unlock/src/lib/types/service-unlock.types';
 import { UserProfileFormModalComponent } from '../components/user-profile-form-modal/user-profile-form-modal.component';
 import { VoucherDetailModalComponent } from '../components/voucher-detail-modal/voucher-detail-modal.component';
@@ -44,6 +45,7 @@ type UserType = 'client' | 'donor' | 'volunteer';
   imports: [
     CommonModule,
     ServiceAccessSectionComponent,
+    VouchersPanelComponent,
     IonHeader,
     IonRefresher,
     IonRefresherContent,
@@ -76,7 +78,6 @@ export class ProfilePage implements OnInit, OnDestroy {
   emailVerifiedAt: string | null = null;
   profileVouchers: Voucher[] | null = null;
   profileIntakeCompleted = false;
-  debugDeviceId = '';
   intakeRequired = true;
   organizationName = 'Love INC';
   private dismissedIds = new Set<string>();
@@ -156,7 +157,6 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   private loadProfile(): void {
     const deviceId = this.deviceId.getDeviceId();
-    this.debugDeviceId = deviceId ?? '';
     const profile = this.userProfileService.getProfile();
     const onboarding = this.onboardingService.getOnboardingData();
     const email = (profile.email ?? onboarding?.email)?.trim();
