@@ -106,6 +106,7 @@ export interface PlatformOffering {
   /** Derived: true when offering has at least one voucher */
   voucherRequired?: boolean;
   vouchers?: PlatformVoucher[];
+  volunteerPositions?: PlatformVolunteerPosition[];
 }
 
 /** API may return camelCase or snake_case; we normalize in mapping */
@@ -125,6 +126,12 @@ export interface PlatformVolunteerPosition {
   end_time?: string;
   endTime?: string;
   [key: string]: unknown;
+}
+
+/** Volunteer position with affiliate context (from /volunteer-positions endpoint) */
+export interface PlatformVolunteerPositionWithAffiliate extends PlatformVolunteerPosition {
+  affiliate: { name: string; phone?: string; email?: string; website?: string };
+  address: PlatformAddress;
 }
 
 export interface PlatformDonation {
@@ -168,6 +175,7 @@ export interface PlatformService {
   voucherRequired?: boolean;
   /** Vouchers for standalone service (no offerings) */
   vouchers?: PlatformVoucher[];
+  volunteerPositions?: PlatformVolunteerPosition[];
 }
 
 

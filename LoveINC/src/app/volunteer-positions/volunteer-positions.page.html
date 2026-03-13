@@ -1,0 +1,33 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/more"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Open Volunteer Positions</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (loading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (positions.length === 0) {
+    <div class="empty-state">
+      <p>No volunteer positions are currently available.</p>
+    </div>
+  } @else {
+    <div class="cards-container">
+      <app-card
+        *ngFor="let position of positions"
+        class="volunteer-card"
+        [imageUrl]="getPhotoUrl(position)"
+        [title]="position.title ?? 'Volunteer'"
+        [description]="getDescription(position)"
+        [clickable]="true"
+        [showShareIcon]="false"
+        (cardClick)="onPositionTap(position)">
+      </app-card>
+    </div>
+  }
+</ion-content>

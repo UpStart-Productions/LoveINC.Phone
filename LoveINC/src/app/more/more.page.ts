@@ -66,6 +66,11 @@ export class MorePage implements OnInit {
       route: '/tabs/impact-stories',
     },
     {
+      name: 'Open Volunteer Positions',
+      icon: 'hand-left-outline',
+      route: '/tabs/volunteer-positions',
+    },
+    {
       name: 'FAQ',
       icon: 'help-circle-outline',
       route: '/tabs/faq',

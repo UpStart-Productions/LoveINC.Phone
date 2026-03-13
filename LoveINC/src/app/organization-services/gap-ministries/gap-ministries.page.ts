@@ -29,6 +29,8 @@ import { OnboardingService } from '../../services/onboarding.service';
 import { DeviceIdService } from '../../services/device-id.service';
 import { ToastController } from '@ionic/angular/standalone';
 import { ActionSheetController } from '@ionic/angular/standalone';
+import { VolunteerActionSheetService } from '../../services/volunteer-action-sheet.service';
+import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 
 export interface GapServiceVoucher {
   id: string;
@@ -54,6 +56,8 @@ export interface GapService {
   serviceId?: string;
   /** Vouchers available for this service/offering. */
   vouchers?: GapServiceVoucher[];
+  /** Volunteer positions for this service/offering. */
+  volunteerPositions?: Array<{ id: string; title?: string; shortDescription?: string; longDescription?: string; description?: string; schedule?: string }>;
 }
 
 @Component({
@@ -105,7 +109,9 @@ export class GapMinistriesPage implements OnInit {
     private onboarding: OnboardingService,
     private deviceId: DeviceIdService,
     private toastController: ToastController,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private volunteerActionSheetService: VolunteerActionSheetService,
+    private scheduleFormatting: ScheduleFormattingService
   ) {}
 
   async ngOnInit() {
@@ -163,6 +169,17 @@ export class GapMinistriesPage implements OnInit {
           const itemTitle = off.items?.length ? off.items.join(', ') : svc.title;
           const rawPhoto = off.photoUrl ?? svc.photoUrl;
           const photoUrl = rawPhoto ? this.platformApi.resolveUploadUrl(rawPhoto) || rawPhoto : undefined;
+          const rawPositions = (off.volunteerPositions ?? (off as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
+          const volunteerPositions = rawPositions.length
+            ? rawPositions.map((p) => ({
+                id: (p['id'] ?? p['title'] ?? off.id) as string,
+                title: (p['title'] ?? p['shortDescription'] ?? p['short_description']) as string | undefined,
+                shortDescription: (p['shortDescription'] ?? p['short_description']) as string | undefined,
+                longDescription: (p['longDescription'] ?? p['long_description']) as string | undefined,
+                description: (p['longDescription'] ?? p['long_description']) as string | undefined,
+                schedule: this.scheduleFormatting.getPositionSchedule(p),
+              }))
+            : undefined;
           result.push({
             id: off.id,
             service: itemTitle,
@@ -179,9 +196,21 @@ export class GapMinistriesPage implements OnInit {
             voucherRequired: off.voucherRequired ?? false,
             serviceId: svc.id,
             vouchers: (off.vouchers ?? []).map((v) => ({ id: v.id, title: v.title })),
+            volunteerPositions,
           });
         }
       } else {
+        const rawPositions = (svc.volunteerPositions ?? (svc as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
+        const volunteerPositions = rawPositions.length
+          ? rawPositions.map((p) => ({
+              id: (p['id'] ?? p['title'] ?? svc.id) as string,
+              title: (p['title'] ?? p['shortDescription'] ?? p['short_description']) as string | undefined,
+              shortDescription: (p['shortDescription'] ?? p['short_description']) as string | undefined,
+              longDescription: (p['longDescription'] ?? p['long_description']) as string | undefined,
+              description: (p['longDescription'] ?? p['long_description']) as string | undefined,
+              schedule: this.scheduleFormatting.getPositionSchedule(p),
+            }))
+          : undefined;
         result.push({
           id: svc.id,
           service: svc.title,
@@ -195,6 +224,7 @@ export class GapMinistriesPage implements OnInit {
           voucherRequired: svc.voucherRequired ?? false,
           serviceId: svc.id,
           vouchers: (svc.vouchers ?? []).map((v) => ({ id: v.id, title: v.title })),
+          volunteerPositions,
         });
       }
     }
@@ -306,7 +336,7 @@ export class GapMinistriesPage implements OnInit {
       { icon: 'location-outline', handler: () => this.onMapPinClick(service), show: !!service.address, buttonClass: 'map-button' },
       { icon: 'call-outline', handler: () => this.onPhoneClick(service), show: true, buttonClass: 'phone-button' },
       { icon: 'ticket-outline', handler: () => this.onVoucherClick(service), show: showVoucher, buttonClass: 'voucher-button' },
-      { lucideIcon: 'heart-handshake', handler: () => this.onVolunteerClick(service), show: true, buttonClass: 'volunteer-button' },
+      { lucideIcon: 'heart-handshake', handler: () => this.onVolunteerClick(service), show: !!service.volunteerPositions?.length, buttonClass: 'volunteer-button' },
       { icon: 'calendar-outline', handler: () => this.onCalendarClick(service), show: true, buttonClass: 'calendar-button' },
     ];
     return icons;
@@ -420,12 +450,21 @@ export class GapMinistriesPage implements OnInit {
   }
 
   async onVolunteerClick(service: GapService) {
-    const alert = await this.alertController.create({
-      header: 'Volunteer Opportunities',
-      message: `View volunteer opportunities for ${service.service}`,
-      buttons: ['OK']
+    if (!service.volunteerPositions?.length) {
+      const toast = await this.toastController.create({
+        message: `No volunteer opportunities for ${service.service}`,
+        duration: 3000,
+        color: 'secondary',
+      });
+      await toast.present();
+      return;
+    }
+    await this.volunteerActionSheetService.openVolunteerActionSheet({
+      organizationName: service.service,
+      address: service.address,
+      positions: service.volunteerPositions,
+      scheduleFallback: service.daysTimes ?? undefined,
     });
-    await alert.present();
   }
 
   async onCalendarClick(service: GapService) {

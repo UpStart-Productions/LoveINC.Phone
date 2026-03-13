@@ -14,6 +14,7 @@ import type {
   PlatformNotification,
   PlatformOrganization,
   PlatformService,
+  PlatformVolunteerPositionWithAffiliate,
 } from './types';
 
 export type {
@@ -29,6 +30,7 @@ export type {
   PlatformOrganization,
   PlatformService,
   PlatformVoucher,
+  PlatformVolunteerPositionWithAffiliate,
 } from './types';
 
 @Injectable({ providedIn: 'root' })
@@ -167,6 +169,12 @@ export class PlatformApiService {
     return this.get<{ donations: PlatformDonation[] }>('/donations').pipe(
       map((res) => res?.donations ?? [])
     );
+  }
+
+  getVolunteerPositions(): Observable<PlatformVolunteerPositionWithAffiliate[]> {
+    return this.get<{ volunteerPositions: PlatformVolunteerPositionWithAffiliate[] }>(
+      '/volunteer-positions'
+    ).pipe(map((res) => res?.volunteerPositions ?? []));
   }
 
   getNotifications(): Observable<PlatformNotification[]> {

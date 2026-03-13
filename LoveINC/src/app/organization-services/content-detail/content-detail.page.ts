@@ -382,6 +382,19 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     const vouchers = isOffering
       ? (item as PlatformOffering).vouchers?.map((v) => ({ id: v.id, title: v.title })) ?? []
       : (item as PlatformService).vouchers?.map((v) => ({ id: v.id, title: v.title })) ?? [];
+    const rawPositions = (isOffering
+      ? (item as PlatformOffering).volunteerPositions ?? (item as unknown as Record<string, unknown>)['volunteer_positions']
+      : (item as PlatformService).volunteerPositions ?? (item as unknown as Record<string, unknown>)['volunteer_positions']) as Array<Record<string, unknown>> | undefined;
+    const volunteerPositions = (rawPositions?.length ?? 0) > 0
+      ? (rawPositions ?? []).map((p) => ({
+          id: (p['id'] ?? p['title'] ?? (item as { id: string }).id) as string,
+          title: (p['title'] ?? p['shortDescription'] ?? p['short_description']) as string | undefined,
+          shortDescription: (p['shortDescription'] ?? p['short_description']) as string | undefined,
+          longDescription: (p['longDescription'] ?? p['long_description']) as string | undefined,
+          description: (p['longDescription'] ?? p['long_description']) as string | undefined,
+          schedule: this.scheduleFormatting.getPositionSchedule(p),
+        }))
+      : undefined;
     return {
       id: isOffering ? (item as PlatformOffering).id : (item as PlatformService).id,
       title,
@@ -393,6 +406,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       voucherRequired,
       serviceId: service.id,
       vouchers: vouchers.length ? vouchers : undefined,
+      volunteerPositions,
     };
   }
 
@@ -776,7 +790,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   isVolunteer(): boolean {
-    return this.contentType === 'volunteer' && !!(this.contentItem?.volunteerPositions?.length);
+    return !!(this.contentItem?.volunteerPositions?.length);
   }
 
   openDonateActionSheet(): void {

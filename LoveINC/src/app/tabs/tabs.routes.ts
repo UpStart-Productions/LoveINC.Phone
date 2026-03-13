@@ -42,6 +42,11 @@ export const routes: Routes = [
           import('../impact-stories/impact-stories.page').then((m) => m.ImpactStoriesPage),
       },
       {
+        path: 'volunteer-positions',
+        loadComponent: () =>
+          import('../volunteer-positions/volunteer-positions.page').then((m) => m.VolunteerPositionsPage),
+      },
+      {
         path: 'verse-of-the-day',
         loadComponent: () =>
           import('../verse-of-the-day/verse-of-the-day.page').then((m) => m.VerseOfTheDayPage),
