@@ -6,40 +6,40 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 24px;
+  padding: 1.5rem;
 }
 
 .success-icon,
 .prompt-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
+  font-size: var(--app-icon-size-4xl);
+  margin-bottom: 1rem;
 }
 
 .success-state h2,
 .scan-prompt h2 {
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 }
 
 .success-state p,
 .scan-prompt p {
-  margin-bottom: 24px;
-  max-width: 320px;
+  margin-bottom: 1.5rem;
+  max-width: 20rem;
 }
 
 .scan-prompt ion-button {
-  margin-top: 8px;
+  margin-top: 0.5rem;
 }
 
 .unsupported,
 .error-message {
   color: var(--ion-color-danger);
-  margin-top: 16px;
+  margin-top: 1rem;
 }
 
 .scanning-state {
-  min-height: 200px;
+  min-height: 12.5rem;
 }
 
 .scanning-state ion-spinner {
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 }

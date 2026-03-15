@@ -34,13 +34,13 @@
   align-items: center;
   position: relative;
   z-index: 1;
-  margin-top: 35px;
+  margin-top: 2.1875rem;
 }
 
 .logo-image {
-  width: 300px;
+  width: 18.75rem;
   height: auto;
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
   object-fit: contain;
   display: block;
 }
@@ -52,8 +52,8 @@
   font-weight: var(--app-font-weight-bold);
   color: white;
   text-align: center;
-  margin: -15px 0 0 0;
-  padding: 0 16px;
+  margin: -0.9375rem 0 0 0;
+  padding: 0 1rem;
 }
 
 .form-scroll-container {
@@ -61,6 +61,6 @@
   height: calc(100vh - 30vh);
   overflow-y: auto;
   position: relative;
-  padding-bottom: 100px;
+  padding-bottom: 6.25rem;
 }
 

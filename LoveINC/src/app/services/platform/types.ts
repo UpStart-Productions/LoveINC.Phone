@@ -210,7 +210,12 @@ export interface PlatformCta {
     address?: PlatformAddress;
   };
   /** Linked donation location for donation_drive CTAs; enables context-aware Donate Now */
-  donation?: { id: string; title: string; address?: PlatformAddress };
+  donation?: {
+    id: string;
+    title: string;
+    provider?: { id: string; name: string };
+    address?: PlatformAddress;
+  };
   class?: {
     id: string;
     title: string;

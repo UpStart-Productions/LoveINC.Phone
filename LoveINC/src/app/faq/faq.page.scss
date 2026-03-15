@@ -1,5 +1,5 @@
 .container {
-  padding: 16px;
+  padding: 1rem;
 }
 
 .loading {
@@ -7,10 +7,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 200px;
+  height: 12.5rem;
 
   ion-spinner {
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
   }
 
   p {
@@ -25,16 +25,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 300px;
+  height: 18.75rem;
   text-align: center;
 
   ion-icon {
     color: var(--app-text-secondary);
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
   }
 
   h2 {
-    margin: 0 0 8px 0;
+    margin: 0 0 0.5rem 0;
     font-size: var(--app-font-size-display-lg);
   }
 
@@ -48,8 +48,8 @@
 .faqs-list {
   ion-accordion-group {
     ion-accordion {
-      margin-bottom: 8px;
-      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      border-radius: 0.5rem;
       overflow: hidden;
 
       ion-item {
@@ -68,14 +68,14 @@
 }
 
 .faq-answer {
-  padding: 16px;
+  padding: 1rem;
   background: var(--ion-color-light);
   color: var(--app-text-primary);
   line-height: var(--app-line-height-loose);
   font-size: var(--app-font-size-body);
 
   p {
-    margin: 0 0 12px 0;
+    margin: 0 0 0.75rem 0;
 
     &:last-child {
       margin-bottom: 0;

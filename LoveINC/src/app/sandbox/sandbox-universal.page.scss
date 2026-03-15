@@ -1,100 +1,100 @@
 .universal-container {
-  padding: 16px;
-  padding-bottom: 100px;
+  padding: 1rem;
+  padding-bottom: 6.25rem;
 }
 
 .pulse-card {
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
   background: linear-gradient(135deg, var(--love-inc-teal) 0%, var(--love-inc-blue) 100%);
   color: white;
   
   .pulse-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 1rem;
   }
   
   .pulse-item {
     text-align: center;
     
     .pulse-number {
-      font-size: 36px;
-      font-weight: 700;
-      margin-bottom: 4px;
+      font-size: 2.25rem;
+      font-weight: var(--app-font-weight-bold);
+      margin-bottom: 0.25rem;
     }
     
     .pulse-label {
-      font-size: 12px;
+      font-size: 0.75rem;
       opacity: 0.9;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.0.3125rem;
     }
   }
 }
 
 .section-header {
-  margin: 32px 0 16px 0;
+  margin: 2rem 0 1rem 0;
   
   h2 {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 1.375rem;
+    font-weight: var(--app-font-weight-bold);
     color: var(--ion-color-dark);
-    margin-bottom: 4px;
+    margin-bottom: 0.25rem;
   }
   
   p {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: var(--ion-color-medium);
   }
 }
 
 .activity-card {
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
   
   .activity-content {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0.75rem;
     
     .activity-icon {
-      font-size: 24px;
+      font-size: 1.5rem;
       color: var(--love-inc-teal);
     }
   }
 }
 
 .testimonial-card {
-  margin-bottom: 16px;
-  border-left: 4px solid var(--love-inc-teal);
+  margin-bottom: 1rem;
+  border-left: 0.25rem solid var(--love-inc-teal);
   
   .testimonial-quote {
-    font-size: 16px;
+    font-size: 1rem;
     font-style: italic;
     line-height: 1.6;
-    margin-bottom: 12px;
+    margin-bottom: 0.75rem;
     color: var(--ion-color-dark);
   }
   
   .testimonial-author {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: var(--ion-color-medium);
-    font-weight: 600;
+    font-weight: var(--app-font-weight-semibold);
   }
 }
 
 .badges-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .badge-item {
-  padding: 16px;
+  padding: 1rem;
   background: var(--ion-color-light);
-  border-radius: 12px;
+  border-radius: 0.75rem;
   text-align: center;
-  border: 2px solid transparent;
+  border: 0.125rem solid transparent;
   
   &.earned {
     border-color: var(--love-inc-teal);
@@ -102,9 +102,9 @@
   }
   
   .badge-icon {
-    font-size: 32px;
+    font-size: 2rem;
     color: var(--ion-color-medium);
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
   }
   
   &.earned .badge-icon {
@@ -112,23 +112,23 @@
   }
   
   .badge-name {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-size: 0.875rem;
+    font-weight: var(--app-font-weight-semibold);
+    margin-bottom: 0.5rem;
     color: var(--ion-color-dark);
   }
 }
 
 .progress-card {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   
   .progress-info {
     .progress-bar {
-      height: 12px;
+      height: 0.75rem;
       background: var(--ion-color-light);
-      border-radius: 6px;
+      border-radius: 0.375rem;
       overflow: hidden;
-      margin-bottom: 8px;
+      margin-bottom: 0.5rem;
     }
     
     .progress-fill {
@@ -138,7 +138,7 @@
     }
     
     .progress-text {
-      font-size: 14px;
+      font-size: 0.875rem;
       color: var(--ion-color-medium);
       text-align: center;
     }
@@ -146,27 +146,27 @@
 }
 
 .welcome-card {
-  margin-top: 24px;
+  margin-top: 1.5rem;
   
   h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-size: 1.125rem;
+    font-weight: var(--app-font-weight-semibold);
+    margin-bottom: 0.5rem;
   }
   
   .new-items {
-    margin: 12px 0 0 20px;
+    margin: 0.75rem 0 0 1.25rem;
     padding: 0;
     
     li {
-      margin-bottom: 8px;
+      margin-bottom: 0.5rem;
       line-height: 1.6;
     }
   }
 }
 
 .section-icon {
-  font-size: 20px;
-  margin-right: 8px;
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
   vertical-align: middle;
 }

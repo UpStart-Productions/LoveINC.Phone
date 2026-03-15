@@ -1,0 +1,30 @@
+---
+description: Shared utilities catalog - use these instead of reinventing
+globs:
+  - src/app/**/*.ts
+  - src/app/**/*.html
+alwaysApply: false
+---
+
+# Shared Utilities – Use Before Reimplementing
+
+Before adding validation, date formatting, pipes, or home-card logic, check `src/app/shared/`. See `src/app/shared/README.md` for full docs.
+
+## Validators (`@app/shared/validators`)
+- **Email**: `emailValidator()` or `appEmailValidator` directive
+- **Phone**: `phoneValidator()` or `appPhoneValidator` directive
+- **Phone formatting**: `appPhoneFormatter` on `ion-input` → (123) 456-7890
+
+## Pipes (`@app/shared/pipes`)
+- **HTML with custom elements**: `SafeHtmlPipe` (trusted content only)
+- **Trusted URLs** (YouTube, etc.): `SafeResourceUrlPipe`
+
+## Models (`@app/shared/models`)
+- **Home cards**: `HomeCard`, `CardType`, `CardTypeLabels`, `CardTypeIcons`, `CardTypeColors`
+
+## Utils (`@app/shared/utils`)
+- **Time range**: `formatTimeRangeCompact(start, end)` → "8:30-9:30 PM"
+- **Event dates**: `formatEventDatesCompact(start, end)` → "Thu, May 21, 6-8pm"
+- **Date range**: `formatDateRangeCompact(start, end)` → "May 21 – May 22, 2025"
+- **API time string**: `formatTimeStringCompact(timeStr)` → "10-12pm"
+- **Notification deep link**: `mapNotificationMetaToContentType(meta)` → ContentType for routing

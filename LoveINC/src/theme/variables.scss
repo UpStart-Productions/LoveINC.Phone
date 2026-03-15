@@ -89,12 +89,25 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 
-  /** Typography – 5-size scale (Material / iOS–aligned); use weight + color for hierarchy **/
-  --app-font-size-caption: 12px;
-  --app-font-size-body: 16px;
-  --app-font-size-title: 17px;
-  --app-font-size-display: 20px;
-  --app-font-size-display-lg: 24px;
+  /** Typography – 6-size scale (Material / iOS–aligned); use weight + color for hierarchy **/
+  --app-font-size-auxiliary: 0.6875rem;
+  --app-font-size-caption: 0.75rem;
+  --app-font-size-body: 1rem;
+  --app-font-size-title: 1.0625rem;
+  --app-font-size-display: 1.25rem;
+  --app-font-size-display-lg: 1.5rem;
+  --app-font-size-display-xl: 1.75rem;
+
+  /** Icon sizes (for ion-icon font-size) **/
+  --app-icon-size-sm: 0.875rem;
+  --app-icon-size-md: 1rem;
+  --app-icon-size-md-lg: 1.125rem;
+  --app-icon-size-lg: 1.25rem;
+  --app-icon-size-xl: 1.5rem;
+  --app-icon-size-xl-lg: 1.75rem;
+  --app-icon-size-2xl: 2.25rem;
+  --app-icon-size-3xl: 3rem;
+  --app-icon-size-4xl: 4rem;
 
   --app-font-weight-medium: 300;
   --app-font-weight-semibold: 600;
@@ -110,10 +123,10 @@
   --app-text-accent: var(--ion-color-primary);
 
   /** Cards – overrides beyond Ionic defaults (https://ionicframework.com/docs/api/card) **/
-  --app-card-margin: 16px;
-  --app-card-radius: 12px;
-  --app-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --app-card-margin-bottom: 20px;
+  --app-card-margin: 1rem;
+  --app-card-radius: 0.75rem;
+  --app-card-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
+  --app-card-margin-bottom: 1.25rem;
 
   /** Goal Tracker – themeable colors (override via host app) **/
   --goal-tracker-primary: var(--ion-text-color);

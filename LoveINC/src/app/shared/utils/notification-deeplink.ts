@@ -1,5 +1,6 @@
 import type { ContentType } from '../../organization-services/content-detail/content-detail.model';
 
+/** Payload from push or in-app notifications; used for deep linking. */
 export interface NotificationMeta {
   itemType: string;
   itemId: string;

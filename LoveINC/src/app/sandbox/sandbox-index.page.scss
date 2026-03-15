@@ -1,41 +1,41 @@
 .sandbox-container {
-  padding: 16px;
+  padding: 1rem;
 }
 
 .intro-section {
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
   
   h1 {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 1.5rem;
+    font-weight: var(--app-font-weight-bold);
     color: var(--ion-color-dark);
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
   }
   
   p {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: var(--ion-color-medium);
     line-height: 1.5;
   }
 }
 
 .sandbox-item {
-  margin-bottom: 8px;
-  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  border-radius: 0.75rem;
   
   ion-icon[slot="start"] {
-    font-size: 28px;
-    margin-right: 16px;
+    font-size: 1.75rem;
+    margin-right: 1rem;
   }
   
   h2 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 4px;
+    font-size: 1.125rem;
+    font-weight: var(--app-font-weight-semibold);
+    margin-bottom: 0.25rem;
   }
   
   p {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: var(--ion-color-medium);
   }
 }

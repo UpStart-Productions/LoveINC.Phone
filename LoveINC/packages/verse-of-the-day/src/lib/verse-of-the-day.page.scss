@@ -1,14 +1,14 @@
 .verse-loading {
   display: flex;
   justify-content: center;
-  padding: 48px 0;
+  padding: 3rem 0;
 }
 
 .verse-reference {
-  font-size: var(--app-font-size-caption, 0.875rem);
-  font-weight: 600;
+  font-size: var(--app-font-size-caption, 0.75rem);
+  font-weight: var(--app-font-weight-semibold);
   color: var(--app-text-secondary, var(--ion-color-medium));
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
 }
 
 .verse-text {

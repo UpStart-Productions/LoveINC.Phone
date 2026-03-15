@@ -2,8 +2,8 @@
   ion-card.section-card,
   app-service-access-section ::ng-deep ion-card.section-card,
   app-vouchers-panel ::ng-deep ion-card.section-card {
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   ion-card.section-card:first-child {
@@ -16,7 +16,7 @@
 }
 
 .section-icon {
-  margin-right: 8px;
+  margin-right: 0.5rem;
   vertical-align: middle;
 }
 
@@ -25,7 +25,7 @@
   align-items: center;
 
   ion-button {
-    margin-left: 8px;
+    margin-left: 0.5rem;
   }
 }
 
@@ -64,7 +64,7 @@ ion-item {
 .engagement-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: 1.5rem;
 }
 
 .volunteer-requests {
@@ -78,8 +78,8 @@ ion-item {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--ion-color-light-shade);
+  padding: 0.75rem 0;
+  border-bottom: 0.0625rem solid var(--ion-color-light-shade);
 
   &:last-child {
     border-bottom: none;
@@ -96,7 +96,7 @@ ion-item {
 .engagement-item {
   text-align: center;
   background: var(--ion-color-light);
-  border-radius: 12px;
+  border-radius: 0.75rem;
   
   .engagement-number {
     font-size: var(--app-font-size-display-lg);

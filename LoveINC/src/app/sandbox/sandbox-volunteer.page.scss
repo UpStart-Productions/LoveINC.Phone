@@ -1,160 +1,160 @@
 .volunteer-container {
-  padding: 16px;
-  padding-bottom: 100px;
+  padding: 1rem;
+  padding-bottom: 6.25rem;
 }
 
 .hero-section {
   text-align: center;
-  padding: 24px 0;
-  margin-bottom: 24px;
+  padding: 1.5rem 0;
+  margin-bottom: 1.5rem;
   
   .hero-title {
-    font-size: 28px;
-    font-weight: 700;
+    font-size: 1.75rem;
+    font-weight: var(--app-font-weight-bold);
     color: var(--ion-color-dark);
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
   }
   
   .hero-subtitle {
-    font-size: 16px;
+    font-size: 1rem;
     color: var(--ion-color-medium);
   }
 }
 
 .section-header {
-  margin: 32px 0 16px 0;
+  margin: 2rem 0 1rem 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   
   &.urgent {
     color: var(--ion-color-danger);
   }
   
   h2 {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 1.375rem;
+    font-weight: var(--app-font-weight-bold);
     color: var(--ion-color-dark);
     margin: 0;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
   }
   
   p {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: var(--ion-color-medium);
-    margin-top: 4px;
+    margin-top: 0.25rem;
   }
   
   ion-icon {
-    font-size: 24px;
+    font-size: 1.5rem;
   }
 }
 
 .opportunity-card {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   
   &.urgent {
-    border-left: 4px solid var(--ion-color-danger);
+    border-left: 0.25rem solid var(--ion-color-danger);
   }
   
   .card-header-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 12px;
+    gap: 0.75rem;
   }
   
   .opportunity-details {
-    margin-bottom: 12px;
+    margin-bottom: 0.75rem;
   }
   
   .detail-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-    font-size: 14px;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
     color: var(--ion-color-dark);
     
     ion-icon {
       color: var(--ion-color-medium);
-      font-size: 18px;
+      font-size: 1.125rem;
     }
   }
   
   .opportunity-description {
-    margin: 12px 0;
+    margin: 0.75rem 0;
     line-height: 1.6;
   }
 }
 
 .impact-card {
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
   
   .impact-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 1rem;
   }
   
   .impact-item {
     text-align: center;
-    padding: 16px;
+    padding: 1rem;
     background: var(--ion-color-light);
-    border-radius: 12px;
+    border-radius: 0.75rem;
     
     &.streak {
       background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
     }
     
     .impact-number {
-      font-size: 32px;
-      font-weight: 700;
+      font-size: 2rem;
+      font-weight: var(--app-font-weight-bold);
       color: var(--love-inc-teal);
-      margin-bottom: 4px;
+      margin-bottom: 0.25rem;
     }
     
     .impact-label {
-      font-size: 12px;
+      font-size: 0.75rem;
       color: var(--ion-color-medium);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.0.3125rem;
     }
   }
 }
 
 .match-card {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   
   .match-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 12px;
+    gap: 0.75rem;
   }
   
   .match-tags {
     display: flex;
-    gap: 8px;
-    margin: 12px 0;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
   }
 }
 
 .challenge-card {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   
   .challenge-progress {
-    margin: 16px 0;
+    margin: 1rem 0;
   }
   
   .progress-bar {
-    height: 8px;
+    height: 0.5rem;
     background: var(--ion-color-light);
-    border-radius: 4px;
+    border-radius: 0.25rem;
     overflow: hidden;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
   }
   
   .progress-fill {
@@ -164,14 +164,14 @@
   }
   
   .progress-text {
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--ion-color-medium);
     text-align: center;
   }
 }
 
 .section-icon {
-  font-size: 20px;
-  margin-right: 8px;
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
   vertical-align: middle;
 }

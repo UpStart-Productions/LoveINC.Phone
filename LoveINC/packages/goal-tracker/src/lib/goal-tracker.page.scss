@@ -9,25 +9,25 @@
  */
 
 .goal-tracker-content {
-  padding: 16px;
+  padding: 1rem;
 }
 
 .goal-tracker-loading {
   display: flex;
   justify-content: center;
-  padding: 48px 0;
+  padding: 3rem 0;
 }
 
 .goal-tracker-error {
   color: var(--goal-tracker-accent, var(--ion-color-danger));
-  font-size: var(--app-font-size-body, 16px);
+  font-size: var(--app-font-size-body, 1rem);
 }
 
 .goal-tracker-empty {
   text-align: center;
-  padding: 48px 24px;
+  padding: 3rem 1.5rem;
   color: var(--goal-tracker-secondary, var(--ion-color-medium));
-  font-size: var(--app-font-size-body, 16px);
+  font-size: var(--app-font-size-body, 1rem);
 }
 
 .goal-tracker-list {
@@ -36,9 +36,9 @@
 
 .goal-tracker-item {
   --background: var(--ion-card-background, var(--ion-background-color));
-  margin-bottom: 12px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0.75rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
 
   &.completed {
     opacity: 0.7;
@@ -53,24 +53,24 @@
   }
 
   h2 {
-    font-size: var(--app-font-size-title, 17px);
-    font-weight: 600;
+    font-size: var(--app-font-size-title, 1.0625rem);
+    font-weight: var(--app-font-weight-semibold);
     color: var(--goal-tracker-primary, var(--ion-text-color));
   }
 
   p {
-    font-size: var(--app-font-size-caption, 12px);
+    font-size: var(--app-font-size-caption, 0.75rem);
     color: var(--goal-tracker-secondary, var(--ion-color-medium));
-    margin-top: 4px;
+    margin-top: 0.25rem;
   }
 }
 
 .goal-tracker-progress {
-  margin-top: 8px;
+  margin-top: 0.5rem;
   --progress-background: rgba(var(--ion-color-primary-rgb, 59, 130, 246), 0.2);
   --progress-bar-background: var(--goal-tracker-accent, var(--ion-color-primary));
-  height: 6px;
-  border-radius: 3px;
+  height: 0.375rem;
+  border-radius: 0.1875rem;
 }
 
 ion-fab-button {

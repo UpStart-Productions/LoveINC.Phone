@@ -2,6 +2,10 @@ import { Directive } from '@angular/core';
 import { NG_VALIDATORS, Validator, AbstractControl, ValidationErrors } from '@angular/forms';
 import { phoneValidator } from './phone.validator';
 
+/**
+ * Template directive for US phone validation. Add to ion-input: [appPhoneValidator].
+ * Expects 10 digits (works with appPhoneFormatter formatted value).
+ */
 @Directive({
   selector: '[appPhoneValidator]',
   providers: [

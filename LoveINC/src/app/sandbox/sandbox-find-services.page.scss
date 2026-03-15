@@ -1,20 +1,20 @@
 .find-services-container {
-  padding: 16px;
-  padding-bottom: 100px;
+  padding: 1rem;
+  padding-bottom: 6.25rem;
 }
 
 .instructions-section {
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
   
   h2 {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 1.5rem;
+    font-weight: var(--app-font-weight-bold);
     color: var(--ion-color-dark);
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
   }
   
   p {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: var(--ion-color-medium);
     line-height: 1.5;
   }
@@ -23,57 +23,57 @@
 .needs-section {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 32px;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
 }
 
 .need-chip {
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 2px solid transparent;
-  font-weight: 600;
-  height: 40px;
+  border: 0.125rem solid transparent;
+  font-weight: var(--app-font-weight-semibold);
+  height: 2.5rem;
   
   &.selected {
     border-color: var(--ion-color-dark);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.15);
   }
   
   ion-icon {
-    margin-right: 6px;
-    font-size: 18px;
+    margin-right: 0.375rem;
+    font-size: 1.125rem;
   }
 }
 
 .results-section {
-  margin-top: 24px;
+  margin-top: 1.5rem;
 }
 
 .results-header {
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
   
   h3 {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 1.25rem;
+    font-weight: var(--app-font-weight-bold);
     color: var(--ion-color-dark);
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
   }
   
   .no-results {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: var(--ion-color-medium);
     font-style: italic;
   }
 }
 
 .service-header {
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
   width: 100%;
 }
 
 .service-name {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 1.125rem;
+  font-weight: var(--app-font-weight-semibold);
   color: var(--ion-color-dark);
   margin: 0;
 }
@@ -81,20 +81,20 @@
 .service-details {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .detail-row {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  font-size: 14px;
+  gap: 0.5rem;
+  font-size: 0.875rem;
   line-height: 1.5;
   
   ion-icon {
     color: var(--ion-color-medium);
-    font-size: 18px;
-    margin-top: 2px;
+    font-size: 1.125rem;
+    margin-top: 0.125rem;
     flex-shrink: 0;
   }
   
@@ -105,41 +105,41 @@
   
   .detail-address {
     color: var(--ion-color-medium);
-    font-size: 13px;
+    font-size: 0.8125rem;
     display: block;
     width: 100%;
   }
   
   .detail-notes {
     color: var(--ion-color-medium);
-    font-size: 13px;
+    font-size: 0.8125rem;
     font-style: italic;
     display: block;
     width: 100%;
-    margin-top: 4px;
+    margin-top: 0.25rem;
   }
 }
 
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 3.75rem 1.25rem;
   
   .empty-icon {
-    font-size: 64px;
+    font-size: 4rem;
     color: var(--ion-color-medium);
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
     opacity: 0.5;
   }
   
   h3 {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: var(--app-font-weight-semibold);
     color: var(--ion-color-dark);
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
   }
   
   p {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: var(--ion-color-medium);
     line-height: 1.6;
   }

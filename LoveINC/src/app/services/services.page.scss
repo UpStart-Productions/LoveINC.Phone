@@ -1,15 +1,15 @@
 ion-list {
-  padding: 8px 0;
+  padding: 0.5rem 0;
 }
 
 ion-item {
-  --padding-start: 16px;
-  --padding-end: 16px;
-  --min-height: 56px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --min-height: 3.5rem;
   
   ion-icon {
     font-size: var(--app-font-size-display-lg);
     color: var(--app-text-accent);
-    margin-right: 16px;
+    margin-right: 1rem;
   }
 }

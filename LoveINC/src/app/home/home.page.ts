@@ -225,7 +225,7 @@ export class HomePage implements OnInit {
   }
 
   private isGiveCtaType(type: string): boolean {
-    return type === 'donation_drive' || type === 'fundraiser';
+    return type === 'donation_drive' || type === 'fundraiser' || type === 'awareness';
   }
 
   private isActiveCta(cta: PlatformCta, todayMs: number): boolean {

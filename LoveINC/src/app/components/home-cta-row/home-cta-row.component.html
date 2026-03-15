@@ -3,11 +3,18 @@
   button
   detail="false"
   (click)="onCardClick()">
-  <ion-icon [name]="iconName" slot="start" class="cta-row-icon m-r-18" [style.color]="accentColor"></ion-icon>
+  @if (cta.photoUrl) {
+    <img slot="start" [src]="cta.photoUrl" alt="" class="cta-row-photo m-r-18" />
+  } @else {
+    <ion-icon [name]="iconName" slot="start" class="cta-row-icon m-r-18" [style.color]="accentColor"></ion-icon>
+  }
   <ion-label>
     <p>{{ cta.title }}</p>
+    @if (contextSubtitle) {
+      <p class="app-body-secondary-sm m-t-4">{{ contextSubtitle }}</p>
+    }
     @if (showProgressBar && progressText) {
-      <p class="app-body-secondary m-t-4">{{ progressText }}</p>
+      <p class="app-body-secondary-sm m-t-4">{{ progressText }}</p>
       <ion-progress-bar
         [value]="progressValue"
         class="cta-progress-bar m-t-6"

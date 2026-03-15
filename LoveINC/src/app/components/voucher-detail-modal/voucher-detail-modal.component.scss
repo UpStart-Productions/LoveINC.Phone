@@ -4,15 +4,15 @@
 
 .voucher-modal-close-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 0.5rem;
+  right: 0.5rem;
   z-index: 10;
 }
 
 .voucher-modal-header {
   position: relative;
-  height: 150px;
-  margin: -16px -16px 16px -16px;
+  height: 9.375rem;
+  margin: -1rem -1rem 1rem -1rem;
   overflow: hidden;
   display: flex;
   align-items: flex-end;
@@ -33,7 +33,7 @@
   }
 
   ion-icon {
-    font-size: 48px;
+    font-size: var(--app-icon-size-3xl);
     color: var(--ion-color-medium);
   }
 }
@@ -42,7 +42,7 @@
   position: relative;
   z-index: 1;
   margin: 0;
-  padding: 12px 16px;
+  padding: 0.75rem 1rem;
   font-size: var(--app-font-size-display);
   font-weight: var(--app-font-weight-semibold);
   width: 100%;
@@ -50,22 +50,22 @@
 
 .voucher-modal-header--has-photo .voucher-modal-title {
   color: white;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.5);
 }
 
 .voucher-modal-card {
   background: white;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
 }
 
 .voucher-modal-desc-exp-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
 .voucher-modal-desc-exp-center {
@@ -81,13 +81,13 @@
 
 .voucher-modal-exp {
   flex-shrink: 0;
-  width: 70px;
-  min-width: 70px;
+  width: 4.375rem;
+  min-width: 4.375rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-left: 12px;
-  border-left: 1px dashed var(--ion-color-medium);
+  padding-left: 0.75rem;
+  border-left: 0.0625rem dashed var(--ion-color-medium);
 
   .exp-label {
     font-size: 0.7em;
@@ -97,7 +97,7 @@
 
   .exp-day {
     font-size: 1.25em;
-    font-weight: 700;
+    font-weight: var(--app-font-weight-bold);
   }
 
   .exp-month {
@@ -117,7 +117,7 @@
 }
 
 .voucher-modal-row {
-  margin: 0 0 8px 0;
+  margin: 0 0 0.5rem 0;
   font-size: 0.9em;
 
   &:last-child {
@@ -126,16 +126,16 @@
 }
 
 .voucher-modal-location-block {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid var(--ion-color-light);
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 0.0625rem solid var(--ion-color-light);
 }
 
 .voucher-modal-location-row {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 0.625rem;
+  margin-bottom: 0.625rem;
 
   &:last-child {
     margin-bottom: 0;
@@ -144,9 +144,9 @@
 
 .voucher-modal-location-icon {
   flex-shrink: 0;
-  font-size: 20px;
+  font-size: var(--app-font-size-display);
   color: var(--ion-color-primary);
-  margin-top: 2px;
+  margin-top: 0.125rem;
 }
 
 .voucher-modal-location-text {
@@ -157,8 +157,8 @@
 
 .voucher-modal-map-section {
   position: relative;
-  margin-bottom: 16px;
-  border-radius: 12px;
+  margin-bottom: 1rem;
+  border-radius: 0.75rem;
   overflow: hidden;
   background: var(--ion-color-light);
 }
@@ -166,22 +166,22 @@
 .voucher-modal-map-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   margin: 0;
-  padding: 12px 16px;
-  font-weight: 600;
-  border-bottom: 1px solid var(--ion-color-light-shade);
+  padding: 0.75rem 1rem;
+  font-weight: var(--app-font-weight-semibold);
+  border-bottom: 0.0625rem solid var(--ion-color-light-shade);
 
   ion-icon {
-    font-size: 18px;
+    font-size: var(--app-icon-size-md-lg);
     color: var(--ion-color-primary);
   }
 }
 
 .voucher-modal-map-container {
   width: 100%;
-  height: 180px;
-  min-height: 180px;
+  height: 11.25rem;
+  min-height: 11.25rem;
 }
 
 .voucher-modal-map-loading,
@@ -195,16 +195,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0.5rem;
   background: var(--ion-color-light);
   color: var(--ion-color-medium);
 }
 
 .voucher-modal-map-message {
-  padding: 16px;
+  padding: 1rem;
   text-align: center;
 }
 
 .voucher-modal-redeem {
-  margin-top: 8px;
+  margin-top: 0.5rem;
 }

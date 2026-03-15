@@ -1,12 +1,12 @@
 ion-list {
-  padding-top: 10px;
+  padding-top: 0.625rem;
 }
 
 ion-list ion-item {
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
 
   &:not(.profile-item) {
-    margin-left: 5px;
+    margin-left: 0.3125rem;
   }
 }
 
@@ -14,9 +14,9 @@ ion-list ion-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  min-width: 28px;
-  margin-right: 16px;
+  width: 1.75rem;
+  min-width: 1.75rem;
+  margin-right: 1rem;
 
   ion-icon {
     font-size: var(--app-font-size-display-lg);
@@ -25,8 +25,8 @@ ion-list ion-item {
 }
 
 .profile-item .item-icon-slot {
-  width: 34px;
-  min-width: 34px;
+  width: 2.125rem;
+  min-width: 2.125rem;
 
   ion-icon {
     font-size: calc(var(--app-font-size-display-lg) * 1.21);
@@ -37,8 +37,8 @@ ion-list ion-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 1.75rem;
+  height: 1.75rem;
   border-radius: 50%;
   background-color: var(--ion-color-primary);
   color: white;
@@ -47,7 +47,7 @@ ion-list ion-item {
 }
 
 .profile-item .profile-initial-avatar {
-  width: 34px;
-  height: 34px;
+  width: 2.125rem;
+  height: 2.125rem;
   font-size: calc(var(--app-font-size-body) * 1.21);
 }

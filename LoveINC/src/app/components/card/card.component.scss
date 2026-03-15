@@ -4,7 +4,7 @@
 .card-with-right-thumbnail .card-content-inner {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .card-with-right-thumbnail .card-content-left {
@@ -17,10 +17,10 @@
 
 .card-with-right-thumbnail .card-content-right {
   flex-shrink: 0;
-  width: 80px;
-  height: 80px;
-  margin-top: 8px;
-  border-radius: 10px;
+  width: 5rem;
+  height: 5rem;
+  margin-top: 0.5rem;
+  border-radius: 0.625rem;
   overflow: hidden;
   background: var(--ion-color-light);
 }
@@ -37,11 +37,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  border-radius: 0.625rem;
 }
 
 .card-thumbnail-icon {
-  font-size: 36px;
+  font-size: var(--app-icon-size-2xl);
   color: var(--ion-color-primary-contrast);
 }
 
@@ -54,16 +54,16 @@
 }
 
 .action-icons {
-  margin-top: 6px;
+  margin-top: 0.375rem;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
-  border-top: 1px solid var(--ion-color-light);
+  gap: 0.5rem;
+  border-top: 0.0625rem solid var(--ion-color-light);
 
   ion-button {
-    --padding-start: 3px;
-    --padding-end: 3px;
+    --padding-start: 0.1875rem;
+    --padding-end: 0.1875rem;
     margin: 0;
 
     ion-icon {

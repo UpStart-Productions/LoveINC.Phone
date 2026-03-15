@@ -1,21 +1,21 @@
 /* Card shell in theme/cards.scss .content-card */
 
 .content-card ion-card-content {
-  --padding-end: 14px !important;
-  padding-right: 14px !important;
+  --padding-end: 0.875rem !important;
+  padding-right: 0.875rem !important;
 }
 
 .content-card-inner {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .content-card-top-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  min-height: 44px;
+  gap: 1rem;
+  min-height: 2.75rem;
 }
 
 .content-card-left {
@@ -24,7 +24,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 4px;
+  gap: 0.25rem;
 
   h2 {
     margin: 0;
@@ -33,10 +33,10 @@
 
 .content-card-right {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  margin-top: 3px;
-  border-radius: 8px;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-top: 0.1875rem;
+  border-radius: 0.5rem;
   overflow: hidden;
   background: var(--ion-color-light);
 }
@@ -53,7 +53,7 @@
 .category-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
   flex-wrap: wrap;
 
   .app-body-secondary {
@@ -78,10 +78,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 0.5rem;
 }
 
 .content-card-icon {
-  font-size: 22px;
+  font-size: 1.375rem;
   color: var(--ion-color-primary-contrast);
 }

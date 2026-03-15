@@ -1,3 +1,7 @@
+/**
+ * Types and constants for home screen cards (events, volunteer, donation drives, etc.).
+ * Use CardTypeLabels, CardTypeIcons, CardTypeColors for display.
+ */
 export type CardType =
   | 'event'
   | 'volunteer'

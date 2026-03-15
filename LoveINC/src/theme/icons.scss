@@ -9,8 +9,8 @@
 ion-tab-button {
   ion-icon {
     font-size: 1.36rem;
-    padding-top: 0px;
-    margin-top: -2px;
+    padding-top: 0;
+    margin-top: -0.125rem;
     color: var(--love-inc-neutral-dark);
   }
 
@@ -44,7 +44,7 @@ ion-tab-button {
 ion-fab-button {
   ion-icon {
     font-size: 2rem;
-    font-weight: bold;
+    font-weight: var(--app-font-weight-bold);
   }
 }
 
@@ -108,7 +108,7 @@ ion-header ion-back-button {
 
 /* Content card icons */
 .content-card-icon {
-  font-size: 36px;
+  font-size: var(--app-icon-size-2xl);
   color: #fff;
 }
 
@@ -141,15 +141,15 @@ ion-item[detail="true"]::part(native) {
 ion-item[detail="true"] .item-detail-icon,
 ion-item[detail="true"] ion-icon[slot="end"] {
   font-size: var(--app-font-size-body) !important;
-  width: 14px !important;
-  height: 14px !important;
+  width: 0.875rem !important;
+  height: 0.875rem !important;
   color: var(--app-text-secondary) !important;
 }
 
 /* User type card icons */
 .user-type-icon {
   font-size: var(--app-font-size-display-lg);
-  margin-right: 16px;
+  margin-right: 1rem;
   flex-shrink: 0;
 }
 
@@ -158,8 +158,8 @@ ion-item[detail="true"] ion-icon[slot="end"] {
  * ----------------------------------------------------------------------------- */
 ion-accordion .ion-accordion-toggle-icon {
   font-size: var(--app-font-size-body) !important;
-  width: 14px !important;
-  height: 14px !important;
+  width: 0.875rem !important;
+  height: 0.875rem !important;
 }
 
 /* -----------------------------------------------------------------------------

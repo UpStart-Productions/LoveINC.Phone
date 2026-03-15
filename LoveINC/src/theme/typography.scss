@@ -70,7 +70,7 @@ span {
 .app-body-secondary {
   font-size: var(--app-font-size-body);
   color: var(--app-text-secondary);
-  margin-bottom: 24px; 
+  margin-bottom: 1.5rem; 
   line-height: var(--app-line-height-loose);
 }
 
@@ -78,6 +78,19 @@ span {
   font-size: var(--app-font-size-caption);
   font-weight: var(--app-font-weight-semibold);
   color: var(--app-text-secondary);
+}
+
+/** Small secondary text (auxiliary size, normal weight) – subtitles, auxiliary info */
+.app-body-secondary-sm {
+  font-size: var(--app-font-size-auxiliary);
+  color: var(--app-text-secondary);
+}
+
+/** Body text slightly smaller than default (0.875rem) */
+.app-body-sm {
+  font-size: 0.875rem;
+  color: var(--app-text-primary);
+  line-height: var(--app-line-height-relaxed);
 }
 
 .app-display {
@@ -88,6 +101,20 @@ span {
 
 .app-display-lg {
   font-size: var(--app-font-size-display-lg);
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-accent);
+}
+
+/** Title slightly larger than default (1.125rem / 1.125rem) */
+.app-title-lg {
+  font-size: 1.125rem;
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-primary);
+}
+
+/** Display extra large (1.75rem / 1.75rem) – hero text, large icons */
+.app-display-xl {
+  font-size: var(--app-font-size-display-xl);
   font-weight: var(--app-font-weight-semibold);
   color: var(--app-text-accent);
 }
@@ -126,16 +153,16 @@ ion-item[detail="true"]::part(native) {
 ion-item[detail="true"] .item-detail-icon,
 ion-item[detail="true"] ion-icon[slot="end"] {
   font-size: var(--app-font-size-body) !important;
-  width: 14px !important;
-  height: 14px !important;
+  width: 0.875rem !important;
+  height: 0.875rem !important;
   color: var(--app-text-secondary) !important;
 }
 
 /* Accordion toggle icon */
 ion-accordion .ion-accordion-toggle-icon {
   font-size: var(--app-font-size-body) !important;
-  width: 14px !important;
-  height: 14px !important;
+  width: 0.875rem !important;
+  height: 0.875rem !important;
 }
 
 /* Pills (action-pill, item-pill) */

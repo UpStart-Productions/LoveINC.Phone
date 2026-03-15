@@ -2,11 +2,11 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding-bottom: calc(env(safe-area-inset-bottom) - 9px);
-  margin-top: -3px;
+  padding-bottom: calc(env(safe-area-inset-bottom) - 0.5625rem);
+  margin-top: -0.1875rem;
   --background: var(--ion-color-light);
   background: var(--ion-color-light);
-  border-top: 1px solid rgba(var(--ion-color-dark-rgb), 0.1);
+  border-top: 0.0625rem solid rgba(var(--ion-color-dark-rgb), 0.1);
 }
 
 /* Floating Action Button positioning */
@@ -14,30 +14,30 @@ ion-fab.fab-center {
   position: fixed !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
-  bottom: 50px !important;
+  bottom: 3.125rem !important;
   z-index: 1001 !important; // Above tab bar
 }
 
 /* iOS specific adjustments */
 .ios ion-fab.fab-center {
-  bottom: 60px !important;
+  bottom: 3.75rem !important;
 }
 
 /* FAB button styling */
 ion-fab-button {
-  --size: 56px;
+  --size: 3.5rem;
   --color: var(--ion-color-primary-contrast);
   --background: var(--love-inc-red);
   --background-activated: var(--love-inc-red);
-  --box-shadow: 0px 3px 5px -1px rgba(var(--ion-color-dark-rgb), 0.2), 
-                0px 6px 10px 0px rgba(var(--ion-color-dark-rgb), 0.14), 
-                0px 1px 18px 0px rgba(var(--ion-color-dark-rgb), 0.12);
+  --box-shadow: 0px 0.1875rem 0.3125rem -0.0625rem rgba(var(--ion-color-dark-rgb), 0.2), 
+                0px 0.375rem 0.625rem 0px rgba(var(--ion-color-dark-rgb), 0.14), 
+                0px 0.0625rem 1.125rem 0px rgba(var(--ion-color-dark-rgb), 0.12);
   --border-radius: 50%;
   --ripple-color: rgba(var(--ion-color-primary-contrast-rgb), 0.2);
   
   ion-icon {
     font-size: 2rem;
-    font-weight: bold;
+    font-weight: var(--app-font-weight-bold);
   }
   
   .love-inc-heart-logo {
@@ -50,7 +50,7 @@ ion-fab-button {
 .fab-spacer {
   opacity: 0;
   pointer-events: none;
-  flex: 0 0 56px; // Same width as FAB
+  flex: 0 0 3.5rem; // Same width as FAB
 }
 
 /* Tab button styling */
@@ -60,21 +60,21 @@ ion-tab-button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 6px;
+  padding-top: 0.375rem;
   
   /* Tab button text */
   ion-label {
     font-size: 0.6rem !important;
     font-weight: 500;
-    margin-top: -2px;
+    margin-top: -0.125rem;
     color: var(--love-inc-neutral-dark);
   }
   
   /* Tab icons */
   ion-icon {
     font-size: 1.36rem;
-    padding-top: 0px;
-    margin-top: -2px;
+    padding-top: 0;
+    margin-top: -0.125rem;
     color: var(--love-inc-neutral-dark);
   }
   
