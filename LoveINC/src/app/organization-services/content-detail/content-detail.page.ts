@@ -441,6 +441,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     if (cta.class?.id) {
       return { commands: ['/tabs/content-detail', 'class', cta.class.id], queryParams: { from: 'home' } };
     }
+    if (cta.impactStory?.id) {
+      return { commands: ['/tabs/content-detail', 'impact-story', cta.impactStory.id], queryParams: { from: 'home' } };
+    }
     if (cta.providerOffering?.id) {
       return { commands: ['/tabs/content-detail', 'gap-ministry', cta.providerOffering.id], queryParams: { from: 'home' } };
     }
