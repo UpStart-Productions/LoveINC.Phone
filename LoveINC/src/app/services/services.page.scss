@@ -3,12 +3,12 @@ ion-list {
 }
 
 ion-item {
-  --padding-start: 1rem;
-  --padding-end: 1rem;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
   --min-height: 3.5rem;
   
   ion-icon {
-    font-size: var(--app-font-size-display-lg);
+    font-size: var(--app-icon-size-2xl);
     color: var(--app-text-accent);
     margin-right: 1rem;
   }

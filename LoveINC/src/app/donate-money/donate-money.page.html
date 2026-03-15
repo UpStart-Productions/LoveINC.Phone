@@ -26,7 +26,7 @@
     <div class="amount-buttons m-b-24">
       <button
         *ngFor="let amount of presetAmounts"
-        class="amount-button p-18"
+        class="amount-button app-title p-18"
         [class.selected]="selectedAmount === amount"
         (click)="selectAmount(amount)"
         type="button">
@@ -45,7 +45,7 @@
           placeholder="0.00"
           class="other-amount-input">
         </ion-input>
-        <div slot="end" class="currency-label m-l-6">USD</div>
+        <div slot="end" class="currency-label app-body-secondary m-l-6">USD</div>
       </ion-item>
     </div>
 
@@ -53,11 +53,11 @@
     <div class="options-container m-b-24">
       <ion-item class="m-b-12">
         <ion-checkbox [(ngModel)]="addNote" slot="start"></ion-checkbox>
-        <ion-label>Add note/comment</ion-label>
+        <ion-label class="app-body">Add note/comment</ion-label>
       </ion-item>
       <ion-item>
         <ion-checkbox [(ngModel)]="giveInHonor" slot="start"></ion-checkbox>
-        <ion-label>Give in honor/memory</ion-label>
+        <ion-label class="app-body">Give in honor/memory</ion-label>
       </ion-item>
     </div>
 
@@ -71,7 +71,7 @@
     </ion-button>
 
     <!-- Powered by Givebutter -->
-    <div class="powered-by p-l-18 p-r-18">
+    <div class="powered-by app-body-secondary-sm p-l-18 p-r-18">
       <span class="m-r-3">Powered by Givebutter</span>
     </div>
   </div>

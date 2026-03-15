@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Notifications</ion-title>
+    <ion-title class="app-display">Notifications</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="close()" fill="clear">
         <ion-icon name="close" slot="icon-only"></ion-icon>
@@ -15,13 +15,13 @@
   </ion-refresher>
   <div *ngIf="loading" class="loading p-48 p-l-24 p-r-24">
     <ion-spinner name="crescent" class="m-b-18"></ion-spinner>
-    <p>Loading notifications...</p>
+    <p class="app-body-secondary">Loading notifications...</p>
   </div>
 
   <div *ngIf="!loading && notifications.length === 0" class="no-alerts p-48 p-l-24 p-r-24">
-    <ion-icon name="notifications-outline" class="m-b-18"></ion-icon>
-    <h2 class="m-b-6">No Notifications</h2>
-    <p>You're all caught up. Check back later for updates from Love INC Newberg.</p>
+    <ion-icon name="notifications-outline" class="m-b-18 no-alerts-icon"></ion-icon>
+    <h2 class="app-display m-b-6">No Notifications</h2>
+    <p class="app-body-secondary">You're all caught up. Check back later for updates from Love INC Newberg.</p>
   </div>
 
   <div *ngIf="!loading && notifications.length > 0" class="notifications-wrapper">
@@ -30,13 +30,13 @@
         <ion-item *ngFor="let notification of notifications" [class.unread]="!notification.read" [class.read]="notification.read" button detail="false" class="notification-item m-b-12" (click)="onNotificationTap(notification)">
           <ion-label>
             <div class="notification-header m-b-6">
-              <h2>{{ notification.title }}</h2>
+              <h2 class="app-display">{{ notification.title }}</h2>
               <div *ngIf="!notification.read" class="unread-dot m-t-6"></div>
             </div>
             <div class="notification-content">
-              <p style="line-height: var(--app-line-height-body);" class="m-b-6">{{ notification.body }}</p>
+              <p class="app-body m-b-6">{{ notification.body }}</p>
               <div class="notification-footer">
-                <span *ngIf="!notification.read" class="new-badge">NEW</span>
+                <span *ngIf="!notification.read" class="new-badge app-caption">NEW</span>
                 <span class="app-caption">{{ formatDate(notification.createdAt) }}</span>
               </div>
             </div>

@@ -1,6 +1,6 @@
 .user-type-item {
-  --padding-start: 1.125rem;
-  --padding-end: 1.125rem;
+  --padding-start: 0.875rem;
+  --padding-end: 0.875rem;
   --min-height: 4.5rem;
   border-radius: 0;
   
@@ -14,7 +14,7 @@
 }
 
 .user-type-icon {
-  font-size: var(--app-font-size-display-lg);
+  font-size: var(--app-icon-size-2xl);
   flex-shrink: 0;
 }
 

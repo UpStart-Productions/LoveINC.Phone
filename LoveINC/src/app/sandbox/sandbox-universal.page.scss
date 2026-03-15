@@ -1,5 +1,5 @@
 .universal-container {
-  padding: 1rem;
+  padding: 0.75rem;
   padding-bottom: 6.25rem;
 }
 
@@ -18,16 +18,16 @@
     text-align: center;
     
     .pulse-number {
-      font-size: 2.25rem;
+      font-size: var(--app-icon-size-2xl);
       font-weight: var(--app-font-weight-bold);
       margin-bottom: 0.25rem;
     }
     
     .pulse-label {
-      font-size: 0.75rem;
+      font-size: var(--app-font-size-caption);
       opacity: 0.9;
       text-transform: uppercase;
-      letter-spacing: 0.0.3125rem;
+      letter-spacing: 0.03125rem;
     }
   }
 }
@@ -36,14 +36,14 @@
   margin: 2rem 0 1rem 0;
   
   h2 {
-    font-size: 1.375rem;
+    font-size: var(--app-font-size-display);
     font-weight: var(--app-font-weight-bold);
     color: var(--ion-color-dark);
     margin-bottom: 0.25rem;
   }
   
   p {
-    font-size: 0.875rem;
+    font-size: var(--app-font-size-body-sm);
     color: var(--ion-color-medium);
   }
 }
@@ -57,7 +57,7 @@
     gap: 0.75rem;
     
     .activity-icon {
-      font-size: 1.5rem;
+      font-size: var(--app-font-size-display-lg);
       color: var(--love-inc-teal);
     }
   }
@@ -68,7 +68,7 @@
   border-left: 0.25rem solid var(--love-inc-teal);
   
   .testimonial-quote {
-    font-size: 1rem;
+    font-size: var(--app-font-size-body);
     font-style: italic;
     line-height: 1.6;
     margin-bottom: 0.75rem;
@@ -76,7 +76,7 @@
   }
   
   .testimonial-author {
-    font-size: 0.875rem;
+    font-size: var(--app-font-size-body-sm);
     color: var(--ion-color-medium);
     font-weight: var(--app-font-weight-semibold);
   }
@@ -90,7 +90,7 @@
 }
 
 .badge-item {
-  padding: 1rem;
+  padding: 0.75rem;
   background: var(--ion-color-light);
   border-radius: 0.75rem;
   text-align: center;
@@ -102,7 +102,7 @@
   }
   
   .badge-icon {
-    font-size: 2rem;
+    font-size: var(--app-icon-size-fab);
     color: var(--ion-color-medium);
     margin-bottom: 0.5rem;
   }
@@ -112,7 +112,7 @@
   }
   
   .badge-name {
-    font-size: 0.875rem;
+    font-size: var(--app-font-size-body-sm);
     font-weight: var(--app-font-weight-semibold);
     margin-bottom: 0.5rem;
     color: var(--ion-color-dark);
@@ -138,7 +138,7 @@
     }
     
     .progress-text {
-      font-size: 0.875rem;
+      font-size: var(--app-font-size-body-sm);
       color: var(--ion-color-medium);
       text-align: center;
     }
@@ -149,7 +149,7 @@
   margin-top: 1.5rem;
   
   h3 {
-    font-size: 1.125rem;
+    font-size: var(--app-icon-size-lg);
     font-weight: var(--app-font-weight-semibold);
     margin-bottom: 0.5rem;
   }
@@ -166,7 +166,7 @@
 }
 
 .section-icon {
-  font-size: 1.25rem;
+    font-size: var(--app-font-size-display);
   margin-right: 0.5rem;
   vertical-align: middle;
 }

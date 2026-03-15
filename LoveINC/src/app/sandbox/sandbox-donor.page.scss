@@ -1,5 +1,5 @@
 .donor-container {
-  padding: 1rem;
+  padding: 0.75rem;
   padding-bottom: 6.25rem;
 }
 
@@ -9,14 +9,14 @@
   margin-bottom: 1.5rem;
   
   .hero-title {
-    font-size: 1.75rem;
+    font-size: var(--app-font-size-display-lg);
     font-weight: var(--app-font-weight-bold);
     color: var(--ion-color-dark);
     margin-bottom: 0.5rem;
   }
   
   .hero-subtitle {
-    font-size: 1rem;
+    font-size: var(--app-font-size-body);
     color: var(--ion-color-medium);
   }
 }
@@ -25,14 +25,14 @@
   margin: 2rem 0 1rem 0;
   
   h2 {
-    font-size: 1.375rem;
+    font-size: var(--app-font-size-display);
     font-weight: var(--app-font-weight-bold);
     color: var(--ion-color-dark);
     margin-bottom: 0.25rem;
   }
   
   p {
-    font-size: 0.875rem;
+    font-size: var(--app-font-size-body-sm);
     color: var(--ion-color-medium);
   }
 }
@@ -49,22 +49,22 @@
 
 .impact-item {
   text-align: center;
-  padding: 1rem;
+  padding: 0.75rem;
   background: var(--ion-color-light);
   border-radius: 0.75rem;
   
   .impact-number {
-    font-size: 2rem;
+    font-size: var(--app-icon-size-fab);
     font-weight: var(--app-font-weight-bold);
     color: var(--love-inc-teal);
     margin-bottom: 0.25rem;
   }
   
   .impact-label {
-    font-size: 0.75rem;
+    font-size: var(--app-font-size-caption);
     color: var(--ion-color-medium);
     text-transform: uppercase;
-    letter-spacing: 0.0.3125rem;
+    letter-spacing: 0.03125rem;
   }
 }
 
@@ -79,7 +79,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5rem;
-    font-size: 0.875rem;
+    font-size: var(--app-font-size-body-sm);
     
     .current {
       font-weight: var(--app-font-weight-semibold);
@@ -96,7 +96,7 @@
   margin-bottom: 1.25rem;
   
   .card-subtitle {
-    font-size: 0.875rem;
+    font-size: var(--app-font-size-body-sm);
     color: var(--ion-color-medium);
     margin-top: 0.25rem;
   }
@@ -124,7 +124,7 @@
     gap: 1rem;
     
     .multiplier-number {
-      font-size: 3rem;
+      font-size: var(--app-icon-size-3xl);
       font-weight: var(--app-font-weight-bold);
       line-height: 1;
     }
@@ -133,13 +133,13 @@
       flex: 1;
       
       h3 {
-        font-size: 1.125rem;
+        font-size: var(--app-icon-size-lg);
         font-weight: var(--app-font-weight-semibold);
         margin-bottom: 0.5rem;
       }
       
       p {
-        font-size: 0.875rem;
+        font-size: var(--app-font-size-body-sm);
         opacity: 0.9;
         line-height: 1.5;
       }
@@ -148,7 +148,7 @@
 }
 
 .section-icon {
-  font-size: 1.25rem;
+  font-size: var(--app-font-size-display);
   margin-right: 0.5rem;
   vertical-align: middle;
 }

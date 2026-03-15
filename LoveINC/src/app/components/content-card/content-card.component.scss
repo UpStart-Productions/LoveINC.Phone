@@ -44,8 +44,6 @@
 .content-card-detail {
   p {
     margin: 0;
-    font-size: var(--app-font-size-body);
-    color: var(--app-text-secondary);
     line-height: var(--app-line-height-relaxed);
   }
 }
@@ -62,7 +60,7 @@
 }
 
 .icon {
-  font-size: var(--app-font-size-body);
+  font-size: var(--app-icon-size-md);
   color: var(--app-text-secondary);
 }
 
@@ -82,6 +80,6 @@
 }
 
 .content-card-icon {
-  font-size: 1.375rem;
+  font-size: var(--app-icon-size-lg);
   color: var(--ion-color-primary-contrast);
 }

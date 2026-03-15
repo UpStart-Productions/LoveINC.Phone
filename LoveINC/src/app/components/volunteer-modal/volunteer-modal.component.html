@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ showForm ? 'Sign up to volunteer' : 'Volunteer' }}</ion-title>
+    <ion-title class="app-display">{{ showForm ? 'Sign up to volunteer' : 'Volunteer' }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="showForm ? onCancelForm() : dismiss()" fill="clear">
         <ion-icon name="close" slot="icon-only"></ion-icon>
@@ -12,13 +12,13 @@
   <!-- Opportunity summary (always shown) -->
   @for (pos of positions; track pos.id) {
     <div class="volunteer-position">
-      <div class="volunteer-position-details">
+      <div class="volunteer-position-details app-body">
         <div class="volunteer-detail-row">
           <ion-icon name="location-outline" class="volunteer-detail-icon"></ion-icon>
           <div>
             <span>{{ organizationName }}</span>
             @if (address) {
-              <div class="volunteer-address">{{ address }}</div>
+              <div class="app-body-secondary-sm m-t-3">{{ address }}</div>
             }
           </div>
         </div>
@@ -32,14 +32,14 @@
         </div>
       </div>
       @if (pos.shortDescription) {
-        <div class="volunteer-description" [innerHTML]="pos.shortDescription | safeHtml"></div>
+        <div class="app-body-secondary-sm m-b-6" [innerHTML]="pos.shortDescription | safeHtml"></div>
       }
       @if (pos.longDescription ?? pos.description) {
         @if ((pos.longDescription ?? pos.description) !== pos.shortDescription) {
-          <div class="volunteer-description" [innerHTML]="(pos.longDescription ?? pos.description ?? '') | safeHtml"></div>
+          <div class="app-body-secondary-sm m-b-6" [innerHTML]="(pos.longDescription ?? pos.description ?? '') | safeHtml"></div>
         }
       }
-      <p class="volunteer-disclaimer">We cannot guarantee open volunteer positions but we will save your information and be in touch soon.</p>
+      <p class="app-disclaimer m-b-6">We cannot guarantee open volunteer positions but we will save your information and be in touch soon.</p>
       @if (hasUserInfo()) {
         <ion-button expand="block" (click)="onVolunteer(pos)">Volunteer</ion-button>
       }

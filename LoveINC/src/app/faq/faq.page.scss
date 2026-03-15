@@ -1,5 +1,5 @@
 .container {
-  padding: 1rem;
+  padding: 0.75rem;
 }
 
 .loading {
@@ -14,9 +14,7 @@
   }
 
   p {
-    color: var(--app-text-secondary);
     margin: 0;
-    font-size: var(--app-font-size-body);
   }
 }
 
@@ -35,13 +33,10 @@
 
   h2 {
     margin: 0 0 0.5rem 0;
-    font-size: var(--app-font-size-display-lg);
   }
 
   p {
-    color: var(--app-text-secondary);
     margin: 0;
-    font-size: var(--app-font-size-body);
   }
 }
 
@@ -59,7 +54,6 @@
         font-weight: var(--app-font-weight-medium);
 
         ion-label {
-          font-size: var(--app-font-size-body);
           line-height: var(--app-line-height-body);
         }
       }
@@ -68,11 +62,9 @@
 }
 
 .faq-answer {
-  padding: 1rem;
+  padding: 0.75rem;
   background: var(--ion-color-light);
-  color: var(--app-text-primary);
   line-height: var(--app-line-height-loose);
-  font-size: var(--app-font-size-body);
 
   p {
     margin: 0 0 0.75rem 0;

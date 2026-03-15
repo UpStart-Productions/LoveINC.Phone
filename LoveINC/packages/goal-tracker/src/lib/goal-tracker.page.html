@@ -14,10 +14,10 @@
         <ion-spinner name="crescent"></ion-spinner>
       </div>
     } @else if (error) {
-      <p class="goal-tracker-error">{{ error }}</p>
+      <p class="goal-tracker-error app-body">{{ error }}</p>
     } @else if (goals.length === 0) {
       <div class="goal-tracker-empty">
-        <p>No goals yet. Tap the + button to add one.</p>
+        <p class="app-body-secondary">No goals yet. Tap the + button to add one.</p>
       </div>
     } @else {
       <ion-list lines="none" class="goal-tracker-list">
@@ -30,9 +30,9 @@
               aria-label="Mark complete"
             ></ion-checkbox>
             <ion-label>
-              <h2>{{ goal.title }}</h2>
+              <h2 class="app-title">{{ goal.title }}</h2>
               @if (goal.description) {
-                <p>{{ goal.description }}</p>
+                <p class="app-body-secondary-sm">{{ goal.description }}</p>
               }
               @if (!goal.completed && goal.progress > 0) {
                 <ion-progress-bar

@@ -18,9 +18,6 @@
   background-color: var(--ion-color-light);
   border: 0.0625rem solid var(--ion-color-light-shade);
   border-radius: 0.5rem;
-  font-size: var(--app-font-size-title);
-  font-weight: var(--app-font-weight-medium);
-  color: var(--app-text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 3.5rem;
@@ -50,11 +47,6 @@
   border-radius: 0.5rem;
   margin-bottom: 0;
   
-  ion-label {
-    font-size: var(--app-font-size-body);
-    color: var(--app-text-secondary);
-  }
-  
   ion-input {
     --padding-start: 0;
     --padding-end: 0;
@@ -62,10 +54,6 @@
   }
 }
 
-.currency-label {
-  font-size: var(--app-font-size-body);
-  color: var(--app-text-secondary);
-}
 
 .options-container {
   ion-item {
@@ -79,11 +67,6 @@
     &:last-child {
       margin-bottom: 0;
     }
-    
-    ion-label {
-      font-size: var(--app-font-size-body);
-      color: var(--app-text-primary);
-    }
   }
 }
 
@@ -96,8 +79,6 @@
 
 .powered-by {
   text-align: center;
-  font-size: var(--app-font-size-caption);
-  color: var(--app-text-secondary);
   
   &::before {
     content: '😊';

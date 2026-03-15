@@ -14,13 +14,13 @@ ion-fab.fab-center {
   position: fixed !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
-  bottom: 3.125rem !important;
+  bottom: 1.76640625rem !important; /* ~44% lower than original 3.125rem */
   z-index: 1001 !important; // Above tab bar
 }
 
 /* iOS specific adjustments */
 .ios ion-fab.fab-center {
-  bottom: 3.75rem !important;
+  bottom: 2.1196875rem !important; /* ~44% lower than original 3.75rem */
 }
 
 /* FAB button styling */
@@ -36,7 +36,7 @@ ion-fab-button {
   --ripple-color: rgba(var(--ion-color-primary-contrast-rgb), 0.2);
   
   ion-icon {
-    font-size: 2rem;
+    font-size: var(--app-icon-size-fab);
     font-weight: var(--app-font-weight-bold);
   }
   
@@ -64,7 +64,7 @@ ion-tab-button {
   
   /* Tab button text */
   ion-label {
-    font-size: 0.6rem !important;
+    font-size: var(--app-font-size-tab-label) !important;
     font-weight: 500;
     margin-top: -0.125rem;
     color: var(--love-inc-neutral-dark);
@@ -72,7 +72,7 @@ ion-tab-button {
   
   /* Tab icons */
   ion-icon {
-    font-size: 1.36rem;
+    font-size: var(--app-icon-size-tab);
     padding-top: 0;
     margin-top: -0.125rem;
     color: var(--love-inc-neutral-dark);

@@ -9,17 +9,12 @@
 }
 
 #container strong {
-  font-size: 1.25rem;
-  line-height: 1.625rem;
+  line-height: var(--app-line-height-body);
 }
 
 #container p {
-  font-size: 1rem;
-  line-height: 1.375rem;
-
-  color: var(--love-inc-neutral-medium);
-
   margin: 0;
+  line-height: var(--app-line-height-body);
 }
 
 #container a {

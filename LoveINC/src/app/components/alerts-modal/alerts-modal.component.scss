@@ -3,13 +3,11 @@ ion-header {
     --background: var(--ion-background-color) !important;
     --color: var(--ion-color-dark) !important;
     --min-height: 3.5rem;
-    padding: 0 1rem;
+    padding: 0 0.75rem;
     background: var(--ion-background-color) !important;
     color: var(--ion-color-dark) !important;
     
     ion-title {
-      font-weight: var(--app-font-weight-semibold);
-      font-size: var(--app-font-size-display);
       text-align: left;
       padding: 0;
       color: var(--app-text-primary) !important;
@@ -42,9 +40,7 @@ ion-header {
   }
 
   p {
-    color: var(--app-text-secondary);
     margin: 0;
-    font-size: var(--app-font-size-body);
   }
 }
 
@@ -55,21 +51,13 @@ ion-header {
   justify-content: center;
   text-align: center;
 
-  ion-icon {
+  ion-icon.no-alerts-icon {
     font-size: var(--app-icon-size-4xl);
     color: var(--app-text-secondary);
   }
 
-  h2 {
-    font-size: var(--app-font-size-display);
-    font-weight: var(--app-font-weight-semibold);
-  }
-
   p {
-    color: var(--app-text-secondary);
     margin: 0;
-    font-size: var(--app-font-size-body);
-    line-height: var(--app-line-height-relaxed);
   }
 }
 
@@ -92,8 +80,8 @@ ion-header {
 }
 
 .notification-item {
-  --padding-start: 1rem;
-  --padding-end: 1rem;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
   --padding-top: 1rem;
   --padding-bottom: 1rem;
   --inner-padding-end: 0;
@@ -129,15 +117,10 @@ ion-header {
   .notification-content {
     width: 100%;
     margin-top: 0;
-
-    p {
-      color: var(--app-text-primary);
-    }
   }
 
   .notification-header h2 {
     margin: 0;
-    line-height: var(--app-line-height-body);
     flex: 1;
   }
 
@@ -149,9 +132,6 @@ ion-header {
   }
 
   .new-badge {
-    font-size: var(--app-font-size-caption);
-    font-weight: var(--app-font-weight-semibold);
-    color: var(--app-text-primary);
     text-transform: uppercase;
   }
 

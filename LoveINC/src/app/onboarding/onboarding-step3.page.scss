@@ -45,7 +45,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 1rem;
+  padding: 0 0.75rem;
 }
 
 .logo-image {
@@ -57,20 +57,18 @@
 
 .tagline {
   font-family: 'Ilisarniq', sans-serif;
-  font-size: var(--app-font-size-display-lg);
   line-height: var(--app-line-height-tight);
-  font-weight: var(--app-font-weight-bold);
   color: white;
   text-align: center;
   margin: -0.9375rem 0 0 0;
-  padding: 0 1rem;
+  padding: 0 0.75rem;
 }
 
 /* Content Container */
 .content-container {
   margin-top: calc(30vh + 2rem + 2.75rem);
   background: white;
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   min-height: calc(100vh - 30vh - 2rem - 2.75rem);
 }
 
@@ -90,7 +88,7 @@ ion-checkbox {
 }
 
 .pill-button {
-  margin: 1rem;
+  margin: 0.75rem;
   /* Other styles are handled globally in global.scss */
 }
 
@@ -103,11 +101,9 @@ ion-checkbox {
 .link-button {
   background: none;
   border: none;
-  color: var(--app-text-secondary);
-  font-size: var(--app-font-size-body);
   text-decoration: underline;
   cursor: pointer;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
 
   &:active {
     opacity: 0.6;

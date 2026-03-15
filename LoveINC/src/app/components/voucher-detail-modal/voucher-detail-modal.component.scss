@@ -43,8 +43,6 @@
   z-index: 1;
   margin: 0;
   padding: 0.75rem 1rem;
-  font-size: var(--app-font-size-display);
-  font-weight: var(--app-font-weight-semibold);
   width: 100%;
 }
 
@@ -74,8 +72,7 @@
 
   .voucher-modal-desc {
     margin: 0;
-    color: var(--app-text-secondary);
-    line-height: 1.4;
+    line-height: var(--app-line-height-body);
   }
 }
 
@@ -90,26 +87,17 @@
   border-left: 0.0625rem dashed var(--ion-color-medium);
 
   .exp-label {
-    font-size: 0.7em;
-    color: var(--ion-color-medium);
     text-transform: uppercase;
   }
 
-  .exp-day {
-    font-size: 1.25em;
-    font-weight: var(--app-font-weight-bold);
-  }
-
   .exp-month {
-    font-size: 0.75em;
     text-transform: uppercase;
   }
 }
 
 .voucher-modal-desc {
   margin: 0;
-  color: var(--app-text-secondary);
-  line-height: 1.4;
+  line-height: var(--app-line-height-body);
 }
 
 .voucher-modal-address {
@@ -118,7 +106,6 @@
 
 .voucher-modal-row {
   margin: 0 0 0.5rem 0;
-  font-size: 0.9em;
 
   &:last-child {
     margin-bottom: 0;
@@ -144,15 +131,14 @@
 
 .voucher-modal-location-icon {
   flex-shrink: 0;
-  font-size: var(--app-font-size-display);
+  font-size: var(--app-icon-size-lg);
   color: var(--ion-color-primary);
   margin-top: 0.125rem;
 }
 
 .voucher-modal-location-text {
   flex: 1;
-  line-height: 1.4;
-  color: var(--app-text-secondary);
+  line-height: var(--app-line-height-body);
 }
 
 .voucher-modal-map-section {
@@ -169,11 +155,10 @@
   gap: 0.5rem;
   margin: 0;
   padding: 0.75rem 1rem;
-  font-weight: var(--app-font-weight-semibold);
   border-bottom: 0.0625rem solid var(--ion-color-light-shade);
 
   ion-icon {
-    font-size: var(--app-icon-size-md-lg);
+    font-size: var(--app-icon-size-lg);
     color: var(--ion-color-primary);
   }
 }
@@ -197,7 +182,6 @@
   justify-content: center;
   gap: 0.5rem;
   background: var(--ion-color-light);
-  color: var(--ion-color-medium);
 }
 
 .voucher-modal-map-message {

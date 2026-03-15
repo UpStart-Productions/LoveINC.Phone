@@ -25,21 +25,13 @@
   gap: 1rem;
   
   ion-icon {
-    font-size: var(--app-font-size-display-lg);
+    font-size: var(--app-icon-size-2xl);
     color: var(--app-text-accent);
     flex-shrink: 0;
   }
   
-  h4 {
-    font-size: var(--app-font-size-title);
-    font-weight: var(--app-font-weight-semibold);
-  }
-  
   p {
     margin: 0;
-    font-size: var(--app-font-size-body);
-    color: var(--app-text-secondary);
-    line-height: var(--app-line-height-body);
   }
 }
 
@@ -62,16 +54,13 @@
 .stat-item {
   text-align: center;
   
-  .stat-number {
-    font-size: var(--app-font-size-display-lg);
-    font-weight: var(--app-font-weight-bold);
+  .stat-number,
+  .stat-label {
     color: white;
   }
   
   .stat-label {
-    font-size: var(--app-font-size-caption);
     opacity: 0.9;
-    color: white;
   }
 }
 
@@ -84,15 +73,6 @@
   background: var(--ion-color-light);
   border-radius: 0.75rem;
   
-  h2 {
-    font-size: var(--app-font-size-display-lg);
-    font-weight: var(--app-font-weight-bold);
-  }
-  
-  p {
-    font-size: var(--app-font-size-body);
-    color: var(--app-text-secondary);
-  }
 }
 
 .cta-buttons {

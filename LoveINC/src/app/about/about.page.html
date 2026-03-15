@@ -43,32 +43,32 @@
         <div class="service-item">
           <ion-icon name="heart-outline" class="m-t-3"></ion-icon>
           <div>
-            <h4 class="m-b-3">Holistic Care</h4>
-            <p>Addressing spiritual, mental, emotional, and physical needs</p>
+            <h4 class="app-title m-b-3">Holistic Care</h4>
+            <p class="app-body-secondary">Addressing spiritual, mental, emotional, and physical needs</p>
           </div>
         </div>
         
         <div class="service-item">
           <ion-icon name="people-circle-outline" class="m-t-3"></ion-icon>
           <div>
-            <h4 class="m-b-3">Church Collaboration</h4>
-            <p>Each church leans into its strengths, working together</p>
+            <h4 class="app-title m-b-3">Church Collaboration</h4>
+            <p class="app-body-secondary">Each church leans into its strengths, working together</p>
           </div>
         </div>
         
         <div class="service-item">
           <i-lucide name="hand-helping" [size]="28" color="var(--ion-color-primary)" slot="start" class="m-t-3"></i-lucide>
           <div>
-            <h4 class="m-b-3">Gap Ministries</h4>
-            <p>Filling unmet needs in the community through partner churches</p>
+            <h4 class="app-title m-b-3">Gap Ministries</h4>
+            <p class="app-body-secondary">Filling unmet needs in the community through partner churches</p>
           </div>
         </div>
         
         <div class="service-item">
           <ion-icon name="school-outline" class="m-t-3"></ion-icon>
           <div>
-            <h4 class="m-b-3">Transformational Ministry</h4>
-            <p>Educational classes, mentorship, and community events</p>
+            <h4 class="app-title m-b-3">Transformational Ministry</h4>
+            <p class="app-body-secondary">Educational classes, mentorship, and community events</p>
           </div>
         </div>
       </div>
@@ -80,8 +80,8 @@
     <ion-card-content>
       <div class="stats-grid m-t-18">
         <div class="stat-item" *ngFor="let stat of impactStats">
-          <div class="stat-number m-b-3">{{ stat.number }}</div>
-          <div class="stat-label">{{ stat.label }}</div>
+          <div class="stat-number app-display-lg m-b-3">{{ stat.number }}</div>
+          <div class="stat-label app-body-secondary-sm">{{ stat.label }}</div>
         </div>
       </div>
     </ion-card-content>
@@ -124,8 +124,8 @@
 
   <!-- Call to Action -->
   <div class="cta-section p-30 p-l-24 p-r-24 m-18 m-t-0 m-l-18 m-r-18">
-    <h2 class="m-b-6">Join Us</h2>
-    <p class="m-b-24">Be part of transforming lives in our community</p>
+    <h2 class="app-display-lg m-b-6">Join Us</h2>
+    <p class="app-body-secondary m-b-24">Be part of transforming lives in our community</p>
     <div class="cta-buttons">
       <ion-button expand="block" color="primary" routerLink="/tabs/church-map">
         <ion-icon slot="start" name="map-outline"></ion-icon>

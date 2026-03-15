@@ -25,7 +25,7 @@
     <ion-card-content>
       @if (displayName || userProfile.email) {
         @if (displayName) {
-          <p class="m-b-6">{{ displayName }}</p>
+          <p class="app-body m-b-6">{{ displayName }}</p>
         }
         @if (userProfile.email) {
           <p class="app-body-secondary m-b-12">{{ userProfile.email }}</p>
@@ -63,7 +63,7 @@
         <div class="volunteer-requests">
           @for (vr of profileVolunteerRequests; track vr.id) {
             <div class="volunteer-request-row">
-              <span>{{ vr.itemTitle ?? 'Volunteer opportunity' }}</span>
+              <span class="app-body">{{ vr.itemTitle ?? 'Volunteer opportunity' }}</span>
               <div class="volunteer-request-actions">
                 @if (!vr.completedAt) {
                   <ion-button

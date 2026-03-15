@@ -1,5 +1,9 @@
 # Typography Inventory & Standardization Plan
 
+> **Superseded by:** [TYPOGRAPHY-GUIDE.md](./TYPOGRAPHY-GUIDE.md) – use that as the canonical reference.
+>
+> This file is kept for historical context. The typography scale has been simplified (March 2025).
+
 **Reference:** Tools page / `content-card` component (font sizes and colors you want to standardize on).
 
 ---

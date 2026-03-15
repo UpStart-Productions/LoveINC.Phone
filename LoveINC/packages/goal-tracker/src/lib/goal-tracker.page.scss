@@ -20,14 +20,11 @@
 
 .goal-tracker-error {
   color: var(--goal-tracker-accent, var(--ion-color-danger));
-  font-size: var(--app-font-size-body, 1rem);
 }
 
 .goal-tracker-empty {
   text-align: center;
   padding: 3rem 1.5rem;
-  color: var(--goal-tracker-secondary, var(--ion-color-medium));
-  font-size: var(--app-font-size-body, 1rem);
 }
 
 .goal-tracker-list {
@@ -53,14 +50,10 @@
   }
 
   h2 {
-    font-size: var(--app-font-size-title, 1.0625rem);
-    font-weight: var(--app-font-weight-semibold);
     color: var(--goal-tracker-primary, var(--ion-text-color));
   }
 
   p {
-    font-size: var(--app-font-size-caption, 0.75rem);
-    color: var(--goal-tracker-secondary, var(--ion-color-medium));
     margin-top: 0.25rem;
   }
 }

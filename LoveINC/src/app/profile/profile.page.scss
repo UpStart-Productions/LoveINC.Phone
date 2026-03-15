@@ -44,19 +44,12 @@ ion-item {
   
   ion-icon {
     color: var(--app-text-accent);
-    font-size: var(--app-font-size-display-lg);
+    font-size: var(--app-icon-size-2xl);
   }
   
   ion-label {
-    p {
-      font-size: var(--app-font-size-caption);
-      color: var(--app-text-secondary);
-    }
-    
     h3 {
-      font-size: var(--app-font-size-title);
       margin: 0;
-      font-weight: var(--app-font-weight-medium);
     }
   }
 }

@@ -7,7 +7,6 @@
 .empty-state {
   padding: 2rem;
   text-align: center;
-  color: var(--ion-color-medium);
 }
 
 .content-subtitle {
@@ -45,8 +44,8 @@ ion-item {
   }
 
   ion-icon {
-    margin: 0.625rem 1rem;
-    font-size: var(--app-font-size-display-lg);
+    margin: 0.625rem 0.75rem;
+    font-size: var(--app-icon-size-xl);
   }
 }
 

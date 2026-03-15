@@ -22,13 +22,10 @@
 .schedule-header {
   display: block;
   width: 100%;
-  font-size: var(--app-font-size-display);
-  font-weight: var(--app-font-weight-medium);
-  color: var(--app-text-secondary);
   margin: 0 0 1rem 0;
-  padding: 0 1rem;
+  padding: 0 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.0.3125rem;
+  letter-spacing: 0.05rem;
 }
 
 .schedule-section app-card:last-child {
@@ -70,19 +67,11 @@ ion-item {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  font-size: var(--app-font-size-body);
-  line-height: var(--app-line-height-relaxed);
 }
 
 .detail-row span {
   display: block;
   width: 100%;
-}
-
-.detail-label {
-  font-weight: var(--app-font-weight-semibold);
-  color: var(--app-text-secondary);
-  margin-right: 0.5rem;
-  min-width: 5rem;
+  line-height: var(--app-line-height-relaxed);
 }
 

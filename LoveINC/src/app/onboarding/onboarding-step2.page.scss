@@ -45,7 +45,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 1rem;
+  padding: 0 0.75rem;
 }
 
 .logo-image {
@@ -57,13 +57,11 @@
 
 .tagline {
   font-family: 'Ilisarniq', sans-serif;
-  font-size: var(--app-font-size-display-lg);
   line-height: var(--app-line-height-tight);
-  font-weight: var(--app-font-weight-bold);
   color: white;
   text-align: center;
   margin: -0.9375rem 0 0 0;
-  padding: 0 1rem;
+  padding: 0 0.75rem;
 }
 
 /* Content Container */
@@ -86,8 +84,6 @@
   --padding-top: 1.25rem;
   --padding-bottom: 1.25rem;
   --padding-start: 1.25rem;
-  font-size: var(--app-font-size-title);
-  font-weight: var(--app-font-weight-semibold);
   text-transform: none;
   letter-spacing: 0;
   transition: all 0.3s ease;
@@ -95,7 +91,7 @@
   overflow: visible;
 
   ion-icon {
-    font-size: var(--app-font-size-display-lg);
+    font-size: var(--app-icon-size-2xl);
   }
 
   &.selected {
@@ -118,8 +114,7 @@
     
     ion-icon {
       color: var(--ion-color-success);
-      font-size: 2rem;
-      font-weight: var(--app-font-weight-bold);
+      font-size: var(--app-icon-size-fab);
       text-shadow: 
         -0.0625rem -0.0625rem 0 rgba(0, 0, 0, 0.2),
         0.0625rem -0.0625rem 0 rgba(0, 0, 0, 0.2),
@@ -154,12 +149,9 @@
   --padding-top: 1rem;
   --padding-bottom: 1rem;
   --box-shadow: none;
-  font-size: var(--app-font-size-title);
-  font-weight: var(--app-font-weight-semibold);
   text-transform: none;
   letter-spacing: 0;
   margin-bottom: 1.5rem;
-  color: var(--app-text-accent);
 
   &:not([disabled]) {
     --box-shadow: none;
@@ -178,11 +170,9 @@
 .link-button {
   background: none;
   border: none;
-  color: var(--app-text-secondary);
-  font-size: var(--app-font-size-body);
   text-decoration: underline;
   cursor: pointer;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
 
   &:active {
     opacity: 0.6;

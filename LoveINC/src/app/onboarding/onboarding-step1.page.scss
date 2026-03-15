@@ -55,9 +55,7 @@
 
 .tagline {
   font-family: 'Ilisarniq', sans-serif;
-  font-size: var(--app-font-size-display-lg);
   line-height: var(--app-line-height-tight);
-  font-weight: var(--app-font-weight-bold);
   color: white;
   text-align: center;
   margin: -0.9375rem 0 0 0;
@@ -75,9 +73,7 @@
 
 .mission-text {
   font-family: 'Ilisarniq', sans-serif;
-  font-size: var(--app-font-size-title);
   line-height: var(--app-line-height-loose);
-  color: var(--app-text-primary);
   text-align: center;
 }
 
@@ -98,11 +94,8 @@
   --padding-top: 1.125rem;
   --padding-bottom: 1.125rem;
   --box-shadow: none;
-  font-size: var(--app-font-size-title);
-  font-weight: var(--app-font-weight-semibold);
   text-transform: none;
   letter-spacing: 0;
-  color: var(--app-text-accent);
 
   &:not([disabled]) {
     --box-shadow: none;

@@ -4,13 +4,11 @@ ion-header {
     --background: var(--ion-background-color) !important;
     --color: var(--ion-color-dark) !important;
     --min-height: 3.5rem;
-    padding: 0 1rem;
+    padding: 0 0.75rem;
     background: var(--ion-background-color) !important;
     color: var(--ion-color-dark) !important;
 
     ion-title {
-      font-weight: var(--app-font-weight-semibold);
-      font-size: var(--app-font-size-display);
       text-align: left;
       padding: 0;
       color: var(--app-text-primary) !important;

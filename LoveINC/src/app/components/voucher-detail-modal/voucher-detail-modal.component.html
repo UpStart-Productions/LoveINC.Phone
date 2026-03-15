@@ -11,21 +11,21 @@
           <ion-icon name="ticket-outline"></ion-icon>
         }
       </div>
-      <h2 class="voucher-modal-title">{{ displayVoucher.serviceLabel }}</h2>
+      <h2 class="voucher-modal-title app-display">{{ displayVoucher.serviceLabel }}</h2>
     </div>
     <div class="voucher-modal-card">
       @if (displayVoucher.shortDescription || displayVoucher.expiresAt) {
         <div class="voucher-modal-desc-exp-row">
           <div class="voucher-modal-desc-exp-center">
             @if (displayVoucher.shortDescription) {
-              <p class="voucher-modal-desc">{{ displayVoucher.shortDescription }}</p>
+              <p class="voucher-modal-desc app-body-secondary">{{ displayVoucher.shortDescription }}</p>
             }
           </div>
           @if (displayVoucher.expiresAt) {
             <div class="voucher-modal-exp">
-              <span class="exp-label">EXP</span>
-              <span class="exp-day">{{ formatExpDay(displayVoucher.expiresAt) }}</span>
-              <span class="exp-month">{{ formatExpMonth(displayVoucher.expiresAt) }}</span>
+              <span class="exp-label app-body-secondary-sm">EXP</span>
+              <span class="exp-day app-title">{{ formatExpDay(displayVoucher.expiresAt) }}</span>
+              <span class="exp-month app-body-secondary-sm">{{ formatExpMonth(displayVoucher.expiresAt) }}</span>
             </div>
           }
         </div>
@@ -35,13 +35,13 @@
           @if (displayVoucher.providerOffering) {
             <div class="voucher-modal-location-row">
               <ion-icon name="business-outline" class="voucher-modal-location-icon"></ion-icon>
-              <span class="voucher-modal-location-text">{{ displayVoucher.providerOffering }}</span>
+              <span class="voucher-modal-location-text app-body-secondary">{{ displayVoucher.providerOffering }}</span>
             </div>
           }
           @if (displayVoucher.location) {
             <div class="voucher-modal-location-row">
               <ion-icon name="location-outline" class="voucher-modal-location-icon"></ion-icon>
-              <span class="voucher-modal-location-text voucher-modal-address">{{ formatLocation(displayVoucher.location) }}</span>
+              <span class="voucher-modal-location-text voucher-modal-address app-body-secondary">{{ formatLocation(displayVoucher.location) }}</span>
             </div>
           }
         </div>
@@ -49,16 +49,16 @@
     </div>
     @if (displayVoucher.location) {
       <div class="voucher-modal-map-section">
-        <p class="voucher-modal-map-label">
+        <p class="voucher-modal-map-label app-title">
           <ion-icon name="map-outline"></ion-icon>
           Provider Location
         </p>
         <div id="voucher-map" class="voucher-modal-map-container"></div>
         @if (mapLoadError) {
-          <p class="voucher-modal-map-message">Map could not load.</p>
+          <p class="voucher-modal-map-message app-body-secondary-sm">Map could not load.</p>
         }
         @if (geocodeError) {
-          <p class="voucher-modal-map-message">Could not find location on map.</p>
+          <p class="voucher-modal-map-message app-body-secondary-sm">Could not find location on map.</p>
         }
         @if (mapLoading) {
           <div class="voucher-modal-map-loading">

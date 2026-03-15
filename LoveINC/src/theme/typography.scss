@@ -80,15 +80,22 @@ span {
   color: var(--app-text-secondary);
 }
 
-/** Small secondary text (auxiliary size, normal weight) – subtitles, auxiliary info */
+/** Small secondary text (caption size, normal weight) – CTA subtext, volunteer address/description, auxiliary info */
 .app-body-secondary-sm {
-  font-size: var(--app-font-size-auxiliary);
+  font-size: var(--app-font-size-caption);
   color: var(--app-text-secondary);
 }
 
-/** Body text slightly smaller than default (0.875rem) */
+/** Disclaimer text – caption, italic, danger (e.g. volunteer modal disclaimer) */
+.app-disclaimer {
+  font-size: var(--app-font-size-caption);
+  font-style: italic;
+  color: var(--ion-color-danger);
+}
+
+/** Body text slightly smaller than default */
 .app-body-sm {
-  font-size: 0.875rem;
+  font-size: var(--app-font-size-body-sm);
   color: var(--app-text-primary);
   line-height: var(--app-line-height-relaxed);
 }
@@ -101,20 +108,6 @@ span {
 
 .app-display-lg {
   font-size: var(--app-font-size-display-lg);
-  font-weight: var(--app-font-weight-semibold);
-  color: var(--app-text-accent);
-}
-
-/** Title slightly larger than default (1.125rem / 1.125rem) */
-.app-title-lg {
-  font-size: 1.125rem;
-  font-weight: var(--app-font-weight-semibold);
-  color: var(--app-text-primary);
-}
-
-/** Display extra large (1.75rem / 1.75rem) – hero text, large icons */
-.app-display-xl {
-  font-size: var(--app-font-size-display-xl);
   font-weight: var(--app-font-weight-semibold);
   color: var(--app-text-accent);
 }
@@ -179,7 +172,7 @@ ion-item ion-label .user-type-title {
   font-size: var(--app-font-size-title) !important;
 }
 
-/* List item paragraphs - secondary text */
+/* List item paragraphs - secondary text (first p = title/body; subsequent p with .app-body-secondary-sm = caption) */
 ion-item ion-label p {
   font-size: var(--app-font-size-body);
   color: var(--app-text-secondary);
@@ -187,23 +180,28 @@ ion-item ion-label p {
   line-height: var(--app-line-height-body);
 }
 
+/* CTA row subtext (dates/times) – caption size; overrides ion-item ion-label p for elements with this class */
+ion-item ion-label p.app-body-secondary-sm {
+  font-size: var(--app-font-size-caption) !important;
+}
+
 /* Header icon sizes (toolbar, back, donate) */
 ion-header ion-buttons ion-button ion-icon {
-  font-size: 1.2rem !important;
-  width: 1.2rem !important;
-  height: 1.2rem !important;
+  font-size: var(--app-icon-size-header) !important;
+  width: var(--app-icon-size-header) !important;
+  height: var(--app-icon-size-header) !important;
 }
 
 ion-header ion-back-button ion-icon {
-  font-size: 1.2rem !important;
-  width: 1.2rem !important;
-  height: 1.2rem !important;
+  font-size: var(--app-icon-size-header) !important;
+  width: var(--app-icon-size-header) !important;
+  height: var(--app-icon-size-header) !important;
 }
 
 .donate-header-button ion-icon {
-  font-size: 1.2rem !important;
-  width: 1.2rem !important;
-  height: 1.2rem !important;
+  font-size: var(--app-icon-size-header) !important;
+  width: var(--app-icon-size-header) !important;
+  height: var(--app-icon-size-header) !important;
 }
 
 /* Action sheet – typography */
