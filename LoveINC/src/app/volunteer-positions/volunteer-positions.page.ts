@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -16,7 +17,6 @@ import {
 import { CardComponent } from '../components/card/card.component';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformVolunteerPositionWithAffiliate } from '../services/platform/types';
-import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 
 @Component({
@@ -46,8 +46,8 @@ export class VolunteerPositionsPage implements OnInit {
 
   constructor(
     private platformApi: PlatformApiService,
-    private volunteerActionSheet: VolunteerActionSheetService,
     private scheduleFormatting: ScheduleFormattingService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -96,18 +96,9 @@ export class VolunteerPositionsPage implements OnInit {
     return parts.filter(Boolean).join('\n\n');
   }
 
-  async onPositionTap(position: PlatformVolunteerPositionWithAffiliate) {
-    await this.volunteerActionSheet.openVolunteerActionSheet({
-      organizationName: position.affiliate?.name ?? 'Volunteer',
-      address: this.formatAddress(position) || undefined,
-      positions: [
-        {
-          id: position.id,
-          title: (position['title'] ?? position['shortDescription'] ?? position['description']) ?? 'Volunteer',
-          description: String(position['description'] ?? position['longDescription'] ?? position['shortDescription'] ?? '').trim() || undefined,
-          schedule: this.getSchedule(position),
-        },
-      ],
+  onPositionTap(position: PlatformVolunteerPositionWithAffiliate) {
+    this.router.navigate(['/tabs/volunteer-position', position.id], {
+      queryParams: { from: 'volunteer-positions' },
     });
   }
 }

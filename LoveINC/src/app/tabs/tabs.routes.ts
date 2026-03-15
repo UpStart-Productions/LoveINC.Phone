@@ -47,6 +47,11 @@ export const routes: Routes = [
           import('../volunteer-positions/volunteer-positions.page').then((m) => m.VolunteerPositionsPage),
       },
       {
+        path: 'volunteer-position/:id',
+        loadComponent: () =>
+          import('../volunteer-position-detail/volunteer-position-detail.page').then((m) => m.VolunteerPositionDetailPage),
+      },
+      {
         path: 'verse-of-the-day',
         loadComponent: () =>
           import('../verse-of-the-day/verse-of-the-day.page').then((m) => m.VerseOfTheDayPage),

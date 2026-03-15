@@ -414,15 +414,43 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     this.platformApi.getCtas().subscribe({
       next: (ctas) => {
         const c = ctas.find((cta) => cta.id === this.contentId);
-        this.contentItem = c ? this.mapPlatformCtaToContentDetail(c) : null;
-        if (!this.contentItem) {
+        if (!c) {
           console.error('CTA not found:', this.contentId);
+          return;
         }
+        const redirect = this.getCtaRelatedRedirect(c);
+        if (redirect) {
+          this.router.navigate(redirect.commands, { queryParams: redirect.queryParams, replaceUrl: true });
+          return;
+        }
+        this.contentItem = this.mapPlatformCtaToContentDetail(c);
       },
       error: (err) => {
         console.error('Error loading CTA detail:', err);
       },
     });
+  }
+
+  private getCtaRelatedRedirect(cta: PlatformCta): { commands: unknown[]; queryParams?: Record<string, string> } | null {
+    if (cta.volunteerPositions?.length === 1) {
+      return { commands: ['/tabs/volunteer-position', cta.volunteerPositions[0].id], queryParams: { from: 'home' } };
+    }
+    if (cta.events?.length === 1) {
+      return { commands: ['/tabs/content-detail', 'event', cta.events[0].id], queryParams: { from: 'home' } };
+    }
+    if (cta.class?.id) {
+      return { commands: ['/tabs/content-detail', 'class', cta.class.id], queryParams: { from: 'home' } };
+    }
+    if (cta.providerOffering?.id) {
+      return { commands: ['/tabs/content-detail', 'gap-ministry', cta.providerOffering.id], queryParams: { from: 'home' } };
+    }
+    if (cta.service?.id) {
+      return { commands: ['/tabs/content-detail', 'gap-ministry', cta.service.id], queryParams: { from: 'home' } };
+    }
+    if (cta.donation?.id) {
+      return { commands: ['/tabs/donate-goods'], queryParams: { donationId: cta.donation.id, from: 'home' } };
+    }
+    return null;
   }
 
   private mapPlatformEventToContentDetail(e: PlatformEvent): ContentDetail {
