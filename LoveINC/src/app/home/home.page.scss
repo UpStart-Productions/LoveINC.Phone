@@ -1,5 +1,21 @@
 /* Card layout in theme/cards.scss; .cards-container padding there. Overrides below. */
 
+/* User type cards and CTA rows – same width as ion-cards (Verse of the Day, home cards) */
+.home-top-items {
+  margin: 0 var(--app-card-margin);
+  padding: 0;
+
+  app-user-type-card,
+  app-home-cta-row {
+    display: block;
+    margin: 0;
+  }
+
+  ::ng-deep ion-item {
+    margin: 0;
+  }
+}
+
 /* Donate action sheet – subtitle layout */
 ::ng-deep .donate-action-sheet {
   .action-sheet-button-with-subtitle {

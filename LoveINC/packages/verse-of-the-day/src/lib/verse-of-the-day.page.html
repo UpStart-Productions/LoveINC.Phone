@@ -14,13 +14,13 @@
         <ion-spinner name="crescent"></ion-spinner>
       </div>
     } @else if (error || !verse) {
-      <p class="verse-error">Unable to load the verse of the day. Please try again later.</p>
+      <p class="verse-error app-body-secondary">Unable to load the verse of the day. Please try again later.</p>
     } @else {
       @if (verse.contentHtml) {
-        <div class="verse-content" [innerHTML]="verse.contentHtml"></div>
+        <div class="verse-content app-body" [innerHTML]="verse.contentHtml"></div>
       } @else {
-        <p class="verse-reference">{{ verse.reference }}</p>
-        <p class="verse-text">{{ verse.text }}</p>
+        <p class="verse-reference app-title">{{ verse.reference }}</p>
+        <p class="verse-text app-body">{{ verse.text }}</p>
       }
     }
   </div>

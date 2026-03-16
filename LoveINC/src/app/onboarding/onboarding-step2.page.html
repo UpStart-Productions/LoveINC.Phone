@@ -16,7 +16,6 @@
     <div class="button-group">
       <ion-button 
         expand="block" 
-        size="large" 
         fill="solid"
         class="option-button app-title get-help-button"
         [class.selected]="isSelected('get-help')"
@@ -30,7 +29,6 @@
 
       <ion-button 
         expand="block" 
-        size="large" 
         fill="solid"
         class="option-button app-title volunteer-button"
         [class.selected]="isSelected('volunteer')"
@@ -44,7 +42,6 @@
 
       <ion-button 
         expand="block" 
-        size="large" 
         fill="solid"
         class="option-button app-title give-button"
         [class.selected]="isSelected('give')"
@@ -62,18 +59,12 @@
       expand="block" 
       size="large"
       fill="clear"
-      class="next-button app-display"
+      color="primary"
+      class="app-title m-b-24"
       [disabled]="!canProceed()"
       (click)="onNext()">
       Next
       <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
     </ion-button>
-
-    <!-- Exploring Link -->
-    <div class="exploring-link">
-      <button class="link-button app-body-secondary" (click)="onExploring()">
-        I'm just exploring
-      </button>
-    </div>
   </div>
 </ion-content>

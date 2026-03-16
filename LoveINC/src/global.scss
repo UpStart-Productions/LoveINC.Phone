@@ -114,6 +114,16 @@ ion-button:not([color]) {
   --border-radius: 3.125rem;
 }
 
+/* Link-style buttons (clear fill, primary/link blue) */
+ion-button[fill="clear"][color="primary"] {
+  --color: var(--ion-color-primary);
+  --border-radius: 0;
+
+  &[disabled] {
+    opacity: 0.4;
+  }
+}
+
 /* Global Pill Button Styles (typography in theme/typography.scss) */
 .pill-button {
   --border-radius: 3.125rem;

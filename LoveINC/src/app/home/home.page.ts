@@ -245,7 +245,7 @@ export class HomePage implements OnInit {
   get clientSupportCardDescription(): string {
     switch (this.clientSupportCardState) {
       case 'intake_required':
-        return 'Complete your pre-intake to access services.';
+        return 'Complete your intake to access services.';
       case 'has_vouchers':
         return `You have ${this.clientSupportVoucherCount} active voucher${this.clientSupportVoucherCount === 1 ? '' : 's'}.`;
       case 'browse_services':

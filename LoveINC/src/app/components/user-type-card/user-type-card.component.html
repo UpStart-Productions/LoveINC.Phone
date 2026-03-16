@@ -2,10 +2,11 @@
   class="user-type-item m-b-6" 
   button 
   detail="false"
+  lines="none"
   (click)="onCardClick()">
   <ion-icon [name]="config.icon" slot="start" [style.color]="config.color" class="user-type-icon m-r-18"></ion-icon>
   <ion-label>
-    <p>{{ displayDescription }}</p>
+    <p class="app-title">{{ displayDescription }}</p>
     @if (userType === 'give') {
       <ion-progress-bar 
         [value]="donorProgress" 

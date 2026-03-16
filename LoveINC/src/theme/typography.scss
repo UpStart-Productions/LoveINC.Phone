@@ -185,6 +185,20 @@ ion-item ion-label p.app-body-secondary-sm {
   font-size: var(--app-font-size-caption) !important;
 }
 
+/* CTA row and user-type card titles: title size, normal weight, dark color */
+.cta-row-item ion-label p.app-title,
+.user-type-item ion-label p.app-title {
+  font-weight: 400;
+  color: var(--ion-color-dark);
+}
+
+/* Verse of the Day full page: reference same as CTA titles; verse text uses app-body */
+.verse-of-the-day-content .verse-reference {
+  font-size: var(--app-font-size-title);
+  font-weight: 400;
+  color: var(--ion-color-dark);
+}
+
 /* Header icon sizes (toolbar, back, donate) */
 ion-header ion-buttons ion-button ion-icon {
   font-size: var(--app-icon-size-header) !important;

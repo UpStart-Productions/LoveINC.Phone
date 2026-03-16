@@ -8,7 +8,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: calc(30vh + 4.6875rem);
+  height: calc(30vh + 2.6875rem);
   z-index: 10;
   overflow: hidden;
   background-color: var(--ion-color-dark);
@@ -45,6 +45,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  transform: translateY(3rem);
 }
 
 .logo-image {
@@ -63,9 +64,9 @@
 
 /* Content Container */
 .content-container {
-  margin-top: calc(30vh + 2rem + 2.75rem);
+  margin-top: calc(30vh + 2.75rem);
   background: white;
-  min-height: calc(100vh - 30vh - 2rem - 2.75rem);
+  min-height: calc(100vh - 30vh - 2.75rem);
 }
 
 .content-section {
@@ -86,18 +87,3 @@
   object-fit: contain;
 }
 
-.next-button {
-  --background: transparent;
-  --background-activated: transparent;
-  --background-hover: transparent;
-  --border-radius: 0;
-  --padding-top: 1.125rem;
-  --padding-bottom: 1.125rem;
-  --box-shadow: none;
-  text-transform: none;
-  letter-spacing: 0;
-
-  &:not([disabled]) {
-    --box-shadow: none;
-  }
-}

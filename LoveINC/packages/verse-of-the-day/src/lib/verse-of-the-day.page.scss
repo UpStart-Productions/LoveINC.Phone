@@ -1,3 +1,5 @@
+/* Layout only – typography from host app (app-title, app-body, app-body-secondary) */
+
 .verse-loading {
   display: flex;
   justify-content: center;
@@ -5,29 +7,5 @@
 }
 
 .verse-reference {
-  font-size: var(--app-font-size-caption, 0.75rem);
-  font-weight: var(--app-font-weight-semibold);
-  color: var(--app-text-secondary, var(--ion-color-medium));
   margin-bottom: 0.75rem;
-}
-
-.verse-text {
-  font-size: var(--app-font-size-body, 1rem);
-  line-height: 1.6;
-  color: var(--app-text-primary, var(--ion-color-dark));
-}
-
-.verse-error {
-  font-size: var(--app-font-size-body, 1rem);
-  color: var(--app-text-secondary, var(--ion-color-medium));
-}
-
-.verse-content {
-  font-size: var(--app-font-size-body, 1rem);
-  line-height: 1.6;
-  color: var(--app-text-primary, var(--ion-color-dark));
-
-  a {
-    color: var(--ion-color-primary);
-  }
 }

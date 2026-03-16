@@ -39,7 +39,17 @@ bootstrapApplication(AppComponent, {
 
 Without the key, the component uses NET Bible text only.
 
-### 3. Add to your menu
+### 3. Typography
+
+The package has no custom font styles. It uses host app typography classes:
+
+- `.app-title` – verse reference
+- `.app-body` – verse text and HTML content
+- `.app-body-secondary` – error message
+
+Ensure your app defines these classes (or equivalent) in your global typography styles.
+
+### 4. Add to your menu
 
 ```ts
 {

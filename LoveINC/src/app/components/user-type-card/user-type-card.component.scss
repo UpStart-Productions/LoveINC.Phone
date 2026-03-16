@@ -1,9 +1,10 @@
 .user-type-item {
-  --padding-start: 0.875rem;
-  --padding-end: 0.875rem;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-end: 0;
   --min-height: 4.5rem;
   border-radius: 0;
-  
+
   &:first-child {
     margin-top: 1rem;
   }
@@ -16,6 +17,7 @@
 .user-type-icon {
   font-size: var(--app-icon-size-2xl);
   flex-shrink: 0;
+  margin-left: 12px;
 }
 
 .donor-progress-bar {

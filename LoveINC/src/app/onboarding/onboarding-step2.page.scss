@@ -8,7 +8,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: calc(30vh + 4.6875rem);
+  height: calc(30vh + 2.6875rem);
   z-index: 10;
   overflow: hidden;
   background-color: var(--ion-color-dark);
@@ -46,6 +46,7 @@
   align-items: center;
   justify-content: center;
   padding: 0 0.75rem;
+  transform: translateY(3rem);
 }
 
 .logo-image {
@@ -66,10 +67,10 @@
 
 /* Content Container */
 .content-container {
-  margin-top: calc(30vh + 2rem + 2.75rem);
+  margin-top: calc(30vh + 2.75rem);
   background: white;
   padding: 2.5rem 1.5rem;
-  min-height: calc(100vh - 30vh - 2rem - 2.75rem);
+  min-height: calc(100vh - 30vh - 2.75rem);
 }
 
 .button-group {
@@ -81,9 +82,9 @@
 
 .option-button {
   --border-radius: 3.125rem;
-  --padding-top: 1.25rem;
-  --padding-bottom: 1.25rem;
-  --padding-start: 1.25rem;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+  --padding-start: 1rem;
   text-transform: none;
   letter-spacing: 0;
   transition: all 0.3s ease;
@@ -91,7 +92,8 @@
   overflow: visible;
 
   ion-icon {
-    font-size: var(--app-icon-size-2xl);
+    font-size: var(--app-icon-size-lg);
+    color: white;
   }
 
   &.selected {
@@ -126,55 +128,22 @@
   }
 }
 
-.get-help-button {
+.get-help-button,
+.volunteer-button,
+.give-button {
   --background: var(--love-inc-blue);
   --color: white;
+
+  &::part(native) {
+    color: white;
+  }
 }
 
 .volunteer-button {
   --background: var(--love-inc-teal);
-  --color: white;
 }
 
 .give-button {
   --background: var(--love-inc-gold);
-  --color: white;
 }
 
-.next-button {
-  --background: transparent;
-  --background-activated: transparent;
-  --background-hover: transparent;
-  --border-radius: 0;
-  --padding-top: 1rem;
-  --padding-bottom: 1rem;
-  --box-shadow: none;
-  text-transform: none;
-  letter-spacing: 0;
-  margin-bottom: 1.5rem;
-
-  &:not([disabled]) {
-    --box-shadow: none;
-  }
-
-  &[disabled] {
-    opacity: 0.4;
-  }
-}
-
-.exploring-link {
-  text-align: center;
-  margin-top: 0.5rem;
-}
-
-.link-button {
-  background: none;
-  border: none;
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 0.5rem 0.75rem;
-
-  &:active {
-    opacity: 0.6;
-  }
-}

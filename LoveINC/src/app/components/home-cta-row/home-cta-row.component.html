@@ -2,6 +2,7 @@
   class="cta-row-item m-b-6"
   button
   detail="false"
+  lines="none"
   (click)="onCardClick()">
   @if (cta.photoUrl) {
     <img slot="start" [src]="cta.photoUrl" alt="" class="cta-row-photo m-r-18" />
@@ -9,7 +10,7 @@
     <ion-icon [name]="iconName" slot="start" class="cta-row-icon m-r-18" [style.color]="accentColor"></ion-icon>
   }
   <ion-label>
-    <p>{{ cta.title }}</p>
+    <p class="app-title">{{ cta.title }}</p>
     @if (contextSubtitle) {
       <p class="app-body-secondary-sm m-t-4">{{ contextSubtitle }}</p>
     }
