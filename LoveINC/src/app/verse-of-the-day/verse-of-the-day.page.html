@@ -4,6 +4,11 @@
       <ion-back-button defaultHref="/tabs/more"></ion-back-button>
     </ion-buttons>
     <ion-title>Verse of the Day</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onShare()" [disabled]="!verse" fill="clear">
+        <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
