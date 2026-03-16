@@ -187,7 +187,9 @@ ion-accordion .ion-accordion-toggle-icon {
 
 .services-action-sheet .action-sheet-button {
   .action-sheet-icon {
-    font-size: var(--app-icon-size-lg) !important;
+    font-size: var(--app-icon-size-md) !important;
+    width: var(--app-icon-size-md) !important;
+    height: var(--app-icon-size-md) !important;
   }
 
   &.assistance-button .action-sheet-icon {

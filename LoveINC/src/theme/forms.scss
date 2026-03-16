@@ -34,6 +34,22 @@ ion-item:has(ion-textarea) {
     --padding-start: 0.9375rem;
   }
 
+  /* Wrapper for ion-select: provides full border (ion-select shadow DOM hides bottom) */
+  .select-border-wrapper {
+    display: block;
+    width: 100%;
+    border: 0.0625rem solid var(--ion-color-medium);
+    border-radius: 0.625rem;
+    background-color: var(--ion-background-color);
+
+    ion-select {
+      --background: transparent;
+      --border-width: 0;
+      border: none;
+      border-radius: 0.625rem;
+    }
+  }
+
   ion-input input,
   ion-input input::placeholder,
   ion-textarea textarea,
@@ -90,14 +106,10 @@ ion-item:has(ion-checkbox) ion-checkbox {
   }
 }
 
-/* Form validation error state - obvious to users */
-ion-input.ion-invalid.ion-touched,
-ion-select.ion-invalid.ion-touched,
-ion-textarea.ion-invalid.ion-touched {
+/* Error state - ONLY for fields with custom validators (phone, email) via .form-field-with-error */
+.form-field-with-error ion-input.ion-invalid {
   --border-color: var(--ion-color-danger);
-  --highlight-color-invalid: var(--ion-color-danger);
   border-color: var(--ion-color-danger) !important;
-  box-shadow: 0 0 0 0.125rem rgba(var(--ion-color-danger-rgb), 0.2);
 }
 
 /* Error text below the form field border */

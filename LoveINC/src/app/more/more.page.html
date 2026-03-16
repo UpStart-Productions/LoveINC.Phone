@@ -22,7 +22,7 @@
       (click)="handleItemClick(item)">
       <div slot="start" class="item-icon-slot">
         <div *ngIf="item.name === 'My Profile' && userFirstInitial" class="profile-initial-avatar app-caption">{{ userFirstInitial }}</div>
-        <i-lucide *ngIf="!(item.name === 'My Profile' && userFirstInitial) && item.lucideIcon" [name]="item.lucideIcon" [size]="24" color="var(--ion-color-primary)"></i-lucide>
+        <i-lucide *ngIf="!(item.name === 'My Profile' && userFirstInitial) && item.lucideIcon" [name]="item.lucideIcon" [size]="20" color="var(--ion-color-dark)"></i-lucide>
         <ion-icon *ngIf="!(item.name === 'My Profile' && userFirstInitial) && !item.lucideIcon" [name]="item.icon"></ion-icon>
       </div>
       <ion-label>{{ item.name }}</ion-label>

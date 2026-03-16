@@ -22,18 +22,20 @@
 
     <ion-item>
       <ion-label position="stacked">City of Residence</ion-label>
-      <ion-select
-        [(ngModel)]="form.city"
-        name="city"
-        placeholder="Select a city"
-        required>
-        <ion-select-option value="Newberg">Newberg</ion-select-option>
-        <ion-select-option value="St. Paul">St. Paul</ion-select-option>
-        <ion-select-option value="Yamhill">Yamhill</ion-select-option>
-        <ion-select-option value="Carlton">Carlton</ion-select-option>
-        <ion-select-option value="Sherwood">Sherwood</ion-select-option>
-        <ion-select-option value="Donald">Donald</ion-select-option>
-      </ion-select>
+      <div class="select-border-wrapper">
+        <ion-select
+          [(ngModel)]="form.city"
+          name="city"
+          placeholder="Select a city"
+          required>
+          <ion-select-option value="Newberg">Newberg</ion-select-option>
+          <ion-select-option value="St. Paul">St. Paul</ion-select-option>
+          <ion-select-option value="Yamhill">Yamhill</ion-select-option>
+          <ion-select-option value="Carlton">Carlton</ion-select-option>
+          <ion-select-option value="Sherwood">Sherwood</ion-select-option>
+          <ion-select-option value="Donald">Donald</ion-select-option>
+        </ion-select>
+      </div>
     </ion-item>
 
     <ion-item>
@@ -46,8 +48,7 @@
           appPhoneFormatter
           appPhoneValidator
           #phone="ngModel"
-          [class.ion-invalid]="phone.invalid && phone.touched"
-          [class.ion-touched]="phone.touched">
+          [class.ion-invalid]="phone.invalid && phone.touched">
         </ion-input>
         @if (getPhoneError(phone)) {
           <p class="form-error-text">{{ getPhoneError(phone) }}</p>
@@ -65,8 +66,7 @@
           appEmailValidator
           required
           #email="ngModel"
-          [class.ion-invalid]="email.invalid && email.touched"
-          [class.ion-touched]="email.touched">
+          [class.ion-invalid]="email.invalid && email.touched">
         </ion-input>
         @if (getEmailError(email)) {
           <p class="form-error-text">{{ getEmailError(email) }}</p>
@@ -76,18 +76,20 @@
 
     <ion-item>
       <ion-label position="stacked">Reason for Contact</ion-label>
-      <ion-select
-        [(ngModel)]="form.reason"
-        name="reason"
-        placeholder="Select a reason"
-        required>
-        <ion-select-option value="become-client">Become a client</ion-select-option>
-        <ion-select-option value="signup-service">Already a client, need to sign up for service</ion-select-option>
-        <ion-select-option value="hesed-house">Hesed House</ion-select-option>
-        <ion-select-option value="second-choice">Second Choice</ion-select-option>
-        <ion-select-option value="relational-ministry">Relational Ministry</ion-select-option>
-        <ion-select-option value="volunteer">Volunteer</ion-select-option>
-      </ion-select>
+      <div class="select-border-wrapper">
+        <ion-select
+          [(ngModel)]="form.reason"
+          name="reason"
+          placeholder="Select a reason"
+          required>
+          <ion-select-option value="become-client">Become a client</ion-select-option>
+          <ion-select-option value="signup-service">Already a client, need to sign up for service</ion-select-option>
+          <ion-select-option value="hesed-house">Hesed House</ion-select-option>
+          <ion-select-option value="second-choice">Second Choice</ion-select-option>
+          <ion-select-option value="relational-ministry">Relational Ministry</ion-select-option>
+          <ion-select-option value="volunteer">Volunteer</ion-select-option>
+        </ion-select>
+      </div>
     </ion-item>
 
     <ion-item>

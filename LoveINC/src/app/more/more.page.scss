@@ -14,9 +14,19 @@ ion-list ion-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.75rem;
-  min-width: 1.75rem;
+  width: 2rem;
+  min-width: 2rem;
   margin-right: 1rem;
+}
+
+ion-item:not(.profile-item) .item-icon-slot {
+  margin-left: -5px;
+
+  ion-icon {
+    font-size: var(--app-icon-size-md);
+    width: var(--app-icon-size-md);
+    height: var(--app-icon-size-md);
+  }
 }
 
 .profile-item .item-icon-slot {

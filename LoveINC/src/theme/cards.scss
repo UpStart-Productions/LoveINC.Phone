@@ -12,6 +12,8 @@ ion-card {
   margin: var(--app-card-margin);
   border-radius: var(--app-card-radius);
   box-shadow: var(--app-card-shadow);
+  --background: var(--app-card-background);
+  background: var(--app-card-background);
 }
 
 /* -----------------------------------------------------------------------------
@@ -134,11 +136,10 @@ ion-card-content .voucher-card-exp .exp-day {
  * ----------------------------------------------------------------------------- */
 ion-card.clickable {
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease;
 
   &:active {
     transform: scale(0.98);
-    box-shadow: 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.15);
   }
 }
 
@@ -150,6 +151,8 @@ ion-card.clickable {
   border-radius: 1rem;
   overflow: hidden;
   box-shadow: var(--app-card-shadow);
+  --background: var(--app-card-background);
+  background: var(--app-card-background);
 }
 
 .card-image-container {
@@ -180,7 +183,6 @@ ion-card.clickable {
   align-items: center;
   gap: 0.375rem;
   color: white;
-  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
 
   ion-icon {
     font-size: var(--app-icon-size-sm);
@@ -194,7 +196,8 @@ ion-card.clickable {
 .content-card {
   margin-bottom: 1rem;
   border-radius: var(--app-card-radius);
-  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
+  --background: var(--app-card-background);
+  background: var(--app-card-background);
 
   h2 {
     font-size: var(--app-font-size-sm);
@@ -203,10 +206,6 @@ ion-card.clickable {
 }
 
 /* Content card content padding handled by global ion-card-content styles above */
-
-.content-card.clickable:active {
-  box-shadow: 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.12);
-}
 
 /* -----------------------------------------------------------------------------
  * Info card (e.g. content-detail): larger radius override

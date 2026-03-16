@@ -52,15 +52,17 @@
       @if (positions.length > 1) {
         <ion-item lines="none" class="position-select-item m-b-12">
           <ion-label position="stacked">Signing up for</ion-label>
-          <ion-select
-            [value]="selectedPosition.id"
-            (ionChange)="onPositionChange($event)"
-            placeholder="Select position"
-            interface="action-sheet">
-            @for (pos of positions; track pos.id) {
-              <ion-select-option [value]="pos.id">{{ pos.title || 'Volunteer' }}</ion-select-option>
-            }
-          </ion-select>
+          <div class="select-border-wrapper">
+            <ion-select
+              [value]="selectedPosition.id"
+              (ionChange)="onPositionChange($event)"
+              placeholder="Select position"
+              interface="action-sheet">
+              @for (pos of positions; track pos.id) {
+                <ion-select-option [value]="pos.id">{{ pos.title || 'Volunteer' }}</ion-select-option>
+              }
+            </ion-select>
+          </div>
         </ion-item>
       }
       <app-user-profile-form

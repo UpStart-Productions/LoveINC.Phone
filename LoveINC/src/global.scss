@@ -396,7 +396,17 @@ ion-modal.alerts-modal-sheet {
   }
 }
 
-.services-action-sheet .action-sheet-button .action-sheet-icon,
+.services-action-sheet .action-sheet-button {
+  .action-sheet-icon {
+    width: var(--app-icon-size-md) !important;
+    height: var(--app-icon-size-md) !important;
+  }
+
+  .action-sheet-button-inner {
+    padding-left: 5px !important;
+  }
+}
+
 .share-action-sheet .action-sheet-button .action-sheet-icon,
 .donate-action-sheet .action-sheet-button .action-sheet-icon {
   width: 1rem !important;
