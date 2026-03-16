@@ -1,0 +1,25 @@
+---
+description: Form validation approach - incremental only, no defaults
+globs:
+  - src/**/*form*
+  - src/**/*.html
+  - src/theme/forms.scss
+alwaysApply: false
+---
+
+# Form Validation – Incremental Only
+
+**CRITICAL:** Add validations incrementally. Do NOT add any default validations to forms.
+
+## Rules
+
+1. **No default invalid state** – Forms must not show invalid styling by default. No `ion-invalid` on load, no automatic error state from `required`, `ngModel`, or Ionic.
+2. **Explicit opt-in** – Only fields with custom validators (e.g. `appPhoneValidator`, `appEmailValidator`) may show invalid state. Add `[class.ion-invalid]` manually only where intended.
+3. **No submit-triggered validation UI** – Do not add "show errors on submit" logic. The user does not want validation errors displayed when submitting a blank form.
+4. **Incremental additions** – When adding validation to a new field, add the validator and the explicit `[class.ion-invalid]` binding together. Never assume a form should validate all required fields by default.
+
+## Reference
+
+- Custom validators: `src/app/shared/validators/`
+- Error styling: `src/theme/forms.scss` – `.form-field-with-error ion-input.ion-invalid` (phone, email only)
+- Contact form: `src/app/components/contact-assistance-form/` – example of incremental validation
