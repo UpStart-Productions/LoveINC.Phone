@@ -31,4 +31,8 @@ export class AssistanceIntroPage {
   onGetStarted() {
     this.router.navigate(['/assistance/signup']);
   }
+
+  onHaveQRCode() {
+    this.router.navigate(['/tabs/service-unlock/scan']);
+  }
 }

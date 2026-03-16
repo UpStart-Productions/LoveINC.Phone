@@ -1,20 +1,16 @@
 <ion-card class="section-card">
   <ion-card-header>
     <ion-card-title>
-      <ion-icon name="key-outline" class="section-icon"></ion-icon>
+      <ion-icon src="assets/icons/hand-helping.svg" class="section-icon"></ion-icon>
       Service Access
     </ion-card-title>
   </ion-card-header>
   <ion-card-content>
     <div class="access-status m-b-18">
-      <ion-icon
-        [name]="accessStatus === 'required' ? 'lock-closed-outline' : 'checkmark-circle'"
-        [color]="accessStatus === 'required' ? 'medium' : 'success'"
-        class="status-icon"></ion-icon>
       <div>
-        <p class="status-label">{{ accessStatus === 'full_access' ? 'Full access' : (accessStatus === 'completed' ? 'Intake completed' : 'Intake required') }}</p>
+        <p class="status-label">{{ accessStatus === 'full_access' ? 'Full access' : (accessStatus === 'completed' ? 'Intake completed' : 'Intake completion required') }}</p>
         <p class="status-detail">
-          {{ accessStatus === 'full_access' ? 'Your organization does not require intake. You can contact Gap Ministry providers directly.' : (accessStatus === 'completed' ? ('You can now contact and receive services from ' + customerName + ' providers directly. You can also receive vouchers if they are required for some services.') : 'Scan the QR code from your intake materials to unlock.') }}
+          {{ accessStatus === 'full_access' ? 'Your organization does not require intake. You can contact Gap Ministry providers directly.' : (accessStatus === 'completed' ? ('You can now contact and receive services from ' + customerName + ' providers directly. You can also receive vouchers if they are required for some services.') : ('Once your ' + customerName + ' intake is complete, you will receive a QR code to access services.')) }}
         </p>
       </div>
     </div>

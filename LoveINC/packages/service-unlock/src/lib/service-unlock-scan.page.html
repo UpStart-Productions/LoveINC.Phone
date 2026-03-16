@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/profile"></ion-back-button>
     </ion-buttons>
-    <ion-title>Scan Intake QR</ion-title>
+    <ion-title>Scan Intake Code</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -17,8 +17,8 @@
 
   <div *ngIf="!success && !scanning" class="scan-prompt">
     <ion-icon name="qr-code-outline" class="prompt-icon"></ion-icon>
-    <h2>Unlock Service Access</h2>
-    <p>Scan the QR code from your Love INC intake materials to unlock direct contact with Gap Ministry providers.</p>
+    <h2>Access Services</h2>
+    <p>Scan the QR code from your Love INC intake materials to contact and request vouchers from our service providers.</p>
     <ion-button
       *ngIf="supported"
       expand="block"

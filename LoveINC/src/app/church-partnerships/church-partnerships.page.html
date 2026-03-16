@@ -8,7 +8,26 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="ion-padding">
-    <p>Church partnerships content will go here.</p>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (partners.length === 0) {
+    <div class="empty-state">
+      <p class="app-body-secondary-sm">No church partners are currently listed.</p>
+    </div>
+  } @else {
+    <div class="partners-list">
+      @for (partner of partners; track partner.id) {
+        <app-content-card
+          [title]="partner.name"
+          [detail]="getCardDetail(partner)"
+          [imageUrl]="getPhotoUrl(partner) || undefined"
+          [iconName]="getPhotoUrl(partner) ? undefined : 'business-outline'"
+          [iconBackgroundColor]="'#349394'"
+          [route]="'/tabs/partner/' + partner.id + '?from=church-partnerships'"
+        />
+      }
+    </div>
+  }
 </ion-content>

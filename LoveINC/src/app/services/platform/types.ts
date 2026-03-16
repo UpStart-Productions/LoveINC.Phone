@@ -134,6 +134,20 @@ export interface PlatformVolunteerPositionWithAffiliate extends PlatformVoluntee
   address: PlatformAddress;
 }
 
+/** Organization partner (provider with organizationPartner=true, from /organization-partners endpoint) */
+export interface PlatformPartner {
+  id: string;
+  slug?: string;
+  name: string;
+  shortDescription?: string;
+  longDescription?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  address?: PlatformAddress;
+  photoUrl?: string;
+}
+
 export interface PlatformDonation {
   id: string;
   title: string;

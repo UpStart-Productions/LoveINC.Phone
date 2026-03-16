@@ -4,3 +4,19 @@
     margin-bottom: 0.5rem;
   }
 }
+
+.exploring-link {
+  text-align: center;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+
+  &:active {
+    opacity: 0.6;
+  }
+}

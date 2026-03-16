@@ -38,8 +38,8 @@ export class UserTypeCardComponent {
   @Input() volunteerOpportunitiesCount?: number = 2; // Default for volunteer
   /** Override description for get-help card (context-aware). */
   @Input() getHelpDescription?: string;
-  /** Override action for get-help card: 'profile' | 'gap-ministries'. */
-  @Input() getHelpAction?: 'profile' | 'gap-ministries';
+  /** Override action for get-help card: 'profile' | 'gap-ministries' | 'assistance-intro'. */
+  @Input() getHelpAction?: 'profile' | 'gap-ministries' | 'assistance-intro';
   @Output() cardClick = new EventEmitter<void>();
 
   constructor(
@@ -134,7 +134,9 @@ export class UserTypeCardComponent {
 
   onCardClick() {
     if (this.userType === 'get-help') {
-      if (this.getHelpAction === 'profile') {
+      if (this.getHelpAction === 'assistance-intro') {
+        this.router.navigate(['/assistance/intro']);
+      } else if (this.getHelpAction === 'profile') {
         this.router.navigate(['/tabs/profile']);
       } else if (this.getHelpAction === 'gap-ministries') {
         this.router.navigate(['/tabs/gap-ministries']);

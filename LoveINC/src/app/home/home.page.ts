@@ -245,7 +245,7 @@ export class HomePage implements OnInit {
   get clientSupportCardDescription(): string {
     switch (this.clientSupportCardState) {
       case 'intake_required':
-        return 'Complete intake to unlock services.';
+        return 'Complete your pre-intake to access services.';
       case 'has_vouchers':
         return `You have ${this.clientSupportVoucherCount} active voucher${this.clientSupportVoucherCount === 1 ? '' : 's'}.`;
       case 'browse_services':
@@ -255,11 +255,10 @@ export class HomePage implements OnInit {
     }
   }
 
-  get clientSupportCardAction(): 'profile' | 'gap-ministries' {
-    return this.clientSupportCardState === 'has_vouchers' ||
-      this.clientSupportCardState === 'intake_required'
-      ? 'profile'
-      : 'gap-ministries';
+  get clientSupportCardAction(): 'profile' | 'gap-ministries' | 'assistance-intro' {
+    if (this.clientSupportCardState === 'intake_required') return 'assistance-intro';
+    if (this.clientSupportCardState === 'has_vouchers') return 'profile';
+    return 'gap-ministries';
   }
 
   get showGiveCtas(): boolean {

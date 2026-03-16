@@ -1,0 +1,75 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backRoute"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Church Partner</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (loading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (error || !partner) {
+    <div class="empty-state">
+      <p class="app-body-secondary-sm">{{ error ?? 'Partner not found' }}</p>
+    </div>
+  } @else {
+    <div>
+      <div class="hero-image-container" *ngIf="photoUrl">
+        <img [src]="photoUrl" [alt]="partner.name" class="hero-image" />
+      </div>
+      <div class="p-l-18 p-r-18 p-t-18 p-b-36">
+        <h2 class="m-b-18">{{ partner.name }}</h2>
+
+        @if (description) {
+          <div class="app-body-secondary m-b-24" [innerHTML]="description"></div>
+        }
+
+        <ion-list lines="none">
+          @if (location) {
+            <ion-item>
+              <ion-icon slot="start" name="location-outline" color="primary"></ion-icon>
+              <ion-label>
+                <h3>Location</h3>
+                <p>{{ location }}</p>
+              </ion-label>
+            </ion-item>
+          }
+
+          @if (partner.phone) {
+            <ion-item>
+              <ion-icon slot="start" name="call-outline" color="primary"></ion-icon>
+              <ion-label>
+                <h3>Phone</h3>
+                <p><a [href]="'tel:' + partner.phone">{{ partner.phone }}</a></p>
+              </ion-label>
+            </ion-item>
+          }
+
+          @if (partner.email) {
+            <ion-item>
+              <ion-icon slot="start" name="mail-outline" color="primary"></ion-icon>
+              <ion-label>
+                <h3>Email</h3>
+                <p><a [href]="'mailto:' + partner.email">{{ partner.email }}</a></p>
+              </ion-label>
+            </ion-item>
+          }
+
+          @if (partner.website) {
+            <ion-item>
+              <ion-icon slot="start" name="globe-outline" color="primary"></ion-icon>
+              <ion-label>
+                <h3>Website</h3>
+                <p><a [href]="partner.website" target="_blank" rel="noopener">{{ partner.website }}</a></p>
+              </ion-label>
+            </ion-item>
+          }
+        </ion-list>
+      </div>
+    </div>
+  }
+</ion-content>

@@ -13,6 +13,7 @@ import type {
   PlatformImpactStory,
   PlatformNotification,
   PlatformOrganization,
+  PlatformPartner,
   PlatformService,
   PlatformVolunteerPositionWithAffiliate,
 } from './types';
@@ -28,6 +29,7 @@ export type {
   PlatformNotification,
   PlatformOffering,
   PlatformOrganization,
+  PlatformPartner,
   PlatformService,
   PlatformVoucher,
   PlatformVolunteerPositionWithAffiliate,
@@ -168,6 +170,12 @@ export class PlatformApiService {
   getDonations(): Observable<PlatformDonation[]> {
     return this.get<{ donations: PlatformDonation[] }>('/donations').pipe(
       map((res) => res?.donations ?? [])
+    );
+  }
+
+  getOrganizationPartners(): Observable<PlatformPartner[]> {
+    return this.get<{ partners: PlatformPartner[] }>('/organization-partners').pipe(
+      map((res) => res?.partners ?? [])
     );
   }
 

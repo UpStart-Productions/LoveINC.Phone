@@ -82,6 +82,11 @@ export const routes: Routes = [
           import('../church-partnerships/church-partnerships.page').then((m) => m.ChurchPartnershipsPage),
       },
       {
+        path: 'partner/:id',
+        loadComponent: () =>
+          import('../partner-detail').then((m) => m.PartnerDetailPage),
+      },
+      {
         path: 'settings',
         loadComponent: () =>
           import('../settings/settings.page').then((m) => m.SettingsPage),

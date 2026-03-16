@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -8,13 +7,9 @@ import {
   IonContent,
   IonBackButton,
   IonButtons,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonNote,
   IonSpinner,
 } from '@ionic/angular/standalone';
-import { CardComponent } from '../components/card/card.component';
+import { ContentCardComponent } from '../components/content-card/content-card.component';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformVolunteerPositionWithAffiliate } from '../services/platform/types';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
@@ -32,12 +27,8 @@ import { ScheduleFormattingService } from '../services/schedule-formatting.servi
     IonContent,
     IonBackButton,
     IonButtons,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonNote,
     IonSpinner,
-    CardComponent,
+    ContentCardComponent,
   ],
 })
 export class VolunteerPositionsPage implements OnInit {
@@ -47,7 +38,6 @@ export class VolunteerPositionsPage implements OnInit {
   constructor(
     private platformApi: PlatformApiService,
     private scheduleFormatting: ScheduleFormattingService,
-    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -96,9 +86,11 @@ export class VolunteerPositionsPage implements OnInit {
     return parts.filter(Boolean).join('\n\n');
   }
 
-  onPositionTap(position: PlatformVolunteerPositionWithAffiliate) {
-    this.router.navigate(['/tabs/volunteer-position', position.id], {
-      queryParams: { from: 'volunteer-positions' },
-    });
+  /** Short detail for card (schedule or address, not full description). */
+  getCardDetail(position: PlatformVolunteerPositionWithAffiliate): string | undefined {
+    const schedule = this.getSchedule(position);
+    const addr = this.formatAddress(position);
+    const parts = [schedule, addr].filter(Boolean);
+    return parts.length ? parts.join(' · ') : undefined;
   }
 }
