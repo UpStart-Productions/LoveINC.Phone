@@ -63,8 +63,8 @@ export function formatEventDatesCompact(startDate: string, endDate: string): str
   const end = endDate ? new Date(endDate) : null;
   if (!start && !end) return '';
 
-  const dateStr =
-    (start && end && isSameDay(start, end)
+  const dateStr = uppercaseMonth(
+    start && end && isSameDay(start, end)
       ? format(start, 'EEE, MMM d')
       : start && end
         ? `${format(start, 'EEE, MMM d')} – ${format(end, 'EEE, MMM d')}`
@@ -73,7 +73,7 @@ export function formatEventDatesCompact(startDate: string, endDate: string): str
           : end
             ? format(end, 'EEE, MMM d')
             : ''
-    ).toUpperCase();
+  );
 
   const timeStr =
     start && end && start.getTime() !== end.getTime()
@@ -131,14 +131,14 @@ export function formatDateRangeCompact(startDate: string, endDate: string): stri
   const end = endDate ? new Date(endDate) : null;
   if (!start && !end) return '';
   if (start && end && isSameDay(start, end)) {
-    return format(start, 'MMM d, yyyy').toUpperCase();
+    return uppercaseMonth(format(start, 'MMM d, yyyy'));
   }
   return start && end
-    ? `${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`.toUpperCase()
+    ? uppercaseMonth(`${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`)
     : start
-      ? format(start, 'MMM d, yyyy').toUpperCase()
+      ? uppercaseMonth(format(start, 'MMM d, yyyy'))
       : end
-        ? format(end, 'MMM d, yyyy').toUpperCase()
+        ? uppercaseMonth(format(end, 'MMM d, yyyy'))
         : '';
 }
 
@@ -154,8 +154,8 @@ export function formatEventSubtitle(startDate?: string, endDate?: string): strin
   if (!start && !end) return '';
 
   const dayStr = start ? format(start, 'EEEE').toUpperCase() : '';
-  const dateStr =
-    (start && end && isSameDay(start, end)
+  const dateStr = uppercaseMonth(
+    start && end && isSameDay(start, end)
       ? format(start, 'MMMM d, yyyy')
       : start && end
         ? `${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`
@@ -164,7 +164,7 @@ export function formatEventSubtitle(startDate?: string, endDate?: string): strin
           : end
             ? format(end, 'MMMM d, yyyy')
             : ''
-    ).toUpperCase();
+  );
 
   const timeStr = start ? format(start, 'h:mm a') : '';
   const timeRange =
@@ -221,6 +221,14 @@ export function formatTimeStringFull(timeStr: string): string {
     }
   }
   return formatted.join(' – ');
+}
+
+/** Uppercase month names in a date string (e.g. "March" -> "MARCH"). */
+export function uppercaseMonth(str: string): string {
+  return str.replace(
+    /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/g,
+    (m) => m.toUpperCase()
+  );
 }
 
 /** "Friday" or "Fri" -> "FR". "Fr, Sa" -> "FR, SA". */

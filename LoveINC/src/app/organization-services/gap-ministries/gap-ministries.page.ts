@@ -31,6 +31,7 @@ import { ToastController } from '@ionic/angular/standalone';
 import { ActionSheetController } from '@ionic/angular/standalone';
 import { VolunteerActionSheetService } from '../../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
+import { CalendarService } from '../../services/calendar/calendar.service';
 
 export interface GapServiceVoucher {
   id: string;
@@ -111,7 +112,8 @@ export class GapMinistriesPage implements OnInit {
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
     private volunteerActionSheetService: VolunteerActionSheetService,
-    private scheduleFormatting: ScheduleFormattingService
+    private scheduleFormatting: ScheduleFormattingService,
+    private calendarService: CalendarService
   ) {}
 
   async ngOnInit() {
@@ -466,12 +468,20 @@ export class GapMinistriesPage implements OnInit {
   }
 
   async onCalendarClick(service: GapService) {
-    const alert = await this.alertController.create({
-      header: 'Add to Calendar',
-      message: `Add ${service.service} to calendar`,
-      buttons: ['OK']
+    const parts: string[] = [];
+    if (service.schedule) parts.push(`Schedule: ${service.schedule}`);
+    if (service.daysTimes) parts.push(`Days/Times: ${service.daysTimes}`);
+    if (service.church) parts.push(`Church: ${service.church}`);
+    if (service.address) parts.push(`Address: ${service.address}`);
+    const description = parts.join('\n\n') || undefined;
+
+    await this.calendarService.addToCalendar({
+      title: service.service,
+      description,
+      location: service.address ?? undefined,
+      startDate: Date.now(),
+      withPrompt: true,
     });
-    await alert.present();
   }
 
   onCardClick(service: GapService) {

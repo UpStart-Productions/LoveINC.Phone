@@ -11,6 +11,7 @@ import {
   formatTimeRangeFull,
   dayTo2Letter,
   dayNumberTo2Letter,
+  uppercaseMonth,
 } from '../../shared/utils';
 import { HttpClient } from '@angular/common/http';
 import { 
@@ -40,6 +41,7 @@ import { ActionSheetController } from '@ionic/angular/standalone';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { VolunteerActionSheetService } from '../../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
+import { CalendarService } from '../../services/calendar/calendar.service';
 import {
   PlatformApiService,
   type PlatformClass,
@@ -105,7 +107,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     private onboarding: OnboardingService,
     private deviceId: DeviceIdService,
     private toastController: ToastController,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private calendarService: CalendarService
   ) {}
 
   ngOnInit() {
@@ -579,7 +582,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     }
     const start = new Date(e.startDate);
     const end = new Date(e.endDate);
-    const eventDate = format(start, 'EEEE, MMMM d, yyyy');
+    const eventDate = uppercaseMonth(format(start, 'EEEE, MMMM d, yyyy'));
     const eventTime =
       start.getTime() !== end.getTime()
         ? formatTimeRangeFull(format(start, 'h:mm a'), format(end, 'h:mm a'))
@@ -593,6 +596,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       subtitle,
       eventDate,
       eventTime,
+      startDate: e.startDate,
+      endDate: e.endDate,
       location,
     };
   }
@@ -781,13 +786,31 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   async onAddToCalendarClick() {
     if (!this.contentItem) return;
-    
-    const alert = await this.alertController.create({
-      header: 'Add to Calendar',
-      message: `Add ${this.contentItem.title} to your calendar`,
-      buttons: ['OK']
+
+    const startDate =
+      this.contentItem.nextSession?.startDate ??
+      this.contentItem.startDate;
+    const endDate =
+      this.contentItem.nextSession?.endDate ?? this.contentItem.endDate;
+
+    if (!startDate) {
+      await this.calendarService.addToCalendar({
+        title: this.contentItem.title,
+        description: this.contentItem.description,
+        location: this.contentItem.location,
+        startDate: Date.now(),
+        withPrompt: true,
+      });
+      return;
+    }
+
+    await this.calendarService.addToCalendar({
+      title: this.contentItem.title,
+      description: this.contentItem.description,
+      location: this.contentItem.location,
+      startDate,
+      endDate,
     });
-    await alert.present();
   }
 
   async onActionButtonClick() {

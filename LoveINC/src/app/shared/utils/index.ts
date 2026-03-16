@@ -14,4 +14,5 @@ export {
   formatClassSessionSubtitle,
   dayTo2Letter,
   dayNumberTo2Letter,
+  uppercaseMonth,
 } from './date-time-formatting';

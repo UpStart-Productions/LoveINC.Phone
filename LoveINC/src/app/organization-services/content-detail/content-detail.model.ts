@@ -51,7 +51,7 @@ export interface ContentDetail {
   // Donation drive CTA: linked donation location for context-aware "Donate Now"
   donation?: { id: string; title: string };
 
-  // CTA (donation-drive, volunteer, fundraiser, awareness): date range
+  // CTA and event: raw start/end (ISO strings). Used for calendar add.
   startDate?: string;
   endDate?: string;
 

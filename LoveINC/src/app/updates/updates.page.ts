@@ -20,6 +20,7 @@ import { SharingService } from '../services/sharing/sharing.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
+import { CalendarService } from '../services/calendar/calendar.service';
 import {
   PlatformApiService,
   type PlatformClass,
@@ -38,6 +39,8 @@ export interface UpdateItem {
   shortDescription: string;
   description: string;
   startDate: string;
+  /** End date for events (ISO string). Used for calendar add. */
+  endDate?: string;
   volunteerPositions?: Array<{ id: string; title?: string; shortDescription?: string; description?: string; schedule?: string }>;
   address?: string | null;
 }
@@ -70,7 +73,8 @@ export class UpdatesPage implements OnInit {
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
     private volunteerActionSheetService: VolunteerActionSheetService,
-    private scheduleFormatting: ScheduleFormattingService
+    private scheduleFormatting: ScheduleFormattingService,
+    private calendarService: CalendarService
   ) {}
 
   ngOnInit() {
@@ -157,6 +161,7 @@ export class UpdatesPage implements OnInit {
       shortDescription: e.shortDescription ?? '',
       description: e.longDescription ?? e.shortDescription ?? '',
       startDate: e.startDate,
+      endDate: e.endDate,
       volunteerPositions,
       address,
     };
@@ -193,6 +198,7 @@ export class UpdatesPage implements OnInit {
       shortDescription: c.shortDescription ?? '',
       description: c.longDescription ?? c.shortDescription ?? '',
       startDate,
+      endDate: session?.endDate,
       volunteerPositions,
       address,
     };
@@ -250,9 +256,14 @@ export class UpdatesPage implements OnInit {
     });
   }
 
-  onCalendarClick(item: UpdateItem) {
-    // TODO: Implement calendar functionality
-    console.log('Calendar clicked for:', item.title);
+  async onCalendarClick(item: UpdateItem) {
+    await this.calendarService.addToCalendar({
+      title: item.title,
+      description: item.description,
+      location: item.address ?? undefined,
+      startDate: item.startDate,
+      endDate: item.endDate,
+    });
   }
 
   async onShareItem(item: UpdateItem) {
