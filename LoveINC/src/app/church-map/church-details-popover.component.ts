@@ -20,9 +20,9 @@ import { PartnerChurch } from './church-map.page';
         <ion-card-title class="app-title">{{ church.churchName }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <ion-list lines="none">
+        <ion-list lines="none" class="info-list">
           <ion-item>
-            <ion-icon name="location-outline" slot="start" color="primary"></ion-icon>
+            <ion-icon name="location-outline" slot="start" color="dark"></ion-icon>
             <ion-label>
               <p>Address</p>
               <h3>{{ formatAddress(church) }}</h3>
@@ -30,7 +30,7 @@ import { PartnerChurch } from './church-map.page';
           </ion-item>
           
           <ion-item *ngIf="church.phone">
-            <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
+            <ion-icon name="call-outline" slot="start" color="dark"></ion-icon>
             <ion-label>
               <p>Phone</p>
               <h3>
@@ -40,7 +40,7 @@ import { PartnerChurch } from './church-map.page';
           </ion-item>
           
           <ion-item *ngIf="church.website">
-            <ion-icon name="globe-outline" slot="start" color="primary"></ion-icon>
+            <ion-icon name="globe-outline" slot="start" color="dark"></ion-icon>
             <ion-label>
               <p>Website</p>
               <h3>
@@ -62,28 +62,16 @@ import { PartnerChurch } from './church-map.page';
     </ion-card>
   `,
   styles: [`
-    ion-item {
+    .info-list ion-item {
       --padding-start: 0;
       --inner-padding-end: 0;
       margin-bottom: 12px;
-    }
-
-    ion-item ion-icon {
-      font-size: var(--app-icon-size-md);
-      margin-right: 12px;
     }
 
     ion-label p {
       font-size: var(--app-font-size-sm);
       color: var(--ion-color-medium);
       margin: 0 0 2px 0;
-    }
-
-    ion-label h3 {
-      font-size: var(--app-font-size-body);
-      color: var(--ion-color-dark);
-      margin: 0;
-      font-weight: var(--app-font-weight-medium);
     }
 
     .ministries-section {

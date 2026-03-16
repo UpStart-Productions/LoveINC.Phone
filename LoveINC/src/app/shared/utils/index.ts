@@ -8,4 +8,10 @@ export {
   formatDateRangeCompact,
   formatTimeRangeCompact,
   formatTimeStringCompact,
+  formatEventSubtitle,
+  formatTimeStringFull,
+  formatTimeRangeFull,
+  formatClassSessionSubtitle,
+  dayTo2Letter,
+  dayNumberTo2Letter,
 } from './date-time-formatting';

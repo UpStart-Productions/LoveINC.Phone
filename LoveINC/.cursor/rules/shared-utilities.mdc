@@ -23,8 +23,12 @@ Before adding validation, date formatting, pipes, or home-card logic, check `src
 - **Home cards**: `HomeCard`, `CardType`, `CardTypeLabels`, `CardTypeIcons`, `CardTypeColors`
 
 ## Utils (`@app/shared/utils`)
-- **Time range**: `formatTimeRangeCompact(start, end)` → "8:30-9:30 PM"
-- **Event dates**: `formatEventDatesCompact(start, end)` → "Thu, May 21, 6-8pm"
-- **Date range**: `formatDateRangeCompact(start, end)` → "May 21 – May 22, 2025"
-- **API time string**: `formatTimeStringCompact(timeStr)` → "10-12pm"
+- **Time range (compact)**: `formatTimeRangeCompact(start, end)` → "8:30-9:30 PM"
+- **Event dates (compact)**: `formatEventDatesCompact(start, end)` → "Thu, May 21, 6-8pm"
+- **Event dates (card/detail)**: `formatEventSubtitle(start, end)` → "FRIDAY, March 16, 2026 • 6:00 – 8:00 PM"
+- **Date range**: `formatDateRangeCompact(start, end)` → "May 21, 2026" (single day) or "May 21 – May 22, 2026" (never "May 21 – May 21")
+- **Class session**: `formatClassSessionSubtitle(session)` → "FR 6:00 – 8:00 PM\nMay 21, 2026"
+- **API time string (compact)**: `formatTimeStringCompact(timeStr)` → "10-12pm"
+- **API time string (full)**: `formatTimeStringFull(timeStr)` → "6:00 – 8:00 PM"
+- **Day helpers**: `dayTo2Letter(day)`, `dayNumberTo2Letter(n)`
 - **Notification deep link**: `mapNotificationMetaToContentType(meta)` → ContentType for routing

@@ -115,6 +115,15 @@ ion-header ion-back-button::part(native) {
  * List Item Icons
  * ----------------------------------------------------------------------------- */
 
+/* Info list (content-detail, etc.): icon + label rows with base-size headers */
+.info-list ion-item ion-icon[slot="start"] {
+  font-size: var(--app-icon-size-md);
+  width: var(--app-icon-size-md);
+  height: var(--app-icon-size-md);
+  margin: 0.625rem 0.75rem;
+  color: var(--ion-color-dark);
+}
+
 /* List item detail icon (chevron) */
 ion-item[detail="true"] {
   --detail-icon-font-size: var(--app-font-size-body);

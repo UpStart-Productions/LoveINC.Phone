@@ -1,8 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { format, parse, addDays } from 'date-fns';
+import { format } from 'date-fns';
 import { ActivatedRoute, Router } from '@angular/router';
+import {
+  formatEventSubtitle,
+  formatClassSessionSubtitle,
+  formatDateRangeCompact,
+  formatTimeStringFull,
+  formatTimeRangeFull,
+  dayTo2Letter,
+  dayNumberTo2Letter,
+} from '../../shared/utils';
 import { HttpClient } from '@angular/common/http';
 import { 
   IonHeader, 
@@ -452,7 +461,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         const names = rule.daysOfWeek.map((d) => DAY_NAMES[d] ?? '').filter(Boolean);
         const schedule = names.length === 1 ? names[0] : names.length > 1 ? 'Open Weekdays' : 'By Appointment';
         const rawTime = [rule.startTime, rule.endTime].filter(Boolean).join(' – ') || '';
-        const time = rawTime ? this.formatTimeTo12hr(rawTime) : '';
+        const time = rawTime ? formatTimeStringFull(rawTime) : '';
         subtitle = [off.provider?.name, time ? `${schedule} ${time}` : schedule].filter(Boolean).join(' · ');
         nextSession = rule.startDate && rule.endDate
           ? {
@@ -573,15 +582,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     const eventDate = format(start, 'EEEE, MMMM d, yyyy');
     const eventTime =
       start.getTime() !== end.getTime()
-        ? this.formatTimeRange(format(start, 'h:mm a'), format(end, 'h:mm a'))
+        ? formatTimeRangeFull(format(start, 'h:mm a'), format(end, 'h:mm a'))
         : format(start, 'h:mm a');
-    const dayStr = format(start, 'EEEE');
-    const dateStr =
-      start.getTime() === end.getTime()
-        ? format(start, 'MMMM d, yyyy')
-        : `${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`;
-    const subtitle =
-      eventTime ? `${dayStr} ${eventTime}\n${dateStr}` : `${dayStr}\n${dateStr}`;
+    const subtitle = formatEventSubtitle(e.startDate, e.endDate);
     return {
       id: e.id,
       title: e.title,
@@ -664,18 +667,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     if (nextSession) {
       nextSession = {
         ...nextSession,
-        dayOfWeek: this.dayTo2Letter(nextSession.dayOfWeek),
-        time: nextSession.time ? this.formatTimeTo12hr(nextSession.time) : nextSession.time,
+        dayOfWeek: dayTo2Letter(nextSession.dayOfWeek),
+        time: nextSession.time ? formatTimeStringFull(nextSession.time) : nextSession.time,
       };
     }
-    const dateRange = nextSession
-      ? this.formatClassSessionDates(nextSession.startDate, nextSession.endDate)
-      : '';
-    const subtitle = nextSession
-      ? nextSession.time
-        ? `${nextSession.dayOfWeek} ${nextSession.time}\n${dateRange}`
-        : dateRange
-      : undefined;
+    const subtitle = nextSession ? formatClassSessionSubtitle(nextSession) : undefined;
 
     // Map API attachments to classDocuments for display
     const fromAttachments = (c.attachments ?? []).map((a) => ({
@@ -730,20 +726,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     if (!startDate || !endDate) return undefined;
     const dayOfWeek =
       rule?.daysOfWeek?.length
-        ? rule.daysOfWeek.map((n) => this.dayNumberToName(n)).join(', ')
+        ? rule.daysOfWeek.map((n) => dayNumberTo2Letter(n)).join(', ')
         : '';
     const rawTime = [rule?.startTime, rule?.endTime].filter(Boolean).join(' – ') || '';
-    const time = this.formatTimeTo12hr(rawTime) || rawTime;
+    const time = formatTimeStringFull(rawTime) || rawTime;
     return { startDate, endDate, dayOfWeek, time };
-  }
-
-  /** Format time range, dropping redundant AM/PM from first time when same period (e.g. "6:00 – 8:00 PM") */
-  private formatTimeRange(start: string, end: string): string {
-    const endMatch = end.match(/\s(AM|PM)$/);
-    if (endMatch && start.endsWith(` ${endMatch[1]}`)) {
-      return `${start.replace(/\s(AM|PM)$/, '')} – ${end}`;
-    }
-    return `${start} – ${end}`;
   }
 
   /** Format session date string as 12hr time. Uses UTC components when API stores local times as UTC. */
@@ -756,59 +743,6 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
     const min = m.toString().padStart(2, '0');
     return `${hour12}:${min}${period}`;
-  }
-
-  /** Convert 24hr time string (e.g. "18:00 - 20:00") to 12hr (e.g. "6:00 – 8:00 PM") */
-  private formatTimeTo12hr(timeStr: string): string {
-    if (!timeStr?.trim()) return timeStr;
-    const ref = new Date(2000, 0, 1);
-    const parts = timeStr.split(/\s*[-–]\s*|\s+to\s+/i).map((s) => s.trim()).filter(Boolean);
-    const formatted = parts.map((part) => {
-      try {
-        const d = parse(part, 'HH:mm', ref);
-        return format(d, 'h:mm a');
-      } catch {
-        try {
-          const d = parse(part, 'HH:mm:ss', ref);
-          return format(d, 'h:mm a');
-        } catch {
-          return part;
-        }
-      }
-    });
-    if (formatted.length >= 2) {
-      const last = formatted[formatted.length - 1];
-      const periodMatch = last.match(/\s(AM|PM)$/);
-      if (periodMatch) {
-        const period = periodMatch[1];
-        const allSame = formatted.every((f) => f.endsWith(` ${period}`));
-        if (allSame) {
-          return formatted
-            .map((f, i) => (i < formatted.length - 1 ? f.replace(/\s(AM|PM)$/, '') : f))
-            .join(' – ');
-        }
-      }
-    }
-    return formatted.join(' – ');
-  }
-
-  private dayNumberToName(n: number): string {
-    const sun = new Date(2024, 0, 7);
-    return format(addDays(sun, n), 'EEE').slice(0, 2);
-  }
-
-  private dayTo2Letter(day: string): string {
-    return day
-      .split(',')
-      .map((d) => d.trim().replace(/s$/, '').slice(0, 2))
-      .filter(Boolean)
-      .join(', ');
-  }
-
-  private formatClassSessionDates(startDate: string, endDate: string): string {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    return `${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`;
   }
 
   private getDataFile(): string | null {
@@ -878,9 +812,10 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   formatSessionDates(): string {
     if (!this.contentItem?.nextSession) return '';
-    const startDate = new Date(this.contentItem.nextSession.startDate);
-    const endDate = new Date(this.contentItem.nextSession.endDate);
-    return `${format(startDate, 'MMMM d, yyyy')} - ${format(endDate, 'MMMM d, yyyy')}`;
+    return formatDateRangeCompact(
+      this.contentItem.nextSession.startDate,
+      this.contentItem.nextSession.endDate
+    );
   }
 
   isEvent(): boolean {
@@ -945,9 +880,28 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   formatCtaDateRange(): string {
     if (!this.contentItem?.startDate || !this.contentItem?.endDate) return '';
-    const start = format(new Date(this.contentItem.startDate), 'MMMM d, yyyy');
-    const end = format(new Date(this.contentItem.endDate), 'MMMM d, yyyy');
-    return `${start} – ${end}`;
+    return formatDateRangeCompact(this.contentItem.startDate, this.contentItem.endDate);
+  }
+
+  /** Date/time label to show above the title (like app-card subtitle). */
+  getHeaderDateLabel(): string | null {
+    if (!this.contentItem) return null;
+    if (this.contentType === 'event' && this.contentItem.subtitle) {
+      return this.contentItem.subtitle;
+    }
+    if (this.contentType === 'class' && this.contentItem.subtitle) {
+      return this.contentItem.subtitle;
+    }
+    if (this.hasCtaDateRange()) {
+      return this.formatCtaDateRange();
+    }
+    if (this.contentType === 'volunteer-position' && this.contentItem.volunteerSchedule) {
+      return this.contentItem.volunteerSchedule;
+    }
+    if (this.contentType === 'gap-ministry' && this.contentItem.subtitle) {
+      return this.contentItem.subtitle;
+    }
+    return null;
   }
 
   hasActionButton(): boolean {

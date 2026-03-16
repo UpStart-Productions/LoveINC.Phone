@@ -83,9 +83,15 @@ Types and constants for home screen cards:
 ### Date/Time Formatting (`date-time-formatting.ts`)
 
 - **`formatTimeRangeCompact(start, end)`** – Compact time range: `8:30-9:30 PM`, `6 PM` (omits `:00` on the hour)
-- **`formatEventDatesCompact(startDate, endDate)`** – Event dates: `Thu, May 21, 6-8pm` or `Thu, May 21 – Fri, May 22, 6-8pm`
-- **`formatDateRangeCompact(startDate, endDate)`** – Date range without times: `May 21 – May 22, 2025`
-- **`formatTimeStringCompact(timeStr)`** – Parses API time strings like `10:00 – 12:00` or `10:00 AM – 12:00 PM` into compact form
+- **`formatEventDatesCompact(startDate, endDate)`** – Event dates (compact): `Thu, May 21, 6-8pm` or `Thu, May 21 – Fri, May 22, 6-8pm`
+- **`formatEventSubtitle(startDate, endDate)`** – Event dates (card/detail): `FRIDAY, March 16, 2026 • 6:00 – 8:00 PM` (single day: no "May 21 – May 21")
+- **`formatDateRangeCompact(startDate, endDate)`** – Date range without times: `May 21, 2026` (single day) or `May 21 – May 22, 2026` (multi-day)
+- **`formatClassSessionSubtitle(session)`** – Class session: `FR 6:00 – 8:00 PM\nMay 21, 2026`
+- **`formatTimeStringCompact(timeStr)`** – Parses API time strings to compact form: `10-12pm`
+- **`formatTimeStringFull(timeStr)`** – Parses API time strings to full form: `6:00 – 8:00 PM`
+- **`formatTimeRangeFull(start, end)`** – Two time strings to `6:00 – 8:00 PM` (drops redundant AM/PM)
+- **`dayTo2Letter(day)`** – `"Friday"` → `"FR"`
+- **`dayNumberTo2Letter(n)`** – Day number (0=Sunday) → `"SU"`, `"FR"`, etc.
 
 ### Notification Deep Linking (`notification-deeplink.ts`)
 
