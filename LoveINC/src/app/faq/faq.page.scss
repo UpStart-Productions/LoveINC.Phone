@@ -27,7 +27,6 @@
   text-align: center;
 
   ion-icon {
-    color: var(--app-text-secondary);
     margin-bottom: 1rem;
   }
 
@@ -49,13 +48,7 @@
 
       ion-item {
         --background: #E9ECF1;
-        --color: var(--app-text-primary);
         --border-style: none;
-        font-weight: var(--app-font-weight-medium);
-
-        ion-label {
-          line-height: var(--app-line-height-body);
-        }
       }
     }
   }
@@ -64,7 +57,6 @@
 .faq-answer {
   padding: 0.75rem;
   background: var(--ion-color-light);
-  line-height: var(--app-line-height-loose);
 
   p {
     margin: 0 0 0.75rem 0;
@@ -75,7 +67,6 @@
   }
 
   a {
-    color: var(--app-text-accent);
     text-decoration: none;
 
     &:hover {

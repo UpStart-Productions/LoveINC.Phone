@@ -264,7 +264,6 @@ Already documented in §1. Uses 13px / 14px / 17px, 600, `#000` / `--ion-color-m
 | Tab label | 0.6rem | 500 | — |
 | (other) | 1.36rem | — | — |
 
-#### Sandbox pages (`sandbox-*`)
 Wide variation: 12px–64px, 600–700, various colors. Good candidates to migrate to tokens during consolidation.
 
 #### `explore-container`
@@ -301,7 +300,6 @@ Wide variation: 12px–64px, 600–700, various colors. Good candidates to migra
 - [ ] Update **alerts-modal**: rem → px; align title/body with ref.
 - [ ] Update **user-type-card** to use vars and match ref roles.
 - [ ] Page-by-page: **about**, **home**, **more**, **services**, **donate-goods**, **donate-money**, **faq**, **profile**, **developer-options**, **gap-ministries**, **transformation-class-detail**, **onboarding**, **contact**, **tabs**.
-- [ ] Sandbox pages: migrate to tokens when touching them.
 - [ ] Remove redundant typography from page/component SCSS once global + vars cover it.
 - [ ] Smoke-test light/dark theme with `--ion-text-color` / `--ion-color-medium`.
 
@@ -321,15 +319,13 @@ Wide variation: 12px–64px, 600–700, various colors. Good candidates to migra
 | 8 | `donate-*`, `faq`, `profile` | Same |
 | 9 | `developer-options`, `gap-ministries`, `transformation-class-*` | Same |
 | 10 | `onboarding`, `contact`, `tabs` | Same |
-| 11 | Sandbox pages | Migrate as you go |
-
 ---
 
 ## 7. Implementation status (Phases 4–6 complete)
 
 - **Phases 1–3:** Variables, global styles, and shared components (content-card, card, alerts-modal, user-type-card) use the 5-size scale.
 - **Phase 4:** home, more, services, about updated to use typography vars.
-- **Phase 5:** donate-goods, donate-money, faq, profile, developer-options, gap-ministries (app + org-services), transformation-class-detail, onboarding (steps 1–3), contact updated. **Skipped:** tabs (tab bar uses rem; leave as-is), sandbox pages (migrate when touching).
+- **Phase 5:** donate-goods, donate-money, faq, profile, developer-options, gap-ministries (app + org-services), transformation-class-detail, onboarding (steps 1–3), contact updated. **Skipped:** tabs (tab bar uses rem; leave as-is).
 - **Phase 6:** Redundant profile typography consolidated. Build verified. Dark mode: `--app-text-primary` / `--app-text-secondary` / `--app-text-accent` use Ionic vars that switch in `prefers-color-scheme: dark`.
 - **Left as-is:** Decorative sizes (e.g. 36px, 48px, 64px icons), header icon `1.2rem`, tab bar `rem` sizes.
 

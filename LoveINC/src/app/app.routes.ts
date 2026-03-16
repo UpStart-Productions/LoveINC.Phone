@@ -44,30 +44,6 @@ export const routes: Routes = [
     canActivate: [skipOnboardingGuard]
   },
   {
-    path: 'sandbox',
-    loadComponent: () => import('./sandbox/sandbox-index.page').then(m => m.SandboxIndexPage)
-  },
-  {
-    path: 'sandbox/donor',
-    loadComponent: () => import('./sandbox/sandbox-donor.page').then(m => m.SandboxDonorPage)
-  },
-  {
-    path: 'sandbox/client',
-    loadComponent: () => import('./sandbox/sandbox-client.page').then(m => m.SandboxClientPage)
-  },
-  {
-    path: 'sandbox/volunteer',
-    loadComponent: () => import('./sandbox/sandbox-volunteer.page').then(m => m.SandboxVolunteerPage)
-  },
-  {
-    path: 'sandbox/universal',
-    loadComponent: () => import('./sandbox/sandbox-universal.page').then(m => m.SandboxUniversalPage)
-  },
-  {
-    path: 'sandbox/find-services',
-    loadComponent: () => import('./sandbox/sandbox-find-services.page').then(m => m.SandboxFindServicesPage)
-  },
-  {
     path: 'assistance/intro',
     loadComponent: () => import('./assistance-request/assistance-intro.page').then(m => m.AssistanceIntroPage)
   },

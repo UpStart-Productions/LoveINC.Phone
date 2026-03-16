@@ -58,7 +58,6 @@
 
 .tagline {
   font-family: 'Ilisarniq', sans-serif;
-  line-height: var(--app-line-height-tight);
   color: white;
   text-align: center;
   margin: -0.9375rem 0 0 0;
@@ -92,7 +91,6 @@
   overflow: visible;
 
   ion-icon {
-    font-size: var(--app-icon-size-lg);
     color: white;
   }
 
@@ -116,7 +114,6 @@
     
     ion-icon {
       color: var(--ion-color-success);
-      font-size: var(--app-icon-size-fab);
       text-shadow: 
         -0.0625rem -0.0625rem 0 rgba(0, 0, 0, 0.2),
         0.0625rem -0.0625rem 0 rgba(0, 0, 0, 0.2),

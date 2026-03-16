@@ -31,13 +31,6 @@
   }
 }
 
-/* Verse of the Day: title same as CTA titles (title size, normal weight, dark) */
-:host-context(.verse-widget-wrapper) .content-card-left h2 {
-  font-size: var(--app-font-size-title);
-  font-weight: 400;
-  color: var(--ion-color-dark);
-}
-
 .content-card-right {
   flex-shrink: 0;
   width: 2.75rem;
@@ -51,7 +44,6 @@
 .content-card-detail {
   p {
     margin: 0;
-    line-height: var(--app-line-height-relaxed);
   }
 }
 
@@ -67,8 +59,6 @@
 }
 
 .icon {
-  font-size: var(--app-icon-size-md);
-  color: var(--app-text-secondary);
 }
 
 .content-card-image {
@@ -87,6 +77,4 @@
 }
 
 .content-card-icon {
-  font-size: var(--app-icon-size-lg);
-  color: var(--ion-color-primary-contrast);
 }

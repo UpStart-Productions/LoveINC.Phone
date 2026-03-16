@@ -249,9 +249,6 @@ ion-popover.location-popover::part(content) {
   color: var(--ion-color-dark) !important;
   flex-shrink: 0;
 }
-.volunteer-detail-row ion-icon.volunteer-detail-icon {
-  font-size: var(--app-icon-size-xl);
-}
 
 /* Voucher detail modal sheet (non-fullscreen, swipe to close) */
 ion-modal.voucher-detail-modal-sheet {
@@ -323,7 +320,6 @@ ion-modal.alerts-modal-sheet {
 
 .donation-details .donation-detail-row ion-icon {
   flex-shrink: 0;
-  font-size: var(--app-font-size-body);
   margin-top: 0.125rem;
   color: var(--ion-color-dark);
 }
@@ -350,6 +346,7 @@ ion-modal.alerts-modal-sheet {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
 }
 
 /* -----------------------------------------------------------------------------

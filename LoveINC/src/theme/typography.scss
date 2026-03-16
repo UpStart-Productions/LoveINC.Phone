@@ -12,13 +12,13 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Explicit Hx font sizes */
 h1 {
-  font-size: var(--app-font-size-display-lg);
+  font-size: var(--app-font-size-large);
   font-weight: var(--app-font-weight-bold);
   line-height: var(--app-line-height-tight);
 }
 
 h2 {
-  font-size: var(--app-font-size-display);
+  font-size: var(--app-font-size-large);
   font-weight: var(--app-font-weight-semibold);
   line-height: var(--app-line-height-body);
 }
@@ -75,39 +75,47 @@ span {
 }
 
 .app-caption {
-  font-size: var(--app-font-size-caption);
+  font-size: var(--app-font-size-small);
   font-weight: var(--app-font-weight-semibold);
   color: var(--app-text-secondary);
 }
 
-/** Small secondary text (caption size, normal weight) – CTA subtext, volunteer address/description, auxiliary info */
+/** Small secondary text – CTA subtext, volunteer address/description, auxiliary info */
 .app-body-secondary-sm {
-  font-size: var(--app-font-size-caption);
+  font-size: var(--app-font-size-small);
   color: var(--app-text-secondary);
 }
 
-/** Disclaimer text – caption, italic, danger (e.g. volunteer modal disclaimer) */
+/** Disclaimer text – small, italic, danger (e.g. volunteer modal disclaimer) */
 .app-disclaimer {
-  font-size: var(--app-font-size-caption);
+  font-size: var(--app-font-size-small);
   font-style: italic;
   color: var(--ion-color-danger);
 }
 
 /** Body text slightly smaller than default */
 .app-body-sm {
-  font-size: var(--app-font-size-body-sm);
+  font-size: var(--app-font-size-small);
   color: var(--app-text-primary);
   line-height: var(--app-line-height-relaxed);
 }
 
-.app-display {
-  font-size: var(--app-font-size-display);
+.app-large {
+  font-size: var(--app-font-size-large);
   font-weight: var(--app-font-weight-semibold);
   color: var(--app-text-accent);
 }
 
+/** @deprecated use .app-large */
+.app-display {
+  font-size: var(--app-font-size-large);
+  font-weight: var(--app-font-weight-semibold);
+  color: var(--app-text-accent);
+}
+
+/** @deprecated use .app-large */
 .app-display-lg {
-  font-size: var(--app-font-size-display-lg);
+  font-size: var(--app-font-size-large);
   font-weight: var(--app-font-weight-semibold);
   color: var(--app-text-accent);
 }
@@ -127,7 +135,7 @@ span {
   letter-spacing: 0;
 
   ion-icon {
-    font-size: var(--app-font-size-display-lg);
+    font-size: var(--app-font-size-large);
   }
 }
 
@@ -161,7 +169,7 @@ ion-accordion .ion-accordion-toggle-icon {
 /* Pills (action-pill, item-pill) */
 .action-pill,
 .item-pill {
-  font-size: var(--app-font-size-caption) !important;
+  font-size: var(--app-font-size-small) !important;
   font-weight: var(--app-font-weight-semibold);
 }
 
@@ -180,9 +188,9 @@ ion-item ion-label p {
   line-height: var(--app-line-height-body);
 }
 
-/* CTA row subtext (dates/times) – caption size; overrides ion-item ion-label p for elements with this class */
+/* CTA row subtext (dates/times) – small size; overrides ion-item ion-label p for elements with this class */
 ion-item ion-label p.app-body-secondary-sm {
-  font-size: var(--app-font-size-caption) !important;
+  font-size: var(--app-font-size-small) !important;
 }
 
 /* CTA row and user-type card titles: title size, normal weight, dark color */
@@ -228,7 +236,7 @@ ion-header ion-back-button ion-icon {
 .services-action-sheet .action-sheet-group h1,
 .donate-action-sheet .action-sheet-group h1,
 .share-action-sheet .action-sheet-group h1 {
-  font-size: var(--app-font-size-display) !important;
+  font-size: var(--app-font-size-large) !important;
   font-weight: var(--app-font-weight-semibold) !important;
   color: var(--app-text-accent) !important;
   text-align: left !important;
@@ -275,7 +283,7 @@ ion-header ion-back-button ion-icon {
 
 .services-action-sheet .action-sheet-button {
   .action-sheet-icon {
-    font-size: var(--app-font-size-display-lg) !important;
+    font-size: var(--app-font-size-large) !important;
   }
 
   .action-sheet-button-inner {
@@ -295,7 +303,7 @@ ion-header ion-back-button ion-icon {
 
 .share-action-sheet .action-sheet-button {
   .action-sheet-icon {
-    font-size: var(--app-font-size-display-lg) !important;
+    font-size: var(--app-font-size-large) !important;
     color: var(--app-text-accent) !important;
   }
 
@@ -316,7 +324,7 @@ ion-header ion-back-button ion-icon {
 
 .donate-action-sheet .action-sheet-button {
   .action-sheet-icon {
-    font-size: var(--app-font-size-display-lg) !important;
+    font-size: var(--app-font-size-large) !important;
   }
 
   .action-sheet-button-inner {

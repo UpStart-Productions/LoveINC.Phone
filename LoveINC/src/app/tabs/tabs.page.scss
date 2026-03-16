@@ -35,11 +35,6 @@ ion-fab-button {
   --border-radius: 50%;
   --ripple-color: rgba(var(--ion-color-primary-contrast-rgb), 0.2);
   
-  ion-icon {
-    font-size: var(--app-icon-size-fab);
-    font-weight: var(--app-font-weight-bold);
-  }
-  
   .love-inc-heart-logo {
     position: relative;
     z-index: 1;
@@ -64,18 +59,13 @@ ion-tab-button {
   
   /* Tab button text */
   ion-label {
-    font-size: var(--app-font-size-tab-label) !important;
-    font-weight: 500;
     margin-top: -0.125rem;
-    color: var(--love-inc-neutral-dark);
   }
   
   /* Tab icons */
   ion-icon {
-    font-size: var(--app-icon-size-tab);
     padding-top: 0;
     margin-top: -0.125rem;
-    color: var(--love-inc-neutral-dark);
   }
   
   /* Icon switching for active state */
@@ -88,13 +78,6 @@ ion-tab-button {
   }
   
   &.tab-selected {
-    ion-label {
-      color: var(--ion-color-primary);
-    }
-
-    ion-icon {
-      color: var(--ion-color-primary);
-    }
 
     .solid-icon {
       display: block;

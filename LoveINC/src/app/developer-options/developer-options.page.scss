@@ -1,7 +1,6 @@
 /* Section cards use theme/cards.scss .section-card; overrides below */
 
 :host .section-card ion-card-title {
-  font-size: var(--app-font-size-display);
   gap: 0.5rem;
 
   .section-icon {

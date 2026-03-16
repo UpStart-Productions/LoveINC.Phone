@@ -33,7 +33,6 @@
   }
 
   ion-icon {
-    font-size: var(--app-icon-size-3xl);
     color: var(--ion-color-medium);
   }
 }
@@ -72,7 +71,6 @@
 
   .voucher-modal-desc {
     margin: 0;
-    line-height: var(--app-line-height-body);
   }
 }
 
@@ -97,7 +95,6 @@
 
 .voucher-modal-desc {
   margin: 0;
-  line-height: var(--app-line-height-body);
 }
 
 .voucher-modal-address {
@@ -131,14 +128,12 @@
 
 .voucher-modal-location-icon {
   flex-shrink: 0;
-  font-size: var(--app-icon-size-lg);
   color: var(--ion-color-primary);
   margin-top: 0.125rem;
 }
 
 .voucher-modal-location-text {
   flex: 1;
-  line-height: var(--app-line-height-body);
 }
 
 .voucher-modal-map-section {
@@ -158,7 +153,6 @@
   border-bottom: 0.0625rem solid var(--ion-color-light-shade);
 
   ion-icon {
-    font-size: var(--app-icon-size-lg);
     color: var(--ion-color-primary);
   }
 }

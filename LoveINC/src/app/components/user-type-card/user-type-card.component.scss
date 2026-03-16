@@ -15,7 +15,6 @@
 }
 
 .user-type-icon {
-  font-size: var(--app-icon-size-2xl);
   flex-shrink: 0;
   margin-left: 12px;
 }
@@ -27,7 +26,3 @@
   --progress-background: var(--love-inc-gold);
 }
 
-.action-pill {
-  color: white;
-  /* Size styling is handled globally in global.scss */
-}

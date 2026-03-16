@@ -42,11 +42,6 @@ ion-item {
     margin-bottom: 0;
   }
   
-  ion-icon {
-    color: var(--app-text-accent);
-    font-size: var(--app-icon-size-2xl);
-  }
-  
   ion-label {
     h3 {
       margin: 0;
@@ -90,17 +85,5 @@ ion-item {
   text-align: center;
   background: var(--ion-color-light);
   border-radius: 0.75rem;
-  
-  .engagement-number {
-    font-size: var(--app-font-size-display-lg);
-    font-weight: var(--app-font-weight-bold);
-    color: var(--app-text-accent);
-  }
-  
-  .engagement-label {
-    font-size: var(--app-font-size-caption);
-    color: var(--app-text-secondary);
-    line-height: 1.3;
-  }
 }
 

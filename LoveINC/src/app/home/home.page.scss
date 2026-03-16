@@ -50,12 +50,9 @@
     align-items: flex-start;
     text-align: left;
     white-space: normal;
-    line-height: var(--app-line-height-body);
 
     &::before {
       content: attr(data-title);
-      font-weight: var(--app-font-weight-semibold);
-      color: var(--app-text-primary);
     }
   }
 
@@ -70,9 +67,8 @@
     .button-inner {
       display: flex;
       align-items: center;
-      text-align: left;
-      white-space: pre-line;
-      line-height: var(--app-line-height-relaxed);
+    text-align: left;
+    white-space: pre-line;
     }
 
     .action-sheet-icon {

@@ -59,7 +59,7 @@ ion-header ion-buttons ion-button ion-icon {
 
 ion-header ion-back-button {
   &::part(native) {
-    font-size: var(--app-font-size-body-sm) !important;
+    font-size: var(--app-font-size-small) !important;
   }
 }
 
@@ -85,7 +85,7 @@ ion-header ion-back-button {
 .action-icons {
   ion-button {
     ion-icon {
-      font-size: var(--app-font-size-display);
+      font-size: var(--app-font-size-large);
       color: var(--ion-color-dark);
     }
 
@@ -147,7 +147,7 @@ ion-item[detail="true"] ion-icon[slot="end"] {
 
 /* User type card icons */
 .user-type-icon {
-  font-size: var(--app-font-size-display-lg);
+  font-size: var(--app-font-size-large);
   margin-right: 1rem;
   flex-shrink: 0;
 }
@@ -179,7 +179,7 @@ ion-accordion .ion-accordion-toggle-icon {
 
 .services-action-sheet .action-sheet-button {
   .action-sheet-icon {
-    font-size: var(--app-font-size-display-lg) !important;
+    font-size: var(--app-font-size-large) !important;
   }
 
   &.assistance-button .action-sheet-icon {
@@ -189,7 +189,7 @@ ion-accordion .ion-accordion-toggle-icon {
 
 .share-action-sheet .action-sheet-button {
   .action-sheet-icon {
-    font-size: var(--app-font-size-display-lg) !important;
+    font-size: var(--app-font-size-large) !important;
     color: var(--app-text-accent) !important;
   }
 }
@@ -200,7 +200,7 @@ ion-accordion .ion-accordion-toggle-icon {
 
 .donate-action-sheet .action-sheet-button {
   .action-sheet-icon {
-    font-size: var(--app-font-size-display-lg) !important;
+    font-size: var(--app-font-size-large) !important;
   }
 }
 
@@ -214,6 +214,6 @@ ion-accordion .ion-accordion-toggle-icon {
  * ----------------------------------------------------------------------------- */
 .pill-button {
   ion-icon {
-    font-size: var(--app-font-size-display-lg);
+    font-size: var(--app-font-size-large);
   }
 }
