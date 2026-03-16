@@ -111,16 +111,15 @@ ion-header {
     align-items: center;
     gap: 0.5rem;
     width: 100%;
+
+    > p {
+      flex: 1;
+    }
   }
 
   .notification-content {
     width: 100%;
     margin-top: 0;
-  }
-
-  .notification-header h2 {
-    margin: 0;
-    flex: 1;
   }
 
   .notification-footer {
@@ -131,12 +130,13 @@ ion-header {
   }
 
   .unread-dot {
-    width: 0.75rem;
-    height: 0.75rem;
+    width: 0.45rem;
+    height: 0.45rem;
     border-radius: 50%;
     background-color: var(--ion-color-primary);
     flex-shrink: 0;
-    align-self: flex-start;
+    margin-left: auto;
+    align-self: center;
   }
 }
 
