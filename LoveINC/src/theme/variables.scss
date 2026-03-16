@@ -121,6 +121,12 @@
   --app-icon-size-3xl: var(--app-icon-size-xl);
   --app-icon-size-4xl: var(--app-icon-size-xl);
 
+  /** Font family – Ilisarniq (Love INC brand) **/
+  --app-font-family-ilisarniq: 'Ilisarniq', sans-serif;
+
+  /** Text on dark overlays (photo headers, etc.) **/
+  --app-text-overlay: white;
+
   /** Font weights – 3 tokens **/
   --app-font-weight-normal: 400;
   --app-font-weight-medium: 600;

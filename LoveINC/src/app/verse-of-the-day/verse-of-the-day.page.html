@@ -8,16 +8,16 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="ion-padding verse-of-the-day-content">
+  <div class="ion-padding">
     @if (loading) {
-      <div class="verse-loading">
+      <div>
         <ion-spinner name="crescent"></ion-spinner>
       </div>
     } @else if (error || !verse) {
       <p class="app-body">Unable to load the verse of the day. Please try again later.</p>
       <ion-button (click)="loadVerse()" fill="outline" class="m-t-12">Retry</ion-button>
     } @else {
-      <h2 class="verse-reference m-b-12">{{ verse.reference }}</h2>
+      <h2 class="m-b-12">{{ verse.reference }}</h2>
       <p class="app-body m-b-12">{{ verse.content }}</p>
       @if (verse.verseUrl) {
         <a [href]="verse.verseUrl" target="_blank" rel="noopener noreferrer" class="app-body app-link m-t-12">

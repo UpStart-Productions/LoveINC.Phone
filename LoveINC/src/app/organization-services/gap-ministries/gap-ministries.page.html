@@ -19,7 +19,7 @@
   <div class="content-wrapper">
     <div *ngFor="let schedule of scheduleOrder">
       <div *ngIf="groupedServices[schedule]?.length" class="schedule-section">
-        <h2 class="schedule-header app-caption">{{ schedule }}</h2>
+        <h2 class="schedule-header app-caption app-uppercase">{{ schedule }}</h2>
         <app-card
           *ngFor="let service of groupedServices[schedule]"
           class="app-card-compact"

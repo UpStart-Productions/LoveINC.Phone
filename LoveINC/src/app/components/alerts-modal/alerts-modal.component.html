@@ -36,7 +36,7 @@
             <div class="notification-content">
               <p class="app-body m-b-6">{{ notification.body }}</p>
               <div class="notification-footer">
-                <span *ngIf="!notification.read" class="new-badge app-caption">NEW</span>
+                <span *ngIf="!notification.read" class="new-badge app-caption app-uppercase">NEW</span>
                 <span class="app-caption">{{ formatDate(notification.createdAt) }}</span>
               </div>
             </div>

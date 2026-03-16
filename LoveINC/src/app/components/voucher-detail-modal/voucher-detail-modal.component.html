@@ -23,9 +23,9 @@
           </div>
           @if (displayVoucher.expiresAt) {
             <div class="voucher-modal-exp">
-              <span class="exp-label app-body-secondary-sm">EXP</span>
+              <span class="exp-label app-body-secondary-sm app-uppercase">EXP</span>
               <span class="exp-day app-title">{{ formatExpDay(displayVoucher.expiresAt) }}</span>
-              <span class="exp-month app-body-secondary-sm">{{ formatExpMonth(displayVoucher.expiresAt) }}</span>
+              <span class="exp-month app-body-secondary-sm app-uppercase">{{ formatExpMonth(displayVoucher.expiresAt) }}</span>
             </div>
           }
         </div>

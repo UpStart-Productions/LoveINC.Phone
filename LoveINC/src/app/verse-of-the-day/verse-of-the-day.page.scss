@@ -1,7 +1,13 @@
-.verse-loading {
+:host .ion-padding > div:has(ion-spinner) {
   display: flex;
   justify-content: center;
   padding: 3rem 0;
+}
+
+h2 {
+  font-size: var(--app-font-size-body);
+  font-weight: var(--app-font-weight-bold);
+  color: var(--ion-color-dark);
 }
 
 .video-container {

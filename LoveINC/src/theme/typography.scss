@@ -86,6 +86,23 @@ span {
   color: var(--app-text-secondary);
 }
 
+/** Uppercase labels – section headers, badges, expiry labels */
+.app-uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+}
+
+/** Medium font weight – compose with app-body, app-caption, etc. */
+.app-font-medium {
+  font-weight: var(--app-font-weight-medium);
+}
+
+/** Mission/body text in Ilisarniq – centered, color inherits */
+.app-font-ilisarniq-center {
+  font-family: var(--app-font-family-ilisarniq);
+  text-align: center;
+}
+
 /** Disclaimer text – small, italic, danger (e.g. volunteer modal disclaimer) */
 .app-disclaimer {
   font-size: var(--app-font-size-sm);
@@ -107,6 +124,13 @@ span {
   font-size: var(--app-font-size-display);
   font-weight: var(--app-font-weight-medium);
   color: var(--app-text-accent);
+}
+
+/** Tagline on dark/photo overlays – Ilisarniq, white, centered (must follow app-display-lg to override color) */
+.app-tagline-overlay {
+  font-family: var(--app-font-family-ilisarniq);
+  color: var(--app-text-overlay);
+  text-align: center;
 }
 
 /* Plain text links – Love INC blue, no underline */
@@ -195,13 +219,6 @@ ion-item ion-label p.app-body-secondary-xs {
 .cta-row-item ion-label p.app-title,
 .user-type-item ion-label p.app-title {
   font-weight: 400;
-  color: var(--ion-color-dark);
-}
-
-/* Verse of the Day full page: reference same as CTA titles; verse text uses app-body */
-.verse-of-the-day-content .verse-reference {
-  font-size: var(--app-font-size-title);
-  font-weight: var(--app-font-weight-normal);
   color: var(--ion-color-dark);
 }
 

@@ -57,9 +57,6 @@
 }
 
 .tagline {
-  font-family: 'Ilisarniq', sans-serif;
-  color: white;
-  text-align: center;
   margin: -0.9375rem 0 0 0;
   padding: 0 0.75rem;
 }
@@ -84,8 +81,6 @@
   --padding-top: 1rem;
   --padding-bottom: 1rem;
   --padding-start: 1rem;
-  text-transform: none;
-  letter-spacing: 0;
   transition: all 0.3s ease;
   position: relative;
   overflow: visible;
