@@ -7,9 +7,11 @@ export type {
   PlatformHomeFeedItem,
   PlatformImpactStory,
   PlatformOrganization,
+  PlatformPartner,
   PlatformService,
   PlatformServiceItem,
   PlatformOffering,
   PlatformScheduleRule,
+  PlatformVolunteerPositionWithAffiliate,
   HomeFeedItemType,
 } from './types';

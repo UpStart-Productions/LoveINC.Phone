@@ -1,19 +1,19 @@
-<ion-card style="margin: 0; max-width: 280px;">
+<ion-card class="location-popover-card">
   <ion-card-header>
-    <ion-card-title style="font-size: 16px;">{{ title }}</ion-card-title>
+    <ion-card-title class="app-body">{{ title }}</ion-card-title>
   </ion-card-header>
   <ion-card-content>
-    <div *ngIf="address" style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
-      <ion-icon name="location-outline" style="font-size: 18px; color: var(--ion-color-primary); flex-shrink: 0;"></ion-icon>
-      <span style="font-size: 13px; color: var(--ion-color-dark);">{{ address }}</span>
+    <div *ngIf="address" class="location-row">
+      <ion-icon name="location-outline" class="location-icon"></ion-icon>
+      <span class="app-body-sm">{{ address }}</span>
     </div>
-    <div *ngIf="hours" style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
-      <ion-icon name="time-outline" style="font-size: 18px; color: var(--ion-color-primary); flex-shrink: 0;"></ion-icon>
-      <span style="font-size: 13px; color: var(--ion-color-dark);">{{ hours }}</span>
+    <div *ngIf="hours" class="location-row">
+      <ion-icon name="time-outline" class="location-icon"></ion-icon>
+      <span class="app-body-sm">{{ hours }}</span>
     </div>
-    <div *ngIf="items?.length" style="display: flex; align-items: flex-start; gap: 8px;">
-      <ion-icon [name]="itemsIcon" style="font-size: 18px; color: var(--ion-color-primary); flex-shrink: 0;"></ion-icon>
-      <span style="font-size: 13px; color: var(--ion-color-dark);">{{ items.join(', ') }}</span>
+    <div *ngIf="items?.length" class="location-row">
+      <ion-icon [name]="itemsIcon" class="location-icon"></ion-icon>
+      <span class="app-body-sm">{{ items.join(', ') }}</span>
     </div>
   </ion-card-content>
 </ion-card>

@@ -38,7 +38,7 @@ ion-item:has(ion-textarea) {
   ion-input input::placeholder,
   ion-textarea textarea,
   ion-textarea textarea::placeholder {
-    font-size: var(--app-font-size-input);
+    font-size: var(--app-font-size-body);
   }
 
   ion-input input,
@@ -51,7 +51,7 @@ ion-item:has(ion-textarea) {
 
   ion-label {
     color: var(--ion-color-dark);
-    font-size: var(--app-font-size-input);
+    font-size: var(--app-font-size-body);
   }
 
   --inner-padding-top: 0.375rem;
@@ -109,7 +109,7 @@ ion-textarea.ion-invalid.ion-touched {
 
 .form-error-text {
   color: var(--ion-color-danger);
-  font-size: var(--app-font-size-small);
+  font-size: var(--app-font-size-sm);
   margin: 0.25rem 0 0 0;
   padding: 0;
 }

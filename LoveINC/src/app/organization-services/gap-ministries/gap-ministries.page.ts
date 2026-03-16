@@ -313,13 +313,11 @@ export class GapMinistriesPage implements OnInit {
   }
 
 
-  getServiceContentHtml(service: GapService): string {
+  getServiceDescription(service: GapService): string {
     const esc = (s: string | null | undefined) =>
       (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    return `<div class="service-header"><h3>${esc(service.service)}</h3><span class="app-body-secondary">${esc(service.daysTimes)}</span></div>` +
-      `<div class="service-details"><div class="detail-row"><span class="app-body">${esc(service.church)}</span></div>` +
-      (service.address ? `<div class="detail-row"><span class="app-body-secondary">${esc(service.address)}</span></div>` : '') +
-      '</div>';
+    return `<p class="app-body">${esc(service.church)}</p>` +
+      (service.address ? `<p class="app-body-secondary">${esc(service.address)}</p>` : '');
   }
 
   /** Show voucher icon when: (org requires intake AND user completed) OR (org doesn't require intake). */

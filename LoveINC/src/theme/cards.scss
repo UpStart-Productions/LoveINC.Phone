@@ -28,10 +28,10 @@ ion-card-header {
 }
 
 ion-card-header ion-card-title {
-  --font-size: var(--app-font-size-large) !important;
-  font-size: var(--app-font-size-large) !important;
-  --font-weight: var(--app-font-weight-semibold) !important;
-  font-weight: var(--app-font-weight-semibold) !important;
+  --font-size: var(--app-font-size-title) !important;
+  font-size: var(--app-font-size-title) !important;
+  --font-weight: var(--app-font-weight-medium) !important;
+  font-weight: var(--app-font-weight-medium) !important;
   --line-height: var(--app-line-height-body) !important;
   line-height: var(--app-line-height-body) !important;
   --color: var(--ion-color-dark) !important;
@@ -49,8 +49,8 @@ ion-card-header ion-card-title {
 
 /* Target shadow DOM native element to ensure styles apply */
 ion-card-header ion-card-title::part(native) {
-  font-size: var(--app-font-size-large) !important;
-  font-weight: var(--app-font-weight-semibold) !important;
+  font-size: var(--app-font-size-title) !important;
+  font-weight: var(--app-font-weight-medium) !important;
   line-height: var(--app-line-height-body) !important;
   font-family: inherit !important;
   letter-spacing: normal !important;
@@ -60,7 +60,7 @@ ion-card-header ion-card-title::part(native) {
 }
 
 ion-card-header ion-card-subtitle {
-  font-size: var(--app-font-size-small);
+  font-size: var(--app-font-size-sm);
   color: var(--app-text-secondary);
   font-weight: var(--app-font-weight-medium);
   line-height: var(--app-line-height-body);
@@ -107,6 +107,18 @@ ion-card-content .voucher-card {
 
 ion-card-content .voucher-card-exp .exp-day {
   color: var(--ion-color-dark) !important;
+}
+
+/* -----------------------------------------------------------------------------
+ * app-card-compact – title 1 size smaller, subtitle 1 weight lighter (home, updates)
+ * ----------------------------------------------------------------------------- */
+.app-card-compact ion-card-header ion-card-title,
+.app-card-compact ion-card-header ion-card-title::part(native) {
+  font-size: var(--app-font-size-body) !important;
+}
+
+.app-card-compact ion-card-header ion-card-subtitle {
+  font-weight: var(--app-font-weight-normal) !important;
 }
 
 /* -----------------------------------------------------------------------------
@@ -161,8 +173,9 @@ ion-card.clickable {
   right: 0.75rem;
   padding: 0.375rem 0.75rem;
   border-radius: 1.25rem;
-  font-size: var(--app-font-size-small);
-  font-weight: var(--app-font-weight-semibold);
+  font-size: var(--app-font-size-xs);
+  font-weight: var(--app-font-weight-normal);
+  text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 0.375rem;
@@ -170,13 +183,13 @@ ion-card.clickable {
   box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
 
   ion-icon {
-    font-size: var(--app-font-size-body);
+    font-size: var(--app-icon-size-sm);
   }
 }
 
 /* -----------------------------------------------------------------------------
  * Content card (Tools, etc.): lighter shadow, uniform content padding
- * Card titles use --app-font-size-title per typography guide
+ * Card titles 1 size smaller than standard (sm vs title)
  * ----------------------------------------------------------------------------- */
 .content-card {
   margin-bottom: 1rem;
@@ -184,8 +197,8 @@ ion-card.clickable {
   box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
 
   h2 {
-    font-size: var(--app-font-size-title);
-    font-weight: var(--app-font-weight-semibold);
+    font-size: var(--app-font-size-sm);
+    font-weight: var(--app-font-weight-medium);
   }
 }
 

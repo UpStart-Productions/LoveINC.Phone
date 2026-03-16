@@ -89,39 +89,41 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 
-  /** Typography – 4-size text scale: small, body, title, large **/
-  --app-font-size-small: 0.875rem;
+  /** Typography – 5-size text scale **/
+  --app-font-size-xs: 0.75rem;
+  --app-font-size-sm: 0.875rem;
   --app-font-size-body: 1rem;
-  --app-font-size-title: 1.0625rem;
-  --app-font-size-large: 1.25rem;
+  --app-font-size-title: 1.25rem;
+  --app-font-size-display: 1.5rem;
 
-  /** Aliases for backward compatibility (deprecated) **/
-  --app-font-size-caption: var(--app-font-size-small);
-  --app-font-size-body-sm: var(--app-font-size-small);
-  --app-font-size-display: var(--app-font-size-large);
-  --app-font-size-display-lg: var(--app-font-size-large);
+  /** Aliases (map to scale) **/
+  --app-font-size-small: var(--app-font-size-sm);
+  --app-font-size-large: var(--app-font-size-title);
+  --app-font-size-caption: var(--app-font-size-sm);
+  --app-font-size-body-sm: var(--app-font-size-sm);
+  --app-font-size-display-lg: var(--app-font-size-display);
+  --app-font-size-input: var(--app-font-size-body);
+  --app-font-size-tab-label: var(--app-font-size-sm);
 
-  /** Special-purpose (forms, tab bar) **/
-  --app-font-size-input: 0.85rem;
-  --app-font-size-tab-label: 0.6rem;
-
-  /** Icon sizes (for ion-icon font-size) – 6 sizes **/
+  /** Icon sizes – 4 sizes **/
   --app-icon-size-sm: 0.875rem;
-  --app-icon-size-md: 1rem;
-  --app-icon-size-lg: 1.25rem;
-  --app-icon-size-xl: 1.5rem;
-  --app-icon-size-2xl: 2.25rem;
-  --app-icon-size-3xl: 3rem;
-  --app-icon-size-4xl: 4rem;
+  --app-icon-size-md: 1.25rem;
+  --app-icon-size-lg: 1.5rem;
+  --app-icon-size-xl: 2rem;
 
-  /** Special-purpose sizes (toolbar, tab bar, FAB) **/
-  --app-icon-size-header: 1.2rem;
-  --app-icon-size-tab: 1.36rem;
-  --app-icon-size-fab: 2rem;
+  /** Aliases (map to 4-size scale) **/
+  --app-icon-size-header: var(--app-icon-size-md);
+  --app-icon-size-tab: var(--app-icon-size-lg);
+  --app-icon-size-fab: var(--app-icon-size-xl);
+  --app-icon-size-2xl: var(--app-icon-size-lg);
+  --app-icon-size-3xl: var(--app-icon-size-xl);
+  --app-icon-size-4xl: var(--app-icon-size-xl);
 
-  --app-font-weight-medium: 300;
-  --app-font-weight-semibold: 600;
+  /** Font weights – 3 tokens **/
+  --app-font-weight-normal: 400;
+  --app-font-weight-medium: 600;
   --app-font-weight-bold: 700;
+  --app-font-weight-semibold: var(--app-font-weight-medium);
 
   --app-line-height-tight: 1.35;
   --app-line-height-body: 1.4;

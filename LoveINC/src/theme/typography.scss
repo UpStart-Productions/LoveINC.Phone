@@ -10,34 +10,28 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
-/* Explicit Hx font sizes */
+/* Explicit Hx font sizes (map to 4-size scale) */
 h1 {
-  font-size: var(--app-font-size-large);
+  font-size: var(--app-font-size-display);
   font-weight: var(--app-font-weight-bold);
   line-height: var(--app-line-height-tight);
 }
 
-h2 {
-  font-size: var(--app-font-size-large);
-  font-weight: var(--app-font-weight-semibold);
+h2, h3 {
+  font-size: var(--app-font-size-display);
+  font-weight: var(--app-font-weight-medium);
   line-height: var(--app-line-height-body);
 }
 
-h3 {
+h4, h5 {
   font-size: var(--app-font-size-title);
-  font-weight: var(--app-font-weight-semibold);
+  font-weight: var(--app-font-weight-medium);
   line-height: var(--app-line-height-body);
 }
 
-h4 {
-  font-size: var(--app-font-size-title);
-  font-weight: var(--app-font-weight-semibold);
-  line-height: var(--app-line-height-body);
-}
-
-h5, h6 {
+h6 {
   font-size: var(--app-font-size-body);
-  font-weight: var(--app-font-weight-semibold);
+  font-weight: var(--app-font-weight-medium);
   line-height: var(--app-line-height-body);
 }
 
@@ -53,10 +47,10 @@ span {
   color: var(--app-text-primary);
 }
 
-/* Typography utility classes (5-size scale) */
+/* Typography utility classes (4-size scale) */
 .app-title {
   font-size: var(--app-font-size-title);
-  font-weight: var(--app-font-weight-semibold);
+  font-weight: var(--app-font-weight-medium);
   color: var(--app-text-primary);
   line-height: var(--app-line-height-tight);
 }
@@ -70,53 +64,48 @@ span {
 .app-body-secondary {
   font-size: var(--app-font-size-body);
   color: var(--app-text-secondary);
-  margin-bottom: 1.5rem; 
+  margin-bottom: 1.5rem;
   line-height: var(--app-line-height-loose);
 }
 
 .app-caption {
-  font-size: var(--app-font-size-small);
-  font-weight: var(--app-font-weight-semibold);
+  font-size: var(--app-font-size-sm);
+  font-weight: var(--app-font-weight-medium);
   color: var(--app-text-secondary);
 }
 
-/** Small secondary text – CTA subtext, volunteer address/description, auxiliary info */
+/** Small secondary text – volunteer address/description, auxiliary info */
 .app-body-secondary-sm {
-  font-size: var(--app-font-size-small);
+  font-size: var(--app-font-size-sm);
+  color: var(--app-text-secondary);
+}
+
+/** Extra-small secondary text – CTA subtext, fine print, captions */
+.app-body-secondary-xs {
+  font-size: var(--app-font-size-xs);
   color: var(--app-text-secondary);
 }
 
 /** Disclaimer text – small, italic, danger (e.g. volunteer modal disclaimer) */
 .app-disclaimer {
-  font-size: var(--app-font-size-small);
+  font-size: var(--app-font-size-sm);
   font-style: italic;
   color: var(--ion-color-danger);
 }
 
 /** Body text slightly smaller than default */
 .app-body-sm {
-  font-size: var(--app-font-size-small);
+  font-size: var(--app-font-size-sm);
   color: var(--app-text-primary);
   line-height: var(--app-line-height-relaxed);
 }
 
-.app-large {
-  font-size: var(--app-font-size-large);
-  font-weight: var(--app-font-weight-semibold);
-  color: var(--app-text-accent);
-}
-
-/** @deprecated use .app-large */
-.app-display {
-  font-size: var(--app-font-size-large);
-  font-weight: var(--app-font-weight-semibold);
-  color: var(--app-text-accent);
-}
-
-/** @deprecated use .app-large */
+/** Page titles, hero text, action-sheet headers */
+.app-large,
+.app-display,
 .app-display-lg {
-  font-size: var(--app-font-size-large);
-  font-weight: var(--app-font-weight-semibold);
+  font-size: var(--app-font-size-display);
+  font-weight: var(--app-font-weight-medium);
   color: var(--app-text-accent);
 }
 
@@ -130,12 +119,12 @@ span {
 /* Pill button – typography */
 .pill-button {
   font-size: var(--app-font-size-title);
-  font-weight: var(--app-font-weight-semibold);
+  font-weight: var(--app-font-weight-medium);
   text-transform: none;
   letter-spacing: 0;
 
   ion-icon {
-    font-size: var(--app-font-size-large);
+    font-size: var(--app-icon-size-lg);
   }
 }
 
@@ -153,24 +142,24 @@ ion-item[detail="true"]::part(native) {
 
 ion-item[detail="true"] .item-detail-icon,
 ion-item[detail="true"] ion-icon[slot="end"] {
-  font-size: var(--app-font-size-body) !important;
-  width: 0.875rem !important;
-  height: 0.875rem !important;
+  font-size: var(--app-icon-size-sm) !important;
+  width: var(--app-icon-size-sm) !important;
+  height: var(--app-icon-size-sm) !important;
   color: var(--app-text-secondary) !important;
 }
 
 /* Accordion toggle icon */
 ion-accordion .ion-accordion-toggle-icon {
-  font-size: var(--app-font-size-body) !important;
-  width: 0.875rem !important;
-  height: 0.875rem !important;
+  font-size: var(--app-icon-size-sm) !important;
+  width: var(--app-icon-size-sm) !important;
+  height: var(--app-icon-size-sm) !important;
 }
 
 /* Pills (action-pill, item-pill) */
 .action-pill,
 .item-pill {
-  font-size: var(--app-font-size-small) !important;
-  font-weight: var(--app-font-weight-semibold);
+  font-size: var(--app-font-size-sm) !important;
+  font-weight: var(--app-font-weight-medium);
 }
 
 /* List item titles */
@@ -188,9 +177,13 @@ ion-item ion-label p {
   line-height: var(--app-line-height-body);
 }
 
-/* CTA row subtext (dates/times) – small size; overrides ion-item ion-label p for elements with this class */
+/* List item secondary text overrides */
 ion-item ion-label p.app-body-secondary-sm {
-  font-size: var(--app-font-size-small) !important;
+  font-size: var(--app-font-size-sm) !important;
+}
+
+ion-item ion-label p.app-body-secondary-xs {
+  font-size: var(--app-font-size-xs) !important;
 }
 
 /* CTA row and user-type card titles: title size, normal weight, dark color */
@@ -203,30 +196,20 @@ ion-item ion-label p.app-body-secondary-sm {
 /* Verse of the Day full page: reference same as CTA titles; verse text uses app-body */
 .verse-of-the-day-content .verse-reference {
   font-size: var(--app-font-size-title);
-  font-weight: 400;
+  font-weight: var(--app-font-weight-normal);
   color: var(--ion-color-dark);
 }
 
 /* Header icon sizes (toolbar, back, donate) */
-ion-header ion-buttons ion-button ion-icon {
-  font-size: var(--app-icon-size-header) !important;
-  width: var(--app-icon-size-header) !important;
-  height: var(--app-icon-size-header) !important;
-}
-
-ion-header ion-back-button ion-icon {
-  font-size: var(--app-icon-size-header) !important;
-  width: var(--app-icon-size-header) !important;
-  height: var(--app-icon-size-header) !important;
-}
-
+ion-header ion-buttons ion-button ion-icon,
+ion-header ion-back-button ion-icon,
 .donate-header-button ion-icon {
-  font-size: var(--app-icon-size-header) !important;
-  width: var(--app-icon-size-header) !important;
-  height: var(--app-icon-size-header) !important;
+  font-size: var(--app-icon-size-md) !important;
+  width: var(--app-icon-size-md) !important;
+  height: var(--app-icon-size-md) !important;
 }
 
-/* Action sheet – typography */
+/* Action sheet – typography (all base/body size) */
 .services-action-sheet .action-sheet-title,
 .donate-action-sheet .action-sheet-title,
 .share-action-sheet .action-sheet-title,
@@ -236,8 +219,8 @@ ion-header ion-back-button ion-icon {
 .services-action-sheet .action-sheet-group h1,
 .donate-action-sheet .action-sheet-group h1,
 .share-action-sheet .action-sheet-group h1 {
-  font-size: var(--app-font-size-large) !important;
-  font-weight: var(--app-font-weight-semibold) !important;
+  font-size: var(--app-font-size-body) !important;
+  font-weight: var(--app-font-weight-medium) !important;
   color: var(--app-text-accent) !important;
   text-align: left !important;
 }
@@ -255,7 +238,7 @@ ion-header ion-back-button ion-icon {
 
     .action-sheet-icon {
       font-size: var(--app-font-size-body);
-      color: var(--app-text-accent);
+      color: var(--ion-color-dark);
     }
 
     span {
@@ -271,8 +254,8 @@ ion-header ion-back-button ion-icon {
   .action-sheet-button.donate-button {
     span {
       color: #ffffff !important;
-      font-weight: var(--app-font-weight-semibold) !important;
-      font-size: var(--app-font-size-title) !important;
+      font-weight: var(--app-font-weight-medium) !important;
+      font-size: var(--app-font-size-body) !important;
     }
 
     .action-sheet-icon {
@@ -283,37 +266,34 @@ ion-header ion-back-button ion-icon {
 
 .services-action-sheet .action-sheet-button {
   .action-sheet-icon {
-    font-size: var(--app-font-size-large) !important;
+    font-size: var(--app-icon-size-sm) !important;
   }
 
   .action-sheet-button-inner {
-    font-size: var(--app-font-size-title) !important;
+    font-size: var(--app-font-size-body) !important;
     color: var(--ion-color-dark) !important;
   }
 
   span {
-    font-size: var(--app-font-size-title) !important;
+    font-size: var(--app-font-size-body) !important;
     color: var(--ion-color-dark) !important;
   }
 
-  ion-icon[src*="hand-helping.svg"] {
-    color: var(--app-text-accent);
-  }
 }
 
 .share-action-sheet .action-sheet-button {
   .action-sheet-icon {
-    font-size: var(--app-font-size-large) !important;
-    color: var(--app-text-accent) !important;
+    font-size: var(--app-icon-size-sm) !important;
+    color: var(--ion-color-dark) !important;
   }
 
   .action-sheet-button-inner {
-    font-size: var(--app-font-size-title) !important;
+    font-size: var(--app-font-size-body) !important;
     color: var(--ion-color-dark) !important;
   }
 
   span {
-    font-size: var(--app-font-size-title) !important;
+    font-size: var(--app-font-size-body) !important;
     color: var(--ion-color-dark) !important;
   }
 }
@@ -324,17 +304,17 @@ ion-header ion-back-button ion-icon {
 
 .donate-action-sheet .action-sheet-button {
   .action-sheet-icon {
-    font-size: var(--app-font-size-large) !important;
+    font-size: var(--app-icon-size-sm) !important;
   }
 
   .action-sheet-button-inner {
-    font-size: var(--app-font-size-title) !important;
+    font-size: var(--app-font-size-body) !important;
     line-height: var(--app-line-height-loose);
     color: var(--ion-color-dark) !important;
   }
 
   span {
-    font-size: var(--app-font-size-title) !important;
+    font-size: var(--app-font-size-body) !important;
     color: var(--ion-color-dark) !important;
   }
 }

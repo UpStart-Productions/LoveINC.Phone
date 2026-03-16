@@ -43,8 +43,11 @@ export function mapNotificationMetaToContentType(meta: NotificationMeta | null |
     volunteer: 'volunteer',
     'donation-drive': 'donation-drive',
     donationDrive: 'donation-drive',
-    'church-partner': 'church-partner',
-    churchPartner: 'church-partner',
+    'church-partner': 'partner',
+    churchPartner: 'partner',
+    partner: 'partner',
+    'volunteer-position': 'volunteer-position',
+    volunteerPosition: 'volunteer-position',
     fundraiser: 'fundraiser',
     awareness: 'awareness',
   };

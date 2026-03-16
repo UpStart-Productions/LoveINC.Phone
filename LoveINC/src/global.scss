@@ -396,17 +396,9 @@ ion-modal.alerts-modal-sheet {
   }
 }
 
-.services-action-sheet .action-sheet-button .action-sheet-icon {
-  width: 1.5rem !important;
-  height: 1.5rem !important;
-}
-
-.share-action-sheet .action-sheet-button .action-sheet-icon {
-  width: 1.5rem !important;
-  height: 1.5rem !important;
-}
-
+.services-action-sheet .action-sheet-button .action-sheet-icon,
+.share-action-sheet .action-sheet-button .action-sheet-icon,
 .donate-action-sheet .action-sheet-button .action-sheet-icon {
-  width: 1.5rem !important;
-  height: 1.5rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
 }

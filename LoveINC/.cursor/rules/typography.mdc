@@ -11,24 +11,25 @@ alwaysApply: false
 
 **CRITICAL:** Do NOT hardcode font sizes. Use CSS variables or typography utility classes.
 
-## Text Sizes (use `var(--app-font-size-*)`)
+## Text Sizes (5 tokens – use `var(--app-font-size-*)`)
 
-- `--app-font-size-caption` (0.75rem) – pills, badges, metadata
-- `--app-font-size-body-sm` (0.875rem) – secondary text, labels
+- `--app-font-size-xs` (0.75rem) – CTA subtext, fine print
+- `--app-font-size-sm` (0.875rem) – captions, pills, secondary
 - `--app-font-size-body` (1rem) – default body
-- `--app-font-size-title` (1.0625rem) – card/list titles
-- `--app-font-size-display` (1.25rem) – page titles
-- `--app-font-size-display-lg` (1.5rem) – hero, big numbers
+- `--app-font-size-title` (1.25rem) – card/list titles
+- `--app-font-size-display` (1.5rem) – page titles, hero
 
-## Icon Sizes (use `var(--app-icon-size-*)`)
+## Icon Sizes (4 tokens – use `var(--app-icon-size-*)`)
 
-- `--app-icon-size-sm` through `--app-icon-size-4xl`
-- `--app-icon-size-header`, `--app-icon-size-tab`, `--app-icon-size-fab`
+- `--app-icon-size-sm` (0.875rem)
+- `--app-icon-size-md` (1.25rem)
+- `--app-icon-size-lg` (1.5rem)
+- `--app-icon-size-xl` (2rem)
 
 ## Typography Classes (prefer these)
 
-- `.app-title`, `.app-body`, `.app-body-secondary`, `.app-body-sm`, `.app-body-secondary-sm`
-- `.app-caption`, `.app-display`, `.app-display-lg`, `.app-link`
+- `.app-title`, `.app-body`, `.app-body-secondary`, `.app-body-sm`, `.app-body-secondary-sm`, `.app-body-secondary-xs`
+- `.app-caption`, `.app-large`, `.app-display`, `.app-display-lg`, `.app-link`
 
 ## Rules
 
@@ -36,7 +37,7 @@ alwaysApply: false
 2. **Never** use `font-size: Xrem` or `font-size: Xpx` in component styles. Use vars only when a class cannot apply (e.g. icon sizing).
 3. **Never** add new font-size variables without updating `docs/TYPOGRAPHY-GUIDE.md`.
 4. Use **weight and color** for hierarchy, not more size steps.
-5. **Before adding text styles** to any component: check if `.app-title`, `.app-body`, `.app-body-secondary`, `.app-body-secondary-sm`, `.app-caption`, `.app-display`, `.app-display-lg`, or semantic HTML (h1–h6, p) already provides the style.
+5. **Before adding text styles** to any component: check if `.app-title`, `.app-body`, `.app-body-secondary`, `.app-body-secondary-sm`, `.app-body-secondary-xs`, `.app-caption`, `.app-large`, `.app-display`, `.app-display-lg`, or semantic HTML (h1–h6, p) already provides the style.
 
 ## Anti-Pattern (causes redundant styles)
 
@@ -51,7 +52,7 @@ alwaysApply: false
 
 ```html
 <!-- ✅ GOOD – use typography class in HTML -->
-<h2 class="app-display">Title</h2>
+<h2 class="app-large">Title</h2>
 ```
 
 ## Reference

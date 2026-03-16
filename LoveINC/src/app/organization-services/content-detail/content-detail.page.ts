@@ -15,7 +15,8 @@ import {
   IonIcon,
   IonItem,
   IonLabel,
-  IonList
+  IonList,
+  IonSpinner,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { ContentDetail, ContentType } from './content-detail.model';
@@ -37,7 +38,9 @@ import {
   type PlatformEvent,
   type PlatformImpactStory,
   type PlatformOffering,
+  type PlatformPartner,
   type PlatformService,
+  type PlatformVolunteerPositionWithAffiliate,
 } from '../../services/platform';
 
 @Component({
@@ -55,10 +58,11 @@ import {
     IonButton,
     IonBackButton,
     IonIcon,
-    IonItem,
-    IonLabel,
-    IonList
-  ],
+  IonItem,
+  IonLabel,
+  IonList,
+  IonSpinner,
+],
   providers: [AlertController, ActionSheetController, ToastController]
 })
 export class ContentDetailPage implements OnInit, OnDestroy {
@@ -67,6 +71,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   contentId: string = '';
   backRoute: string = '/tabs/home';
   pageTitle: string = 'Details';
+  loading = false;
+  error: string | null = null;
 
   /** Org-level: when true, user must complete intake before accessing voucher-gated services. Default true until API responds (conservative: hide voucher icons until we know). */
   intakeRequired = true;
@@ -140,11 +146,15 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         return '/tabs/impact-stories';
       case 'gap-ministry':
         return '/tabs/gap-ministries';
+      case 'volunteer-position':
+        return '/tabs/volunteer-positions';
+      case 'partner':
+      case 'church-partner':
+        return '/tabs/church-partnerships';
       case 'volunteer':
       case 'donation-drive':
       case 'fundraiser':
       case 'awareness':
-      case 'church-partner':
       case 'donation-opportunity':
       default:
         return '/tabs/home';
@@ -170,7 +180,10 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       case 'awareness':
         return 'Awareness';
       case 'church-partner':
+      case 'partner':
         return 'Church Partner';
+      case 'volunteer-position':
+        return 'Volunteer Position';
       case 'donation-opportunity':
         return 'Donation Opportunity';
       default:
@@ -188,6 +201,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       'volunteer',
       'fundraiser',
       'awareness',
+      'volunteer-position',
+      'partner',
     ];
     if (apiTypes.includes(this.contentType)) {
       this.loadFromPlatformApi();
@@ -245,9 +260,96 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       case 'awareness':
         this.loadCtaFromApi();
         break;
+      case 'volunteer-position':
+        this.loadVolunteerPositionFromApi();
+        break;
+      case 'partner':
+        this.loadPartnerFromApi();
+        break;
       default:
         console.error('Unsupported API content type:', this.contentType);
     }
+  }
+
+  private loadVolunteerPositionFromApi() {
+    this.loading = true;
+    this.error = null;
+    this.platformApi.getVolunteerPositions().subscribe({
+      next: (items) => {
+        const p = items?.find((pos) => pos.id === this.contentId) ?? null;
+        this.contentItem = p ? this.mapPlatformVolunteerPositionToContentDetail(p) : null;
+        if (!this.contentItem) {
+          this.error = 'Position not found';
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading volunteer position:', err);
+        this.error = 'Failed to load position';
+        this.loading = false;
+      },
+    });
+  }
+
+  private loadPartnerFromApi() {
+    this.loading = true;
+    this.error = null;
+    this.platformApi.getOrganizationPartners().subscribe({
+      next: (items) => {
+        const p = items?.find((partner) => partner.id === this.contentId) ?? null;
+        this.contentItem = p ? this.mapPlatformPartnerToContentDetail(p) : null;
+        if (!this.contentItem) {
+          this.error = 'Partner not found';
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading partner:', err);
+        this.error = 'Failed to load partner';
+        this.loading = false;
+      },
+    });
+  }
+
+  private mapPlatformVolunteerPositionToContentDetail(p: PlatformVolunteerPositionWithAffiliate): ContentDetail {
+    const url = (p['photoUrl'] ?? p['photo_url']) as string | undefined;
+    const photoUrl = this.platformApi.resolveUploadUrl(url) || (url ?? '') || '';
+    const description = (p['description'] ?? p['shortDescription'] ?? '') as string;
+    const rule = p['scheduleRule'] ?? p['schedule_rule'];
+    const schedule = rule && typeof rule === 'object'
+      ? this.scheduleFormatting.formatScheduleRule(this.scheduleFormatting.normalizeScheduleRule(rule)) ?? undefined
+      : undefined;
+    const location = p.address
+      ? [p.address.address, p.address.city, p.address.state, p.address.zip].filter(Boolean).join(', ')
+      : undefined;
+    return {
+      id: p.id,
+      title: (p['title'] ?? p['shortDescription'] ?? 'Volunteer') as string,
+      description,
+      photoUrl,
+      subtitle: p.affiliate?.name,
+      affiliateName: p.affiliate?.name,
+      location,
+      volunteerSchedule: schedule,
+    };
+  }
+
+  private mapPlatformPartnerToContentDetail(p: PlatformPartner): ContentDetail {
+    const photoUrl = this.platformApi.resolveUploadUrl(p.photoUrl ?? '') || (p.photoUrl ?? '');
+    const description = (p.longDescription ?? p.shortDescription ?? '') as string;
+    const location = p.address
+      ? [p.address.address, p.address.city, p.address.state, p.address.zip].filter(Boolean).join(', ')
+      : undefined;
+    return {
+      id: p.id,
+      title: p.name,
+      description,
+      photoUrl,
+      location,
+      phone: p.phone,
+      email: p.email,
+      website: p.website,
+    };
   }
 
   private loadEventFromApi() {
@@ -433,7 +535,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   private getCtaRelatedRedirect(cta: PlatformCta): { commands: unknown[]; queryParams?: Record<string, string> } | null {
     if (cta.volunteerPositions?.length === 1) {
-      return { commands: ['/tabs/volunteer-position', cta.volunteerPositions[0].id], queryParams: { from: 'home' } };
+      return { commands: ['/tabs/content-detail', 'volunteer-position', cta.volunteerPositions[0].id], queryParams: { from: 'home' } };
     }
     if (cta.events?.length === 1) {
       return { commands: ['/tabs/content-detail', 'event', cta.events[0].id], queryParams: { from: 'home' } };
@@ -793,8 +895,44 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     return !!this.contentItem?.nextSession;
   }
 
+  hasVolunteerSchedule(): boolean {
+    return !!this.contentItem?.volunteerSchedule;
+  }
+
   hasLocation(): boolean {
     return !!this.contentItem?.location;
+  }
+
+  hasPhone(): boolean {
+    return !!this.contentItem?.phone;
+  }
+
+  hasEmail(): boolean {
+    return !!this.contentItem?.email;
+  }
+
+  hasWebsite(): boolean {
+    return !!this.contentItem?.website;
+  }
+
+  isVolunteerPosition(): boolean {
+    return this.contentType === 'volunteer-position';
+  }
+
+  async onVolunteerPositionClick(): Promise<void> {
+    if (!this.contentItem || this.contentType !== 'volunteer-position') return;
+    await this.volunteerActionSheetService.openVolunteerActionSheet({
+      organizationName: this.contentItem.affiliateName ?? this.contentItem.title,
+      address: this.contentItem.location ?? undefined,
+      positions: [
+        {
+          id: this.contentItem.id,
+          title: this.contentItem.title,
+          description: this.contentItem.description || undefined,
+          schedule: this.contentItem.volunteerSchedule,
+        },
+      ],
+    });
   }
 
   hasEventDateTime(): boolean {

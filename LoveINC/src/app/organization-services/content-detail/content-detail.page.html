@@ -20,10 +20,19 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" *ngIf="contentItem">
+<ion-content [fullscreen]="true">
+  @if (loading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (error) {
+    <div class="empty-state">
+      <p class="app-body-secondary-sm">{{ error }}</p>
+    </div>
+  } @else if (contentItem) {
   <div>
     <!-- Hero Image -->
-    <div class="hero-image-container">
+    <div class="hero-image-container" *ngIf="contentItem.photoUrl">
       <img [src]="contentItem.photoUrl" [alt]="contentItem.title" class="hero-image" />
     </div>
 
@@ -42,6 +51,15 @@
           <ion-label>
             <h3>Instructor</h3>
             <p>{{ contentItem.teacher }}</p>
+          </ion-label>
+        </ion-item>
+
+        <!-- Schedule (for volunteer positions) -->
+        <ion-item *ngIf="hasVolunteerSchedule()">
+          <ion-icon slot="start" name="calendar-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Schedule</h3>
+            <p>{{ contentItem.volunteerSchedule }}</p>
           </ion-label>
         </ion-item>
 
@@ -102,6 +120,33 @@
           </ion-label>
         </ion-item>
 
+        <!-- Phone (partner) -->
+        <ion-item *ngIf="hasPhone()">
+          <ion-icon slot="start" name="call-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Phone</h3>
+            <p><a [href]="'tel:' + contentItem.phone">{{ contentItem.phone }}</a></p>
+          </ion-label>
+        </ion-item>
+
+        <!-- Email (partner) -->
+        <ion-item *ngIf="hasEmail()">
+          <ion-icon slot="start" name="mail-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Email</h3>
+            <p><a [href]="'mailto:' + contentItem.email">{{ contentItem.email }}</a></p>
+          </ion-label>
+        </ion-item>
+
+        <!-- Website (partner) -->
+        <ion-item *ngIf="hasWebsite()">
+          <ion-icon slot="start" name="globe-outline" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Website</h3>
+            <p><a [href]="contentItem.website" target="_blank" rel="noopener">{{ contentItem.website }}</a></p>
+          </ion-label>
+        </ion-item>
+
         <!-- Class Documents Header -->
         <ion-item *ngIf="hasClassDocuments()" class="class-documents-header-item">
           <ion-icon slot="start" name="document-text-outline" color="primary"></ion-icon>
@@ -150,6 +195,15 @@
           Volunteer
         </ion-button>
       </div>
+
+      <!-- Volunteer (Volunteer Position detail) -->
+      <div class="action-buttons m-t-24" *ngIf="isVolunteerPosition()">
+        <ion-button expand="block" color="primary" (click)="onVolunteerPositionClick()">
+          <ion-icon slot="start" name="heart-outline"></ion-icon>
+          Volunteer
+        </ion-button>
+      </div>
     </div>
   </div>
+  }
 </ion-content>

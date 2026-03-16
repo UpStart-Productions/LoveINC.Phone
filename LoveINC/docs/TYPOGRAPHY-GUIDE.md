@@ -13,55 +13,44 @@
 
 ---
 
-## 2. Text Size Scale (6 sizes)
+## 2. Text Size Scale (5 sizes)
 
 Defined in `src/theme/variables.scss`:
 
 | Variable | Value | Role | Use for |
 |----------|-------|------|---------|
-| `--app-font-size-caption` | 0.75rem | Caption | Pills, badges, metadata, overlines, form errors |
-| `--app-font-size-body-sm` | 0.875rem | Body small | Secondary text, labels, smaller body copy |
-| `--app-font-size-body` | 1rem | Body | Default body, list secondary, buttons, inputs |
-| `--app-font-size-title` | 1.0625rem | Title | Card titles, list item titles, section headings |
-| `--app-font-size-display` | 1.25rem | Display | Page titles, action-sheet headers |
-| `--app-font-size-display-lg` | 1.5rem | Display large | Hero text, onboarding headlines, big numbers |
+| `--app-font-size-xs` | 0.75rem | Extra small | CTA subtext, fine print, captions |
+| `--app-font-size-sm` | 0.875rem | Small | Pills, badges, metadata, secondary text |
+| `--app-font-size-body` | 1rem | Body | Default body, inputs, list secondary, buttons |
+| `--app-font-size-title` | 1.25rem | Title | Card titles, section headings, list item titles |
+| `--app-font-size-display` | 1.5rem | Display | Page titles, hero text, action-sheet headers |
 
-**Special-purpose:**
-| Variable | Value | Use for |
-|----------|-------|---------|
-| `--app-font-size-input` | 0.85rem | Form input text, placeholder, labels |
-| `--app-font-size-tab-label` | 0.6rem | Tab bar icon labels |
+**Aliases** (map to the scale): `--app-font-size-small`, `--app-font-size-large`, `--app-font-size-caption`, `--app-font-size-body-sm`, `--app-font-size-display-lg`, `--app-font-size-input`, `--app-font-size-tab-label`
 
 ---
 
-## 3. Icon Size Scale (6 sizes + special)
+## 3. Icon Size Scale (4 sizes)
 
 | Variable | Value | Use for |
 |----------|-------|---------|
-| `--app-icon-size-sm` | 0.875rem | List chevrons, accordion toggles, small badges |
-| `--app-icon-size-md` | 1rem | Card badges, body-sized icons |
-| `--app-icon-size-lg` | 1.25rem | Display-sized icons, action icons |
-| `--app-icon-size-xl` | 1.5rem | Action sheet icons, pill icons |
-| `--app-icon-size-2xl` | 2.25rem | Card placeholder icons, content card icons |
-| `--app-icon-size-3xl` | 3rem | Voucher placeholder, empty state |
-| `--app-icon-size-4xl` | 4rem | Scan success, no alerts, hero empty states |
+| `--app-icon-size-sm` | 0.875rem | List chevrons, accordion toggles, card badges |
+| `--app-icon-size-md` | 1.25rem | Header icons, card actions, inline icons |
+| `--app-icon-size-lg` | 1.5rem | Tab bar, content cards, action sheet icons |
+| `--app-icon-size-xl` | 2rem | FAB, empty states, scan success |
 
-**Special-purpose:**
-| Variable | Value | Use for |
-|----------|-------|---------|
-| `--app-icon-size-header` | 1.2rem | Toolbar, back button, donate button |
-| `--app-icon-size-tab` | 1.36rem | Tab bar icons |
-| `--app-icon-size-fab` | 2rem | Floating action button |
+**Aliases** (map to the 4-size scale): `--app-icon-size-header`, `--app-icon-size-tab`, `--app-icon-size-fab`, `--app-icon-size-2xl`, `--app-icon-size-3xl`, `--app-icon-size-4xl`
 
 ---
 
-## 4. Font Weights
+## 4. Font Weights (3 tokens)
 
 | Variable | Value | Use for |
 |----------|-------|---------|
-| `--app-font-weight-medium` | 300 | Body text, subtitles |
-| `--app-font-weight-semibold` | 600 | Titles, buttons, labels |
+| `--app-font-weight-normal` | 400 | Body text |
+| `--app-font-weight-medium` | 600 | Titles, buttons, labels |
 | `--app-font-weight-bold` | 700 | Display, hero, emphasis |
+
+**Alias:** `--app-font-weight-semibold` → `--app-font-weight-medium`
 
 ---
 
@@ -71,15 +60,15 @@ Defined in `src/theme/typography.scss`. Use these instead of inline font-size st
 
 | Class | Size | Weight | Color |
 |-------|------|--------|-------|
-| `.app-title` | title | semibold | primary |
+| `.app-title` | title | medium | primary |
 | `.app-body` | body | normal | primary |
 | `.app-body-secondary` | body | normal | secondary |
-| `.app-body-sm` | body-sm | normal | primary |
-| `.app-body-secondary-sm` | caption | normal | secondary (CTA subtext, volunteer address/description) |
-| `.app-disclaimer` | caption | italic | danger |
-| `.app-caption` | caption | semibold | secondary |
-| `.app-display` | display | semibold | accent |
-| `.app-display-lg` | display-lg | semibold | accent |
+| `.app-body-sm` | sm | normal | primary |
+| `.app-body-secondary-sm` | sm | normal | secondary |
+| `.app-body-secondary-xs` | xs | normal | secondary (CTA subtext, fine print) |
+| `.app-disclaimer` | sm | italic | danger |
+| `.app-caption` | sm | medium | secondary |
+| `.app-large`, `.app-display`, `.app-display-lg` | display | medium | accent |
 | `.app-link` | body | normal | primary (blue) |
 
 ---
@@ -88,10 +77,10 @@ Defined in `src/theme/typography.scss`. Use these instead of inline font-size st
 
 Use semantic elements when possible; they inherit typography from global styles:
 
-- `h1` → display-lg, bold
-- `h2` → display, semibold
-- `h3`, `h4` → title, semibold
-- `h5`, `h6` → body, semibold
+- `h1` → display, bold
+- `h2`, `h3` → display, medium
+- `h4`, `h5` → title, medium
+- `h6` → body, medium
 - `p` → body, primary
 - `span` → body, primary
 

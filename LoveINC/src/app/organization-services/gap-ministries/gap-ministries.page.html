@@ -22,8 +22,10 @@
         <h2 class="schedule-header app-caption">{{ schedule }}</h2>
         <app-card
           *ngFor="let service of groupedServices[schedule]"
-          class="service-card"
-          [contentHtml]="getServiceContentHtml(service)"
+          class="app-card-compact"
+          [title]="service.service"
+          [subtitle]="service.daysTimes"
+          [description]="getServiceDescription(service)"
           [actionIcons]="getActionIcons(service)"
           [imageUrl]="service.photoUrl"
           imagePosition="right"

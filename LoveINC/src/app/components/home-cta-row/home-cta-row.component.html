@@ -12,10 +12,10 @@
   <ion-label>
     <p class="app-title">{{ cta.title }}</p>
     @if (contextSubtitle) {
-      <p class="app-body-secondary-sm m-t-4">{{ contextSubtitle }}</p>
+      <p class="app-body-secondary-xs m-t-4">{{ contextSubtitle }}</p>
     }
     @if (showProgressBar && progressText) {
-      <p class="app-body-secondary-sm m-t-4">{{ progressText }}</p>
+      <p class="app-body-secondary-xs m-t-4">{{ progressText }}</p>
       <ion-progress-bar
         [value]="progressValue"
         class="cta-progress-bar m-t-6"

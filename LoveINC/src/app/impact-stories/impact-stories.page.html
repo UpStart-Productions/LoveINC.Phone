@@ -11,7 +11,7 @@
   <div class="cards-container">
     <app-card
       *ngFor="let story of stories"
-      class="impact-card"
+      class="app-card-compact app-card-impact"
       [imageUrl]="getPhotoUrl(story)"
       [title]="story.title"
       [description]="story.shortDescription ?? story.longDescription ?? ''"

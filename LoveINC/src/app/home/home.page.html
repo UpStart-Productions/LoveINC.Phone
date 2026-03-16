@@ -48,8 +48,8 @@
   <div class="cards-container">
     <app-card
       *ngFor="let card of cards"
-      class="home-card"
-      [class.impact-card]="card.type === 'impact'"
+      class="app-card-compact"
+      [class.app-card-impact]="card.type === 'impact'"
       [imageUrl]="card.photoUrl"
       [badge]="card.badge"
       [title]="card.title"

@@ -59,6 +59,16 @@ export interface ContentDetail {
   voucherRequired?: boolean;
   serviceId?: string;
   vouchers?: Array<{ id: string; title: string }>;
+
+  // Partner-specific (church partner)
+  phone?: string;
+  email?: string;
+  website?: string;
+
+  // Volunteer-position-specific (affiliate as subtitle)
+  affiliateName?: string;
+  /** Formatted schedule string for volunteer positions (not class nextSession) */
+  volunteerSchedule?: string;
 }
 
 export type ContentType =
@@ -70,5 +80,7 @@ export type ContentType =
   | 'volunteer'
   | 'donation-drive'
   | 'church-partner'
+  | 'partner'
+  | 'volunteer-position'
   | 'fundraiser'
   | 'awareness';

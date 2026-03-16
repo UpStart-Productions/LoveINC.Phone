@@ -48,8 +48,8 @@ export const routes: Routes = [
       },
       {
         path: 'volunteer-position/:id',
-        loadComponent: () =>
-          import('../volunteer-position-detail/volunteer-position-detail.page').then((m) => m.VolunteerPositionDetailPage),
+        redirectTo: '/tabs/content-detail/volunteer-position/:id',
+        pathMatch: 'full',
       },
       {
         path: 'verse-of-the-day',
@@ -83,8 +83,8 @@ export const routes: Routes = [
       },
       {
         path: 'partner/:id',
-        loadComponent: () =>
-          import('../partner-detail').then((m) => m.PartnerDetailPage),
+        redirectTo: '/tabs/content-detail/partner/:id',
+        pathMatch: 'full',
       },
       {
         path: 'settings',
