@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { VerseOfTheDayService, VerseOfTheDay } from '../../verse-of-the-day/verse-of-the-day.service';
+import { VerseOfTheDayService, VerseOfTheDay } from '@upstart-productions/verse-of-the-day';
 import { ContentCardComponent } from '../content-card/content-card.component';
 
 @Component({

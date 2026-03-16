@@ -1,6 +1,6 @@
 # @upstart-productions/verse-of-the-day
 
-Angular/Ionic Verse of the Day component. Fetches the daily verse from NET Bible API, then optionally enriches it with ESV cross-references and footnotes.
+Angular/Ionic Verse of the Day component. Fetches the daily verse from Christian Context API (getcontext.xyz), with optional SQLite caching for push notification consistency.
 
 ## Installation
 
@@ -21,42 +21,81 @@ npm install @upstart-productions/verse-of-the-day
 }
 ```
 
-### 2. Provide the ESV API key (optional)
+### 2. Provide optional cache (recommended for push consistency)
 
-For cross-references and footnotes, get a free key at [api.esv.org](https://api.esv.org/account/create-application/) and add it to your app config:
+Implement `VerseOfTheDayCache` and provide it:
 
 ```ts
-// main.ts or app.config.ts
-import { VERSE_OF_THE_DAY_ESV_API_KEY } from '@upstart-productions/verse-of-the-day';
+// app.config.ts or providers
+import {
+  VERSE_OF_THE_DAY_CACHE,
+  VerseOfTheDayCache,
+  VerseOfTheDay,
+} from '@upstart-productions/verse-of-the-day';
 
-bootstrapApplication(AppComponent, {
-  providers: [
-    { provide: VERSE_OF_THE_DAY_ESV_API_KEY, useValue: environment.esvApiKey },
-    // ...other providers
-  ],
-});
+// Your implementation using SQLite, etc.
+const cacheImpl: VerseOfTheDayCache = {
+  async get(dateKey: string) { /* ... */ },
+  async set(dateKey: string, verse: VerseOfTheDay) { /* ... */ },
+};
+
+providers: [
+  { provide: VERSE_OF_THE_DAY_CACHE, useValue: cacheImpl },
+  // ...
+]
 ```
 
-Without the key, the component uses NET Bible text only.
+### 3. Provide YouTube embed base URL (for sermon videos in Capacitor)
 
-### 3. Typography
-
-The package has no custom font styles. It uses host app typography classes:
-
-- `.app-title` – verse reference
-- `.app-body` – verse text and HTML content
-- `.app-body-secondary` – error message
-
-Ensure your app defines these classes (or equivalent) in your global typography styles.
-
-### 4. Add to your menu
+Fixes Error 152/153 when embedding YouTube in native apps:
 
 ```ts
-{
-  name: 'Verse of the Day',
-  icon: 'book-outline',
-  route: '/tabs/verse-of-the-day',
-}
+import { VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL } from '@upstart-productions/verse-of-the-day';
+
+providers: [
+  { provide: VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL, useValue: 'https://api.grovlink.com/embed' },
+]
+```
+
+### 4. Provide share handler (optional)
+
+When provided, the share button is shown:
+
+```ts
+import { VERSE_OF_THE_DAY_SHARE, VerseOfTheDay } from '@upstart-productions/verse-of-the-day';
+
+providers: [
+  {
+    provide: VERSE_OF_THE_DAY_SHARE,
+    useFactory: (sharingService: SharingService) => async (verse: VerseOfTheDay) => {
+      const htmlContent = `...`; // Build from verse
+      await sharingService.shareContent({ title: `Verse of the Day: ${verse.reference}`, htmlContent, ... });
+    },
+    deps: [SharingService],
+  },
+]
+```
+
+### 5. Provide back button default href (optional)
+
+Default is `/tabs/more`. Override if your app uses a different structure:
+
+```ts
+{ provide: VERSE_OF_THE_DAY_BACK_DEFAULT_HREF, useValue: '/tabs/more' }
+```
+
+### 6. Typography
+
+The package uses host app typography classes: `.app-body`, `.app-body-secondary`, `.app-link`, `h2`. Ensure your app defines these in global typography. The host should also style `.verse-of-the-day-content h2` for the verse reference and section headers.
+
+### 7. Use the data anywhere
+
+Inject `VerseOfTheDayService` and call `getVerseOfTheDay()` to render the verse in any component (card, list, modal, etc.):
+
+```ts
+import { VerseOfTheDayService, VerseOfTheDay } from '@upstart-productions/verse-of-the-day';
+
+verse$ = this.verseOfTheDayService.getVerseOfTheDay();
 ```
 
 ## Exports
@@ -64,45 +103,13 @@ Ensure your app defines these classes (or equivalent) in your global typography 
 - `VerseOfTheDayPage` – full page component
 - `VerseOfTheDayService` – service for fetching data
 - `VerseOfTheDay` – interface for display
-- `VERSE_OF_THE_DAY_ESV_API_KEY` – injection token for ESV key
+- `VerseOfTheDayCache` – interface for cache adapter
+- `ChristianContextResponse` – API response type
+- `VERSE_OF_THE_DAY_CACHE` – injection token for cache
+- `VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL` – injection token for YouTube embed
+- `VERSE_OF_THE_DAY_SHARE` – injection token for share handler
+- `VERSE_OF_THE_DAY_BACK_DEFAULT_HREF` – injection token for back button href
 
 ## Publishing
 
-### Step 1: Repo
-
-The package lives in [LoveINC.Phone](https://github.com/UpStart-Productions/LoveINC.Phone) at `LoveINC/packages/verse-of-the-day`.
-
-### Step 2: Build
-
-The package has no devDependencies; build from the LoveINC app (which has Ionic, Angular, ng-packagr):
-
-```bash
-cd LoveINC && npm run build:verse-of-the-day
-```
-
-### Step 3: Publish to GitHub Packages
-
-1. Create a [GitHub Personal Access Token](https://github.com/settings/tokens) with `write:packages` scope.
-
-2. Login to GitHub Packages:
-   ```bash
-   npm login --registry=https://npm.pkg.github.com
-   # Username: your-github-username
-   # Password: paste-your-token (not your GitHub password)
-   # Email: your email
-   ```
-
-3. Publish:
-   ```bash
-   cd LoveINC/packages/verse-of-the-day/dist
-   npm publish
-   ```
-
-4. Consumers add to their project `.npmrc`:
-   ```
-   @upstart-productions:registry=https://npm.pkg.github.com
-   ```
-
-### Versioning
-
-Bump `version` in `package.json` before each publish. Use [semver](https://semver.org/).
+See `LoveINC/docs/VERSE-OF-THE-DAY-PUBLISH.md` in the repo for GitHub Packages publish and update instructions.

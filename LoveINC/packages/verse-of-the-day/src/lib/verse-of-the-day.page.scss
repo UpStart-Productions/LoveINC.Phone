@@ -1,4 +1,4 @@
-/* Layout only – typography from host app (app-title, app-body, app-body-secondary) */
+/* Layout only – typography from host app (app-body, app-body-secondary, app-link, h2) */
 
 .verse-loading {
   display: flex;
@@ -6,6 +6,18 @@
   padding: 3rem 0;
 }
 
-.verse-reference {
-  margin-bottom: 0.75rem;
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }

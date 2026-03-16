@@ -222,6 +222,13 @@ ion-item ion-label p.app-body-secondary-xs {
   color: var(--ion-color-dark);
 }
 
+/* Verse of the Day full page: verse reference, Commentary, Sermon – base font size, bold */
+.verse-of-the-day-content h2 {
+  font-size: var(--app-font-size-body);
+  font-weight: var(--app-font-weight-bold);
+  color: var(--ion-color-dark);
+}
+
 /* Header icon sizes (toolbar, back, donate) */
 ion-header ion-buttons ion-button ion-icon,
 ion-header ion-back-button ion-icon,

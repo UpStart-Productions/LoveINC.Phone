@@ -46,6 +46,7 @@
     "@ionic/angular": "^8.0.0",
     "@upstart-productions/goal-tracker": "file:packages/goal-tracker",
     "@upstart-productions/service-unlock": "file:packages/service-unlock",
+    "@upstart-productions/verse-of-the-day": "^2.0.2",
     "capacitor-email-composer": "^8.0.0",
     "date-fns": "^4.1.0",
     "ionicons": "^7.0.0",

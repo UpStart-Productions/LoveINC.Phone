@@ -54,7 +54,7 @@ export const routes: Routes = [
       {
         path: 'verse-of-the-day',
         loadComponent: () =>
-          import('../verse-of-the-day/verse-of-the-day.page').then((m) => m.VerseOfTheDayPage),
+          import('@upstart-productions/verse-of-the-day').then((m) => m.VerseOfTheDayPage),
       },
       {
         path: 'videos',

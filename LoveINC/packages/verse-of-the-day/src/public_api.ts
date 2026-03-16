@@ -1,11 +1,12 @@
 export {
   VerseOfTheDayService,
   VerseOfTheDay,
-  VERSE_OF_THE_DAY_ESV_API_KEY,
-  VERSE_OF_THE_DAY_API_URL,
-  ESV_API_PASSAGE_URL,
-  NetBibleVerse,
-  EsvPassageResponse,
+  VerseOfTheDayCache,
+  ChristianContextResponse,
+  VERSE_OF_THE_DAY_CACHE,
+  VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL,
+  VERSE_OF_THE_DAY_SHARE,
+  VERSE_OF_THE_DAY_BACK_DEFAULT_HREF,
 } from './lib/verse-of-the-day.service';
 
 export { VerseOfTheDayPage } from './lib/verse-of-the-day.page';

@@ -4,6 +4,15 @@ import { provideHttpClient } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 import { INTAKE_VALIDATE_PROVIDER } from '@upstart-productions/service-unlock';
+import {
+  VERSE_OF_THE_DAY_CACHE,
+  VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL,
+  VERSE_OF_THE_DAY_SHARE,
+  VERSE_OF_THE_DAY_BACK_DEFAULT_HREF,
+} from '@upstart-productions/verse-of-the-day';
+import { VerseOfTheDayCacheService } from './app/services/verse-of-the-day-cache.service';
+import { SharingService } from './app/services/sharing/sharing.service';
+import { environment } from './environments/environment';
 import { PlatformApiService } from './app/services/platform/platform-api.service';
 import { UserProfileService } from './app/services/user-profile.service';
 import { 
@@ -49,6 +58,30 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular({ mode: 'ios' }),
     provideRouter(routes),
     provideHttpClient(),
+    { provide: VERSE_OF_THE_DAY_CACHE, useClass: VerseOfTheDayCacheService },
+    { provide: VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL, useValue: environment.youtubeEmbedBaseUrl },
+    {
+      provide: VERSE_OF_THE_DAY_SHARE,
+      useFactory: (sharingService: SharingService) => {
+        return async (verse: import('@upstart-productions/verse-of-the-day').VerseOfTheDay) => {
+          const v = verse;
+          const htmlContent = `
+      <h2>${v.reference}</h2>
+      <p>${v.content}</p>
+      ${v.verseUrl ? `<p><a href="${v.verseUrl}">Read on Bible Gateway</a></p>` : ''}
+      ${v.commentaryUrl && v.commentaryTitle ? `<p><strong>Commentary:</strong> <a href="${v.commentaryUrl}">${v.commentaryTitle}</a>${v.commentaryAuthor || v.commentaryPublisher ? ` — ${[v.commentaryAuthor, v.commentaryPublisher].filter(Boolean).join(', ')}` : ''}</p>` : ''}
+      ${v.sermonUrl && v.sermonTitle ? `<p><strong>Sermon:</strong> <a href="${v.sermonUrl}">${v.sermonTitle}</a>${v.sermonAuthor || v.sermonPublisher ? ` — ${[v.sermonAuthor, v.sermonPublisher].filter(Boolean).join(', ')}` : ''}</p>` : ''}
+    `;
+          await sharingService.shareContent({
+            title: `Verse of the Day: ${v.reference}`,
+            subject: `Verse of the Day: ${v.reference}`,
+            htmlContent: htmlContent.trim(),
+          });
+        };
+      },
+      deps: [SharingService],
+    },
+    { provide: VERSE_OF_THE_DAY_BACK_DEFAULT_HREF, useValue: '/tabs/more' },
     {
       provide: INTAKE_VALIDATE_PROVIDER,
       useFactory: (platformApi: PlatformApiService, userProfile: UserProfileService) => ({

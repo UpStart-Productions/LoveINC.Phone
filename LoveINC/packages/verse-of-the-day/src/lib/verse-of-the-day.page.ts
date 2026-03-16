@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonHeader,
@@ -8,8 +8,17 @@ import {
   IonBackButton,
   IonButtons,
   IonSpinner,
+  IonButton,
+  IonIcon,
 } from '@ionic/angular/standalone';
-import { VerseOfTheDayService, VerseOfTheDay } from './verse-of-the-day.service';
+import {
+  VerseOfTheDayService,
+  VerseOfTheDay,
+  VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL,
+  VERSE_OF_THE_DAY_SHARE,
+  VERSE_OF_THE_DAY_BACK_DEFAULT_HREF,
+} from './verse-of-the-day.service';
+import { SafeResourceUrlPipe } from './safe-resource-url.pipe';
 
 @Component({
   selector: 'app-verse-of-the-day',
@@ -25,6 +34,9 @@ import { VerseOfTheDayService, VerseOfTheDay } from './verse-of-the-day.service'
     IonBackButton,
     IonButtons,
     IonSpinner,
+    IonButton,
+    IonIcon,
+    SafeResourceUrlPipe,
   ],
 })
 export class VerseOfTheDayPage implements OnInit {
@@ -32,9 +44,39 @@ export class VerseOfTheDayPage implements OnInit {
   loading = true;
   error = false;
 
-  constructor(private readonly verseOfTheDayService: VerseOfTheDayService) {}
+  constructor(
+    private readonly verseOfTheDayService: VerseOfTheDayService,
+    @Optional() @Inject(VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL) private readonly youtubeEmbedBaseUrl?: string,
+    @Optional() @Inject(VERSE_OF_THE_DAY_SHARE) readonly shareHandler?: (verse: VerseOfTheDay) => Promise<void>,
+    @Optional() @Inject(VERSE_OF_THE_DAY_BACK_DEFAULT_HREF) backDefaultHref?: string
+  ) {
+    this.backDefaultHref = backDefaultHref ?? '/tabs/more';
+  }
+
+  backDefaultHref: string;
+
+  get sermonVideoId(): string | null {
+    if (!this.verse?.sermonUrl) return null;
+    const match = this.verse.sermonUrl.match(
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/
+    );
+    return match ? match[1] : null;
+  }
+
+  get sermonEmbedUrl(): string | null {
+    const videoId = this.sermonVideoId;
+    if (!videoId || !this.youtubeEmbedBaseUrl?.trim()) return null;
+    const base = this.youtubeEmbedBaseUrl.replace(/\/$/, '');
+    return `${base}/youtube.html?v=${encodeURIComponent(videoId)}`;
+  }
 
   ngOnInit() {
+    this.loadVerse();
+  }
+
+  loadVerse() {
+    this.loading = true;
+    this.error = false;
     this.verseOfTheDayService.getVerseOfTheDay().subscribe({
       next: (v) => {
         this.verse = v;
@@ -46,5 +88,10 @@ export class VerseOfTheDayPage implements OnInit {
         this.error = true;
       },
     });
+  }
+
+  async onShare() {
+    if (!this.verse || !this.shareHandler) return;
+    await this.shareHandler(this.verse);
   }
 }
