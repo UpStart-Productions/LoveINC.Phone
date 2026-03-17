@@ -1,5 +1,7 @@
 import { Component, EnvironmentInjector, inject, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { signal } from '@angular/core';
 import { 
   IonTabs, 
   IonTabBar, 
@@ -13,6 +15,7 @@ import {
 } from '@ionic/angular/standalone';
 import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
+import { shouldHideMainTabBar } from '../shared/utils';
 
 @Component({
   selector: 'app-tabs',
@@ -30,11 +33,15 @@ import { DonateActionSheetService } from '../services/donate-action-sheet.servic
 })
 export class TabsPage implements OnInit, OnDestroy {
   public environmentInjector = inject(EnvironmentInjector);
+  private router = inject(Router);
+
+  /** Hide main app tab bar when viewing a tool with its own tab bar (route data: hideMainTabBar) */
+  showMainTabBar = signal(true);
+  private routerEventsSub: any;
 
   constructor(
     private actionSheetController: ActionSheetController,
     private alertController: AlertController,
-    private router: Router,
     private donateActionSheetService: DonateActionSheetService
   ) {}
 
@@ -43,12 +50,22 @@ export class TabsPage implements OnInit, OnDestroy {
     try {
       await Keyboard.setResizeMode({ mode: KeyboardResize.None });
     } catch (error) {
-      // Keyboard plugin might not be available in browser
+      // Keyboard plugin not available in browser
       console.log('Keyboard plugin not available');
     }
+    // Update tab bar visibility when route changes (e.g. swap to Goal Tracker tabs)
+    this.updateTabBarVisibility();
+    this.routerEventsSub = this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe(() => this.updateTabBarVisibility());
+  }
+
+  private updateTabBarVisibility() {
+    this.showMainTabBar.set(!shouldHideMainTabBar(this.router));
   }
 
   async ngOnDestroy() {
+    this.routerEventsSub?.unsubscribe();
     // Restore default keyboard behavior when leaving tabs
     try {
       await Keyboard.setResizeMode({ mode: KeyboardResize.Native });

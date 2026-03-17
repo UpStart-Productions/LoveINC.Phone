@@ -17,6 +17,7 @@ Reusable utilities, validators, pipes, and models used across the Love INC app. 
 | Date range without times | `formatDateRangeCompact` | `@app/shared/utils` |
 | Parse API time string to compact | `formatTimeStringCompact` | `@app/shared/utils` |
 | Map push notification to content route | `mapNotificationMetaToContentType` | `@app/shared/utils` |
+| Check if main tab bar should be hidden (tool with own tabs) | `shouldHideMainTabBar` | `@app/shared/utils` |
 
 ---
 
@@ -92,6 +93,10 @@ Types and constants for home screen cards:
 - **`formatTimeRangeFull(start, end)`** – Two time strings to `6:00 – 8:00 PM` (drops redundant AM/PM)
 - **`dayTo2Letter(day)`** – `"Friday"` → `"FR"`
 - **`dayNumberTo2Letter(n)`** – Day number (0=Sunday) → `"SU"`, `"FR"`, etc.
+
+### Route Utils (`route-utils.ts`)
+
+- **`shouldHideMainTabBar(router)`** – Returns true if any activated route has `data: { hideMainTabBar: true }`. Used by TabsPage to swap the main tab bar for a tool's own tab bar.
 
 ### Notification Deep Linking (`notification-deeplink.ts`)
 

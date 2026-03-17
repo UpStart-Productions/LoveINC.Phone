@@ -1,0 +1,34 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/more"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Goal Tracker</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-tabs>
+  <ion-router-outlet></ion-router-outlet>
+  <ion-tab-bar slot="bottom" class="goal-tracker-tab-bar">
+    <ion-tab-button tab="habits" href="/tabs/goal-tracker/habits">
+      <ion-icon aria-hidden="true" name="repeat-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="repeat" class="solid-icon"></ion-icon>
+      <ion-label>Habits</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button class="fab-spacer" disabled="true" style="visibility: hidden;">
+    </ion-tab-button>
+
+    <ion-tab-button tab="statistics" href="/tabs/goal-tracker/statistics">
+      <ion-icon aria-hidden="true" name="stats-chart-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="stats-chart" class="solid-icon"></ion-icon>
+      <ion-label>Statistics</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+
+  <ion-fab class="fab-center">
+    <ion-fab-button (click)="onFabClick()" aria-label="Add">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-tabs>
