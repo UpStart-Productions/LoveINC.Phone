@@ -12,6 +12,7 @@ import { DeviceIdService } from './services/device-id.service';
 import { PlatformApiService } from './services/platform/platform-api.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
 import { GoalTrackerDatabaseService } from '@upstart-productions/goal-tracker';
+import { GoalTrackerRefreshService } from './goal-tracker-tabs/services/goal-tracker-refresh.service';
 import { PushRegistrationService } from './services/push-registration.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { mapNotificationMetaToContentType } from './shared/utils/notification-deeplink';
@@ -61,6 +62,11 @@ import {
   helpBuoy,
   logOutOutline,
   chevronForwardOutline,
+  chevronBackOutline,
+  chevronDownOutline,
+  arrowUpOutline,
+  arrowDownOutline,
+  removeOutline,
   // More Menu Icons
   menu,
   menuOutline,
@@ -121,7 +127,8 @@ import {
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  private static splashScreenHidden = false;
+  /** Blocks router until DBs are ready; prevents empty Goal Tracker when live-reload causes WebView reload on resume */
+  appReady = false;
   private appStateListener: any;
 
   constructor(
@@ -133,6 +140,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private platform: Platform,
     private grovlinkDb: GrovLinkDatabaseService,
     private goalTrackerDb: GoalTrackerDatabaseService,
+    private goalTrackerRefresh: GoalTrackerRefreshService,
     private pushRegistration: PushRegistrationService,
     private router: Router,
     private serviceUnlock: ServiceUnlockService
@@ -154,15 +162,10 @@ export class AppComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     await this.platform.ready();
 
-    // Hide splash screen only on initial app launch, not when app comes back to foreground
-    if (!AppComponent.splashScreenHidden) {
-      try {
-        await SplashScreen.hide();
-        AppComponent.splashScreenHidden = true;
-      } catch (error) {
-        console.log('Splash screen not available (likely running in browser)');
-        AppComponent.splashScreenHidden = true;
-      }
+    try {
+      await SplashScreen.hide();
+    } catch (error) {
+      console.log('Splash screen not available (likely running in browser)');
     }
 
     // Sync onboarding name/email to UserProfileService if profile is empty
@@ -181,49 +184,27 @@ export class AppComponent implements OnInit, OnDestroy {
     // Fetch app user data from API (deviceId + email if available) for UI config
     this.syncAppUserFromApi();
 
-    // Pre-initialize GrovLink database so SQLite is ready when notifications are used
-    this.grovlinkDb.getDbConnection().catch((err) => {
-      console.warn('GrovLink DB init deferred:', err);
-    });
+    // Initialize databases before router loads
+    await Promise.all([
+      this.grovlinkDb.getDbConnection().catch((err) => {
+        console.warn('GrovLink DB init deferred:', err);
+      }),
+      this.goalTrackerDb.getDbConnection().catch((err) => {
+        console.warn('Goal Tracker DB init deferred:', err);
+      }),
+    ]).catch(() => {});
+    this.appReady = true;
 
-    // Pre-initialize Goal Tracker database so it's ready when user adds goals
-    this.goalTrackerDb.getDbConnection().catch((err) => {
-      console.warn('Goal Tracker DB init deferred:', err);
-    });
-
-    // Listen for app state changes to prevent splash screen from showing on resume
+    // When app becomes active, reload Goal Tracker. With WebView reload we get a fresh app so we never
+    // see isActive: false first; fire on every isActive: true so we catch resume after reload.
     try {
-      this.appStateListener = await App.addListener('appStateChange', async (state) => {
-        if (state.isActive && AppComponent.splashScreenHidden) {
-          // App became active - ensure splash screen stays hidden
-          try {
-            await SplashScreen.hide();
-          } catch (error) {
-            // Ignore errors - splash might already be hidden
-          }
-          // Re-initialize DB connections and service unlock state after resume
-          // (iOS may have suspended or invalidated connections when backgrounded)
-          try {
-            await this.grovlinkDb.getDbConnection();
-          } catch (err) {
-            console.warn('GrovLink DB reconnect on resume:', err);
-          }
-          try {
-            await this.goalTrackerDb.getDbConnection();
-          } catch (err) {
-            console.warn('Goal Tracker DB reconnect on resume:', err);
-          }
-          try {
-            await this.serviceUnlock.ensureInitialized(true);
-          } catch (err) {
-            console.warn('Service unlock re-init on resume:', err);
-          }
-          // Refetch app user from API when app becomes active
+      this.appStateListener = await App.addListener('appStateChange', (state) => {
+        if (state.isActive) {
           this.syncAppUserFromApi();
+          this.goalTrackerRefresh.requestRefresh();
         }
       });
     } catch (error) {
-      // App plugin might not be available in browser
       console.log('App plugin not available');
     }
 
@@ -351,6 +332,11 @@ export class AppComponent implements OnInit, OnDestroy {
       helpBuoy,
       logOutOutline,
       chevronForwardOutline,
+      chevronBackOutline,
+      chevronDownOutline,
+      arrowUpOutline,
+      arrowDownOutline,
+      removeOutline,
       // More Menu Icons
       menu,
       menuOutline,

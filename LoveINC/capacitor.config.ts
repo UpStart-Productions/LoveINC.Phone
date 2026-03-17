@@ -21,7 +21,8 @@ const config: CapacitorConfig = {
       androidIsEncryption: false,
     },
     SplashScreen: {
-      launchShowDuration: 3000,
+      launchShowDuration: 1000,
+      launchFadeOutDuration: 1000,
       launchAutoHide: true,
       backgroundColor: '#ffffff',
       androidSplashResourceName: 'splash',
@@ -33,7 +34,6 @@ const config: CapacitorConfig = {
       splashImmersive: true,
       layoutName: 'launch_screen',
       useDialog: true,
-      // Prevent splash from showing when app resumes from background
       autoHide: true,
     },
   },

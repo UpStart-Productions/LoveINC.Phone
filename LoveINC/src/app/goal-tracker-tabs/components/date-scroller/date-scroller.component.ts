@@ -49,12 +49,16 @@ export class DateScrollerComponent implements OnInit {
     this.dates = [];
     let current = new Date(dateStart);
 
+    const todayStr = today.toISOString().slice(0, 10);
+    const targetDate = todayStr;
+
     while (current <= dateEnd) {
       const d = new Date(current);
       const dateStr = d.toISOString().slice(0, 10);
       const dayStart = new Date(d);
       dayStart.setHours(0, 0, 0, 0);
       const isToday = dayStart.getTime() === today.getTime();
+      const isSelected = dateStr === targetDate;
       this.dates.push({
         date: dateStr,
         dayName: d.toLocaleDateString('en-US', { weekday: 'short' }),
@@ -62,7 +66,7 @@ export class DateScrollerComponent implements OnInit {
         month: d.toLocaleDateString('en-US', { month: 'long' }),
         year: d.getFullYear().toString(),
         isToday,
-        isSelected: isToday,
+        isSelected,
       });
       current.setDate(current.getDate() + 1);
     }
@@ -70,15 +74,16 @@ export class DateScrollerComponent implements OnInit {
   }
 
   private scrollToCurrentDate() {
-    const today = new Date().toISOString().slice(0, 10);
-    const todayIndex = this.dates.findIndex((d) => d.date === today);
-    if (todayIndex !== -1 && this.dateScroller?.nativeElement) {
+    const selected = this.dates.find((d) => d.isSelected);
+    const targetDate = selected?.date ?? new Date().toISOString().slice(0, 10);
+    const targetIndex = this.dates.findIndex((d) => d.date === targetDate);
+    if (targetIndex !== -1 && this.dateScroller?.nativeElement) {
       const dateElements = this.dateScroller.nativeElement.children;
-      const todayElement = dateElements[todayIndex];
+      const targetElement = dateElements[targetIndex];
       const container = this.dateScroller.nativeElement;
       const containerWidth = container.clientWidth;
-      const elementOffset = todayElement.offsetLeft;
-      const elementWidth = todayElement.clientWidth;
+      const elementOffset = targetElement.offsetLeft;
+      const elementWidth = targetElement.clientWidth;
       const scrollPosition = elementOffset - containerWidth / 2 + elementWidth / 2;
       container.scrollTo({ left: scrollPosition, behavior: 'smooth' });
     }
@@ -86,6 +91,10 @@ export class DateScrollerComponent implements OnInit {
 
   ngOnInit() {
     this.calculateDateRange();
+    const todayDate = this.dates.find((d) => d.isToday);
+    if (todayDate) {
+      this.dateSelectedEvent.emit(todayDate);
+    }
   }
 
   ngAfterViewInit() {

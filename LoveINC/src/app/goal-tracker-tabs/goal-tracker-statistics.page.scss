@@ -1,4 +1,130 @@
-.goal-tracker-placeholder {
-  padding: 1.5rem;
-  text-align: center;
+.statistics-content {
+  --background: #ffffff;
+}
+
+.statistics-inner {
+  padding: 1rem 1rem 2rem;
+}
+
+.total-done {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+}
+
+.total-done-right {
+  text-align: right;
+}
+
+.total-percent {
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: block;
+}
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  gap: 0.5rem;
+}
+
+.week-selector {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  font-size: 0.9rem;
+  color: var(--ion-color-dark);
+
+  ion-icon {
+    font-size: 1rem;
+    opacity: 0.7;
+  }
+}
+
+.habit-stats-list {
+  margin-top: 1.5rem;
+}
+
+.habit-stat-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  background: #f8f8f8;
+  border-radius: 0.5rem;
+}
+
+.habit-stat-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.habit-icon {
+  font-size: 1.5rem;
+  color: var(--ion-color-medium);
+}
+
+.habit-stat-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  .stat-percent {
+    font-size: 1rem;
+    font-weight: 600;
+
+    &.success {
+      color: var(--ion-color-success);
+    }
+  }
+
+  .stat-change {
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    margin-top: 0.25rem;
+
+    ion-icon {
+      font-size: 0.875rem;
+    }
+
+    &.success {
+      color: var(--ion-color-success);
+    }
+
+    &.danger {
+      color: var(--ion-color-danger);
+    }
+
+    &.neutral {
+      color: var(--ion-color-medium);
+    }
+  }
 }

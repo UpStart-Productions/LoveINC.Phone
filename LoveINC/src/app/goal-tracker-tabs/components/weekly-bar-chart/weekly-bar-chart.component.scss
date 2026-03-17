@@ -1,0 +1,56 @@
+.weekly-bar-chart {
+  padding: 1rem;
+}
+
+.chart-bars {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 0.5rem;
+  min-height: 8rem;
+  background-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.06) 1px,
+    transparent 1px
+  );
+  background-size: 100% 25%;
+  padding: 0 0.25rem;
+}
+
+.bar-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.bar-track {
+  width: 100%;
+  max-width: 2rem;
+  height: 6rem;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 0.25rem 0.25rem 0 0;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bar-fill {
+  width: 100%;
+  min-height: 2px;
+  background: var(--ion-color-success, #2dd36f);
+  border-radius: 0.25rem 0.25rem 0 0;
+  transition: height 0.2s ease;
+}
+
+.bar-label {
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  color: var(--ion-color-dark);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}

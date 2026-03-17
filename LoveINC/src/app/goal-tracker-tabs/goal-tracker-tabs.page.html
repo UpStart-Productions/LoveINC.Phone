@@ -3,7 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/more"></ion-back-button>
     </ion-buttons>
-    <ion-title>Goal Tracker</ion-title>
+    <ion-title>{{ isGoalsTab ? 'Goal Tracker' : 'Statistics' }}</ion-title>
+    <ion-buttons slot="end" *ngIf="!isGoalsTab">
+      <ion-button aria-label="Settings">
+        <ion-icon name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
   <ion-toolbar *ngIf="isGoalsTab">
     <app-date-scroller

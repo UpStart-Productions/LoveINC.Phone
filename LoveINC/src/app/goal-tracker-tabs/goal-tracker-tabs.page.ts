@@ -6,10 +6,11 @@ import {
   IonTitle,
   IonBackButton,
   IonButtons,
+  IonButton,
+  IonIcon,
   IonTabs,
   IonTabBar,
   IonTabButton,
-  IonIcon,
   IonLabel,
   IonRouterOutlet,
 } from '@ionic/angular/standalone';
@@ -34,6 +35,8 @@ import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.servi
     IonTitle,
     IonBackButton,
     IonButtons,
+    IonButton,
+    IonIcon,
     IonTabs,
     IonTabBar,
     IonTabButton,
@@ -74,6 +77,10 @@ export class GoalTrackerTabsPage implements OnInit, OnDestroy {
     const url = this.router.url;
     this.isGoalsTab =
       url.includes('/goal-tracker/goals') || url === '/tabs/goal-tracker';
+  }
+
+  get isStatisticsTab(): boolean {
+    return !this.isGoalsTab;
   }
 
   onDateSelected(date: DateScrollerDate) {

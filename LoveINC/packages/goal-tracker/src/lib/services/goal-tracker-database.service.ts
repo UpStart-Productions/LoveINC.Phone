@@ -38,6 +38,12 @@ export class GoalTrackerDatabaseService {
     } catch {
       // Plugin may not be ready on web before jeep-sqlite init
     }
+    // Sync JS/native connection state (matches NephoPhone - no dbNames arg, does not close connections)
+    try {
+      await this.sqlite.checkConnectionsConsistency();
+    } catch {
+      // Ignore
+    }
     return true;
   }
 
@@ -160,6 +166,12 @@ export class GoalTrackerDatabaseService {
         /* column may already exist */
       }
     }
+  }
+
+  /** Clear JS-side connection reference (e.g. for resetDatabase). Does not close native connection. */
+  resetConnection(): void {
+    this.db = null;
+    GoalTrackerDatabaseService.sharedDb = null;
   }
 
   async getDbConnection(): Promise<SQLiteDBConnection> {
