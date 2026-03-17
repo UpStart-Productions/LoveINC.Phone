@@ -1,5 +1,11 @@
 # Ionic Framework Rules
 
+## SuperSimpleWorkout Reference (CRITICAL – Use for Goal Tracker)
+- SuperSimpleWorkout project path: `/Users/jeffdenton/Projects/MobileApps/SuperSimpleWorkout`
+- When implementing Goal Tracker UI (FAB, date scroller, color picker, weekday picker, etc.), COPY from SuperSimpleWorkout – do NOT guess or search elsewhere
+- FAB: `add-circle` icon, color #fe4c40, see `tabGroup/tabs.component.html` and `tabGroup/tabs.component.scss`
+- Other components: `exercises/components/date-scroller`, `exercises/components/color-picker`, `exercises/components/weekday-picker`
+
 ## Platform and Data Storage (CRITICAL – Never Forget)
 - This project ONLY runs in the iOS/Android simulator or on a physical device. It NEVER runs on web.
 - NEVER add a dev proxy, proxy.conf.json, or proxyConfig. The app always calls APIs directly (https://api.grovlink.com, etc.). Do not reintroduce proxy-based routing.

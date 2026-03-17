@@ -11,6 +11,7 @@ import { AppUserDataService } from './services/app-user-data.service';
 import { DeviceIdService } from './services/device-id.service';
 import { PlatformApiService } from './services/platform/platform-api.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
+import { GoalTrackerDatabaseService } from '@upstart-productions/goal-tracker';
 import { PushRegistrationService } from './services/push-registration.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { mapNotificationMetaToContentType } from './shared/utils/notification-deeplink';
@@ -73,6 +74,8 @@ import {
   pulseOutline,
   alertCircleOutline,
   trophyOutline,
+  trophy,
+  flagOutline,
   repeatOutline,
   repeat,
   statsChartOutline,
@@ -81,7 +84,10 @@ import {
   documentTextOutline,
   documentOutline,
   createOutline,
+  add,
   addOutline,
+  addCircle,
+  addCircleSharp,
   trashOutline,
   pricetagOutline,
   libraryOutline,
@@ -126,6 +132,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private platformApi: PlatformApiService,
     private platform: Platform,
     private grovlinkDb: GrovLinkDatabaseService,
+    private goalTrackerDb: GoalTrackerDatabaseService,
     private pushRegistration: PushRegistrationService,
     private router: Router,
     private serviceUnlock: ServiceUnlockService
@@ -179,6 +186,11 @@ export class AppComponent implements OnInit, OnDestroy {
       console.warn('GrovLink DB init deferred:', err);
     });
 
+    // Pre-initialize Goal Tracker database so it's ready when user adds goals
+    this.goalTrackerDb.getDbConnection().catch((err) => {
+      console.warn('Goal Tracker DB init deferred:', err);
+    });
+
     // Listen for app state changes to prevent splash screen from showing on resume
     try {
       this.appStateListener = await App.addListener('appStateChange', async (state) => {
@@ -195,6 +207,11 @@ export class AppComponent implements OnInit, OnDestroy {
             await this.grovlinkDb.getDbConnection();
           } catch (err) {
             console.warn('GrovLink DB reconnect on resume:', err);
+          }
+          try {
+            await this.goalTrackerDb.getDbConnection();
+          } catch (err) {
+            console.warn('Goal Tracker DB reconnect on resume:', err);
           }
           try {
             await this.serviceUnlock.ensureInitialized(true);
@@ -347,6 +364,8 @@ export class AppComponent implements OnInit, OnDestroy {
       pulseOutline,
       alertCircleOutline,
       trophyOutline,
+      trophy,
+      flagOutline,
       repeatOutline,
       repeat,
       statsChartOutline,
@@ -355,7 +374,10 @@ export class AppComponent implements OnInit, OnDestroy {
       documentTextOutline,
       documentOutline,
       createOutline,
+      add,
       addOutline,
+      addCircle,
+      addCircleSharp,
       trashOutline,
       pricetagOutline,
       libraryOutline,

@@ -3,6 +3,41 @@
   --ion-color-secondary: #5433c6;
 }
 
+/* Goal Tracker header – white background, dark text and icons */
+ion-header {
+  --background: #ffffff !important;
+  background: #ffffff !important;
+
+  ion-toolbar {
+    --background: #ffffff !important;
+    background: #ffffff !important;
+    --color: var(--ion-color-dark, #222428);
+    --border-color: rgba(var(--ion-color-dark-rgb), 0.1);
+
+    ion-title {
+      color: var(--ion-color-dark, #222428) !important;
+      --color: var(--ion-color-dark, #222428) !important;
+    }
+
+    ion-back-button {
+      --color: var(--ion-color-dark, #222428) !important;
+      color: var(--ion-color-dark, #222428) !important;
+    }
+  }
+}
+
+/* Date scroller toolbar – allow horizontal scroll */
+ion-toolbar:has(app-date-scroller) {
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --min-height: 3.5rem;
+
+  app-date-scroller {
+    display: block;
+    width: 100%;
+  }
+}
+
 /* Goal Tracker tab bar – matches main app tab bar pattern */
 .goal-tracker-tab-bar {
   display: flex;
@@ -15,20 +50,20 @@
   border-top: 0.0625rem solid rgba(var(--ion-color-dark-rgb), 0.1);
 }
 
-ion-fab.fab-center {
-  position: fixed !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  bottom: 1.76640625rem !important;
-  z-index: 1001 !important;
+/* SuperSimpleWorkout-style FAB – copied exactly from tabGroup/tabs.component */
+.btn-add-exercise {
+  position: fixed;
+  left: 50%;
+  bottom: -8px;
+  transform: translate(-50%, -50%);
+  margin: 0 auto;
+  z-index: 100;
+  background-color: transparent;
+  border: none;
 }
 
-.ios ion-fab.fab-center {
-  bottom: 2.1196875rem !important;
-}
-
-.ios .goal-tracker-tab-bar ion-fab.fab-center {
-  bottom: 2.1196875rem !important;
+ion-icon.large {
+  font-size: 70px;
 }
 
 .fab-spacer {
@@ -37,6 +72,7 @@ ion-fab.fab-center {
   flex: 0 0 3.5rem;
 }
 
+/* Tab button styling – purple icons/labels to match date scroller */
 .goal-tracker-tab-bar ion-tab-button {
   flex: 1;
   display: flex;
@@ -47,11 +83,13 @@ ion-fab.fab-center {
 
   ion-label {
     margin-top: -0.125rem;
+    color: var(--ion-color-secondary);
   }
 
   ion-icon {
     padding-top: 0;
     margin-top: -0.125rem;
+    color: var(--ion-color-secondary);
   }
 
   .solid-icon {

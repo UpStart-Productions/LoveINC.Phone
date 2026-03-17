@@ -1,9 +1,4 @@
-<ion-content [fullscreen]="true">
-  <app-date-scroller
-    [completedDates]="completedDates"
-    (dateSelectedEvent)="onDateSelected($event)"
-  ></app-date-scroller>
-
+<ion-content [fullscreen]="true" class="goals-content">
   <div *ngIf="loading" class="loading">Loading…</div>
 
   <div *ngIf="!loading && goalsWithHabits.length === 0" class="empty-state">

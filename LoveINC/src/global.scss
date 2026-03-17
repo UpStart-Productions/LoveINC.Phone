@@ -413,3 +413,13 @@ ion-modal.alerts-modal-sheet {
   width: 1rem !important;
   height: 1rem !important;
 }
+
+/* Goal Tracker goals list – hidden scrollbar */
+ion-content.goals-content::part(scroll) {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

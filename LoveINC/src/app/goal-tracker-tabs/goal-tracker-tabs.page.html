@@ -1,9 +1,15 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="false">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/more"></ion-back-button>
     </ion-buttons>
     <ion-title>Goal Tracker</ion-title>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="isGoalsTab">
+    <app-date-scroller
+      [completedDates]="completedDates"
+      (dateSelectedEvent)="onDateSelected($event)"
+    ></app-date-scroller>
   </ion-toolbar>
 </ion-header>
 
@@ -26,9 +32,7 @@
     </ion-tab-button>
   </ion-tab-bar>
 
-  <ion-fab class="fab-center">
-    <ion-fab-button (click)="onFabClick()" aria-label="Add">
-      <ion-icon name="add-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+  <button class="btn-add-exercise" (click)="onFabClick()" aria-label="Add">
+    <ion-icon name="add-circle" class="large" color="red-orange"></ion-icon>
+  </button>
 </ion-tabs>

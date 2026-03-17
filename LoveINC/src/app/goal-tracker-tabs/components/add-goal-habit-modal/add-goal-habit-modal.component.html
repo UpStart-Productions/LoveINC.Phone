@@ -1,0 +1,96 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()" fill="clear" aria-label="Close">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-segment [(ngModel)]="mode" class="add-mode-segment">
+    <ion-segment-button value="goal">
+      <ion-label>Goal</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="habit">
+      <ion-label>Habit</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div *ngIf="mode === 'goal'" class="form-section">
+    <ion-item>
+      <ion-label position="stacked">Goal name</ion-label>
+      <ion-input [(ngModel)]="goalTitle" placeholder="e.g. Save for vacation"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Description (optional)</ion-label>
+      <ion-textarea [(ngModel)]="goalDescription" placeholder="Notes about this goal" rows="2"></ion-textarea>
+    </ion-item>
+    <app-color-picker
+      label="Color"
+      [config]="colorConfig"
+      [selectedColor]="goalColor"
+      (colorSelectedEvent)="goalColor = $event"
+    ></app-color-picker>
+    <ion-item>
+      <ion-label position="stacked">Target (optional)</ion-label>
+      <ion-input type="number" [(ngModel)]="goalTarget" placeholder="e.g. 1000"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Start date</ion-label>
+      <ion-input type="date" [(ngModel)]="goalStartDate"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Due date (optional)</ion-label>
+      <ion-input type="date" [(ngModel)]="goalDueDate"></ion-input>
+    </ion-item>
+  </div>
+
+  <div *ngIf="mode === 'habit'" class="form-section">
+    <ion-item>
+      <ion-label position="stacked">Habit name</ion-label>
+      <ion-input [(ngModel)]="habitName" placeholder="e.g. Morning run"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Description (optional)</ion-label>
+      <ion-textarea [(ngModel)]="habitDescription" placeholder="Notes" rows="2"></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Goal</ion-label>
+      <ion-select [(ngModel)]="habitGoalId" placeholder="Select a goal" interface="action-sheet" [disabled]="!goals.length">
+        <ion-select-option *ngFor="let g of goals" [value]="g.id">{{ g.title }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <p *ngIf="!goals.length" class="hint">Add a goal first, then add habits to it.</p>
+    <app-color-picker
+      label="Color"
+      [config]="colorConfig"
+      [selectedColor]="habitColor"
+      (colorSelectedEvent)="habitColor = $event"
+    ></app-color-picker>
+    <app-weekday-picker
+      label="Days"
+      [selectedWeekdays]="habitSchedule"
+      (weekdaysSelectedEvent)="onScheduleChange($event)"
+    ></app-weekday-picker>
+    <ion-item>
+      <ion-label position="stacked">Progress increment</ion-label>
+      <ion-input type="number" [(ngModel)]="habitProgressIncrement" min="0" placeholder="1"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Start date</ion-label>
+      <ion-input type="date" [(ngModel)]="habitStartDate"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">End date (optional)</ion-label>
+      <ion-input type="date" [(ngModel)]="habitEndDate"></ion-input>
+    </ion-item>
+  </div>
+
+  <p *ngIf="error" class="error">{{ error }}</p>
+
+  <div class="save-button-container">
+    <ion-button expand="block" color="red-orange" (click)="save()" [disabled]="saving">Save</ion-button>
+  </div>
+</ion-content>

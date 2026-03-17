@@ -1,0 +1,47 @@
+/* Goal Tracker module – white header with dark text and icons */
+:host ion-header {
+  --background: #ffffff !important;
+  background: #ffffff !important;
+
+  ion-toolbar {
+    --background: #ffffff !important;
+    background: #ffffff !important;
+    --color: var(--ion-color-dark, #222428);
+
+    ion-title {
+      color: var(--ion-color-dark, #222428) !important;
+      --color: var(--ion-color-dark, #222428) !important;
+    }
+
+    ion-button,
+    ion-button ion-icon {
+      --color: var(--ion-color-dark, #222428) !important;
+      color: var(--ion-color-dark, #222428) !important;
+    }
+  }
+}
+
+.add-mode-segment {
+  margin: 1rem;
+}
+
+.form-section {
+  padding: 0 1rem;
+}
+
+.save-button-container {
+  padding: 1.5rem 1rem 2rem;
+}
+
+.error,
+.hint {
+  padding: 1rem;
+  margin: 0 1rem;
+}
+.error {
+  color: var(--ion-color-danger);
+}
+.hint {
+  color: var(--ion-color-medium);
+  font-size: 0.9rem;
+}
