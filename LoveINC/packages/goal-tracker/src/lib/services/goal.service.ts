@@ -51,16 +51,18 @@ export class GoalService {
     const conn = await this.db.getDbConnection();
     const now = new Date().toISOString();
     const sql = `
-      INSERT INTO goals (title, description, progress, target, category, dueDate, completed, createdAt, updatedAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO goals (title, description, progress, target, color, category, dueDate, startDate, completed, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const result = await conn.run(sql, [
       goal.title,
       goal.description ?? null,
-      goal.progress,
+      goal.progress ?? 0,
       goal.target ?? null,
+      goal.color ?? null,
       goal.category ?? null,
       goal.dueDate ?? null,
+      goal.startDate ?? null,
       goal.completed ? 1 : 0,
       now,
       now,
@@ -131,6 +133,10 @@ export class GoalService {
       setClauses.push('target = ?');
       params.push(updates.target ?? null);
     }
+    if (updates.color !== undefined) {
+      setClauses.push('color = ?');
+      params.push(updates.color ?? null);
+    }
     if (updates.category !== undefined) {
       setClauses.push('category = ?');
       params.push(updates.category ?? null);
@@ -138,6 +144,10 @@ export class GoalService {
     if (updates.dueDate !== undefined) {
       setClauses.push('dueDate = ?');
       params.push(updates.dueDate ?? null);
+    }
+    if (updates.startDate !== undefined) {
+      setClauses.push('startDate = ?');
+      params.push(updates.startDate ?? null);
     }
     if (updates.completed !== undefined) {
       setClauses.push('completed = ?');
@@ -193,8 +203,10 @@ export class GoalService {
       description: row['description'] as string | undefined,
       progress: (row['progress'] as number) ?? 0,
       target: row['target'] as number | undefined,
+      color: row['color'] as string | undefined,
       category: row['category'] as Goal['category'],
       dueDate: row['dueDate'] as string | undefined,
+      startDate: row['startDate'] as string | undefined,
       completed: (row['completed'] as number) === 1,
       createdAt: row['createdAt'] as string,
       updatedAt: row['updatedAt'] as string,

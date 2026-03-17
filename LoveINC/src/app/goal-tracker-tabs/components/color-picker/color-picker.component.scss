@@ -1,0 +1,101 @@
+$animationIncrement: 0px;
+@for $i from 2 through 9 {
+  $animationIncrement: $animationIncrement - 39px;
+
+  button.open:nth-child(#{$i}) {
+    animation: move#{$i} 0.2s linear 0s;
+    animation-fill-mode: forwards;
+  }
+
+  button.close:nth-child(#{$i}) {
+    animation: move#{$i}Reverse 0.2s linear 0s;
+  }
+
+  @keyframes move#{$i} {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(#{$animationIncrement}, 0);
+    }
+  }
+  @keyframes move#{$i}Reverse {
+    0% {
+      transform: translate(#{$animationIncrement}, 0);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+}
+
+button:nth-child(1n + 2) {
+  margin-left: -26px;
+}
+.control-container {
+  width: 100%;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding-left: 15px !important;
+  padding-top: 12px;
+  padding-bottom: 10px;
+}
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -23px;
+  margin-right: 10px;
+}
+.label {
+  display: flex;
+  justify-content: space-between;
+  color: #626262;
+  font-size: 0.85rem;
+}
+.label.show,
+.btn-color-picker span.selected.show {
+  animation: show 0.2s linear 0s;
+  animation-fill-mode: forwards;
+}
+.label.hide,
+.btn-color-picker span.selected.hide {
+  animation: hide 0.2s linear 0s;
+  animation-fill-mode: forwards;
+}
+.btn-color-picker span.selected {
+  background-color: transparent;
+  position: absolute;
+  margin-left: -16px;
+  margin-top: -16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid;
+}
+.btn-color-picker {
+  display: block;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes hide {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

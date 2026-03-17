@@ -1,3 +1,8 @@
+/* SuperSimpleWorkout-style secondary (purple) for Goal Tracker components */
+:host {
+  --ion-color-secondary: #5433c6;
+}
+
 /* Goal Tracker tab bar – matches main app tab bar pattern */
 .goal-tracker-tab-bar {
   display: flex;

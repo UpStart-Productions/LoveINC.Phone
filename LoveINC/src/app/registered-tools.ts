@@ -27,23 +27,23 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
     path: 'goal-tracker',
     data: { hideMainTabBar: true },
     loadComponent: () =>
-      import('./goal-tracker-tabs/goal-tracker-tabs.page').then((m) => m.GoalTrackerTabsPage),
+      import('@app/goal-tracker-tabs/goal-tracker-tabs.page').then((m) => m.GoalTrackerTabsPage),
     children: [
       {
-        path: 'habits',
+        path: 'goals',
         loadComponent: () =>
-          import('./goal-tracker-tabs/goal-tracker-habits.page').then((m) => m.GoalTrackerHabitsPage),
+          import('@app/goal-tracker-tabs/goal-tracker-goals.page').then((m) => m.GoalTrackerGoalsPage),
       },
       {
         path: 'statistics',
         loadComponent: () =>
-          import('./goal-tracker-tabs/goal-tracker-statistics.page').then(
+          import('@app/goal-tracker-tabs/goal-tracker-statistics.page').then(
             (m) => m.GoalTrackerStatisticsPage
           ),
       },
       {
         path: '',
-        redirectTo: 'habits',
+        redirectTo: 'goals',
         pathMatch: 'full',
       },
     ],

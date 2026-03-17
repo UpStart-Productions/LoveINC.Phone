@@ -1,0 +1,24 @@
+.loading,
+.empty-state {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.goals-list {
+  padding: 0 0 2rem;
+}
+
+.goal-section {
+  padding: 1rem 0;
+}
+
+.goal-title {
+  margin: 0 1rem 0.25rem;
+  font-size: 1.1rem;
+}
+
+.goal-description {
+  margin: 0 1rem 0.5rem;
+  font-size: 0.9rem;
+  color: var(--ion-color-dark-gray);
+}

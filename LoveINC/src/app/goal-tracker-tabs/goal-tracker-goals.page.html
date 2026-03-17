@@ -1,0 +1,30 @@
+<ion-content [fullscreen]="true">
+  <app-date-scroller
+    [completedDates]="completedDates"
+    (dateSelectedEvent)="onDateSelected($event)"
+  ></app-date-scroller>
+
+  <div *ngIf="loading" class="loading">Loading…</div>
+
+  <div *ngIf="!loading && goalsWithHabits.length === 0" class="empty-state">
+    <p class="app-body-secondary">No habits scheduled for this date.</p>
+    <p class="app-caption">Add a goal and habits to get started.</p>
+  </div>
+
+  <div *ngIf="!loading && goalsWithHabits.length > 0" class="goals-list">
+    <div *ngFor="let gwh of goalsWithHabits" class="goal-section">
+      <h2 class="goal-title">{{ gwh.goal.title }}</h2>
+      <p *ngIf="gwh.goal.description" class="goal-description">{{ gwh.goal.description }}</p>
+      <app-habit-card
+        *ngFor="let habit of gwh.habits"
+        [habit]="habit"
+        [selectedDate]="selectedDate"
+        [isCompleted]="completionMap[habit.id!] ?? false"
+        [allowComplete]="true"
+        [allowEdit]="true"
+        (habitMarkedEvent)="onHabitMarked($event)"
+        (habitEditEvent)="onHabitEdit($event)"
+      ></app-habit-card>
+    </div>
+  </div>
+</ion-content>

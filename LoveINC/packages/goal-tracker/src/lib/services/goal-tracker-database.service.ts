@@ -98,21 +98,68 @@ export class GoalTrackerDatabaseService {
 
   private async createTables(): Promise<void> {
     const db = await this.getDbConnection();
-    const sql = `
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS goals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
         description TEXT,
-        progress INTEGER NOT NULL DEFAULT 0,
-        target INTEGER,
+        progress REAL NOT NULL DEFAULT 0,
+        target REAL,
+        color TEXT,
         category TEXT,
         dueDate TEXT,
+        startDate TEXT,
         completed INTEGER NOT NULL DEFAULT 0,
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL
       );
-    `;
-    await db.execute(sql);
+    `);
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS habits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        goalId INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        description TEXT,
+        color TEXT NOT NULL,
+        schedule TEXT NOT NULL,
+        progressIncrement REAL NOT NULL DEFAULT 0,
+        reminderTime TEXT,
+        startDate TEXT NOT NULL,
+        endDate TEXT,
+        createdAt TEXT NOT NULL,
+        updatedAt TEXT NOT NULL,
+        FOREIGN KEY (goalId) REFERENCES goals(id)
+      );
+    `);
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS habit_completions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        habitId INTEGER NOT NULL,
+        date TEXT NOT NULL,
+        completed INTEGER NOT NULL DEFAULT 0,
+        createdAt TEXT,
+        UNIQUE(habitId, date),
+        FOREIGN KEY (habitId) REFERENCES habits(id)
+      );
+    `);
+    await this.migrateGoalsTable(db);
+  }
+
+  private async migrateGoalsTable(db: SQLiteDBConnection): Promise<void> {
+    try {
+      await db.query('SELECT color FROM goals LIMIT 1');
+    } catch {
+      try {
+        await db.execute('ALTER TABLE goals ADD COLUMN color TEXT');
+      } catch {
+        /* column may already exist */
+      }
+      try {
+        await db.execute('ALTER TABLE goals ADD COLUMN startDate TEXT');
+      } catch {
+        /* column may already exist */
+      }
+    }
   }
 
   async getDbConnection(): Promise<SQLiteDBConnection> {
@@ -132,6 +179,8 @@ export class GoalTrackerDatabaseService {
 
   async resetDatabase(): Promise<void> {
     const db = await this.getDbConnection();
+    await db.execute('DROP TABLE IF EXISTS habit_completions');
+    await db.execute('DROP TABLE IF EXISTS habits');
     await db.execute('DROP TABLE IF EXISTS goals');
     await this.createTables();
   }

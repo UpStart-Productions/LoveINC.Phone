@@ -1,0 +1,22 @@
+<div
+  *ngIf="habit"
+  class="card-container"
+  [ngClass]="{ 'disallow-complete': !allowComplete }"
+>
+  <div class="card" [ngClass]="borderClass">
+    <button (click)="markHabit()" class="card-checkbox">
+      <ion-icon
+        *ngIf="allowComplete"
+        [color]="iconColor"
+        [name]="isCompleted ? 'checkmark-circle' : 'ellipse-outline'"
+      ></ion-icon>
+    </button>
+    <div class="card-content">
+      <p>{{ habit.name }}</p>
+      <p *ngIf="habit.description" class="txt-small">{{ habit.description }}</p>
+    </div>
+    <button *ngIf="allowEdit" (click)="editHabit()" class="card-more">
+      <ion-icon name="create-outline" class="txt-small"></ion-icon>
+    </button>
+  </div>
+</div>
