@@ -1,5 +1,6 @@
 :host {
   --ion-color-secondary: #214491;
+  --simple-budget-green: #1e9e5a;
 }
 
 ion-header {
@@ -62,7 +63,8 @@ ion-header {
     display: block;
   }
 
-  &.tab-selected {
+  &.tab-selected,
+  &[selected] {
     .solid-icon {
       display: block;
     }

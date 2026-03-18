@@ -29,7 +29,7 @@ ion-toolbar.custom-toolbar {
     font-weight: 600;
 
     &.positive {
-      background-color: var(--ion-color-success);
+      background-color: var(--simple-budget-green);
       color: var(--ion-color-success-contrast);
     }
 
@@ -130,6 +130,10 @@ ion-content.weekly-content {
     flex: 0 0 2rem;
     width: 2rem;
   }
+}
+
+.border-emerald {
+  border-color: var(--simple-budget-green) !important;
 }
 
 .starting-balance-card {

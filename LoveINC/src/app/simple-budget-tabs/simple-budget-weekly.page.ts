@@ -26,6 +26,7 @@ import { addDays, format } from 'date-fns';
 import { WeekScrollerComponent } from './components/week-scroller/week-scroller.component';
 import { AddCategorySheetComponent } from './components/add-category-sheet/add-category-sheet.component';
 import { CurrencyInputDirective } from './directives/currency-input.directive';
+import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
 
 const SECTION_BORDER_CLASS: Record<string, string> = {
   income: 'border-emerald',
@@ -69,7 +70,8 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
   constructor(
     private weekPlanService: WeekPlanService,
     private modalCtrl: ModalController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private budgetState: SimpleBudgetStateService
   ) {}
 
   async ngOnInit() {
@@ -103,6 +105,7 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
     try {
       this.plan = await this.weekPlanService.getOrCreateWeekByDate(weekStartDate, DEFAULT_CONFIG);
       this.selectedWeekStart = weekStartDate;
+      this.budgetState.selectedWeekStart = weekStartDate;
       this.updateSummary();
     } catch (err) {
       console.warn('Simple Budget load error:', err);

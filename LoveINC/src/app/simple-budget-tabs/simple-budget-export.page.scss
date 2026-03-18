@@ -1,17 +1,34 @@
 .summary-card {
   margin: 1rem;
-  padding: 1rem;
-  background: var(--ion-card-background, var(--ion-background-color));
-  border-radius: 0.5rem;
-  border: 0.0625rem solid rgba(var(--ion-color-dark-rgb), 0.1);
+  --background: #ffffff;
+  background: #ffffff;
 
-  h3 {
-    margin-bottom: 0.75rem;
+  ion-card-header,
+  ion-card-content {
+    --background: #ffffff;
+    background: #ffffff;
   }
 
-  ion-item {
-    --padding-start: 0;
-    --inner-padding-end: 0;
+  ion-card-header {
+    padding-bottom: 0.25rem;
+  }
+
+  ion-card-subtitle {
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+  }
+
+  ion-card-content {
+    ion-list {
+      --background: #ffffff;
+      background: #ffffff;
+    }
+
+    ion-item {
+      --background: #ffffff;
+      --padding-start: 0;
+      --inner-padding-end: 0;
+    }
   }
 }
 
@@ -19,6 +36,15 @@
   margin: 0.5rem 1rem;
 }
 
-.hint {
-  margin: 1rem;
+.loading {
+  padding: 2rem;
+  text-align: center;
+}
+
+.amount-positive {
+  color: var(--simple-budget-green);
+}
+
+.amount-negative {
+  color: var(--ion-color-danger);
 }

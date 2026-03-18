@@ -12,6 +12,9 @@ PODS:
   - CapacitorCordova (8.0.1)
   - CapacitorEmailComposer (8.0.0):
     - Capacitor
+  - CapacitorFilesystem (8.0.0):
+    - Capacitor
+    - IONFilesystemLib (~> 1.0.1)
   - CapacitorHaptics (8.0.0):
     - Capacitor
   - CapacitorKeyboard (8.0.0):
@@ -54,6 +57,7 @@ PODS:
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
   - GTMSessionFetcher/Core (3.5.0)
+  - IONFilesystemLib (1.0.1)
   - MLImage (1.0.0-beta7)
   - MLKitBarcodeScanning (7.0.0):
     - MLKitCommon (~> 13.0)
@@ -91,6 +95,7 @@ DEPENDENCIES:
   - "CapacitorCommunitySqlite (from `../../node_modules/@capacitor-community/sqlite`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - CapacitorEmailComposer (from `../../node_modules/capacitor-email-composer`)
+  - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
   - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
   - "CapacitorLocalNotifications (from `../../node_modules/@capacitor/local-notifications`)"
@@ -108,6 +113,7 @@ SPEC REPOS:
     - GoogleToolboxForMac
     - GoogleUtilities
     - GTMSessionFetcher
+    - IONFilesystemLib
     - MLImage
     - MLKitBarcodeScanning
     - MLKitCommon
@@ -130,6 +136,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorEmailComposer:
     :path: "../../node_modules/capacitor-email-composer"
+  CapacitorFilesystem:
+    :path: "../../node_modules/@capacitor/filesystem"
   CapacitorHaptics:
     :path: "../../node_modules/@capacitor/haptics"
   CapacitorKeyboard:
@@ -156,6 +164,7 @@ SPEC CHECKSUMS:
   CapacitorCommunitySqlite: 8a61c1d599927d4321c13b28f132de8ca94b6d95
   CapacitorCordova: 0d65b9bb74e995dcecb9463f34f1af2aba6f955c
   CapacitorEmailComposer: cf36b8e16e43ce51eeb03994645a864ded9b40b4
+  CapacitorFilesystem: 2cb7c29536024668f333266a2177f8c10bbd9c98
   CapacitorHaptics: 2079d9fa04c5a71e18663b4722323c304c58245c
   CapacitorKeyboard: d7868c079a4d5277a3deca27a10a488fcbbb8b69
   CapacitorLocalNotifications: 177cfbf8228d9bd82a147e094cb7984d7afb9e29
@@ -170,6 +179,7 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: d1a2cbf009c453f4d6ded37c105e2f67a32206d8
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
+  IONFilesystemLib: 89258b8e3e85465da93127d25d7ce37f977e8a6f
   MLImage: 2ab9c968e75f57911c16f4c9d9e8a8e9604a86a1
   MLKitBarcodeScanning: 72c6437f13a900833b400136be53a8a5d86f42fa
   MLKitCommon: 26b779f072a182c1603d4c88a101c350cac837b1
@@ -179,6 +189,6 @@ SPEC CHECKSUMS:
   SQLCipher: eb79c64049cb002b4e9fcb30edb7979bf4706dfc
   ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
 
-PODFILE CHECKSUM: 4eafdc2f8fa6ddb6a73b212952b0caaf504186dc
+PODFILE CHECKSUM: 38e2d4a6c4328511916a91acb9f7ba5de8a6f947
 
 COCOAPODS: 1.16.2
