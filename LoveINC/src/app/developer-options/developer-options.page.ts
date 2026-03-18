@@ -21,6 +21,7 @@ import { AppUserDataService } from '../services/app-user-data.service';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor } from '@capacitor/core';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
+import { GoalTrackerSeedService } from '@upstart-productions/goal-tracker';
 
 @Component({
   selector: 'app-developer-options',
@@ -43,12 +44,15 @@ import { ServiceUnlockService } from '@upstart-productions/service-unlock';
   ],
 })
 export class DeveloperOptionsPage {
+  seeding = false;
+
   constructor(
     private router: Router,
     private onboardingService: OnboardingService,
     private alertController: AlertController,
     private serviceUnlock: ServiceUnlockService,
-    private appUserData: AppUserDataService
+    private appUserData: AppUserDataService,
+    private goalTrackerSeed: GoalTrackerSeedService
   ) {}
 
   resetOnboarding() {
@@ -96,6 +100,29 @@ export class DeveloperOptionsPage {
       buttons: ['OK'],
     });
     await alert.present();
+  }
+
+  async seedGoalTracker() {
+    this.seeding = true;
+    try {
+      await this.goalTrackerSeed.seedDatabase();
+      const alert = await this.alertController.create({
+        header: 'Goal Tracker Seeded',
+        message:
+          'Database has been reset and seeded with 5 goals (2 completed), 11 habits, and ~1 year of completion data (Sept 2025 – Sept 2026).',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } catch (err) {
+      const alert = await this.alertController.create({
+        header: 'Seed Failed',
+        message: (err as Error)?.message ?? 'Unknown error',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } finally {
+      this.seeding = false;
+    }
   }
 
   async clearVouchers() {

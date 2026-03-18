@@ -217,6 +217,34 @@ export class HabitService {
     return result.values.map((row: Record<string, unknown>) => row['date'] as string);
   }
 
+  /**
+   * Returns completions in date range: habitId -> Set of completed dates (YYYY-MM-DD).
+   * Used for statistics aggregation.
+   */
+  async getCompletionsInDateRange(
+    startDate: string,
+    endDate: string
+  ): Promise<Map<number, Set<string>>> {
+    const conn = await this.db.getDbConnection();
+    const result = await conn.query(
+      'SELECT habitId, date FROM habit_completions WHERE completed = 1 AND date >= ? AND date <= ?',
+      [startDate, endDate]
+    );
+    const map = new Map<number, Set<string>>();
+    if (!result.values?.length) return map;
+    for (const row of result.values as Record<string, unknown>[]) {
+      const habitId = row['habitId'] as number;
+      const date = row['date'] as string;
+      let set = map.get(habitId);
+      if (!set) {
+        set = new Set<string>();
+        map.set(habitId, set);
+      }
+      set.add(date);
+    }
+    return map;
+  }
+
   /** Returns true if habit is scheduled for the given date (weekday only; habits have no date range) */
   isHabitScheduledForDate(habit: Habit, date: string): boolean {
     const weekday = getWeekday(date);

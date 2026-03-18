@@ -214,6 +214,15 @@ ion-modal.donation-map-modal-fullscreen {
   }
 }
 
+/* Chart bar popover (statistics) – pointer-events: none so taps pass through to bars */
+ion-popover.chart-bar-popover {
+  --background: rgba(34, 36, 40, 0.95);
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --width: fit-content;
+  --max-width: 6.625rem;
+  pointer-events: none;
+}
+
 /* Location popover (map marker click, reusable) */
 ion-popover.location-popover {
   --width: auto;

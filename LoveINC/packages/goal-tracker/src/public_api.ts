@@ -3,4 +3,5 @@ export type { Habit, HabitCompletion, WeekdaySchedule } from './lib/types/habit.
 export { GoalService } from './lib/services/goal.service';
 export { HabitService } from './lib/services/habit.service';
 export { GoalTrackerDatabaseService } from './lib/services/goal-tracker-database.service';
+export { GoalTrackerSeedService } from './lib/services/goal-tracker-seed.service';
 export { GoalTrackerPage } from './lib/goal-tracker.page';

@@ -1,77 +1,51 @@
-<ion-content [fullscreen]="true" class="statistics-content">
+<ion-content [fullscreen]="true" [scrollY]="false" class="statistics-content">
   <div class="statistics-inner">
-    <!-- Total Done summary -->
-    <div class="total-done">
-      <div class="total-done-left">
-        <h2>Total Done</h2>
-        <p class="app-caption">25 jun – 31 jun</p>
+    <!-- Fixed: Total Done, chart, week picker -->
+    <div class="statistics-fixed">
+      <div class="total-done">
+        <div class="total-done-left">
+          <h2>Total Done</h2>
+          <p class="app-caption">{{ weekDateRangeLabel }}</p>
+        </div>
+        <div class="total-done-right">
+          <span class="total-percent">{{ totalPercent }}%</span>
+          <p class="app-caption">{{ totalCompleted }} / {{ totalScheduled }}</p>
+        </div>
       </div>
-      <div class="total-done-right">
-        <span class="total-percent">76%</span>
-        <p class="app-caption">32 / 42</p>
+
+      <app-weekly-bar-chart [data]="weeklyData"></app-weekly-bar-chart>
+
+      <div class="week-nav">
+        <ion-button fill="clear" size="small" aria-label="Previous week" (click)="prevWeek()">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+        </ion-button>
+        <span class="week-selector">{{ weekLabel }}</span>
+        <ion-button fill="clear" size="small" aria-label="Next week" (click)="nextWeek()">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </ion-button>
       </div>
     </div>
 
-    <!-- Weekly bar chart -->
-    <app-weekly-bar-chart [data]="weeklyData"></app-weekly-bar-chart>
-
-    <!-- Week navigation -->
-    <div class="week-nav">
-      <ion-button fill="clear" size="small" aria-label="Previous week">
-        <ion-icon name="chevron-back-outline"></ion-icon>
-      </ion-button>
-      <button class="week-selector">
-        <span>Week 25 jun – 31 jun</span>
-        <ion-icon name="chevron-down-outline"></ion-icon>
-      </button>
-      <ion-button fill="clear" size="small" aria-label="Next week">
-        <ion-icon name="chevron-forward-outline"></ion-icon>
-      </ion-button>
-    </div>
-
-    <!-- Habit statistics list -->
-    <div class="habit-stats-list">
-      <div class="habit-stat-card">
-        <div class="habit-stat-main">
-          <h3>Morning Exercise</h3>
-          <p class="app-caption">7/7 times</p>
-        </div>
-        <div class="habit-stat-right">
-          <span class="stat-percent success">100%</span>
-          <span class="stat-change success"><ion-icon name="arrow-up-outline"></ion-icon> 15%</span>
-        </div>
-      </div>
-      <div class="habit-stat-card">
-        <div class="habit-stat-main">
-          <h3>Push-Up 20 Times</h3>
-          <p class="app-caption">5/7 times</p>
-        </div>
-        <div class="habit-stat-right">
-          <span class="stat-percent success">71%</span>
-          <span class="stat-change success"><ion-icon name="arrow-up-outline"></ion-icon> 15%</span>
-        </div>
-      </div>
-      <div class="habit-stat-card">
-        <div class="habit-stat-main">
-          <h3>Daily Meditation</h3>
-          <p class="app-caption">3/7 times</p>
-        </div>
-        <div class="habit-stat-right">
-          <span class="stat-percent">43%</span>
-          <span class="stat-change danger"><ion-icon name="arrow-down-outline"></ion-icon> 20%</span>
-        </div>
-      </div>
-      <div class="habit-stat-card">
-        <div class="habit-stat-main">
-          <ion-icon name="bicycle-outline" class="habit-icon"></ion-icon>
-          <div>
-            <h3>Cycling</h3>
-            <p class="app-caption">4/7 times</p>
+    <!-- Scrollable habit list -->
+    <div class="habit-stats-scroll">
+      <div class="habit-stats-list">
+        <div *ngFor="let stat of habitStats" class="habit-stat-card" [ngClass]="'border-' + (stat.habit.color || 'prussian-blue')">
+          <div class="habit-stat-main">
+            <div>
+              <h3>{{ stat.habit.name }}</h3>
+              <p *ngIf="stat.goalName" class="habit-goal-name">{{ stat.goalName }}</p>
+              <p class="app-caption">{{ stat.completed }}/{{ stat.scheduled }} times</p>
+            </div>
           </div>
-        </div>
-        <div class="habit-stat-right">
-          <span class="stat-percent">80%</span>
-          <span class="stat-change neutral"><ion-icon name="remove-outline"></ion-icon></span>
+          <div class="habit-stat-right">
+            <span class="stat-percent" [ngClass]="getPercentClass(stat.percent)">{{ stat.percent }}%</span>
+            <span *ngIf="stat.change !== null" class="stat-change" [ngClass]="getChangeClass(stat.change)">
+              <ion-icon *ngIf="stat.change > 0" name="arrow-up-outline"></ion-icon>
+              <ion-icon *ngIf="stat.change < 0" name="arrow-down-outline"></ion-icon>
+              <ion-icon *ngIf="stat.change === 0" name="remove-outline"></ion-icon>
+              {{ stat.change > 0 ? '+' : '' }}{{ stat.change }}%
+            </span>
+          </div>
         </div>
       </div>
     </div>

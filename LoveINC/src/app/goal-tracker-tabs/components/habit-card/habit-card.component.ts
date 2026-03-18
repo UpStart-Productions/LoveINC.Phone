@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonIcon } from '@ionic/angular/standalone';
 import type { Goal, Habit } from '@upstart-productions/goal-tracker';
-import { GoalTrackerDebugService } from '../../services/goal-tracker-debug.service';
 
 @Component({
   selector: 'app-habit-card',
@@ -27,7 +26,6 @@ export class HabitCardComponent {
   @Output() habitEditEvent = new EventEmitter<Habit>();
   @Output() goalEditEvent = new EventEmitter<Goal>();
 
-  constructor(private debug: GoalTrackerDebugService) {}
 
   get isGoal(): boolean {
     return !!this.goal;
@@ -43,7 +41,6 @@ export class HabitCardComponent {
   }
 
   editHabit() {
-    this.debug.trace(`1. habit-card editHabit() id=${this.habit?.id} name=${this.habit?.name}`);
     this.habitEditEvent.emit(this.habit!);
   }
 

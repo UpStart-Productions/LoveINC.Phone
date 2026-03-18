@@ -55,6 +55,25 @@
     </ion-card-content>
   </ion-card>
 
+  <!-- Goal Tracker Seed -->
+  <ion-card class="section-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="trophy-outline" class="section-icon"></ion-icon>
+        Goal Tracker
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="m-b-18" style="color: var(--ion-color-medium);">
+        Seed the goal tracker with 6 months of dummy data (5 goals, 2–3 habits each, Sept 2025 – Sept 2026). Resets existing data.
+      </p>
+      <ion-button expand="block" fill="outline" (click)="seedGoalTracker()" [disabled]="seeding">
+        <ion-icon slot="start" name="trophy-outline"></ion-icon>
+        {{ seeding ? 'Seeding...' : 'Seed Goal Tracker' }}
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
   <!-- Test Push Notification -->
   <ion-card class="section-card">
     <ion-card-header>

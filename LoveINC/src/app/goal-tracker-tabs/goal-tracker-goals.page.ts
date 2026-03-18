@@ -16,7 +16,6 @@ import { DateScrollerComponent, DateScrollerDate } from './components/date-scrol
 import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.service';
 import { GoalTrackerModalService } from './services/goal-tracker-modal.service';
 import { GoalTrackerDateService } from './services/goal-tracker-date.service';
-import { GoalTrackerDebugService } from './services/goal-tracker-debug.service';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
@@ -59,8 +58,7 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
     private habitService: HabitService,
     private refreshService: GoalTrackerRefreshService,
     private dateService: GoalTrackerDateService,
-    private modalService: GoalTrackerModalService,
-    private debug: GoalTrackerDebugService
+    private modalService: GoalTrackerModalService
   ) {}
 
   get selectedDate(): string {
@@ -170,7 +168,6 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
   }
 
   onHabitEdit(habit: Habit) {
-    this.debug.trace(`2. goals-page onHabitEdit() id=${habit?.id}`);
     this.modalService.openEditHabit(habit);
   }
 

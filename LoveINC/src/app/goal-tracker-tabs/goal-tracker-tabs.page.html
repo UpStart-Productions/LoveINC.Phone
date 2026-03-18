@@ -34,18 +34,3 @@
     <ion-icon name="add-circle" class="large" color="red-orange"></ion-icon>
   </button>
 </ion-tabs>
-
-<div class="debug-panel" *ngIf="!isGoalsTab && (debug.traces.length || showDebug)">
-  <div class="debug-header">
-    <span>Edit trace</span>
-    <button type="button" (click)="debug.clear()">Clear</button>
-    <button type="button" (click)="showDebug = false">Hide</button>
-  </div>
-  <div *ngFor="let t of debug.traces" class="debug-line">{{ t }}</div>
-  <button *ngIf="isGoalsTab" type="button" class="debug-test" (click)="testEditFirstHabit()">
-    Test: open edit for first habit
-  </button>
-</div>
-<button *ngIf="!isGoalsTab && !debug.traces.length && !showDebug" class="debug-toggle" (click)="showDebug = true" type="button">
-  Debug
-</button>
