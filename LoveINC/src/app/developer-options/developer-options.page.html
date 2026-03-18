@@ -55,7 +55,7 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Simple Budget Clear -->
+  <!-- Simple Budget -->
   <ion-card class="section-card">
     <ion-card-header>
       <ion-card-title>
@@ -65,6 +65,13 @@
     </ion-card-header>
     <ion-card-content>
       <p class="m-b-18" style="color: var(--ion-color-medium);">
+        Seed 3 months of sample data (Jan–Mar 2026, through Mar 15). Overwrites existing weeks in that range.
+      </p>
+      <ion-button expand="block" fill="outline" (click)="seedSimpleBudget()" [disabled]="seedingBudget">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        {{ seedingBudget ? 'Seeding...' : 'Seed Simple Budget' }}
+      </ion-button>
+      <p class="m-b-18 m-t-18" style="color: var(--ion-color-medium);">
         Clear all Simple Budget data (week plans, categories). Use for testing or reset.
       </p>
       <ion-button expand="block" fill="outline" (click)="clearSimpleBudget()">

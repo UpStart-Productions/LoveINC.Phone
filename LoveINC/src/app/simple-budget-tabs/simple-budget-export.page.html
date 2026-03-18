@@ -1,16 +1,27 @@
 <ion-header [translucent]="false">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/more"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/tools"></ion-back-button>
     </ion-buttons>
     <ion-title>Export</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <div class="segment-container">
+    <ion-segment [(ngModel)]="exportMode" class="export-mode-segment" (ionChange)="onExportModeChange()">
+    <ion-segment-button value="week">
+      <ion-label>Week</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="month">
+      <ion-label>Month</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  </div>
+
   <div *ngIf="loading" class="loading">Loading…</div>
 
-  <div *ngIf="!loading && plan" class="export-content">
+  <div *ngIf="!loading && exportMode === 'week' && plan" class="export-content">
     <ion-card class="summary-card">
       <ion-card-header>
         <ion-card-title>Week Summary</ion-card-title>
@@ -27,6 +38,37 @@
     </ion-card>
 
     <ion-button expand="block" (click)="exportPdf()" [disabled]="exporting" class="export-button">
+      <ion-icon name="document-text-outline" slot="start"></ion-icon>
+      {{ exporting ? 'Creating PDF…' : 'Export PDF' }}
+    </ion-button>
+  </div>
+
+  <div *ngIf="!loading && exportMode === 'month' && selectedMonthKey" class="export-content">
+    <ion-card class="summary-card">
+      <ion-card-header class="month-card-header">
+        <ion-card-title>Monthly Totals</ion-card-title>
+        <ion-select
+          [(ngModel)]="selectedMonthKey"
+          interface="popover"
+          [interfaceOptions]="monthSelectPopoverOptions"
+          placeholder="Select month"
+          (ionChange)="onMonthChange()"
+          class="month-select-below"
+        >
+          <ion-select-option *ngFor="let m of monthsWithEntries" [value]="m.key">{{ m.label }}</ion-select-option>
+        </ion-select>
+      </ion-card-header>
+      <ion-card-content *ngIf="monthlyWeeks.length">
+        <ion-list lines="none">
+          <ion-item *ngFor="let row of monthlyDisplayRows">
+            <ion-label>{{ row.label }}</ion-label>
+            <ion-note slot="end" [class.amount-positive]="getAmountClass(row) === 'positive'" [class.amount-negative]="getAmountClass(row) === 'negative'">{{ formatValue(row.value) }}</ion-note>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+      <p *ngIf="!monthlyWeeks.length" class="no-data">No week plans for this month.</p>
+    </ion-card>
+    <ion-button expand="block" (click)="exportPdf()" [disabled]="exporting || !monthlyWeeks.length" class="export-button">
       <ion-icon name="document-text-outline" slot="start"></ion-icon>
       {{ exporting ? 'Creating PDF…' : 'Export PDF' }}
     </ion-button>

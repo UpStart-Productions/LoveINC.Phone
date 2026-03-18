@@ -27,6 +27,46 @@ export class WeekPlanService {
     return plans;
   }
 
+  /**
+   * Get all week plans that fall within a given month (YYYY-MM).
+   * Weeks are ordered by week_start_date ascending.
+   */
+  async getWeeksForMonth(monthKey: string): Promise<WeekPlan[]> {
+    const plans = await this.listWeeks();
+    const [year, month] = monthKey.split('-').map(Number);
+    return plans
+      .filter((p) => {
+        const [py, pm] = p.weekStartDate.split('-').map(Number);
+        return py === year && pm === month;
+      })
+      .sort((a, b) => a.weekStartDate.localeCompare(b.weekStartDate));
+  }
+
+  /**
+   * Returns distinct month keys (YYYY-MM) that have at least one week plan.
+   * Always includes the current month.
+   */
+  async getMonthsWithEntries(): Promise<{ key: string; label: string }[]> {
+    const plans = await this.listWeeks();
+    const monthSet = new Set<string>();
+    const now = new Date();
+    const currentMonth = format(now, 'yyyy-MM');
+    monthSet.add(currentMonth);
+
+    for (const p of plans) {
+      const [y, m] = p.weekStartDate.split('-');
+      monthSet.add(`${y}-${m}`);
+    }
+
+    return [...monthSet]
+      .sort((a, b) => b.localeCompare(a))
+      .map((key) => {
+        const [y, m] = key.split('-').map(Number);
+        const d = new Date(y, m - 1, 1);
+        return { key, label: format(d, 'MMM yyyy') };
+      });
+  }
+
   async getWeek(id: number): Promise<WeekPlan | null> {
     const conn = await this.db.getDbConnection();
     const rows = await conn.query('SELECT * FROM week_plans WHERE id = ?', [id]);
@@ -181,8 +221,8 @@ export class WeekPlanService {
 
     for (const c of plan.categoryInstances) {
       await conn.run(
-        `INSERT INTO category_instances (week_plan_id, name, type, amount, visible, is_custom, sort_order, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO category_instances (week_plan_id, name, type, amount, visible, is_custom, sort_order, notes, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           plan.id!,
           c.name,
@@ -191,6 +231,7 @@ export class WeekPlanService {
           c.visible !== false ? 1 : 0,
           c.isCustom ? 1 : 0,
           c.sortOrder ?? 0,
+          c.notes ?? null,
           now,
           now,
         ]
@@ -226,8 +267,8 @@ export class WeekPlanService {
           ? c.amount
           : 0;
       await conn.run(
-        `INSERT INTO category_instances (week_plan_id, name, type, amount, visible, is_custom, sort_order, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO category_instances (week_plan_id, name, type, amount, visible, is_custom, sort_order, notes, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           newId,
           c.name,
@@ -236,6 +277,7 @@ export class WeekPlanService {
           c.visible !== false ? 1 : 0,
           c.isCustom ? 1 : 0,
           sortOrder++,
+          c.notes ?? null,
           now,
           now,
         ]
@@ -264,6 +306,7 @@ export class WeekPlanService {
         visible: (c['visible'] as number) !== 0,
         isCustom: (c['is_custom'] as number) !== 0,
         sortOrder: (c['sort_order'] as number) ?? 0,
+        notes: c['notes'] as string | undefined,
       };
     });
     return {
@@ -285,5 +328,104 @@ export class WeekPlanService {
 
   getDefaultTemplates(): CategoryTemplate[] {
     return ALL_DEFAULT_CATEGORIES;
+  }
+
+  /**
+   * Seeds 3 months of budget data (Jan, Feb, Mar 2026) with realistic sample entries.
+   * Uses Monday as week start. Overwrites any existing plans for those weeks.
+   */
+  async seedBudgetData(): Promise<void> {
+    // Use Sunday-based weeks to match the app's week scroller (getSundayForDate)
+    // Start from week containing Jan 1, 2026 (Sun Dec 28, 2025 – Jan 3, 2026)
+    const weekDates: string[] = [
+      '2025-12-28',
+      '2026-01-04',
+      '2026-01-11',
+      '2026-01-18',
+      '2026-01-25',
+      '2026-02-01',
+      '2026-02-08',
+      '2026-02-15',
+      '2026-02-22',
+      '2026-03-01',
+      '2026-03-08',
+    ];
+
+    const baseIncome = [
+      { name: 'Paycheck', amount: 2400, notes: 'Bi-weekly direct deposit from main employer.' },
+      { name: 'Benefits', amount: 0, notes: '' },
+      { name: 'Side work', amount: 150, notes: 'Freelance project, due end of week.' },
+      { name: 'Other', amount: 0, notes: '' },
+    ];
+    const baseBills = [
+      { name: 'Rent or mortgage', amount: 1150, notes: 'Due on the 1st, paid early this month.' },
+      { name: 'Electric', amount: 85, notes: '' },
+      { name: 'Gas utility', amount: 45, notes: 'Winter rate.' },
+      { name: 'Water', amount: 55, notes: '' },
+      { name: 'Phone', amount: 75, notes: 'Family plan.' },
+      { name: 'Internet', amount: 60, notes: '' },
+      { name: 'Insurance', amount: 145, notes: 'Auto + renters.' },
+      { name: 'Debt payment', amount: 200, notes: 'Credit card minimum + extra.' },
+      { name: 'Childcare', amount: 0, notes: '' },
+      { name: 'Other', amount: 0, notes: '' },
+    ];
+    const baseFlexible = [
+      { name: 'Groceries', amount: 380, notes: 'Includes household and personal care.' },
+      { name: 'Gas for car', amount: 90, notes: '' },
+      { name: 'Household', amount: 50, notes: 'Cleaning supplies, paper goods.' },
+      { name: 'Medical', amount: 30, notes: 'Prescription copays.' },
+      { name: 'Personal', amount: 75, notes: '' },
+      { name: 'Other', amount: 50, notes: '' },
+    ];
+
+    const variance = (base: number, pct: number, seed: number) =>
+      Math.round(base * (1 + ((seed % 100) / 100 - 0.5) * pct));
+
+    for (let i = 0; i < weekDates.length; i++) {
+      const weekStart = weekDates[i];
+      const plan = await this.getOrCreateWeekByDate(weekStart, DEFAULT_CONFIG);
+
+      const categoryInstances: CategoryInstance[] = [
+        ...baseIncome.map((c, j) => ({
+          weekPlanId: plan.id!,
+          name: c.name,
+          type: 'income' as const,
+          amount: j === 0 ? variance(c.amount, 0.05, i * 7 + 1) : c.amount,
+          visible: true,
+          isCustom: false,
+          sortOrder: j,
+          notes: c.notes || undefined,
+        })),
+        ...baseBills.map((c, j) => ({
+          weekPlanId: plan.id!,
+          name: c.name,
+          type: 'bills' as const,
+          amount: c.amount > 0 ? variance(c.amount, 0.08, i * 11 + j) : 0,
+          visible: true,
+          isCustom: false,
+          sortOrder: baseIncome.length + j,
+          notes: c.notes || undefined,
+        })),
+        ...baseFlexible.map((c, j) => ({
+          weekPlanId: plan.id!,
+          name: c.name,
+          type: 'flexible' as const,
+          amount: variance(c.amount, 0.12, i * 13 + j),
+          visible: true,
+          isCustom: false,
+          sortOrder: baseIncome.length + baseBills.length + j,
+          notes: c.notes || undefined,
+        })),
+      ];
+
+      const startingBalance = i === 0 ? 350 : variance(200, 0.3, i);
+
+      await this.upsertWeek({
+        ...plan,
+        startingBalance,
+        categoryInstances,
+        status: 'saved',
+      });
+    }
   }
 }

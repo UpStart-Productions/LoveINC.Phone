@@ -24,4 +24,6 @@ export interface CategoryInstance {
   /** User-added custom category (not from template) */
   isCustom: boolean;
   sortOrder: number;
+  /** Optional notes for this entry */
+  notes?: string;
 }

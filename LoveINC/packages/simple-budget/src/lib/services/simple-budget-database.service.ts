@@ -129,11 +129,17 @@ export class SimpleBudgetDatabaseService {
         visible INTEGER NOT NULL DEFAULT 1,
         is_custom INTEGER NOT NULL DEFAULT 0,
         sort_order INTEGER NOT NULL DEFAULT 0,
+        notes TEXT,
         created_at TEXT,
         updated_at TEXT,
         FOREIGN KEY (week_plan_id) REFERENCES week_plans(id) ON DELETE CASCADE
       );
     `);
+    try {
+      await db.execute('ALTER TABLE category_instances ADD COLUMN notes TEXT');
+    } catch {
+      // Column may already exist
+    }
     await db.execute(`
       CREATE INDEX IF NOT EXISTS idx_category_instances_week_plan
       ON category_instances(week_plan_id);

@@ -1,3 +1,17 @@
+.more-list-card {
+  --background: #ffffff;
+  background: #ffffff;
+
+  ion-list {
+    --background: #ffffff;
+    background: #ffffff;
+  }
+
+  ion-item {
+    --background: #ffffff;
+  }
+}
+
 ion-list {
   padding-top: 0.625rem;
 }

@@ -1,14 +1,17 @@
 import {
+  AfterViewChecked,
   Component,
   ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { addDays, format, startOfDay } from 'date-fns';
+import { addDays, differenceInDays, format, startOfDay } from 'date-fns';
 
 export interface WeekScrollerWeek {
   weekStartDate: string;
@@ -16,6 +19,7 @@ export interface WeekScrollerWeek {
   labelLong: string;
   isCurrentWeek: boolean;
   isSelected: boolean;
+  hasEntries: boolean;
 }
 
 @Component({
@@ -25,12 +29,15 @@ export interface WeekScrollerWeek {
   standalone: true,
   imports: [CommonModule],
 })
-export class WeekScrollerComponent implements OnInit {
+export class WeekScrollerComponent implements OnInit, OnChanges, AfterViewChecked {
   @ViewChild('weekScroller', { static: false }) weekScroller!: ElementRef;
   @Input() initialWeekStart?: string;
+  @Input() earliestWeekStart?: string;
+  @Input() weeksWithEntries: string[] = [];
   @Output() weekSelectedEvent = new EventEmitter<string>();
 
   weeks: WeekScrollerWeek[] = [];
+  private _shouldScrollToCurrent = true;
 
   selectWeek(week: WeekScrollerWeek) {
     this.weeks.forEach((w) => (w.isSelected = false));
@@ -52,7 +59,12 @@ export class WeekScrollerComponent implements OnInit {
     const thisWeekStart = format(thisWeekSunday, 'yyyy-MM-dd');
 
     this.weeks = [];
-    const startOffset = -4;
+    let startOffset = -4;
+    if (this.earliestWeekStart) {
+      const earliestSunday = new Date(this.earliestWeekStart + 'T00:00:00');
+      const weeksBack = Math.ceil(differenceInDays(thisWeekSunday, earliestSunday) / 7);
+      startOffset = -Math.max(0, weeksBack);
+    }
     const endOffset = 3;
 
     for (let i = startOffset; i <= endOffset; i++) {
@@ -71,20 +83,24 @@ export class WeekScrollerComponent implements OnInit {
         labelLong,
         isCurrentWeek: isCurrent,
         isSelected: false,
+        hasEntries: this.weeksWithEntries.includes(weekStart),
       });
     }
 
-    const toSelect = this.initialWeekStart
-      ? this.weeks.find((w) => w.weekStartDate === this.initialWeekStart)
+    const initial = this._selectionOverride ?? this.initialWeekStart;
+    const toSelect = initial
+      ? this.weeks.find((w) => w.weekStartDate === initial)
       : this.weeks.find((w) => w.isCurrentWeek);
     if (toSelect) this.selectWeek(toSelect);
     else if (this.weeks.length) this.selectWeek(this.weeks[0]);
+    this._selectionOverride = undefined;
   }
 
+  private _selectionOverride?: string;
+
   private scrollToCurrentWeek() {
-    const selected = this.weeks.find((w) => w.isSelected);
-    const targetDate = selected?.weekStartDate ?? format(this.getSundayForDate(new Date()), 'yyyy-MM-dd');
-    const targetIndex = this.weeks.findIndex((w) => w.weekStartDate === targetDate);
+    const currentWeekStart = format(this.getSundayForDate(new Date()), 'yyyy-MM-dd');
+    const targetIndex = this.weeks.findIndex((w) => w.weekStartDate === currentWeekStart);
     if (targetIndex !== -1 && this.weekScroller?.nativeElement) {
       const weekElements = this.weekScroller.nativeElement.children;
       const targetElement = weekElements[targetIndex];
@@ -103,7 +119,24 @@ export class WeekScrollerComponent implements OnInit {
     if (selected) this.weekSelectedEvent.emit(selected.weekStartDate);
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['earliestWeekStart'] || changes['weeksWithEntries']) {
+      this._selectionOverride = this.weeks.find((w) => w.isSelected)?.weekStartDate;
+      this.calculateWeekRange();
+      const selected = this.weeks.find((w) => w.isSelected);
+      if (selected) this.weekSelectedEvent.emit(selected.weekStartDate);
+      this._shouldScrollToCurrent = true;
+    }
+  }
+
   ngAfterViewInit() {
     setTimeout(() => this.scrollToCurrentWeek(), 50);
+  }
+
+  ngAfterViewChecked() {
+    if (this._shouldScrollToCurrent) {
+      this._shouldScrollToCurrent = false;
+      setTimeout(() => this.scrollToCurrentWeek(), 0);
+    }
   }
 }

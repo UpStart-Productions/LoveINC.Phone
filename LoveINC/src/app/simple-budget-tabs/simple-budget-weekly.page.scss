@@ -56,9 +56,10 @@ ion-content.weekly-content {
 }
 
 .section-title {
-  padding: 1rem 1rem 0.5rem;
-  font-size: var(--app-font-size-title);
+  padding: 0.5rem 1rem;
+  font-size: var(--app-font-size-sm);
   font-weight: 600;
+  text-transform: uppercase;
 }
 
 .category-list {
@@ -77,14 +78,24 @@ ion-content.weekly-content {
   margin-top: 0.8rem;
   background: #ffffff;
   border-radius: 15px;
-  border: 2px solid;
+  border: 1px solid;
   gap: 0.5rem;
+  cursor: pointer;
 
   .card-name {
     flex: 1;
     min-width: 0;
     font-weight: 600;
     font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+
+    .notes-icon {
+      font-size: 0.875rem;
+      color: var(--ion-color-medium);
+      flex-shrink: 0;
+    }
   }
 
   .currency-input-wrap {
@@ -122,7 +133,7 @@ ion-content.weekly-content {
     color: var(--ion-color-danger);
 
     ion-icon {
-      font-size: 1.25rem;
+      font-size: 1rem;
     }
   }
 
@@ -138,6 +149,10 @@ ion-content.weekly-content {
 
 .starting-balance-card {
   border-color: rgba(var(--ion-color-dark-rgb), 0.1);
+
+  .currency-input-wrap {
+    transform: translateX(28px);
+  }
 }
 
 .add-btn {
@@ -150,7 +165,7 @@ ion-content.weekly-content {
   padding: 1rem;
   background: #ffffff;
   border-radius: 15px;
-  border: 0.0625rem solid rgba(var(--ion-color-dark-rgb), 0.1);
+  border: 1px solid rgba(var(--ion-color-dark-rgb), 0.1);
 }
 
 .summary-row {
@@ -179,9 +194,17 @@ ion-content.weekly-content {
   color: var(--ion-color-danger);
 }
 
-.safe-explanation {
-  margin-top: 0.5rem;
-  margin-bottom: 0;
+.summary-card .positive {
+  color: var(--simple-budget-green, #1e9e5a);
+}
+
+.summary-card-title {
+  font-size: var(--app-font-size-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0 0 0.5rem;
+  margin: 0 0 0.5rem;
+  border-bottom: 1px solid rgba(var(--ion-color-dark-rgb), 0.1);
 }
 
 .save-button {

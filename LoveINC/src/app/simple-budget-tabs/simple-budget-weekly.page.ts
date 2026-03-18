@@ -25,6 +25,7 @@ import type { WeekPlan, CategoryInstance, WeekSummary } from '@upstart-productio
 import { addDays, format } from 'date-fns';
 import { WeekScrollerComponent } from './components/week-scroller/week-scroller.component';
 import { AddCategorySheetComponent } from './components/add-category-sheet/add-category-sheet.component';
+import { EntryNotesModalComponent } from './components/entry-notes-modal/entry-notes-modal.component';
 import { CurrencyInputDirective } from './directives/currency-input.directive';
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
 
@@ -63,6 +64,8 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
   loading = true;
   saving = false;
   selectedWeekStart = '';
+  earliestWeekStart = '';
+  weeksWithEntries: string[] = [];
   private displayAmounts: Record<string, string> = {};
   private saveTimeout: ReturnType<typeof setTimeout> | null = null;
   private readonly SAVE_DEBOUNCE_MS = 600;
@@ -75,10 +78,32 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    await this.loadForWeek(this.getCurrentWeekStart());
+    const plans = await this.weekPlanService.listWeeks();
+    if (plans.length) {
+      this.earliestWeekStart =
+        plans.reduce((a, b) =>
+          a.weekStartDate < b.weekStartDate ? a : b
+        ).weekStartDate;
+      this.weeksWithEntries = plans
+        .filter((p) => (p.categoryInstances?.length ?? 0) > 0)
+        .map((p) => p.weekStartDate);
+    }
+    const weekStart =
+      this.budgetState.selectedWeekStart || this.getCurrentWeekStart();
+    await this.loadForWeek(weekStart);
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
+    const plans = await this.weekPlanService.listWeeks();
+    if (plans.length) {
+      this.earliestWeekStart =
+        plans.reduce((a, b) =>
+          a.weekStartDate < b.weekStartDate ? a : b
+        ).weekStartDate;
+      this.weeksWithEntries = plans
+        .filter((p) => (p.categoryInstances?.length ?? 0) > 0)
+        .map((p) => p.weekStartDate);
+    }
     if (this.selectedWeekStart) this.loadForWeek(this.selectedWeekStart);
   }
 
@@ -138,6 +163,28 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
   onAmountChange() {
     this.updateSummary();
     this.scheduleSave();
+  }
+
+  async openNotesModal(c: CategoryInstance) {
+    const modal = await this.modalCtrl.create({
+      component: EntryNotesModalComponent,
+      cssClass: 'entry-notes-modal',
+      componentProps: {
+        entryName: c.name,
+        notes: c.notes ?? '',
+      },
+      presentingElement: await this.modalCtrl.getTop(),
+      showBackdrop: true,
+      backdropDismiss: true,
+      breakpoints: [0, 0.5, 1],
+      initialBreakpoint: 0.5,
+    });
+    await modal.present();
+    const { data, role } = await modal.onWillDismiss<string>();
+    if (role === 'save' && this.plan) {
+      c.notes = data ?? '';
+      this.scheduleSave();
+    }
   }
 
   async addCategory(type: 'income' | 'bills' | 'flexible') {

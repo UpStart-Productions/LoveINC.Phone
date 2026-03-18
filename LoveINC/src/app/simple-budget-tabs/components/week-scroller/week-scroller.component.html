@@ -5,7 +5,8 @@
     class="date"
     [ngClass]="{
       today: week.isCurrentWeek,
-      selected: week.isSelected
+      selected: week.isSelected,
+      'has-entries': week.hasEntries
     }"
   >
     <span [ngClass]="{ today: week.isCurrentWeek, selected: week.isSelected }" class="txt-small-caps">WEEK</span>
