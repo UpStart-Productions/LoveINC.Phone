@@ -17,3 +17,4 @@ export { calculateWeekSummary } from './lib/utils/calculate-week-summary';
 export { exportToJson, exportToCsv, buildExportRows } from './lib/utils/export-utils';
 export { QUICK_ADJUST_OPTIONS } from './lib/constants/quick-adjust-options';
 export type { QuickAdjustOption } from './lib/constants/quick-adjust-options';
+export { ALL_DEFAULT_CATEGORIES } from './lib/constants/default-categories';

@@ -174,7 +174,8 @@ ion-accordion .ion-accordion-toggle-icon {
  * ----------------------------------------------------------------------------- */
 .services-action-sheet,
 .donate-action-sheet,
-.share-action-sheet {
+.share-action-sheet,
+.budget-action-sheet {
   .action-sheet-icon {
     font-size: var(--app-icon-size-sm) !important;
     color: var(--ion-color-dark);
@@ -211,6 +212,15 @@ ion-accordion .ion-accordion-toggle-icon {
 .donate-action-sheet .action-sheet-button {
   .action-sheet-icon {
     font-size: var(--app-icon-size-lg) !important;
+  }
+}
+
+.budget-action-sheet .action-sheet-button {
+  .action-sheet-icon {
+    font-size: var(--app-icon-size-md) !important;
+    width: var(--app-icon-size-md) !important;
+    height: var(--app-icon-size-md) !important;
+    color: var(--ion-color-dark) !important;
   }
 }
 

@@ -1,12 +1,25 @@
 <ion-header class="ion-no-border" [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar class="custom-toolbar">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/more"></ion-back-button>
     </ion-buttons>
     <ion-title>Weekly Budget</ion-title>
+    <ion-buttons slot="end">
+      <span
+        *ngIf="!loading && summary"
+        class="remaining-badge"
+        [class.positive]="(summary?.remaining ?? 0) >= 0"
+        [class.negative]="(summary?.remaining ?? 0) < 0"
+      >
+        ${{ formatBadgeAmount(summary?.remaining ?? 0) }}
+      </span>
+    </ion-buttons>
   </ion-toolbar>
-  <div class="week-range" *ngIf="plan">
-    <p class="app-caption">{{ weekDateRange }}</p>
+  <div class="container-date-scroller">
+    <app-week-scroller
+      [initialWeekStart]="selectedWeekStart"
+      (weekSelectedEvent)="onWeekSelected($event)"
+    ></app-week-scroller>
   </div>
 </ion-header>
 
@@ -15,93 +28,129 @@
 
   <div *ngIf="!loading && plan" class="budget-form">
     <!-- Starting balance -->
-    <ion-list lines="none" class="section-list">
-      <ion-item>
-        <ion-label>
-          <h2>Starting balance</h2>
-          <p class="app-body-secondary">Money you have at the start of the week</p>
-        </ion-label>
-        <ion-input
-          type="number"
-          inputmode="decimal"
-          [ngModel]="plan.startingBalance"
-          (ngModelChange)="plan.startingBalance = parseAmount($event); onAmountChange()"
-          placeholder="0"
-        ></ion-input>
-      </ion-item>
-    </ion-list>
+    <div class="category-list">
+      <div class="budget-card starting-balance-card">
+        <ion-label class="card-name">Starting balance</ion-label>
+        <span class="currency-input-wrap">
+          <span class="currency-prefix">$</span>
+          <ion-input
+            appCurrencyInput
+            #startInput
+            type="text"
+            inputmode="decimal"
+            [ngModel]="formatAmountForInput(plan.startingBalance, 'starting')"
+            (ionInput)="onAmountInput($event, setStartingBalance.bind(this), 'starting', startInput)"
+            (ionFocus)="onAmountFocus('starting', startInput)"
+            (ionBlur)="onAmountBlur('starting', plan.startingBalance)"
+            placeholder="0"
+            class="card-amount"
+          ></ion-input>
+        </span>
+        <span class="card-spacer"></span>
+      </div>
+    </div>
 
     <!-- Money Coming In -->
     <h3 class="section-title">Money Coming In</h3>
-    <ion-list lines="none" class="section-list">
-      <ion-item *ngFor="let c of incomeCategories" [class.hidden-row]="!c.visible">
-        <ion-button slot="start" fill="clear" size="small" (click)="toggleVisible(c)" [attr.aria-label]="c.visible ? 'Hide' : 'Show'">
-          <ion-icon [name]="c.visible ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
-        </ion-button>
-        <ion-label>{{ c.name }}</ion-label>
-        <ion-input
-          type="number"
-          inputmode="decimal"
-          [ngModel]="c.amount"
-          (ngModelChange)="c.amount = parseAmount($event); onAmountChange()"
-          placeholder="0"
-        ></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-button fill="outline" size="small" (click)="addCategory('income')">
-          <ion-icon name="add-outline"></ion-icon>
-          Add category
-        </ion-button>
-      </ion-item>
-    </ion-list>
+    <div class="category-list">
+      <div
+        *ngFor="let c of incomeCategories; let i = index"
+        class="budget-card"
+        [ngClass]="getBorderClass('income')"
+      >
+        <ion-label class="card-name">{{ c.name }}</ion-label>
+        <span class="currency-input-wrap">
+          <span class="currency-prefix">$</span>
+          <ion-input
+            appCurrencyInput
+            #amtInput
+            type="text"
+            inputmode="decimal"
+            [ngModel]="formatAmountForInput(c.amount, 'income-' + i)"
+            (ionInput)="onAmountInput($event, setCategoryAmount.bind(this, c), 'income-' + i, amtInput)"
+            (ionFocus)="onAmountFocus('income-' + i, amtInput)"
+            (ionBlur)="onAmountBlur('income-' + i, c.amount)"
+            placeholder="0"
+            class="card-amount"
+          ></ion-input>
+        </span>
+        <button class="card-remove" (click)="removeCategory(c)" aria-label="Remove">
+          <ion-icon name="trash-outline"></ion-icon>
+        </button>
+      </div>
+      <ion-button fill="solid" color="red-orange" size="small" (click)="addCategory('income')" class="add-btn">
+        <ion-icon name="add-outline"></ion-icon>
+        Add
+      </ion-button>
+    </div>
 
     <!-- Bills Due This Week -->
     <h3 class="section-title">Bills Due This Week</h3>
-    <ion-list lines="none" class="section-list">
-      <ion-item *ngFor="let c of billsCategories" [class.hidden-row]="!c.visible">
-        <ion-button slot="start" fill="clear" size="small" (click)="toggleVisible(c)" [attr.aria-label]="c.visible ? 'Hide' : 'Show'">
-          <ion-icon [name]="c.visible ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
-        </ion-button>
-        <ion-label>{{ c.name }}</ion-label>
-        <ion-input
-          type="number"
-          inputmode="decimal"
-          [ngModel]="c.amount"
-          (ngModelChange)="c.amount = parseAmount($event); onAmountChange()"
-          placeholder="0"
-        ></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-button fill="outline" size="small" (click)="addCategory('bills')">
-          <ion-icon name="add-outline"></ion-icon>
-          Add category
-        </ion-button>
-      </ion-item>
-    </ion-list>
+    <div class="category-list">
+      <div
+        *ngFor="let c of billsCategories; let i = index"
+        class="budget-card"
+        [ngClass]="getBorderClass('bills')"
+      >
+        <ion-label class="card-name">{{ c.name }}</ion-label>
+        <span class="currency-input-wrap">
+          <span class="currency-prefix">$</span>
+          <ion-input
+            appCurrencyInput
+            #amtInput
+            type="text"
+            inputmode="decimal"
+            [ngModel]="formatAmountForInput(c.amount, 'bills-' + i)"
+            (ionInput)="onAmountInput($event, setCategoryAmount.bind(this, c), 'bills-' + i, amtInput)"
+            (ionFocus)="onAmountFocus('bills-' + i, amtInput)"
+            (ionBlur)="onAmountBlur('bills-' + i, c.amount)"
+            placeholder="0"
+            class="card-amount"
+          ></ion-input>
+        </span>
+        <button class="card-remove" (click)="removeCategory(c)" aria-label="Remove">
+          <ion-icon name="trash-outline"></ion-icon>
+        </button>
+      </div>
+      <ion-button fill="solid" color="red-orange" size="small" (click)="addCategory('bills')" class="add-btn">
+        <ion-icon name="add-outline"></ion-icon>
+        Add
+      </ion-button>
+    </div>
 
     <!-- Flexible Targets -->
     <h3 class="section-title">Flexible Targets</h3>
-    <ion-list lines="none" class="section-list">
-      <ion-item *ngFor="let c of flexibleCategories" [class.hidden-row]="!c.visible">
-        <ion-button slot="start" fill="clear" size="small" (click)="toggleVisible(c)" [attr.aria-label]="c.visible ? 'Hide' : 'Show'">
-          <ion-icon [name]="c.visible ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
-        </ion-button>
-        <ion-label>{{ c.name }}</ion-label>
-        <ion-input
-          type="number"
-          inputmode="decimal"
-          [ngModel]="c.amount"
-          (ngModelChange)="c.amount = parseAmount($event); onAmountChange()"
-          placeholder="0"
-        ></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-button fill="outline" size="small" (click)="addCategory('flexible')">
-          <ion-icon name="add-outline"></ion-icon>
-          Add category
-        </ion-button>
-      </ion-item>
-    </ion-list>
+    <div class="category-list">
+      <div
+        *ngFor="let c of flexibleCategories; let i = index"
+        class="budget-card"
+        [ngClass]="getBorderClass('flexible')"
+      >
+        <ion-label class="card-name">{{ c.name }}</ion-label>
+        <span class="currency-input-wrap">
+          <span class="currency-prefix">$</span>
+          <ion-input
+            appCurrencyInput
+            #amtInput
+            type="text"
+            inputmode="decimal"
+            [ngModel]="formatAmountForInput(c.amount, 'flexible-' + i)"
+            (ionInput)="onAmountInput($event, setCategoryAmount.bind(this, c), 'flexible-' + i, amtInput)"
+            (ionFocus)="onAmountFocus('flexible-' + i, amtInput)"
+            (ionBlur)="onAmountBlur('flexible-' + i, c.amount)"
+            placeholder="0"
+            class="card-amount"
+          ></ion-input>
+        </span>
+        <button class="card-remove" (click)="removeCategory(c)" aria-label="Remove">
+          <ion-icon name="trash-outline"></ion-icon>
+        </button>
+      </div>
+      <ion-button fill="solid" color="red-orange" size="small" (click)="addCategory('flexible')" class="add-btn">
+        <ion-icon name="add-outline"></ion-icon>
+        Add
+      </ion-button>
+    </div>
 
     <!-- Summary -->
     <div class="summary-card" *ngIf="summary">
@@ -129,11 +178,7 @@
         <span class="app-body">Safe to spend per day</span>
         <span class="app-title">{{ formatCurrency(summary.safeToSpendPerDay) }}</span>
       </div>
-      <p class="app-caption safe-explanation">Divide remaining money by days left in the week. This is your daily spending guide.</p>
+      <p class="app-caption safe-explanation">Divide remaining money by days left in the week.</p>
     </div>
-
-    <ion-button expand="block" (click)="save()" [disabled]="saving" class="save-button">
-      {{ saving ? 'Saving…' : 'Save plan' }}
-    </ion-button>
   </div>
 </ion-content>

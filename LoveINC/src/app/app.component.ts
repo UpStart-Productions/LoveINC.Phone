@@ -110,6 +110,11 @@ import {
   refreshOutline,
   codeOutline,
   waterOutline,
+  flameOutline,
+  wifiOutline,
+  shieldOutline,
+  cartOutline,
+  carOutline,
   checkmarkDoneOutline,
   ellipseOutline,
   calculatorOutline,
@@ -405,6 +410,11 @@ export class AppComponent implements OnInit, OnDestroy {
       lockClosedOutline,
       checkmarkCircle,
       ticketOutline,
+      flameOutline,
+      wifiOutline,
+      shieldOutline,
+      cartOutline,
+      carOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });

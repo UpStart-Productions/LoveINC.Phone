@@ -29,7 +29,7 @@
 }
 
 .date-scroller .date span {
-  font-size: 0.77rem;
+  font-size: 0.68rem;
 }
 
 .date-scroller .date.today {
@@ -39,9 +39,6 @@
 .date-scroller .date.selected {
   background-color: var(--ion-color-secondary);
   border: 1px solid var(--ion-color-secondary);
-}
-.date-scroller .date.completed {
-  border: 1px solid var(--ion-color-emerald);
 }
 button span {
   color: var(--ion-color-black) !important;
@@ -56,8 +53,9 @@ button span.selected {
 
 .txt-small-caps {
   text-transform: uppercase;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
 }
 .txt-normal-bold {
   font-weight: 600;
+  font-size: 0.65rem;
 }

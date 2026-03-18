@@ -18,6 +18,7 @@
         <ion-label position="stacked">What changed from your plan?</ion-label>
         <ion-textarea
           [(ngModel)]="plan.reviewWhatChanged"
+          (ionInput)="scheduleSave()"
           placeholder="e.g. Car repair cost more than expected"
           rows="2"
         ></ion-textarea>
@@ -26,6 +27,7 @@
         <ion-label position="stacked">New money that came in</ion-label>
         <ion-textarea
           [(ngModel)]="plan.reviewNewMoney"
+          (ionInput)="scheduleSave()"
           placeholder="e.g. Overtime pay, gift"
           rows="2"
         ></ion-textarea>
@@ -34,6 +36,7 @@
         <ion-label position="stacked">Bills higher than expected</ion-label>
         <ion-textarea
           [(ngModel)]="plan.reviewBillsHigher"
+          (ionInput)="scheduleSave()"
           placeholder="e.g. Electric bill was $20 more"
           rows="2"
         ></ion-textarea>
@@ -42,15 +45,12 @@
         <ion-label position="stacked">Other notes (optional)</ion-label>
         <ion-textarea
           [(ngModel)]="plan.reviewNotes"
+          (ionInput)="scheduleSave()"
           placeholder="Anything else you want to remember"
           rows="2"
         ></ion-textarea>
       </ion-item>
     </ion-list>
-
-    <ion-button expand="block" (click)="save()" [disabled]="saving" class="save-button">
-      {{ saving ? 'Saving…' : 'Save review' }}
-    </ion-button>
 
     <ion-button expand="block" fill="outline" (click)="copyToNextWeek()" [disabled]="copying" class="copy-button">
       {{ copying ? 'Copying…' : 'Copy to next week' }}

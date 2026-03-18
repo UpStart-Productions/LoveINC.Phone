@@ -66,7 +66,7 @@ export class WeekPlanService {
 
   async createWeek(
     weekStartDate: string,
-    config: SimpleBudgetConfig = DEFAULT_CONFIG
+    _config: SimpleBudgetConfig = DEFAULT_CONFIG
   ): Promise<WeekPlan> {
     const now = new Date().toISOString();
     const conn = await this.db.getDbConnection();
@@ -76,42 +76,59 @@ export class WeekPlanService {
       [weekStartDate, 'Practice, not perfection.', now, now]
     );
     const id = result.changes?.lastId ?? 0;
-    const instances = this.createCategoryInstancesFromTemplate(id);
-    for (const inst of instances) {
-      await conn.run(
-        `INSERT INTO category_instances (week_plan_id, name, type, amount, visible, is_custom, sort_order, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          inst.weekPlanId,
-          inst.name,
-          inst.type,
-          inst.amount,
-          inst.visible ? 1 : 0,
-          inst.isCustom ? 1 : 0,
-          inst.sortOrder,
-          now,
-          now,
-        ]
-      );
-    }
     return (await this.getWeek(id))!;
   }
 
-  private createCategoryInstancesFromTemplate(id: number): CategoryInstance[] {
-    const instances: CategoryInstance[] = [];
-    let sortOrder = 0;
-    for (const t of ALL_DEFAULT_CATEGORIES) {
-      instances.push({
-        weekPlanId: id,
-        name: t.name,
-        type: t.type,
-        amount: 0,
-        visible: true,
-        isCustom: false,
-        sortOrder: sortOrder++,
-      });
+  async getOrCreateWeekByDate(
+    weekStartDate: string,
+    config: SimpleBudgetConfig = DEFAULT_CONFIG
+  ): Promise<WeekPlan> {
+    const existing = await this.getWeekByDate(weekStartDate);
+    if (existing) return existing;
+    return this.createWeek(weekStartDate, config);
+  }
+
+  async getUserCategoryTemplates(): Promise<{ name: string; type: CategoryInstance['type'] }[]> {
+    const conn = await this.db.getDbConnection();
+    const rows = await conn.query(
+      'SELECT name, type FROM user_category_templates ORDER BY name'
+    );
+    return (rows.values ?? []).map((r: unknown) => {
+      const row = r as Record<string, unknown>;
+      return {
+        name: row['name'] as string,
+        type: row['type'] as 'income' | 'bills' | 'flexible',
+      };
+    });
+  }
+
+  async addUserCategoryTemplate(
+    name: string,
+    type: CategoryInstance['type']
+  ): Promise<void> {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const conn = await this.db.getDbConnection();
+    try {
+      await conn.run(
+        'INSERT OR IGNORE INTO user_category_templates (name, type, created_at) VALUES (?, ?, ?)',
+        [trimmed, type, new Date().toISOString()]
+      );
+    } catch {
+      // Ignore duplicate
     }
-    return instances;
+  }
+
+  async getSuggestedCategoryNames(
+    type: CategoryInstance['type']
+  ): Promise<string[]> {
+    const fromDefaults = ALL_DEFAULT_CATEGORIES
+      .filter((t) => t.type === type)
+      .map((t) => t.name);
+    const userTemplates = (await this.getUserCategoryTemplates())
+      .filter((t) => t.type === type)
+      .map((t) => t.name);
+    return [...new Set([...fromDefaults, ...userTemplates])].sort();
   }
 
   async upsertWeek(plan: WeekPlan): Promise<WeekPlan> {

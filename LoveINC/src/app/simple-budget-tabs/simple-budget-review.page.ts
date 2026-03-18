@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -41,11 +41,13 @@ import type { WeekPlan } from '@upstart-productions/simple-budget';
     IonButton,
   ],
 })
-export class SimpleBudgetReviewPage implements OnInit {
+export class SimpleBudgetReviewPage implements OnInit, OnDestroy {
   plan: WeekPlan | null = null;
   loading = true;
   saving = false;
   copying = false;
+  private saveTimeout: ReturnType<typeof setTimeout> | null = null;
+  private readonly SAVE_DEBOUNCE_MS = 600;
 
   constructor(private weekPlanService: WeekPlanService) {}
 
@@ -57,7 +59,15 @@ export class SimpleBudgetReviewPage implements OnInit {
     this.load();
   }
 
+  ngOnDestroy() {
+    if (this.saveTimeout) clearTimeout(this.saveTimeout);
+  }
+
   async load() {
+    if (this.saveTimeout) {
+      clearTimeout(this.saveTimeout);
+      this.saveTimeout = null;
+    }
     this.loading = true;
     try {
       this.plan = await this.weekPlanService.getOrCreateCurrentWeek(DEFAULT_CONFIG);
@@ -68,7 +78,16 @@ export class SimpleBudgetReviewPage implements OnInit {
     }
   }
 
-  async save() {
+  scheduleSave(): void {
+    if (!this.plan || this.saving) return;
+    if (this.saveTimeout) clearTimeout(this.saveTimeout);
+    this.saveTimeout = setTimeout(() => {
+      this.saveTimeout = null;
+      this.save();
+    }, this.SAVE_DEBOUNCE_MS);
+  }
+
+  private async save() {
     if (!this.plan) return;
     this.saving = true;
     try {

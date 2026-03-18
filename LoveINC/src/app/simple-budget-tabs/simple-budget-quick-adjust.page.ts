@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonHeader,
@@ -41,12 +41,14 @@ import type { WeekPlan, WeekSummary } from '@upstart-productions/simple-budget';
     IonButton,
   ],
 })
-export class SimpleBudgetQuickAdjustPage implements OnInit {
+export class SimpleBudgetQuickAdjustPage implements OnInit, OnDestroy {
   plan: WeekPlan | null = null;
   summary: WeekSummary | null = null;
   loading = true;
   saving = false;
   selectedIds: Set<string> = new Set();
+  private saveTimeout: ReturnType<typeof setTimeout> | null = null;
+  private readonly SAVE_DEBOUNCE_MS = 400;
 
   readonly options = QUICK_ADJUST_OPTIONS;
 
@@ -60,7 +62,15 @@ export class SimpleBudgetQuickAdjustPage implements OnInit {
     this.load();
   }
 
+  ngOnDestroy() {
+    if (this.saveTimeout) clearTimeout(this.saveTimeout);
+  }
+
   async load() {
+    if (this.saveTimeout) {
+      clearTimeout(this.saveTimeout);
+      this.saveTimeout = null;
+    }
     this.loading = true;
     try {
       this.plan = await this.weekPlanService.getOrCreateCurrentWeek(DEFAULT_CONFIG);
@@ -85,13 +95,23 @@ export class SimpleBudgetQuickAdjustPage implements OnInit {
       this.selectedIds.add(id);
     }
     this.selectedIds = new Set(this.selectedIds);
+    this.scheduleSave();
   }
 
   isSelected(id: string): boolean {
     return this.selectedIds.has(id);
   }
 
-  async save() {
+  private scheduleSave(): void {
+    if (!this.plan || this.saving) return;
+    if (this.saveTimeout) clearTimeout(this.saveTimeout);
+    this.saveTimeout = setTimeout(() => {
+      this.saveTimeout = null;
+      this.save();
+    }, this.SAVE_DEBOUNCE_MS);
+  }
+
+  private async save() {
     if (!this.plan) return;
     this.saving = true;
     try {

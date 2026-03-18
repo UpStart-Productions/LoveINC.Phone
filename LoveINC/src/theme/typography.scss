@@ -253,9 +253,20 @@ ion-header ion-back-button ion-icon,
   color: var(--app-text-accent) !important;
   text-align: left !important;
 }
+
+.budget-action-sheet .action-sheet-title,
+.budget-action-sheet .action-sheet-header,
+.budget-action-sheet .action-sheet-group h1 {
+  font-size: var(--app-font-size-title) !important;
+  font-weight: var(--app-font-weight-bold) !important;
+  color: var(--ion-color-dark) !important;
+  text-align: left !important;
+}
+
 .services-action-sheet,
 .donate-action-sheet,
-.share-action-sheet {
+.share-action-sheet,
+.budget-action-sheet {
   .action-sheet-button,
   .action-sheet-button-with-subtitle {
     text-align: left !important;
@@ -350,4 +361,25 @@ ion-header ion-back-button ion-icon,
 
 .donate-action-sheet .action-sheet-button-with-subtitle .action-sheet-button-inner {
   line-height: var(--app-line-height-loose);
+}
+
+.budget-action-sheet .action-sheet-button {
+  .action-sheet-icon {
+    font-size: var(--app-icon-size-md) !important;
+    color: var(--ion-color-dark) !important;
+  }
+
+  .action-sheet-button-inner {
+    font-size: var(--app-font-size-body) !important;
+    color: var(--ion-color-dark) !important;
+  }
+
+  span {
+    font-size: var(--app-font-size-body) !important;
+    color: var(--ion-color-dark) !important;
+  }
+}
+
+.budget-action-sheet .action-sheet-cancel .action-sheet-icon {
+  color: var(--app-text-secondary) !important;
 }

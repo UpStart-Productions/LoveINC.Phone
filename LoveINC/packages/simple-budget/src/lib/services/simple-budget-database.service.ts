@@ -138,6 +138,18 @@ export class SimpleBudgetDatabaseService {
       CREATE INDEX IF NOT EXISTS idx_category_instances_week_plan
       ON category_instances(week_plan_id);
     `);
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS user_category_templates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        type TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      );
+    `);
+    await db.execute(`
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_user_category_templates_name_type
+      ON user_category_templates(name, type);
+    `);
   }
 
   resetConnection(): void {
@@ -164,12 +176,14 @@ export class SimpleBudgetDatabaseService {
     const db = await this.getDbConnection();
     await db.execute('DELETE FROM category_instances');
     await db.execute('DELETE FROM week_plans');
+    await db.execute('DELETE FROM user_category_templates');
   }
 
   async resetDatabase(): Promise<void> {
     const db = await this.getDbConnection();
     await db.execute('DROP TABLE IF EXISTS category_instances');
     await db.execute('DROP TABLE IF EXISTS week_plans');
+    await db.execute('DROP TABLE IF EXISTS user_category_templates');
     await this.createTables();
   }
 }
