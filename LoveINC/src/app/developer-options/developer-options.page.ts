@@ -22,6 +22,7 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor } from '@capacitor/core';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { GoalTrackerSeedService } from '@upstart-productions/goal-tracker';
+import { SimpleBudgetDatabaseService } from '@upstart-productions/simple-budget';
 
 @Component({
   selector: 'app-developer-options',
@@ -52,7 +53,8 @@ export class DeveloperOptionsPage {
     private alertController: AlertController,
     private serviceUnlock: ServiceUnlockService,
     private appUserData: AppUserDataService,
-    private goalTrackerSeed: GoalTrackerSeedService
+    private goalTrackerSeed: GoalTrackerSeedService,
+    private simpleBudgetDb: SimpleBudgetDatabaseService
   ) {}
 
   resetOnboarding() {
@@ -100,6 +102,25 @@ export class DeveloperOptionsPage {
       buttons: ['OK'],
     });
     await alert.present();
+  }
+
+  async clearSimpleBudget() {
+    try {
+      await this.simpleBudgetDb.wipeAll();
+      const alert = await this.alertController.create({
+        header: 'Simple Budget Cleared',
+        message: 'All week plans and category data have been deleted.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } catch (err) {
+      const alert = await this.alertController.create({
+        header: 'Clear Failed',
+        message: (err as Error)?.message ?? 'Unknown error',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    }
   }
 
   async seedGoalTracker() {

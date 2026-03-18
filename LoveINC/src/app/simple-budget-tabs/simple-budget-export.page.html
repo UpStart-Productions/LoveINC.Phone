@@ -1,0 +1,36 @@
+<ion-header [translucent]="false">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/more"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Export</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div *ngIf="loading" class="loading">Loading…</div>
+
+  <div *ngIf="!loading && plan" class="export-content">
+    <div class="summary-card">
+      <h3 class="app-title">Week Summary</h3>
+      <ion-list lines="none">
+        <ion-item *ngFor="let row of exportRows">
+          <ion-label>{{ row.label }}</ion-label>
+          <ion-note slot="end">{{ formatValue(row.value) }}</ion-note>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <ion-button expand="block" (click)="exportJson()" class="export-button">
+      <ion-icon name="document-outline" slot="start"></ion-icon>
+      Export JSON
+    </ion-button>
+
+    <ion-button expand="block" fill="outline" (click)="exportCsv()" class="export-button">
+      <ion-icon name="document-text-outline" slot="start"></ion-icon>
+      Export CSV
+    </ion-button>
+
+    <p class="app-caption hint">On device, export opens the share sheet. On web, it downloads the file.</p>
+  </div>
+</ion-content>

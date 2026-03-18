@@ -55,6 +55,25 @@
     </ion-card-content>
   </ion-card>
 
+  <!-- Simple Budget Clear -->
+  <ion-card class="section-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="wallet-outline" class="section-icon"></ion-icon>
+        Simple Budget
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p class="m-b-18" style="color: var(--ion-color-medium);">
+        Clear all Simple Budget data (week plans, categories). Use for testing or reset.
+      </p>
+      <ion-button expand="block" fill="outline" (click)="clearSimpleBudget()">
+        <ion-icon slot="start" name="trash-outline"></ion-icon>
+        Clear Simple Budget Data
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
   <!-- Goal Tracker Seed -->
   <ion-card class="section-card">
     <ion-card-header>

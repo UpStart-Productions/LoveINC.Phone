@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "dist",
+  "inlineStyleLanguage": "scss",
+  "allowedNonPeerDependencies": ["date-fns"],
+  "lib": {
+    "entryFile": "src/public_api.ts",
+    "flatModuleFile": "simple-budget"
+  }
+}

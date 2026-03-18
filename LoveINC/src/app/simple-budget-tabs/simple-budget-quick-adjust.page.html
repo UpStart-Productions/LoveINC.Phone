@@ -1,0 +1,37 @@
+<ion-header [translucent]="false">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/more"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Quick Adjust</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div *ngIf="loading" class="loading">Loading…</div>
+
+  <div *ngIf="!loading && plan" class="quick-adjust-content">
+    <div *ngIf="summary?.isOverPlan" class="over-banner">
+      <p class="app-body">Plan is short by {{ formatCurrency(-(summary?.remaining ?? 0)) }}</p>
+      <p class="app-caption">Check up to 3 strategies below. These are suggestions only—you choose what to do.</p>
+    </div>
+
+    <ion-list lines="none" class="options-list">
+      <ion-item *ngFor="let opt of options" [class.disabled]="!isSelected(opt.id) && selectedIds.size >= 3">
+        <ion-checkbox
+          slot="start"
+          [checked]="isSelected(opt.id)"
+          (ionChange)="toggleOption(opt.id)"
+          [disabled]="!isSelected(opt.id) && selectedIds.size >= 3"
+        ></ion-checkbox>
+        <ion-label>{{ opt.label }}</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <p class="app-caption hint">Select 1 to 3 strategies. Saving stores your choices as notes for the week.</p>
+
+    <ion-button expand="block" (click)="save()" [disabled]="saving" class="save-button">
+      {{ saving ? 'Saving…' : 'Save choices' }}
+    </ion-button>
+  </div>
+</ion-content>

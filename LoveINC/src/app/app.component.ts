@@ -12,6 +12,7 @@ import { DeviceIdService } from './services/device-id.service';
 import { PlatformApiService } from './services/platform/platform-api.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
 import { GoalTrackerDatabaseService } from '@upstart-productions/goal-tracker';
+import { SimpleBudgetDatabaseService } from '@upstart-productions/simple-budget';
 import { GoalTrackerRefreshService } from './goal-tracker-tabs/services/goal-tracker-refresh.service';
 import { PushRegistrationService } from './services/push-registration.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
@@ -113,6 +114,10 @@ import {
   ellipseOutline,
   calculatorOutline,
   walletOutline,
+  wallet,
+  construct,
+  eyeOutline,
+  eyeOffOutline,
   peopleCircleOutline as peopleCircleOutlineIcon,
   // Service Unlock Icons
   qrCodeOutline,
@@ -142,6 +147,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private platform: Platform,
     private grovlinkDb: GrovLinkDatabaseService,
     private goalTrackerDb: GoalTrackerDatabaseService,
+    private simpleBudgetDb: SimpleBudgetDatabaseService,
     private goalTrackerRefresh: GoalTrackerRefreshService,
     private pushRegistration: PushRegistrationService,
     private router: Router,
@@ -193,6 +199,9 @@ export class AppComponent implements OnInit, OnDestroy {
       }),
       this.goalTrackerDb.getDbConnection().catch((err) => {
         console.warn('Goal Tracker DB init deferred:', err);
+      }),
+      this.simpleBudgetDb.getDbConnection().catch((err) => {
+        console.warn('Simple Budget DB init deferred:', err);
       }),
     ]).catch(() => {});
     this.appReady = true;
@@ -385,6 +394,10 @@ export class AppComponent implements OnInit, OnDestroy {
       ellipseOutline,
       calculatorOutline,
       walletOutline,
+      wallet,
+      construct,
+      eyeOutline,
+      eyeOffOutline,
       // Service Unlock Icons
       qrCodeOutline,
       scanOutline,
