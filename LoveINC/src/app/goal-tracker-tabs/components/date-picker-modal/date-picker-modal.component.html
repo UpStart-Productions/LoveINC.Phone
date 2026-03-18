@@ -1,0 +1,24 @@
+<div class="date-picker-sheet">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title slot="start">{{ title }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="cancel()" fill="clear" aria-label="Close">
+          <ion-icon name="close-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-datetime
+      [value]="selectedValue"
+      presentation="date"
+      [preferWheel]="true"
+      (ionChange)="onDatetimeChange($event)"
+    ></ion-datetime>
+    <div class="date-picker-actions">
+      <ion-button fill="outline" color="secondary" (click)="setToday()">Today</ion-button>
+      <ion-button color="secondary" (click)="confirm()">Confirm</ion-button>
+    </div>
+  </ion-content>
+</div>

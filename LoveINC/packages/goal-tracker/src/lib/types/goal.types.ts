@@ -21,7 +21,6 @@ export interface Goal {
   color?: string;
   category?: GoalCategory;
   dueDate?: string; // ISO date string
-  startDate?: string; // ISO date string
   completed: boolean;
   createdAt: string;
   updatedAt: string;

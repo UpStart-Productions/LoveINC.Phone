@@ -18,6 +18,9 @@ function isAfter(dateStr: string, otherStr: string): boolean {
   return new Date(dateStr) > new Date(otherStr);
 }
 
+/** Sentinel: habits with no start date show for all dates */
+const NO_START_DATE = '1970-01-01';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -43,7 +46,7 @@ export class HabitService {
       scheduleJson,
       habit.progressIncrement ?? 0,
       habit.reminderTime ?? null,
-      habit.startDate,
+      habit.startDate ?? NO_START_DATE,
       habit.endDate ?? null,
       now,
       now,
@@ -214,13 +217,15 @@ export class HabitService {
     return result.values.map((row: Record<string, unknown>) => row['date'] as string);
   }
 
-  /** Returns true if habit is scheduled for the given date (weekday + start/end date) */
+  /** Returns true if habit is scheduled for the given date (weekday only; habits have no date range) */
   isHabitScheduledForDate(habit: Habit, date: string): boolean {
     const weekday = getWeekday(date);
     const scheduled = habit.schedule?.find((s) => s.day === weekday && s.selected);
     if (!scheduled) return false;
-    if (isBefore(date, habit.startDate)) return false;
-    if (habit.endDate && isAfter(date, habit.endDate)) return false;
+    const start = habit.startDate;
+    const end = habit.endDate;
+    if (start && start !== NO_START_DATE && isBefore(date, start)) return false;
+    if (end && isAfter(date, end)) return false;
     return true;
   }
 
@@ -243,7 +248,7 @@ export class HabitService {
       schedule,
       progressIncrement: (row['progressIncrement'] as number) ?? 0,
       reminderTime: row['reminderTime'] as string | undefined,
-      startDate: row['startDate'] as string,
+      startDate: (row['startDate'] as string) || NO_START_DATE,
       endDate: (row['endDate'] as string) || undefined,
       createdAt: row['createdAt'] as string,
       updatedAt: row['updatedAt'] as string,

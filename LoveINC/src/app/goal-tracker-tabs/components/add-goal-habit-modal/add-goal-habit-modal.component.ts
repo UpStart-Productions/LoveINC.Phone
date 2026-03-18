@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -11,6 +11,7 @@ import {
   IonContent,
   IonItem,
   IonLabel,
+  IonNote,
   IonInput,
   IonTextarea,
   IonSelect,
@@ -20,10 +21,12 @@ import {
   ModalController,
 } from '@ionic/angular/standalone';
 import { GoalService, HabitService } from '@upstart-productions/goal-tracker';
-import type { Goal, WeekdaySchedule } from '@upstart-productions/goal-tracker';
+import type { Goal, Habit, WeekdaySchedule } from '@upstart-productions/goal-tracker';
 import { ColorPickerComponent } from '../color-picker/color-picker.component';
 import { WeekdayPickerComponent } from '../weekday-picker/weekday-picker.component';
+import { DatePickerModalComponent } from '../date-picker-modal/date-picker-modal.component';
 import { GoalTrackerRefreshService } from '../../services/goal-tracker-refresh.service';
+import { GoalTrackerEditService } from '../../services/goal-tracker-edit.service';
 
 const COLOR_OPTIONS = [
   { color: 'prussian-blue' },
@@ -63,6 +66,7 @@ const WEEKDAYS: WeekdaySchedule[] = [
     IonContent,
     IonItem,
     IonLabel,
+    IonNote,
     IonInput,
     IonTextarea,
     IonSelect,
@@ -76,13 +80,21 @@ const WEEKDAYS: WeekdaySchedule[] = [
 })
 export class AddGoalHabitModalComponent implements OnInit {
   mode: 'goal' | 'habit' = 'goal';
+  @Input() edit = false;
+  @Input() editGoal = false;
+  @Input() habit?: Habit;
+
+  get pageTitle(): string {
+    if (this.edit && this.editGoal) return 'Edit Goal';
+    if (this.edit || this.habit) return 'Edit Habit';
+    return this.mode === 'goal' ? 'Add Goal' : 'Add Habit';
+  }
 
   // Goal form
   goalTitle = '';
   goalDescription = '';
   goalColor = 'prussian-blue';
   goalTarget: number | null = null;
-  goalStartDate = new Date().toISOString().slice(0, 10);
   goalDueDate = '';
 
   // Habit form
@@ -91,8 +103,6 @@ export class AddGoalHabitModalComponent implements OnInit {
   habitColor = 'prussian-blue';
   habitGoalId: number | null = null;
   habitProgressIncrement = 1;
-  habitStartDate = new Date().toISOString().slice(0, 10);
-  habitEndDate = '';
   habitSchedule: WeekdaySchedule[] = [...WEEKDAYS];
 
   saving = false;
@@ -104,15 +114,45 @@ export class AddGoalHabitModalComponent implements OnInit {
     private modalCtrl: ModalController,
     private goalService: GoalService,
     private habitService: HabitService,
-    private refreshService: GoalTrackerRefreshService
+    private refreshService: GoalTrackerRefreshService,
+    private editService: GoalTrackerEditService
   ) {}
 
   async ngOnInit() {
     this.goals = await this.goalService.getAllGoals();
     this.goals = this.goals.filter((g) => !g.completed);
-    if (this.goals.length > 0 && !this.habitGoalId) {
+
+    const goal = this.editService.getEditGoal();
+    if (goal && this.editGoal) {
+      this.mode = 'goal';
+      this.edit = true;
+      this.goalTitle = goal.title;
+      this.goalDescription = goal.description ?? '';
+      this.goalColor = goal.color ?? 'prussian-blue';
+      this.goalTarget = goal.target ?? null;
+      this.goalDueDate = goal.dueDate ?? '';
+    }
+
+    const habit = this.habit ?? this.editService.getEditHabit();
+    if (habit) {
+      this.habit = habit;
+      this.mode = 'habit';
+      this.edit = true;
+      this.habitName = habit.name;
+      this.habitDescription = habit.description ?? '';
+      this.habitColor = habit.color ?? 'prussian-blue';
+      this.habitGoalId = habit.goalId ?? null;
+      this.habitProgressIncrement = habit.progressIncrement ?? 1;
+      this.habitSchedule = habit.schedule?.length
+        ? [...habit.schedule]
+        : [...WEEKDAYS];
+    } else if (this.goals.length > 0 && !this.habitGoalId) {
       this.habitGoalId = this.goals[0].id ?? null;
     }
+  }
+
+  ionViewWillLeave() {
+    this.editService.clear();
   }
 
   cancel() {
@@ -135,16 +175,26 @@ export class AddGoalHabitModalComponent implements OnInit {
     }
     this.saving = true;
     try {
-      await this.goalService.createGoal({
-        title: this.goalTitle.trim(),
-        description: this.goalDescription.trim() || undefined,
-        progress: 0,
-        target: this.goalTarget ?? undefined,
-        color: this.goalColor,
-        startDate: this.goalStartDate,
-        dueDate: this.goalDueDate || undefined,
-        completed: false,
-      });
+      const goal = this.editService.getEditGoal();
+      if (goal?.id) {
+        await this.goalService.updateGoal(goal.id, {
+          title: this.goalTitle.trim(),
+          description: this.goalDescription.trim() || undefined,
+          target: this.goalTarget ?? undefined,
+          color: this.goalColor,
+          dueDate: this.goalDueDate || undefined,
+        });
+      } else {
+        await this.goalService.createGoal({
+          title: this.goalTitle.trim(),
+          description: this.goalDescription.trim() || undefined,
+          progress: 0,
+          target: this.goalTarget ?? undefined,
+          color: this.goalColor,
+          dueDate: this.goalDueDate || undefined,
+          completed: false,
+        });
+      }
       this.refreshService.requestRefresh();
       this.modalCtrl.dismiss({ saved: true }, 'confirm');
     } catch (e) {
@@ -170,16 +220,28 @@ export class AddGoalHabitModalComponent implements OnInit {
     }
     this.saving = true;
     try {
-      await this.habitService.createHabit({
-        goalId: this.habitGoalId,
-        name: this.habitName.trim(),
-        description: this.habitDescription.trim() || undefined,
-        color: this.habitColor,
-        schedule: this.habitSchedule,
-        progressIncrement: this.habitProgressIncrement,
-        startDate: this.habitStartDate,
-        endDate: this.habitEndDate || undefined,
-      });
+      const habitId = this.habit?.id;
+      if (this.habit && habitId) {
+        await this.habitService.updateHabit(habitId, {
+          goalId: this.habitGoalId,
+          name: this.habitName.trim(),
+          description: this.habitDescription.trim() || undefined,
+          color: this.habitColor,
+          schedule: this.habitSchedule,
+          progressIncrement: this.habitProgressIncrement,
+          startDate: '1970-01-01',
+          endDate: null,
+        });
+      } else {
+        await this.habitService.createHabit({
+          goalId: this.habitGoalId,
+          name: this.habitName.trim(),
+          description: this.habitDescription.trim() || undefined,
+          color: this.habitColor,
+          schedule: this.habitSchedule,
+          progressIncrement: this.habitProgressIncrement,
+        });
+      }
       this.refreshService.requestRefresh();
       this.modalCtrl.dismiss({ saved: true }, 'confirm');
     } catch (e) {
@@ -191,5 +253,31 @@ export class AddGoalHabitModalComponent implements OnInit {
 
   onScheduleChange(sched: WeekdaySchedule[]) {
     this.habitSchedule = sched;
+  }
+
+  async openDatePicker(title: string, currentValue: string): Promise<string | null> {
+    const modal = await this.modalCtrl.create({
+      component: DatePickerModalComponent,
+      componentProps: { title, value: currentValue },
+      cssClass: 'date-picker-modal-sheet',
+      showBackdrop: true,
+      backdropDismiss: true,
+      breakpoints: [0, 0.55, 1],
+      initialBreakpoint: 0.55,
+    });
+    await modal.present();
+    const { data, role } = await modal.onWillDismiss<string>();
+    return role === 'confirm' && data ? data : null;
+  }
+
+  async pickGoalDueDate() {
+    const picked = await this.openDatePicker('Due date', this.goalDueDate);
+    if (picked) this.goalDueDate = picked;
+  }
+
+  formatDateDisplay(value: string): string {
+    if (!value) return '';
+    const d = new Date(value + 'T00:00:00');
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
   }
 }

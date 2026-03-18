@@ -12,14 +12,14 @@ ion-item:has(ion-textarea) {
   ion-input,
   ion-select,
   ion-textarea {
-    --background: var(--ion-background-color);
+    --background: #ffffff;
     --border-width: 0.0625rem;
     --border-style: solid;
-    --border-color: var(--ion-color-medium);
+    --border-color: var(--ion-color-light-gray, #e0e0e0);
     --border-radius: 0.625rem;
     --padding-end: 0;
-    background-color: var(--ion-background-color);
-    border: 0.0625rem solid var(--ion-color-medium);
+    background-color: #ffffff;
+    border: 0.0625rem solid var(--ion-color-light-gray, #e0e0e0);
     border-radius: 0.625rem;
     padding-right: 0 !important;
   }
@@ -38,9 +38,9 @@ ion-item:has(ion-textarea) {
   .select-border-wrapper {
     display: block;
     width: 100%;
-    border: 0.0625rem solid var(--ion-color-medium);
+    border: 0.0625rem solid var(--ion-color-light-gray, #e0e0e0);
     border-radius: 0.625rem;
-    background-color: var(--ion-background-color);
+    background-color: #ffffff;
 
     ion-select {
       --background: transparent;
@@ -51,10 +51,14 @@ ion-item:has(ion-textarea) {
   }
 
   ion-input input,
-  ion-input input::placeholder,
-  ion-textarea textarea,
-  ion-textarea textarea::placeholder {
+  ion-textarea textarea {
     font-size: var(--app-font-size-body);
+  }
+
+  ion-input input::placeholder,
+  ion-textarea textarea::placeholder,
+  ion-select::part(placeholder) {
+    font-size: var(--app-font-size-sm);
   }
 
   ion-input input,

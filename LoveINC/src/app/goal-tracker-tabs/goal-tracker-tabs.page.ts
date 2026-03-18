@@ -12,16 +12,16 @@ import {
   IonTabBar,
   IonTabButton,
   IonLabel,
-  IonRouterOutlet,
 } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular/standalone';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { AddGoalHabitModalComponent } from './components/add-goal-habit-modal/add-goal-habit-modal.component';
-import { DateScrollerComponent, DateScrollerDate } from './components/date-scroller/date-scroller.component';
+import { GoalTrackerModalService } from './services/goal-tracker-modal.service';
 import { GoalTrackerDateService } from './services/goal-tracker-date.service';
 import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.service';
+import { GoalTrackerDebugService } from './services/goal-tracker-debug.service';
+import { GoalService, HabitService } from '@upstart-productions/goal-tracker';
+import type { Habit } from '@upstart-productions/goal-tracker';
 
 @Component({
   selector: 'app-goal-tracker-tabs',
@@ -40,33 +40,29 @@ import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.servi
     IonTabs,
     IonTabBar,
     IonTabButton,
-    IonIcon,
     IonLabel,
-    IonRouterOutlet,
-    DateScrollerComponent,
   ],
 })
 export class GoalTrackerTabsPage implements OnInit, OnDestroy {
   isGoalsTab = true;
-  completedDates: string[] = [];
+  showDebug = false;
   private sub?: Subscription;
 
   constructor(
-    private modalCtrl: ModalController,
+    private modalService: GoalTrackerModalService,
     private router: Router,
     private dateService: GoalTrackerDateService,
-    private refreshService: GoalTrackerRefreshService
+    private refreshService: GoalTrackerRefreshService,
+    public debug: GoalTrackerDebugService,
+    private goalService: GoalService,
+    private habitService: HabitService
   ) {}
 
   ngOnInit() {
     this.updateGoalsTab();
-    this.completedDates = this.dateService.completedDates;
     this.sub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(() => this.updateGoalsTab());
-    this.sub.add(
-      this.dateService.completedDates$.subscribe((d) => (this.completedDates = d))
-    );
   }
 
   ngOnDestroy() {
@@ -83,18 +79,25 @@ export class GoalTrackerTabsPage implements OnInit, OnDestroy {
     return !this.isGoalsTab;
   }
 
-  onDateSelected(date: DateScrollerDate) {
-    this.dateService.selectedDate = date.date;
+  onFabClick() {
+    this.modalService.openAdd();
   }
 
-  async onFabClick() {
-    const modal = await this.modalCtrl.create({
-      component: AddGoalHabitModalComponent,
-    });
-    await modal.present();
-    const { data } = await modal.onWillDismiss();
-    if (data?.saved) {
-      this.refreshService.requestRefresh();
+  async testEditFirstHabit() {
+    const allGoals = await this.goalService.getAllGoals();
+    const allHabits = await this.habitService.getAllHabits();
+    const sel = this.dateService.selectedDate;
+    for (const goal of allGoals) {
+      if (goal.completed) continue;
+      const habitsForGoal = allHabits.filter((h: Habit) => h.goalId === goal.id);
+      const scheduled = habitsForGoal.filter((h: Habit) =>
+        this.habitService.isHabitScheduledForDate(h, sel)
+      );
+      if (scheduled.length > 0) {
+        this.debug.trace(`TEST: bypassing card, opening edit for habit id=${scheduled[0].id}`);
+        this.modalService.openEditHabit(scheduled[0]);
+        return;
+      }
     }
   }
 }

@@ -19,8 +19,10 @@ export interface Habit {
   /** Amount added to goal progress when habit is completed (0 = no auto-update) */
   progressIncrement: number;
   reminderTime?: string; // "19:00"
-  startDate: string; // ISO date
-  endDate?: string | null; // ISO date or null for no end
+  /** @internal DB only - habits have no date range in UI */
+  startDate?: string;
+  /** @internal DB only - habits have no date range in UI */
+  endDate?: string | null;
   createdAt: string;
   updatedAt: string;
 }

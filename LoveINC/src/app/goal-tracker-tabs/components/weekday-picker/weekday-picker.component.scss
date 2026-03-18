@@ -22,7 +22,7 @@
 }
 .btn-weekday-picker {
   display: inline-block;
-  margin-right: 9px;
+  margin-right: 8px;
   width: 26px;
   height: 26px;
   border-radius: 50%;
@@ -39,9 +39,10 @@
   color: var(--ion-color-white);
 }
 .btn-every-day {
-  width: 94px;
+  width: 90px;
   height: 30px;
   margin-left: 0;
+  margin-right: 5px;
   border-radius: 8px;
   display: inline-block;
   font-size: 0.75rem;

@@ -1,25 +1,18 @@
-<ion-header [translucent]="false">
+<ion-header *ngIf="!isGoalsTab" [translucent]="false">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/more"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ isGoalsTab ? 'Goal Tracker' : 'Statistics' }}</ion-title>
-    <ion-buttons slot="end" *ngIf="!isGoalsTab">
+    <ion-title>Statistics</ion-title>
+    <ion-buttons slot="end">
       <ion-button aria-label="Settings">
         <ion-icon name="settings-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar *ngIf="isGoalsTab">
-    <app-date-scroller
-      [completedDates]="completedDates"
-      (dateSelectedEvent)="onDateSelected($event)"
-    ></app-date-scroller>
-  </ion-toolbar>
 </ion-header>
 
 <ion-tabs>
-  <ion-router-outlet></ion-router-outlet>
   <ion-tab-bar slot="bottom" class="goal-tracker-tab-bar">
     <ion-tab-button tab="goals" href="/tabs/goal-tracker/goals">
       <ion-icon aria-hidden="true" name="trophy-outline" class="outline-icon"></ion-icon>
@@ -41,3 +34,18 @@
     <ion-icon name="add-circle" class="large" color="red-orange"></ion-icon>
   </button>
 </ion-tabs>
+
+<div class="debug-panel" *ngIf="!isGoalsTab && (debug.traces.length || showDebug)">
+  <div class="debug-header">
+    <span>Edit trace</span>
+    <button type="button" (click)="debug.clear()">Clear</button>
+    <button type="button" (click)="showDebug = false">Hide</button>
+  </div>
+  <div *ngFor="let t of debug.traces" class="debug-line">{{ t }}</div>
+  <button *ngIf="isGoalsTab" type="button" class="debug-test" (click)="testEditFirstHabit()">
+    Test: open edit for first habit
+  </button>
+</div>
+<button *ngIf="!isGoalsTab && !debug.traces.length && !showDebug" class="debug-toggle" (click)="showDebug = true" type="button">
+  Debug
+</button>

@@ -1,12 +1,22 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonBackButton,
+} from '@ionic/angular/standalone';
 import { App } from '@capacitor/app';
 import { GoalService, HabitService } from '@upstart-productions/goal-tracker';
 import type { Goal, Habit } from '@upstart-productions/goal-tracker';
 import { HabitCardComponent } from './components/habit-card/habit-card.component';
+import { DateScrollerComponent, DateScrollerDate } from './components/date-scroller/date-scroller.component';
 import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.service';
+import { GoalTrackerModalService } from './services/goal-tracker-modal.service';
 import { GoalTrackerDateService } from './services/goal-tracker-date.service';
+import { GoalTrackerDebugService } from './services/goal-tracker-debug.service';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
@@ -22,8 +32,14 @@ export interface GoalWithHabits {
   standalone: true,
   imports: [
     CommonModule,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonBackButton,
     IonContent,
     HabitCardComponent,
+    DateScrollerComponent,
   ],
 })
 export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
@@ -42,11 +58,21 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
     private goalService: GoalService,
     private habitService: HabitService,
     private refreshService: GoalTrackerRefreshService,
-    private dateService: GoalTrackerDateService
+    private dateService: GoalTrackerDateService,
+    private modalService: GoalTrackerModalService,
+    private debug: GoalTrackerDebugService
   ) {}
 
   get selectedDate(): string {
     return this.dateService.selectedDate;
+  }
+
+  get completedDates(): string[] {
+    return this.dateService.completedDates;
+  }
+
+  onDateSelected(date: DateScrollerDate) {
+    this.dateService.selectedDate = date.date;
   }
 
   async ngOnInit() {
@@ -92,7 +118,10 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
   };
 
   async loadData() {
-    this.loading = true;
+    /* Only show loading spinner on initial load. Avoid setting loading=true on refresh
+     * (e.g. from ionViewDidEnter) – that DOM switch breaks ion-content touch handling. */
+    const isInitialLoad = this.goalsWithHabits.length === 0;
+    if (isInitialLoad) this.loading = true;
     try {
       await this.refreshGoalsForDate();
       const completed = await this.habitService.getDatesWithAnyCompletion();
@@ -140,7 +169,12 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
     this.dateService.completedDates = await this.habitService.getDatesWithAnyCompletion();
   }
 
-  onHabitEdit(_habit: Habit) {
-    // TODO: open edit habit modal
+  onHabitEdit(habit: Habit) {
+    this.debug.trace(`2. goals-page onHabitEdit() id=${habit?.id}`);
+    this.modalService.openEditHabit(habit);
+  }
+
+  onGoalEdit(goal: Goal) {
+    this.modalService.openEditGoal(goal);
   }
 }

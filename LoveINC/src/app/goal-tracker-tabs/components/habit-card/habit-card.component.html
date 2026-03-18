@@ -1,21 +1,32 @@
 <div
-  *ngIf="habit"
+  *ngIf="goal || habit"
   class="card-container"
-  [ngClass]="{ 'disallow-complete': !allowComplete }"
+  [ngClass]="{ 'disallow-complete': habit && !allowComplete, 'card-container-nested': nested }"
 >
-  <div class="card" [ngClass]="borderClass">
-    <button (click)="markHabit()" class="card-checkbox">
+  <div class="card" [ngClass]="borderClass" [class.card-goal]="isGoal">
+    <!-- Goal: badge with date (or medal if no date) inside card, vertically centered -->
+    <span *ngIf="isGoal" class="card-badge card-badge-inside" [ngClass]="[badgeColorClass, goalDueDateBadge ? 'card-badge-date' : 'card-badge-circle']">
+      <span *ngIf="goalDueDateBadge" class="badge-date-stack">
+        <span class="badge-month">{{ goalDueDateBadge.month }}</span>
+        <span class="badge-day">{{ goalDueDateBadge.day }}</span>
+      </span>
+      <ion-icon *ngIf="!goalDueDateBadge" name="medal-outline"></ion-icon>
+    </span>
+    <!-- Habit: checkbox -->
+    <button *ngIf="habit" (click)="markHabit()" class="card-checkbox">
       <ion-icon
         *ngIf="allowComplete"
         [color]="iconColor"
         [name]="isCompleted ? 'checkmark-circle' : 'ellipse-outline'"
       ></ion-icon>
     </button>
-    <div class="card-content">
-      <p>{{ habit.name }}</p>
-      <p *ngIf="habit.description" class="txt-small">{{ habit.description }}</p>
+    <div class="card-content" [class.card-content-goal]="isGoal">
+      <p *ngIf="goal">{{ goal.title }}</p>
+      <p *ngIf="habit">{{ habit.name }}</p>
+      <p *ngIf="goal?.description" class="txt-small">{{ goal?.description }}</p>
+      <p *ngIf="habit?.description" class="txt-small">{{ habit?.description }}</p>
     </div>
-    <button *ngIf="allowEdit" (click)="editHabit()" class="card-more">
+    <button *ngIf="(isGoal || allowEdit) && (goal || habit)" (click)="isGoal ? editGoal() : editHabit()" class="card-more" [class.card-more-goal]="isGoal">
       <ion-icon name="create-outline" class="txt-small"></ion-icon>
     </button>
   </div>
