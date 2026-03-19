@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { forkJoin, combineLatest } from 'rxjs';
@@ -59,6 +59,9 @@ export type ClientSupportCardState =
   ],
 })
 export class HomePage implements OnInit {
+  @ViewChild(SimpleBudgetHomeWidgetComponent)
+  private budgetHomeWidget?: SimpleBudgetHomeWidgetComponent;
+
   cards: HomeCard[] = [];
   welcomeTitle: string = 'Welcome to Love INC';
   selectedUserTypes: UserType[] = [];
@@ -85,6 +88,10 @@ export class HomePage implements OnInit {
     private appUserDataService: AppUserDataService,
     private dismissedVouchersService: DismissedVouchersService
   ) {}
+
+  ionViewDidEnter() {
+    this.budgetHomeWidget?.refresh();
+  }
 
   ngOnInit() {
     this.loadCards();

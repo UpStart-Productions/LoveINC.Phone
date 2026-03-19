@@ -99,11 +99,20 @@ export const REGISTERED_TOOL_CARDS: ToolCard[] = [
   {
     category: 'Money Management',
     categoryIcon: 'wallet-outline',
-    title: 'Simple Budget Planner',
+    title: 'Budget Planner',
     detail: 'Track income and expenses',
     iconName: 'calculator-outline',
     iconBackgroundColor: '#214491',
     route: '/tabs/simple-budget',
+  },
+  {
+    category: 'Life Skills',
+    categoryIcon: 'trophy-outline',
+    title: 'Goal Tracker',
+    detail: 'Set and track personal goals',
+    iconName: 'trophy-outline',
+    iconBackgroundColor: '#eaa535',
+    route: '/tabs/goal-tracker',
   },
   {
     category: 'Transformation Classes',
@@ -128,14 +137,5 @@ export const REGISTERED_TOOL_CARDS: ToolCard[] = [
     detail: 'Record prayers and reflections',
     iconName: 'book-outline',
     iconBackgroundColor: '#2c5f7d',
-  },
-  {
-    category: 'Life Skills',
-    categoryIcon: 'trophy-outline',
-    title: 'Goal Tracker',
-    detail: 'Set and track personal goals',
-    iconName: 'trophy-outline',
-    iconBackgroundColor: '#eaa535',
-    route: '/tabs/goal-tracker',
   },
 ];

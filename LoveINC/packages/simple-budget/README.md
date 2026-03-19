@@ -4,7 +4,7 @@ Angular/Ionic Simple Weekly Budget – track income and expenses with SQLite sto
 
 ## Usage
 
-- **Access**: More → Tools → Simple Budget Planner
+- **Access**: More → Tools → Budget Planner
 - **Storage**: SQLite (local only, no network)
 - **Tabs**: Weekly Budget, Quick Adjust, Review, Export
 

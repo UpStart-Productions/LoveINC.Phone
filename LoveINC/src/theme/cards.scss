@@ -198,11 +198,6 @@ ion-card.clickable {
   border-radius: var(--app-card-radius);
   --background: var(--app-card-background);
   background: var(--app-card-background);
-
-  h2 {
-    font-size: var(--app-font-size-sm);
-    font-weight: var(--app-font-weight-medium);
-  }
 }
 
 /* Content card content padding handled by global ion-card-content styles above */

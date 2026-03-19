@@ -16,7 +16,18 @@
               }
             </div>
           }
-          <h2>{{ title }}</h2>
+          <h2>
+            @if (titleSegments?.length) {
+              @for (seg of titleSegments; track $index) {
+                <span
+                  [class.content-card-tone-positive]="seg.tone === 'positive'"
+                  [class.content-card-tone-negative]="seg.tone === 'negative'"
+                >{{ seg.text }}</span>
+              }
+            } @else {
+              {{ title }}
+            }
+          </h2>
         </div>
         <div class="content-card-right">
           @if (imageUrl) {
@@ -28,9 +39,20 @@
           }
         </div>
       </div>
-      @if (detail) {
+      @if (detailSegments?.length || detail) {
         <div class="content-card-detail">
-          <p class="app-body-secondary">{{ detail }}</p>
+          <p class="app-body-secondary">
+            @if (detailSegments?.length) {
+              @for (seg of detailSegments; track $index) {
+                <span
+                  [class.content-card-tone-positive]="seg.tone === 'positive'"
+                  [class.content-card-tone-negative]="seg.tone === 'negative'"
+                >{{ seg.text }}</span>
+              }
+            } @else {
+              {{ detail }}
+            }
+          </p>
         </div>
       }
     </div>

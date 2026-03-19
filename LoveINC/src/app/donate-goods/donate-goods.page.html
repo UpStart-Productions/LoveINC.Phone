@@ -36,9 +36,11 @@
       </div>
     </div>
     @if (isFilteredByDonation) {
-      <ion-button expand="block" color="primary" (click)="clearDonationFilter()" class="all-donation-options-button">
-        All Donation Options
-      </ion-button>
+      <div class="all-donation-options-wrap">
+        <ion-button expand="block" color="primary" (click)="clearDonationFilter()" class="all-donation-options-button">
+          All Donation Options
+        </ion-button>
+      </div>
     }
   </div>
 </ion-content>

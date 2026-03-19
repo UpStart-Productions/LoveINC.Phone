@@ -141,25 +141,25 @@ ion-searchbar.live-search {
   --clear-button-color: rgba(var(--ion-color-primary-contrast-rgb), 0.6);
   
   .searchbar-input {
-    font-size: var(--app-font-size-title) !important;
+    font-size: var(--app-font-size-body) !important;
     color: white;
   }
   
   .searchbar-search-icon {
-    font-size: var(--app-font-size-title) !important;
+    font-size: var(--app-font-size-body) !important;
     align-self: center !important;
     
     ion-icon {
-      font-size: var(--app-font-size-title) !important;
+      font-size: var(--app-font-size-body) !important;
     }
   }
   
   .searchbar-clear-button {
-    font-size: var(--app-font-size-title) !important;
+    font-size: var(--app-font-size-body) !important;
     align-self: center !important;
     
     ion-icon {
-      font-size: var(--app-font-size-title) !important;
+      font-size: var(--app-font-size-body) !important;
     }
   }
 }

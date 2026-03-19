@@ -3,6 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
 
+/** Optional fragments for coloring numeric parts (e.g. budget amounts). */
+export type ContentCardTextSegment = {
+  text: string;
+  tone?: 'positive' | 'negative';
+};
+
 @Component({
   selector: 'app-content-card',
   templateUrl: './content-card.component.html',
@@ -23,8 +29,14 @@ export class ContentCardComponent {
   /** Main title (bold) */
   @Input() title!: string;
 
+  /** When set, title is built from segments (e.g. colored amounts); overrides plain `title` display. */
+  @Input() titleSegments?: ContentCardTextSegment[];
+
   /** Detail text below title (e.g. "2-5 min", "4-6 min") */
   @Input() detail?: string;
+
+  /** When set, detail is built from segments; overrides plain `detail` display. */
+  @Input() detailSegments?: ContentCardTextSegment[];
 
   /** Show play icon before detail when present */
   @Input() showDetailPlayIcon = true;

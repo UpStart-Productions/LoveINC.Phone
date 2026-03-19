@@ -59,14 +59,20 @@ export class WeekScrollerComponent implements OnInit, OnChanges, AfterViewChecke
     const thisWeekSunday = this.getSundayForDate(today);
     const thisWeekStart = format(thisWeekSunday, 'yyyy-MM-dd');
 
-    this.weeks = [];
-    let startOffset = -4;
+    /** Always show at least this many Sundays before the current week; extend further if saved data exists. */
+    const minPastWeeks = 4;
+    let dataWeeksBack = 0;
     if (this.earliestWeekStart) {
       const earliestSunday = new Date(this.earliestWeekStart + 'T00:00:00');
-      const weeksBack = Math.ceil(differenceInDays(thisWeekSunday, earliestSunday) / 7);
-      startOffset = -Math.max(0, weeksBack);
+      dataWeeksBack = Math.max(
+        0,
+        Math.ceil(differenceInDays(thisWeekSunday, earliestSunday) / 7)
+      );
     }
+    const startOffset = -Math.max(minPastWeeks, dataWeeksBack);
     const endOffset = 3;
+
+    this.weeks = [];
 
     for (let i = startOffset; i <= endOffset; i++) {
       const sunday = addDays(thisWeekSunday, i * 7);

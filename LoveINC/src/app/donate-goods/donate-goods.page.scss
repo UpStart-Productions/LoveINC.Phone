@@ -6,8 +6,15 @@ ion-content {
   padding-bottom: 6.25rem; // Space for tab bar
 }
 
-.all-donation-options-button {
+/* Match horizontal inset of ion-card / app-card (--app-card-margin) */
+.all-donation-options-wrap {
   margin-top: 1.5rem;
+  margin-left: var(--app-card-margin);
+  margin-right: var(--app-card-margin);
+}
+
+.all-donation-options-button {
+  margin: 0;
 }
 
 ion-item {
