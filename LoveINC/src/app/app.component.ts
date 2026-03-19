@@ -12,6 +12,7 @@ import { DeviceIdService } from './services/device-id.service';
 import { PlatformApiService } from './services/platform/platform-api.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
 import { GoalTrackerDatabaseService } from '@upstart-productions/goal-tracker';
+import { SimpleBudgetDatabaseService, WeekPlanService } from '@upstart-productions/simple-budget';
 import { GoalTrackerRefreshService } from './goal-tracker-tabs/services/goal-tracker-refresh.service';
 import { PushRegistrationService } from './services/push-registration.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
@@ -89,6 +90,7 @@ import {
   statsChart,
   searchOutline,
   documentTextOutline,
+  documentText,
   documentOutline,
   createOutline,
   add,
@@ -104,15 +106,25 @@ import {
   playCircleOutline,
   playOutline,
   bookmarkOutline,
+  share,
   shareOutline,
   chatbubbleOutline,
   refreshOutline,
   codeOutline,
   waterOutline,
+  flameOutline,
+  wifiOutline,
+  shieldOutline,
+  cartOutline,
+  carOutline,
   checkmarkDoneOutline,
   ellipseOutline,
   calculatorOutline,
   walletOutline,
+  wallet,
+  construct,
+  eyeOutline,
+  eyeOffOutline,
   peopleCircleOutline as peopleCircleOutlineIcon,
   // Service Unlock Icons
   qrCodeOutline,
@@ -142,6 +154,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private platform: Platform,
     private grovlinkDb: GrovLinkDatabaseService,
     private goalTrackerDb: GoalTrackerDatabaseService,
+    private simpleBudgetDb: SimpleBudgetDatabaseService,
+    private weekPlanService: WeekPlanService,
     private goalTrackerRefresh: GoalTrackerRefreshService,
     private pushRegistration: PushRegistrationService,
     private router: Router,
@@ -156,9 +170,17 @@ export class AppComponent implements OnInit, OnDestroy {
       this.onboardingService.clearOnboarding();
       window.location.reload();
     };
-    
+
+    // Expose seedBudgetData for dev/testing - seeds Jan, Feb, Mar 2026
+    (window as any).seedBudgetData = async () => {
+      await this.weekPlanService.seedBudgetData();
+      console.log('Simple Budget: seeded 3 months of data (Jan–Mar 2026)');
+      window.location.reload();
+    };
+
     console.log('%c🎉 Love INC App Loaded', 'color: #349394; font-size: 16px; font-weight: bold;');
     console.log('%c💡 Testing Tip: Type clearOnboarding() in console to reset onboarding', 'color: #214491; font-size: 12px;');
+    console.log('%c💡 Type seedBudgetData() in console to seed Simple Budget (Jan–Mar 2026)', 'color: #214491; font-size: 12px;');
   }
 
   async ngOnInit() {
@@ -193,6 +215,9 @@ export class AppComponent implements OnInit, OnDestroy {
       }),
       this.goalTrackerDb.getDbConnection().catch((err) => {
         console.warn('Goal Tracker DB init deferred:', err);
+      }),
+      this.simpleBudgetDb.getDbConnection().catch((err) => {
+        console.warn('Simple Budget DB init deferred:', err);
       }),
     ]).catch(() => {});
     this.appReady = true;
@@ -361,6 +386,7 @@ export class AppComponent implements OnInit, OnDestroy {
       statsChart,
       searchOutline,
       documentTextOutline,
+      documentText,
       documentOutline,
       createOutline,
       add,
@@ -376,6 +402,7 @@ export class AppComponent implements OnInit, OnDestroy {
       playCircleOutline,
       playOutline,
       bookmarkOutline,
+      share,
       shareOutline,
       chatbubbleOutline,
       refreshOutline,
@@ -385,6 +412,10 @@ export class AppComponent implements OnInit, OnDestroy {
       ellipseOutline,
       calculatorOutline,
       walletOutline,
+      wallet,
+      construct,
+      eyeOutline,
+      eyeOffOutline,
       // Service Unlock Icons
       qrCodeOutline,
       scanOutline,
@@ -392,6 +423,11 @@ export class AppComponent implements OnInit, OnDestroy {
       lockClosedOutline,
       checkmarkCircle,
       ticketOutline,
+      flameOutline,
+      wifiOutline,
+      shieldOutline,
+      cartOutline,
+      carOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });

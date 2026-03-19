@@ -1,0 +1,16 @@
+<div class="date-scroller" *ngIf="weeks.length" #weekScroller>
+  <button
+    *ngFor="let week of weeks"
+    (click)="selectWeek(week)"
+    class="date"
+    [ngClass]="{
+      today: week.isCurrentWeek,
+      selected: week.isSelected,
+      'balance-positive': week.balancePositive,
+      'balance-negative': week.balanceNegative
+    }"
+  >
+    <span [ngClass]="{ today: week.isCurrentWeek, selected: week.isSelected }" class="txt-small-caps">WEEK</span>
+    <span [ngClass]="{ today: week.isCurrentWeek, selected: week.isSelected }" class="txt-normal-bold">{{ week.labelShort }}</span>
+  </button>
+</div>

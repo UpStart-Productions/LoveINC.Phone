@@ -223,6 +223,51 @@ ion-popover.chart-bar-popover {
   pointer-events: none;
 }
 
+/* Chart pie popover (Simple Budget reports) – dark popover on slice tap, backdrop dismiss, auto-fade */
+ion-popover.chart-pie-popover {
+  --background: rgba(34, 36, 40, 0.95);
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --width: fit-content;
+  --max-width: 10rem;
+  --backdrop-opacity: 0.01;
+  pointer-events: none;
+}
+
+/* Month select popover (Simple Budget export) – white background, no grey */
+ion-popover.month-select-popover {
+  --background: #ffffff;
+}
+ion-popover.month-select-popover::part(content) {
+  background: #ffffff;
+}
+ion-popover.month-select-popover ion-list,
+ion-popover.month-select-popover ion-item,
+ion-popover.month-select-popover ion-select-option {
+  --background: #ffffff;
+  --background-hover: #ffffff;
+  --background-activated: #ffffff;
+  --background-focused: #ffffff;
+  --background-hover-opacity: 1;
+  --background-activated-opacity: 1;
+  background: #ffffff;
+}
+ion-popover.month-select-popover ion-item:hover,
+ion-popover.month-select-popover ion-item.ion-activated,
+ion-popover.month-select-popover ion-item.ion-focused,
+ion-popover.month-select-popover ion-item.ion-selected,
+ion-popover.month-select-popover ion-select-option:hover,
+ion-popover.month-select-popover ion-select-option.ion-activated,
+ion-popover.month-select-popover ion-select-option.ion-focused,
+ion-popover.month-select-popover ion-select-option.ion-selected {
+  --background: #ffffff;
+  --background-hover: #ffffff;
+  --background-activated: #ffffff;
+  --background-focused: #ffffff;
+  --background-hover-opacity: 1;
+  --background-activated-opacity: 1;
+  background: #ffffff !important;
+}
+
 /* Location popover (map marker click, reusable) */
 ion-popover.location-popover {
   --width: auto;
@@ -308,6 +353,134 @@ ion-modal.date-picker-modal-sheet {
   }
 }
 
+/* Entry notes modal (Simple Budget – half-screen, also used for adjust strategies) */
+ion-modal.entry-notes-modal {
+  --width: 100%;
+  --border-radius: 0;
+  --box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.1);
+  --background: #ffffff;
+
+  &::part(content) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    border-radius: 0 !important;
+    background: #ffffff;
+  }
+
+  &::part(backdrop) {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  ion-header,
+  ion-toolbar {
+    --background: #ffffff !important;
+    --border-width: 0;
+  }
+
+  ion-content {
+    --background: #ffffff !important;
+  }
+}
+
+/* Budget summary adjust link and strategies card */
+.summary-row .adjust-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: var(--ion-color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.strategies-card .strategies-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+.strategies-card .strategies-list li {
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.strategies-card .strategies-list .strategy-check {
+  color: var(--simple-budget-green);
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+/* Budget section card add button – smaller button, larger icon */
+.budget-section-card .card-header ion-button {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  min-width: 1.5rem !important;
+  min-height: 1.5rem !important;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --border-radius: 50%;
+
+  &::part(native) {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+    min-width: 1.5rem !important;
+    min-height: 1.5rem !important;
+    padding: 0 !important;
+  }
+
+  ion-icon {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+}
+
+/* Add category sheet (Simple Budget – matches date-picker-modal-sheet pattern) */
+ion-modal.budget-add-category-sheet {
+  --width: 100%;
+  --border-radius: 0;
+  --box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.1);
+  --background: #ffffff;
+
+  &::part(content) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    border-radius: 0 !important;
+    background: #ffffff;
+  }
+
+  &::part(backdrop) {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  ion-header,
+  ion-toolbar {
+    --background: #ffffff !important;
+    --border-width: 0;
+    --min-height: 1.75rem;
+    --padding-top: 0.25rem;
+    --padding-bottom: 0.25rem;
+  }
+
+  ion-title {
+    --color: var(--ion-color-dark);
+  }
+
+  ion-button {
+    --color: var(--ion-color-dark);
+  }
+
+  ion-content {
+    --background: #ffffff !important;
+  }
+}
+
 /* Alerts modal sheet */
 ion-modal.alerts-modal-sheet {
   --width: calc(100% - 1rem);
@@ -389,18 +562,22 @@ ion-modal.alerts-modal-sheet {
 .services-action-sheet .action-sheet-title,
 .donate-action-sheet .action-sheet-title,
 .share-action-sheet .action-sheet-title,
+.budget-action-sheet .action-sheet-title,
 .services-action-sheet .action-sheet-header,
 .donate-action-sheet .action-sheet-header,
 .share-action-sheet .action-sheet-header,
+.budget-action-sheet .action-sheet-header,
 .services-action-sheet .action-sheet-group h1,
 .donate-action-sheet .action-sheet-group h1,
-.share-action-sheet .action-sheet-group h1 {
+.share-action-sheet .action-sheet-group h1,
+.budget-action-sheet .action-sheet-group h1 {
   padding-left: 1.25rem !important;
 }
 
 .services-action-sheet,
 .donate-action-sheet,
-.share-action-sheet {
+.share-action-sheet,
+.budget-action-sheet {
   .action-sheet-button,
   .action-sheet-button-with-subtitle {
     text-align: left !important;
@@ -441,7 +618,8 @@ ion-modal.alerts-modal-sheet {
 }
 
 .share-action-sheet .action-sheet-button .action-sheet-icon,
-.donate-action-sheet .action-sheet-button .action-sheet-icon {
+.donate-action-sheet .action-sheet-button .action-sheet-icon,
+.budget-action-sheet .action-sheet-button .action-sheet-icon {
   width: 1rem !important;
   height: 1rem !important;
 }

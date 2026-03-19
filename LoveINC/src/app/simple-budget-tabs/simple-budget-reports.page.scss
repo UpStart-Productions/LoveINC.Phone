@@ -1,0 +1,113 @@
+.segment-container {
+  padding: 0 1rem 0 1rem;
+  margin-top: 0.8rem;
+}
+
+.export-mode-segment {
+  margin: 0;
+  border: 1px solid var(--ion-color-light-gray, #e0e0e0);
+  --background: #ffffff;
+}
+
+.export-mode-segment ion-segment-button {
+  --color-checked: #ffffff;
+}
+
+.export-mode-segment .segment-button-checked::part(indicator-background) {
+  background-color: var(--ion-color-primary);
+}
+
+.summary-card {
+  margin: 1rem;
+  --background: #ffffff;
+  background: #ffffff;
+  ion-card-header,
+  ion-card-content {
+    --background: #ffffff;
+    background: #ffffff;
+  }
+
+  ion-card-header {
+    padding-bottom: 0.25rem;
+  }
+
+  ion-card-subtitle {
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+  }
+
+  ion-card-content {
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.chart-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.chart-title-row ion-card-title {
+  margin-bottom: 0;
+}
+
+.chart-type-toggle {
+  cursor: pointer;
+  flex-shrink: 0;
+  --padding-top: 0.2rem;
+  --padding-bottom: 0.2rem;
+  --padding-start: 0.4rem;
+  --padding-end: 0.4rem;
+  font-size: 0.75rem;
+  min-height: 1.5rem;
+}
+
+.chart-type-toggle-income {
+  --background: rgba(var(--ion-color-success-rgb), 0.15);
+  --color: var(--ion-color-success-shade);
+}
+
+.chart-type-toggle-spending {
+  --background: rgba(var(--ion-color-medium-rgb), 0.2);
+  --color: var(--ion-color-medium-shade);
+}
+
+.pie-chart-container {
+  width: 95%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pie-chart-container app-pie-chart {
+  display: block;
+  width: 100%;
+}
+
+.month-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.month-select-below {
+  --background: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  max-width: 12rem;
+}
+
+.no-data {
+  padding: 1rem;
+  margin: 0;
+  color: var(--ion-color-medium);
+}
+
+.loading {
+  padding: 2rem;
+  text-align: center;
+}

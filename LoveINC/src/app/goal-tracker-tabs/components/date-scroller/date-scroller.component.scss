@@ -1,15 +1,19 @@
 .date-scroller {
   width: 100%;
   min-height: 3rem;
-  overflow: auto;
+  overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
-  overflow-x: auto;
-  flex-direction: row-reverse;
   display: flex;
   scroll-behavior: smooth;
   z-index: 1;
   margin-bottom: 1rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .date-scroller .date {

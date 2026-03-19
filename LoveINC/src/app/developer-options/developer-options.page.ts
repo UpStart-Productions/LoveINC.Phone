@@ -22,6 +22,8 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor } from '@capacitor/core';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { GoalTrackerSeedService } from '@upstart-productions/goal-tracker';
+import { SimpleBudgetDatabaseService, WeekPlanService } from '@upstart-productions/simple-budget';
+import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
 
 @Component({
   selector: 'app-developer-options',
@@ -45,6 +47,7 @@ import { GoalTrackerSeedService } from '@upstart-productions/goal-tracker';
 })
 export class DeveloperOptionsPage {
   seeding = false;
+  seedingBudget = false;
 
   constructor(
     private router: Router,
@@ -52,7 +55,10 @@ export class DeveloperOptionsPage {
     private alertController: AlertController,
     private serviceUnlock: ServiceUnlockService,
     private appUserData: AppUserDataService,
-    private goalTrackerSeed: GoalTrackerSeedService
+    private goalTrackerSeed: GoalTrackerSeedService,
+    private simpleBudgetDb: SimpleBudgetDatabaseService,
+    private weekPlanService: WeekPlanService,
+    private budgetState: SimpleBudgetStateService
   ) {}
 
   resetOnboarding() {
@@ -100,6 +106,49 @@ export class DeveloperOptionsPage {
       buttons: ['OK'],
     });
     await alert.present();
+  }
+
+  async seedSimpleBudget() {
+    this.seedingBudget = true;
+    try {
+      await this.weekPlanService.seedBudgetData();
+      this.budgetState.selectedWeekStart = '2026-03-08';
+      this.router.navigate(['/tabs/simple-budget/weekly']);
+      const alert = await this.alertController.create({
+        header: 'Simple Budget Seeded',
+        message: 'Seeded 11 weeks (Dec 28, 2025 – Mar 8, 2026). Navigating to Simple Budget.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } catch (err) {
+      const alert = await this.alertController.create({
+        header: 'Seed Failed',
+        message: (err as Error)?.message ?? 'Unknown error',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } finally {
+      this.seedingBudget = false;
+    }
+  }
+
+  async clearSimpleBudget() {
+    try {
+      await this.simpleBudgetDb.wipeAll();
+      const alert = await this.alertController.create({
+        header: 'Simple Budget Cleared',
+        message: 'All week plans and category data have been deleted.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    } catch (err) {
+      const alert = await this.alertController.create({
+        header: 'Clear Failed',
+        message: (err as Error)?.message ?? 'Unknown error',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    }
   }
 
   async seedGoalTracker() {

@@ -1,0 +1,101 @@
+:host {
+  --background: #ffffff;
+}
+
+:host ion-header {
+  --background: #ffffff !important;
+}
+
+:host ion-content {
+  --background: #ffffff !important;
+}
+
+.add-category-sheet-toolbar {
+  --background: #ffffff !important;
+  --min-height: 1.75rem;
+  --padding-top: 0.25rem;
+  --padding-bottom: 0.25rem;
+  padding-inline-end: 0.5rem;
+}
+
+.add-category-sheet-toolbar ion-title {
+  font-size: var(--app-font-size-body);
+  font-weight: var(--app-font-weight-bold);
+  color: var(--ion-color-dark);
+  text-align: left;
+  padding-left: 1.25rem;
+}
+
+.add-category-sheet-toolbar .close-button,
+.add-category-sheet-toolbar .close-button ion-icon {
+  --color: var(--ion-color-dark) !important;
+  color: var(--ion-color-dark) !important;
+}
+
+.add-category-sheet-toolbar .close-button ion-icon {
+  font-size: 1.5rem;
+}
+
+.add-category-sheet-content {
+  --background: #ffffff;
+  --padding-top: 0;
+  --padding-bottom: 1rem;
+}
+
+.custom-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem 0.25rem;
+  margin-inline-start: -20px;
+
+  ion-item {
+    flex: 1;
+    --background: #ffffff;
+    --padding-start: 1.25rem;
+    --inner-padding-end: 0;
+    --min-height: 2.25rem;
+  }
+
+  .add-custom-btn {
+    flex-shrink: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    --border-radius: 50%;
+    width: 2.25rem;
+    height: 2.25rem;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    --color: #ffffff !important;
+
+    ion-icon {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+ion-list {
+  --background: #ffffff !important;
+  background: #ffffff !important;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+
+ion-list ion-item {
+  --background: #ffffff;
+  --padding-start: 1.25rem;
+  --padding-end: 1.25rem;
+  --min-height: 2.5rem;
+}
+
+ion-list ion-item ion-icon {
+  margin-inline-end: 1rem;
+  font-size: var(--app-icon-size-md);
+  color: var(--ion-color-dark);
+}
+
+ion-list ion-item ion-label {
+  color: var(--ion-color-dark);
+}

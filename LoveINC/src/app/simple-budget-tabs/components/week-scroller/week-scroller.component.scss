@@ -1,0 +1,68 @@
+.date-scroller {
+  width: 100%;
+  min-height: 3rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  display: flex;
+  scroll-behavior: smooth;
+  z-index: 1;
+  margin-bottom: 1rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.date-scroller .date {
+  flex: 0 0 auto;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid var(--ion-color-light-gray);
+  background-color: var(--ion-color-white);
+  display: inline-block;
+  margin-right: 0.45rem;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.date-scroller .date span {
+  font-size: 0.68rem;
+}
+
+.date-scroller .date.today {
+  background-color: var(--ion-color-orange);
+  border: 1px solid var(--ion-color-orange);
+}
+.date-scroller .date.selected {
+  background-color: var(--ion-color-secondary);
+  border: 1px solid var(--ion-color-secondary);
+}
+
+.date-scroller .date.balance-positive:not(.selected):not(.today) {
+  border: 1px solid var(--ion-color-emerald);
+}
+.date-scroller .date.balance-negative:not(.selected):not(.today) {
+  border: 1px solid var(--ion-color-danger);
+}
+button span {
+  color: var(--ion-color-black) !important;
+  display: block;
+  margin: 6px 0;
+}
+button span.today,
+button span.selected {
+  color: var(--ion-color-white) !important;
+  font-weight: 500;
+}
+
+.txt-small-caps {
+  text-transform: uppercase;
+  font-size: 0.6rem;
+}
+.txt-normal-bold {
+  font-weight: 600;
+  font-size: 0.65rem;
+}

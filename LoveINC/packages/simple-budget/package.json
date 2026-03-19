@@ -1,0 +1,32 @@
+{
+  "name": "@upstart-productions/simple-budget",
+  "version": "1.0.0",
+  "description": "Angular/Ionic Simple Weekly Budget - track income and expenses with SQLite storage",
+  "keywords": ["angular", "ionic", "budget", "nonprofit", "money-management"],
+  "author": "UpStart Productions",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UpStart-Productions/LoveINC.Phone.git",
+    "directory": "LoveINC/packages/simple-budget"
+  },
+  "peerDependencies": {
+    "@angular/common": "^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0",
+    "@angular/core": "^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0",
+    "@angular/router": "^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0",
+    "@capacitor-community/sqlite": "^7.0.0 || ^8.0.0",
+    "@ionic/angular": "^7.0.0 || ^8.0.0",
+    "rxjs": "^7.0.0"
+  },
+  "dependencies": {
+    "date-fns": "^4.0.0",
+    "tslib": "^2.3.0"
+  },
+  "scripts": {
+    "build": "ng-packagr -p ng-package.json && node scripts/fix-dist-package.js"
+  },
+  "sideEffects": false,
+  "files": ["dist"],
+  "main": "src/public_api.ts",
+  "types": "src/public_api.ts"
+}

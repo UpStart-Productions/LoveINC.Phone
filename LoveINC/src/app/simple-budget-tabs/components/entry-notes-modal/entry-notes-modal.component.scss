@@ -1,0 +1,47 @@
+:host {
+  --background: #ffffff;
+}
+
+:host ion-header {
+  --background: #ffffff !important;
+}
+
+:host ion-content {
+  --background: #ffffff !important;
+}
+
+.entry-notes-toolbar {
+  --background: #ffffff !important;
+  --min-height: 1.75rem;
+  --padding-top: 0.25rem;
+  --padding-bottom: 0.25rem;
+  padding-inline-end: 0.5rem;
+}
+
+.entry-notes-toolbar ion-title {
+  font-size: var(--app-font-size-body);
+  font-weight: var(--app-font-weight-bold);
+  color: var(--ion-color-dark);
+  text-align: left;
+  padding-left: 1.25rem;
+}
+
+.entry-notes-toolbar .done-button {
+  --color: var(--ion-color-primary);
+  color: var(--ion-color-primary);
+  font-weight: 600;
+}
+
+.entry-notes-content {
+  --background: #ffffff;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+}
+
+.notes-textarea {
+  --background: #ffffff;
+  --padding-start: 0;
+  --padding-end: 0;
+}

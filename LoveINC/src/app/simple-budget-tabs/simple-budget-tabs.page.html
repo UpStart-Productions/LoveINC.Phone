@@ -1,0 +1,35 @@
+<ion-header *ngIf="!isWeeklyTab" [translucent]="false">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tools"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ headerTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-tabs>
+  <ion-tab-bar slot="bottom" class="simple-budget-tab-bar">
+    <ion-tab-button tab="weekly" href="/tabs/simple-budget/weekly">
+      <ion-icon aria-hidden="true" name="wallet-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="wallet" class="solid-icon"></ion-icon>
+      <ion-label>Budget</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="review" href="/tabs/simple-budget/review">
+      <ion-icon aria-hidden="true" name="document-text-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="document-text" class="solid-icon"></ion-icon>
+      <ion-label>Review</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="reports" href="/tabs/simple-budget/reports">
+      <ion-icon aria-hidden="true" name="stats-chart-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="stats-chart" class="solid-icon"></ion-icon>
+      <ion-label>Reports</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="export" href="/tabs/simple-budget/export">
+      <ion-icon aria-hidden="true" name="share-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="share" class="solid-icon"></ion-icon>
+      <ion-label>Export</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

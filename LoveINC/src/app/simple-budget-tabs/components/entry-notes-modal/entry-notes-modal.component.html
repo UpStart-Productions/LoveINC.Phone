@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar class="entry-notes-toolbar">
+    <ion-title>Notes for {{ entryName }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="done()" fill="clear" class="done-button">Done</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="entry-notes-content">
+  <ion-textarea
+    [(ngModel)]="notesValue"
+    placeholder="Add notes for this entry…"
+    rows="6"
+    [autoGrow]="true"
+    autocapitalize="sentences"
+    class="notes-textarea"
+  ></ion-textarea>
+</ion-content>

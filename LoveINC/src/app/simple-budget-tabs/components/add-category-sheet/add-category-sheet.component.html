@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar class="add-category-sheet-toolbar">
+    <ion-title>{{ header }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()" fill="clear" class="close-button" aria-label="Close">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="add-category-sheet-content">
+  <div class="custom-input-row">
+    <ion-item>
+      <ion-input
+        [(ngModel)]="customName"
+        [placeholder]="placeholder"
+        (keyup.enter)="addCustom()"
+        autocapitalize="sentences"
+      ></ion-input>
+    </ion-item>
+    <ion-button fill="solid" color="red-orange" class="add-custom-btn" (click)="addCustom()" [disabled]="!customName.trim()" aria-label="Add">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-button>
+  </div>
+
+  <ion-list lines="full">
+    @for (name of suggestedNames; track name) {
+      <ion-item button (click)="selectSuggested(name)" detail="false">
+        <ion-icon [name]="getIcon(name)" slot="start"></ion-icon>
+        <ion-label>{{ name }}</ion-label>
+      </ion-item>
+    }
+  </ion-list>
+</ion-content>

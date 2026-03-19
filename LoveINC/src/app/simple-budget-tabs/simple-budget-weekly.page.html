@@ -1,0 +1,201 @@
+<ion-header class="ion-no-border" [translucent]="true">
+  <ion-toolbar class="custom-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tools"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Weekly Budget</ion-title>
+    <ion-buttons slot="end">
+      <span
+        *ngIf="!loading && summary"
+        class="remaining-badge"
+        [class.positive]="(summary?.remaining ?? 0) >= 0"
+        [class.negative]="(summary?.remaining ?? 0) < 0"
+      >
+        ${{ formatBadgeAmount(summary?.remaining ?? 0) }}
+      </span>
+    </ion-buttons>
+  </ion-toolbar>
+  <div class="container-date-scroller">
+    <app-week-scroller
+      [initialWeekStart]="selectedWeekStart"
+      [earliestWeekStart]="earliestWeekStart"
+      [weekBalances]="weekBalances"
+      (weekSelectedEvent)="onWeekSelected($event)"
+    ></app-week-scroller>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="weekly-content">
+  <div *ngIf="loading" class="loading">Loading…</div>
+
+  <div *ngIf="!loading && plan" class="budget-form">
+    <!-- Starting balance -->
+    <div class="budget-section-card starting-balance-card">
+      <div class="category-row">
+        <span class="starting-balance-label">Starting balance</span>
+        <span class="currency-input-wrap">
+          <ion-input
+            appCurrencyInput
+            #startInput
+            type="text"
+            inputmode="decimal"
+            [ngModel]="formatAmountForInput(plan.startingBalance, 'starting')"
+            (ionInput)="onAmountInput($event, setStartingBalance.bind(this), 'starting', startInput)"
+            (ionFocus)="onAmountFocus('starting', startInput)"
+            (ionBlur)="onAmountBlur('starting', plan.startingBalance)"
+            placeholder="0"
+            class="card-amount"
+          ></ion-input>
+        </span>
+        <span class="card-spacer"></span>
+      </div>
+    </div>
+
+    <!-- Money Coming In -->
+    <div class="budget-section-card" [ngClass]="getBorderClass('income')">
+      <div class="card-header">
+        <h3 class="card-title">Money Coming In</h3>
+        <ion-button fill="solid" color="red-orange" shape="round" size="small" (click)="addCategory('income')">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </div>
+      <div
+        *ngFor="let c of incomeCategories; let i = index"
+        class="category-row"
+        (click)="openNotesModal(c)"
+      >
+        <ion-label class="card-name">{{ c.name }}<ion-icon *ngIf="c.notes?.trim()" name="document-text-outline" class="notes-icon"></ion-icon></ion-label>
+        <span class="currency-input-wrap" (click)="$event.stopPropagation()">
+          <ion-input
+            appCurrencyInput
+            #amtInput
+            type="text"
+            inputmode="decimal"
+            [ngModel]="formatAmountForInput(c.amount, 'income-' + i)"
+            (ionInput)="onAmountInput($event, setCategoryAmount.bind(this, c), 'income-' + i, amtInput)"
+            (ionFocus)="onAmountFocus('income-' + i, amtInput)"
+            (ionBlur)="onAmountBlur('income-' + i, c.amount)"
+            placeholder="0"
+            class="card-amount"
+          ></ion-input>
+        </span>
+        <button class="card-remove" (click)="removeCategory(c); $event.stopPropagation()" aria-label="Remove">
+          <ion-icon name="close"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bills Due This Week -->
+    <div class="budget-section-card" [ngClass]="getBorderClass('bills')">
+      <div class="card-header">
+        <h3 class="card-title">Bills Due This Week</h3>
+        <ion-button fill="solid" color="red-orange" shape="round" size="small" (click)="addCategory('bills')">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </div>
+      <div
+        *ngFor="let c of billsCategories; let i = index"
+        class="category-row"
+        (click)="openNotesModal(c)"
+      >
+        <ion-label class="card-name">{{ c.name }}<ion-icon *ngIf="c.notes?.trim()" name="document-text-outline" class="notes-icon"></ion-icon></ion-label>
+        <span class="currency-input-wrap" (click)="$event.stopPropagation()">
+          <ion-input
+            appCurrencyInput
+            #amtInput
+            type="text"
+            inputmode="decimal"
+            [ngModel]="formatAmountForInput(c.amount, 'bills-' + i)"
+            (ionInput)="onAmountInput($event, setCategoryAmount.bind(this, c), 'bills-' + i, amtInput)"
+            (ionFocus)="onAmountFocus('bills-' + i, amtInput)"
+            (ionBlur)="onAmountBlur('bills-' + i, c.amount)"
+            placeholder="0"
+            class="card-amount"
+          ></ion-input>
+        </span>
+        <button class="card-remove" (click)="removeCategory(c); $event.stopPropagation()" aria-label="Remove">
+          <ion-icon name="close"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Flexible Targets -->
+    <div class="budget-section-card" [ngClass]="getBorderClass('flexible')">
+      <div class="card-header">
+        <h3 class="card-title">Flexible Targets</h3>
+        <ion-button fill="solid" color="red-orange" shape="round" size="small" (click)="addCategory('flexible')">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </div>
+      <div
+        *ngFor="let c of flexibleCategories; let i = index"
+        class="category-row"
+        (click)="openNotesModal(c)"
+      >
+        <ion-label class="card-name">{{ c.name }}<ion-icon *ngIf="c.notes?.trim()" name="document-text-outline" class="notes-icon"></ion-icon></ion-label>
+        <span class="currency-input-wrap" (click)="$event.stopPropagation()">
+          <ion-input
+            appCurrencyInput
+            #amtInput
+            type="text"
+            inputmode="decimal"
+            [ngModel]="formatAmountForInput(c.amount, 'flexible-' + i)"
+            (ionInput)="onAmountInput($event, setCategoryAmount.bind(this, c), 'flexible-' + i, amtInput)"
+            (ionFocus)="onAmountFocus('flexible-' + i, amtInput)"
+            (ionBlur)="onAmountBlur('flexible-' + i, c.amount)"
+            placeholder="0"
+            class="card-amount"
+          ></ion-input>
+        </span>
+        <button class="card-remove" (click)="removeCategory(c); $event.stopPropagation()" aria-label="Remove">
+          <ion-icon name="close"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-card" *ngIf="summary">
+      <h3 class="summary-card-title">Weekly Plan Summary</h3>
+      <div class="summary-row" *ngIf="summary.isOverPlan">
+        <span class="app-body">Plan is short by</span>
+        <span class="over-amount">{{ formatCurrency(-summary.remaining) }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="app-body">Money available</span>
+        <span>{{ formatCurrency(summary.totalAvailable) }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="app-body">Bills due</span>
+        <span>{{ formatCurrency(summary.totalBills) }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="app-body">Flexible targets</span>
+        <span>{{ formatCurrency(summary.totalFlexible) }}</span>
+      </div>
+      <div class="summary-row highlight">
+        <span class="app-body">Remaining this week</span>
+        <span [class.negative]="summary.remaining < 0">{{ formatCurrency(summary.remaining) }}</span>
+      </div>
+      <div class="summary-row safe-to-spend">
+        <span class="app-body">Safe to spend per day</span>
+        <span class="app-title" [class.positive]="summary.safeToSpendPerDay >= 0" [class.negative]="summary.safeToSpendPerDay < 0">{{ formatCurrency(summary.safeToSpendPerDay) }}</span>
+      </div>
+      @if (summary.remaining < 0 || summary.safeToSpendPerDay < 0) {
+        <div class="summary-row">
+          <button type="button" class="adjust-link" (click)="openAdjustModal()">Adjust your plan</button>
+        </div>
+      }
+    </div>
+
+    @if (plan?.strategyNotes?.trim()) {
+      <div class="summary-card strategies-card">
+        <h3 class="summary-card-title">Adjustment strategies</h3>
+        <ul class="strategies-list">
+          @for (label of strategyLabels; track label) {
+            <li><ion-icon name="checkmark" class="strategy-check"></ion-icon>{{ label }}</li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+</ion-content>

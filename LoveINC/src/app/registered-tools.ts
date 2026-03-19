@@ -24,6 +24,47 @@ export interface ToolCard {
  */
 export const REGISTERED_TOOL_ROUTES: Route[] = [
   {
+    path: 'simple-budget',
+    data: { hideMainTabBar: true },
+    loadComponent: () =>
+      import('@app/simple-budget-tabs/simple-budget-tabs.page').then((m) => m.SimpleBudgetTabsPage),
+    children: [
+      {
+        path: 'weekly',
+        loadComponent: () =>
+          import('@app/simple-budget-tabs/simple-budget-weekly.page').then(
+            (m) => m.SimpleBudgetWeeklyPage
+          ),
+      },
+      {
+        path: 'review',
+        loadComponent: () =>
+          import('@app/simple-budget-tabs/simple-budget-review.page').then(
+            (m) => m.SimpleBudgetReviewPage
+          ),
+      },
+      {
+        path: 'export',
+        loadComponent: () =>
+          import('@app/simple-budget-tabs/simple-budget-export.page').then(
+            (m) => m.SimpleBudgetExportPage
+          ),
+      },
+      {
+        path: 'reports',
+        loadComponent: () =>
+          import('@app/simple-budget-tabs/simple-budget-reports.page').then(
+            (m) => m.SimpleBudgetReportsPage
+          ),
+      },
+      {
+        path: '',
+        redirectTo: 'weekly',
+        pathMatch: 'full',
+      },
+    ],
+  },
+  {
     path: 'goal-tracker',
     data: { hideMainTabBar: true },
     loadComponent: () =>
@@ -62,6 +103,7 @@ export const REGISTERED_TOOL_CARDS: ToolCard[] = [
     detail: 'Track income and expenses',
     iconName: 'calculator-outline',
     iconBackgroundColor: '#214491',
+    route: '/tabs/simple-budget',
   },
   {
     category: 'Transformation Classes',
