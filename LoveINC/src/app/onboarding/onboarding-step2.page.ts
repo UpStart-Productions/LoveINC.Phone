@@ -34,6 +34,12 @@ export class OnboardingStep2Page {
       console.log('Removed option:', option);
     } else {
       this.selectedOptions.add(option);
+      // Get Help and Volunteer are mutually exclusive; Give can pair with either.
+      if (option === 'get-help') {
+        this.selectedOptions.delete('volunteer');
+      } else if (option === 'volunteer') {
+        this.selectedOptions.delete('get-help');
+      }
       console.log('Added option:', option);
     }
     console.log('Current selections:', Array.from(this.selectedOptions));

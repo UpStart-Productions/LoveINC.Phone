@@ -2,6 +2,11 @@
   --background: linear-gradient(135deg, var(--ion-color-light) 0%, var(--ion-background-color) 100%);
 }
 
+/* Solid fill so scroll/overscroll matches the white form panel (gradient reads as grey) */
+.onboarding-content.onboarding-step3 {
+  --background: var(--app-card-background);
+}
+
 /* Fixed Header Container */
 .header-container {
   position: fixed;

@@ -68,6 +68,14 @@
 .content-section {
 }
 
+/* Slightly smaller than .app-title; keeps token-based scale */
+.mission-text.app-title {
+  font-size: calc(var(--app-font-size-title) * 0.93);
+}
+
+.onboarding-step1-next {
+  margin-top: -10px;
+}
 
 .with-love-inc-image {
   width: 100%;

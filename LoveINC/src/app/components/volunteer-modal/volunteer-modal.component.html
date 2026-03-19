@@ -13,6 +13,7 @@
   @for (pos of positions; track pos.id) {
     <div class="volunteer-position">
       <div class="volunteer-position-details app-body">
+        <p class="app-title volunteer-opportunity-title">{{ pos.title || 'Volunteer' }}</p>
         <div class="volunteer-detail-row">
           <ion-icon name="location-outline" class="volunteer-detail-icon"></ion-icon>
           <div>
@@ -21,10 +22,6 @@
               <div class="app-body-secondary-sm m-t-3">{{ address }}</div>
             }
           </div>
-        </div>
-        <div class="volunteer-detail-row">
-          <i-lucide name="heart-handshake" [size]="20" [style.color]="'var(--ion-color-dark)'" class="volunteer-detail-icon"></i-lucide>
-          <span>{{ pos.title || 'Volunteer' }}</span>
         </div>
         <div class="volunteer-detail-row">
           <ion-icon name="time-outline" class="volunteer-detail-icon"></ion-icon>

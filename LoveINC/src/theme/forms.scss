@@ -159,3 +159,25 @@ ion-searchbar.live-search {
     }
   }
 }
+
+/* -----------------------------------------------------------------------------
+ * Onboarding step 3 — form sits on a white panel; neutralize grey ion-input fill
+ * (must live in global forms so it wins over the rules above without ::ng-deep)
+ * ----------------------------------------------------------------------------- */
+.onboarding-step3 ion-item:has(ion-input) ion-input {
+  --background: var(--app-card-background) !important;
+  background-color: var(--app-card-background) !important;
+}
+
+.onboarding-step3 ion-item:has(ion-input) {
+  --background: transparent;
+}
+
+.onboarding-step3 ion-item:has(ion-checkbox) {
+  --background: transparent;
+}
+
+.onboarding-step3 ion-list {
+  --background: transparent;
+  background: transparent;
+}
