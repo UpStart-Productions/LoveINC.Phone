@@ -17,6 +17,7 @@
     "build:verse-of-the-day": "ng-packagr -p packages/verse-of-the-day/ng-package.json && node packages/verse-of-the-day/scripts/fix-dist-package.js",
     "build:service-unlock": "ng-packagr -p packages/service-unlock/ng-package.json && node packages/service-unlock/scripts/fix-dist-package.js",
     "cap:run:ios:live": "npx ionic cap run ios -l --external",
+    "cap:test:ios": "ng build && npx cap sync && npx cap run ios",
     "postinstall": "patch-package"
   },
   "private": true,

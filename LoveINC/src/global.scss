@@ -43,6 +43,7 @@
 @import './theme/icons.scss';
 @import './theme/whitespace.scss';
 @import './theme/forms.scss';
+@import './theme/goal-tracker-colors.scss';
 
 /* -----------------------------------------------------------------------------
  * Custom Font - Ilisarniq
@@ -213,6 +214,15 @@ ion-modal.donation-map-modal-fullscreen {
   }
 }
 
+/* Chart bar popover (statistics) – pointer-events: none so taps pass through to bars */
+ion-popover.chart-bar-popover {
+  --background: rgba(34, 36, 40, 0.95);
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --width: fit-content;
+  --max-width: 6.625rem;
+  pointer-events: none;
+}
+
 /* Location popover (map marker click, reusable) */
 ion-popover.location-popover {
   --width: auto;
@@ -268,6 +278,29 @@ ion-modal.voucher-detail-modal-sheet {
     border-radius: 1.5rem 1.5rem 0 0 !important;
     box-shadow: none !important;
     overflow: hidden;
+  }
+
+  &::part(backdrop) {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Date picker modal sheet (action sheet style for Goal/Habit forms) */
+ion-modal.date-picker-modal-sheet {
+  --width: 100%;
+  --border-radius: 0;
+  --box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.1);
+  /* Purple for Goal Tracker buttons */
+  --ion-color-secondary: #5433c6;
+  --ion-color-secondary-rgb: 84, 51, 198;
+
+  &::part(content) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    border-radius: 0 !important;
   }
 
   &::part(backdrop) {
@@ -411,4 +444,45 @@ ion-modal.alerts-modal-sheet {
 .donate-action-sheet .action-sheet-button .action-sheet-icon {
   width: 1rem !important;
   height: 1rem !important;
+}
+
+/* Goal Tracker add modal – date rows (global so styles apply in modal overlay) */
+app-add-goal-habit-modal .date-input-row {
+  --background: #ffffff !important;
+  --border-width: 0 !important;
+  --inner-border-width: 0 !important;
+  --padding-start: 0.9375rem;
+  --padding-end: 0.9375rem;
+  --inner-padding-top: 0.5rem;
+  --inner-padding-bottom: 0.5rem;
+  --min-height: 2.75rem;
+  background-color: #ffffff !important;
+  border: 1px solid var(--ion-color-light-gray, #e0e0e0) !important;
+  border-radius: 0.625rem;
+  margin-bottom: 0.5rem;
+
+  ion-label,
+  ion-note.date-value {
+    font-size: var(--app-font-size-body) !important;
+  }
+
+  ion-label {
+    color: var(--ion-color-dark, #222428);
+  }
+
+  ion-note.date-value {
+    font-weight: 600 !important;
+    color: #5433c6 !important;
+    --color: #5433c6 !important;
+  }
+}
+
+/* Goal Tracker goals list – hidden scrollbar */
+ion-content.goals-content::part(scroll) {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

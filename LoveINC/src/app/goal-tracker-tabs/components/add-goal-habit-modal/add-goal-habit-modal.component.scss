@@ -1,0 +1,80 @@
+/* Goal Tracker module – purple secondary, white header */
+:host {
+  --ion-color-secondary: #5433c6;
+}
+
+:host ion-header {
+  --background: #ffffff !important;
+  background: #ffffff !important;
+
+  ion-toolbar {
+    --background: #ffffff !important;
+    background: #ffffff !important;
+    --color: var(--ion-color-dark, #222428);
+
+    ion-title {
+      color: var(--ion-color-dark, #222428) !important;
+      --color: var(--ion-color-dark, #222428) !important;
+    }
+
+    ion-button,
+    ion-button ion-icon {
+      --color: var(--ion-color-dark, #222428) !important;
+      color: var(--ion-color-dark, #222428) !important;
+    }
+  }
+}
+
+/* SuperSimpleWorkout-style segment – white background, light grey border, purple selected */
+.add-mode-segment {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--ion-color-light-gray, #e0e0e0);
+  --background: #ffffff;
+}
+
+.add-mode-segment ion-segment-button {
+  --color-checked: #ffffff;
+
+  ion-label {
+    font-size: var(--app-font-size-sm);
+  }
+}
+
+.add-mode-segment .segment-button-checked::part(indicator-background) {
+  background-color: #5433c6;
+}
+
+:host ion-content {
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+}
+
+.form-section {
+  padding: 0;
+}
+
+.save-button {
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Placeholder text – smaller than labels */
+.form-section ion-input input::placeholder,
+.form-section ion-textarea textarea::placeholder,
+.form-section ion-select::part(placeholder) {
+  font-size: var(--app-font-size-sm);
+}
+
+.error,
+.hint {
+  padding: 1rem;
+  margin: 0 1rem;
+}
+.error {
+  color: var(--ion-color-danger);
+}
+.hint {
+  color: var(--ion-color-medium);
+  font-size: 0.9rem;
+}

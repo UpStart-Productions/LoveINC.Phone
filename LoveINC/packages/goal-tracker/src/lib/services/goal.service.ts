@@ -1,64 +1,28 @@
 import { Injectable } from '@angular/core';
 import { GoalTrackerDatabaseService } from './goal-tracker-database.service';
-import { LocalStorageGoalStorageService } from './local-storage-goal-storage.service';
 import { Goal, GoalStats } from '../types/goal.types';
-
-function isNotImplementedError(e: unknown): boolean {
-  const msg = (e as Error)?.message ?? '';
-  return (
-    msg.includes('not implemented') ||
-    msg.includes('CapacitorSQLite') ||
-    msg.includes('plugin')
-  );
-}
 
 @Injectable({
   providedIn: 'root',
 })
 export class GoalService {
-  private useLocalStorage: boolean | null = null;
-
-  constructor(
-    private db: GoalTrackerDatabaseService,
-    private localStorage: LocalStorageGoalStorageService
-  ) {}
-
-  private async ensureStorage(): Promise<'sqlite' | 'localStorage'> {
-    if (this.useLocalStorage === true) return 'localStorage';
-    if (this.useLocalStorage === false) return 'sqlite';
-
-    try {
-      await this.db.getDbConnection();
-      this.useLocalStorage = false;
-      return 'sqlite';
-    } catch (e) {
-      if (isNotImplementedError(e)) {
-        this.useLocalStorage = true;
-        return 'localStorage';
-      }
-      throw e;
-    }
-  }
+  constructor(private db: GoalTrackerDatabaseService) {}
 
   async createGoal(
     goal: Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>
   ): Promise<Goal> {
-    const storage = await this.ensureStorage();
-    if (storage === 'localStorage') {
-      return this.localStorage.createGoal(goal);
-    }
-
     const conn = await this.db.getDbConnection();
     const now = new Date().toISOString();
     const sql = `
-      INSERT INTO goals (title, description, progress, target, category, dueDate, completed, createdAt, updatedAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO goals (title, description, progress, target, color, category, dueDate, completed, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const result = await conn.run(sql, [
       goal.title,
       goal.description ?? null,
-      goal.progress,
+      goal.progress ?? 0,
       goal.target ?? null,
+      goal.color ?? null,
       goal.category ?? null,
       goal.dueDate ?? null,
       goal.completed ? 1 : 0,
@@ -74,11 +38,6 @@ export class GoalService {
   }
 
   async getAllGoals(): Promise<Goal[]> {
-    const storage = await this.ensureStorage();
-    if (storage === 'localStorage') {
-      return this.localStorage.getAllGoals();
-    }
-
     const conn = await this.db.getDbConnection();
     const result = await conn.query(
       'SELECT * FROM goals ORDER BY completed ASC, updatedAt DESC'
@@ -90,11 +49,6 @@ export class GoalService {
   }
 
   async getGoalById(id: number): Promise<Goal | null> {
-    const storage = await this.ensureStorage();
-    if (storage === 'localStorage') {
-      return this.localStorage.getGoalById(id);
-    }
-
     const conn = await this.db.getDbConnection();
     const result = await conn.query('SELECT * FROM goals WHERE id = ?', [id]);
     if (!result.values?.length) return null;
@@ -105,11 +59,6 @@ export class GoalService {
     id: number,
     updates: Partial<Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>>
   ): Promise<boolean> {
-    const storage = await this.ensureStorage();
-    if (storage === 'localStorage') {
-      return this.localStorage.updateGoal(id, updates);
-    }
-
     const conn = await this.db.getDbConnection();
     const now = new Date().toISOString();
     const setClauses: string[] = [];
@@ -130,6 +79,10 @@ export class GoalService {
     if (updates.target !== undefined) {
       setClauses.push('target = ?');
       params.push(updates.target ?? null);
+    }
+    if (updates.color !== undefined) {
+      setClauses.push('color = ?');
+      params.push(updates.color ?? null);
     }
     if (updates.category !== undefined) {
       setClauses.push('category = ?');
@@ -154,22 +107,12 @@ export class GoalService {
   }
 
   async deleteGoal(id: number): Promise<boolean> {
-    const storage = await this.ensureStorage();
-    if (storage === 'localStorage') {
-      return this.localStorage.deleteGoal(id);
-    }
-
     const conn = await this.db.getDbConnection();
     const result = await conn.run('DELETE FROM goals WHERE id = ?', [id]);
     return (result.changes?.changes ?? 0) > 0;
   }
 
   async getStats(): Promise<GoalStats> {
-    const storage = await this.ensureStorage();
-    if (storage === 'localStorage') {
-      return this.localStorage.getStats();
-    }
-
     const conn = await this.db.getDbConnection();
     const result = await conn.query(`
       SELECT
@@ -193,6 +136,7 @@ export class GoalService {
       description: row['description'] as string | undefined,
       progress: (row['progress'] as number) ?? 0,
       target: row['target'] as number | undefined,
+      color: row['color'] as string | undefined,
       category: row['category'] as Goal['category'],
       dueDate: row['dueDate'] as string | undefined,
       completed: (row['completed'] as number) === 1,

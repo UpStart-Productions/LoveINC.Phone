@@ -1,4 +1,5 @@
 <ion-tabs>
+  @if (showMainTabBar()) {
   <ion-tab-bar slot="bottom" class="custom-tab-bar">
     <ion-tab-button tab="home" href="/tabs/home">
       <ion-icon aria-hidden="true" name="home-outline" class="outline-icon"></ion-icon>
@@ -35,4 +36,5 @@
       <div class="love-inc-heart-logo" style="width: 34px; height: 34px; margin-top: 3px;"></div>
     </ion-fab-button>
   </ion-fab>
+  }
 </ion-tabs>

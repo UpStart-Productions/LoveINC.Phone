@@ -1,0 +1,10 @@
+<div class="weekly-bar-chart">
+  <div class="chart-bars">
+    <div *ngFor="let item of data; let i = index" class="bar-wrapper" (click)="onBarTap($event, item, i)" role="button" tabindex="0">
+      <div class="bar-track">
+        <div class="bar-fill" [style.height.%]="item.value"></div>
+      </div>
+      <span class="bar-label">{{ item.label }}</span>
+    </div>
+  </div>
+</div>

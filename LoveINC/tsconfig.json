@@ -4,8 +4,9 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@upstart-productions/goal-tracker": ["packages/goal-tracker"],
-      "@upstart-productions/goal-tracker/*": ["packages/goal-tracker/*"],
+      "@app/*": ["src/app/*"],
+      "@upstart-productions/goal-tracker": ["packages/goal-tracker/src/public_api.ts"],
+      "@upstart-productions/goal-tracker/*": ["packages/goal-tracker/src/*"],
       "@upstart-productions/service-unlock": ["packages/service-unlock"],
       "@upstart-productions/service-unlock/*": ["packages/service-unlock/*"]
     },

@@ -1,0 +1,46 @@
+.date-picker-sheet {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ion-background-color, #fff);
+}
+
+ion-header {
+  flex-shrink: 0;
+
+  ion-toolbar {
+    --background: #ffffff;
+    --color: #222428;
+    --padding-start: 1rem;
+    --padding-end: 0.5rem;
+  }
+
+  ion-title {
+    text-align: left;
+    font-weight: 600;
+    color: #222428;
+    padding-inline-start: 0;
+    margin-inline-start: 0;
+  }
+
+  ion-button {
+    --color: #222428;
+    color: #222428;
+  }
+}
+
+ion-content {
+  --padding-bottom: 1rem;
+}
+
+.date-picker-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0;
+  justify-content: flex-end;
+
+  ion-button {
+    flex: 1;
+    max-width: 8rem;
+  }
+}

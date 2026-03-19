@@ -1,0 +1,54 @@
+/* SuperSimpleWorkout-style: header and content layout */
+ion-header {
+  --background: #ffffff;
+  background: #ffffff;
+}
+
+ion-toolbar.custom-toolbar {
+  --background: #ffffff;
+  background: #ffffff;
+  --color: var(--ion-color-dark, #222428);
+  color: var(--ion-color-dark, #222428);
+
+  ion-title {
+    --color: var(--ion-color-dark, #222428);
+    color: var(--ion-color-dark, #222428);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  ion-back-button {
+    --color: var(--ion-color-dark, #222428);
+    color: var(--ion-color-dark, #222428);
+  }
+}
+
+.container-date-scroller {
+  height: 10vh;
+  padding-top: 18px;
+  position: fixed;
+  width: 100vw;
+  background-color: var(--ion-color-white);
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+
+ion-content.goals-content {
+  --padding-top: 10vh;
+}
+
+.loading,
+.empty-state {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.goals-list {
+  padding: 0 0 2rem;
+}
+
+.goal-section {
+  margin-left: 1rem;
+  margin-right: 1rem;
+  padding: 1rem 0 0;
+}

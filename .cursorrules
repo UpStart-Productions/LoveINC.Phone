@@ -1,5 +1,16 @@
 # Ionic Framework Rules
 
+## Reference Projects (CRITICAL – Check Before Implementing)
+- **SuperSimpleWorkout**: `/Users/jeffdenton/Projects/MobileApps/SuperSimpleWorkout`
+  - Goal Tracker UI: FAB, date scroller, color picker, weekday picker – COPY from SuperSimpleWorkout, do NOT guess
+  - FAB: `add-circle` icon, color #fe4c40, see `tabGroup/tabs.component.html` and `tabGroup/tabs.component.scss`
+  - Other components: `exercises/components/date-scroller`, `exercises/components/color-picker`, `exercises/components/weekday-picker`
+- **NephoPhone**: `/Users/jeffdenton/Projects/MobileApps/NephoPhone/NephoPhone`
+  - SQLite, Capacitor, live reload, database init, app resume – COPY patterns from NephoPhone
+  - Database: `src/app/services/database/database-base.service.ts` – checkConnectionsConsistency (no dbNames arg), no connection close on foreground
+  - App component: `src/app/app.component.ts` – DB init, platform.resume handling
+- Before implementing SQLite, Capacitor, live reload, or database features: READ the reference project first. Do NOT guess or search the web.
+
 ## Platform and Data Storage (CRITICAL – Never Forget)
 - This project ONLY runs in the iOS/Android simulator or on a physical device. It NEVER runs on web.
 - NEVER add a dev proxy, proxy.conf.json, or proxyConfig. The app always calls APIs directly (https://api.grovlink.com, etc.). Do not reintroduce proxy-based routing.

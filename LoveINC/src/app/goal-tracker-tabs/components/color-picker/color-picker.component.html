@@ -1,0 +1,16 @@
+<div class="control-container" (click)="toggleOpenClose()">
+  <span class="label" [ngClass]="{ hide: state === 'open', show: state === 'closed' }">{{
+    label
+  }}</span>
+  <div class="button-container">
+    <button
+      *ngFor="let c of config"
+      class="btn-color-picker background-{{ c.color }}"
+      [ngStyle]="{ 'z-index': selectedColor === c.color ? 1 : 0 }"
+      [ngClass]="{ open: state === 'open', close: state === 'closed' }"
+      (click)="selectColor(c.color, $event)"
+    >
+      <span class="border-{{ c.color }}" [ngClass]="{ selected: selectedColor === c.color }"></span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+---
+description: Tool/add-on registration – use when building or adding tools
+globs:
+  - src/app/registered-tools.ts
+  - src/app/tools/**/*
+  - src/app/goal-tracker-tabs/**/*
+  - packages/goal-tracker/**/*
+alwaysApply: false
+---
+
+# Tool Registration – Add-on Architecture
+
+When building a new tool or adding an npm package, follow the pattern in `docs/TOOL-REGISTRATION.md`.
+
+## Quick Reference
+
+- **Single registration point**: `src/app/registered-tools.ts` – add route + tool card here
+- **Route data**: Use `data: { hideMainTabBar: true }` for tools with their own tab bar
+- **No path coupling**: TabsPage uses `shouldHideMainTabBar(router)` from `@app/shared/utils` – never hardcode tool paths in tabs.page.ts
+
+## Adding a New Tool
+
+1. Add route to `REGISTERED_TOOL_ROUTES` in `registered-tools.ts`
+2. Add tool card to `REGISTERED_TOOL_CARDS` in `registered-tools.ts`
+3. If the tool has a custom tab bar, include `data: { hideMainTabBar: true }` on the route
+
+Do NOT edit `tabs.page.ts` or `tabs.routes.ts` for new tools – they are driven by `registered-tools.ts`.
+
+## Full Docs
+
+See `docs/TOOL-REGISTRATION.md` for:
+- Tool types (simple vs custom tab bar)
+- Building new tool packages
+- ToolCard interface
+- Icon registration

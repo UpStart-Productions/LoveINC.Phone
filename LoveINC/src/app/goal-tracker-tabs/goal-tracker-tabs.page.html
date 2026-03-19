@@ -1,0 +1,36 @@
+<ion-header *ngIf="!isGoalsTab" [translucent]="false">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/more"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Statistics</ion-title>
+    <ion-buttons slot="end">
+      <ion-button aria-label="Settings">
+        <ion-icon name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-tabs>
+  <ion-tab-bar slot="bottom" class="goal-tracker-tab-bar">
+    <ion-tab-button tab="goals" href="/tabs/goal-tracker/goals">
+      <ion-icon aria-hidden="true" name="trophy-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="trophy" class="solid-icon"></ion-icon>
+      <ion-label>Goals</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button class="fab-spacer" disabled="true" style="visibility: hidden;">
+    </ion-tab-button>
+
+    <ion-tab-button tab="statistics" href="/tabs/goal-tracker/statistics">
+      <ion-icon aria-hidden="true" name="stats-chart-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="stats-chart" class="solid-icon"></ion-icon>
+      <ion-label>Statistics</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+
+  <button class="btn-add-exercise" (click)="onFabClick()" aria-label="Add">
+    <ion-icon name="add-circle" class="large" color="red-orange"></ion-icon>
+  </button>
+</ion-tabs>

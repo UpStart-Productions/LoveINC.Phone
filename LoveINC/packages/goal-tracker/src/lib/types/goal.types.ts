@@ -14,8 +14,11 @@ export interface Goal {
   id?: number;
   title: string;
   description?: string;
-  progress: number; // 0-100
-  target?: number; // optional numeric target (e.g. "read 5 chapters" -> target 5)
+  /** Current progress value (e.g. 100 for $100 saved). Auto-updated by habit completions. */
+  progress: number;
+  /** Target value (e.g. 1000 for $1000). Optional. */
+  target?: number;
+  color?: string;
   category?: GoalCategory;
   dueDate?: string; // ISO date string
   completed: boolean;

@@ -157,6 +157,23 @@
   --goal-tracker-secondary: var(--ion-color-medium);
   --goal-tracker-success: var(--ion-color-success);
   --goal-tracker-accent: var(--ion-color-primary);
+
+  /** SuperSimpleWorkout-style colors for Goal Tracker components **/
+  --ion-color-white: #fff;
+  --ion-color-black: #023049;
+  --ion-color-light-gray: #e0e0e0;
+  --ion-color-med-gray: #a7acae;
+  --ion-color-dark-gray: #4a4a4a;
+  --ion-color-orange: #f77f00;
+  --ion-color-emerald: #32c058;
+  --ion-color-red-orange: #fe4c40;
+  --ion-color-prussian-blue: #003049;
+  --ion-color-blue-ribbon: #0370f8;
+  --ion-color-picton-blue: #52c0f6;
+  --ion-color-magenta: #fd13eb;
+  --ion-color-purple-heart: #4f2cc2;
+  --ion-color-amethyst: #a44ad3;
+  --ion-color-sunshade: #fe8b25;
 }
 
 @media (prefers-color-scheme: dark) {

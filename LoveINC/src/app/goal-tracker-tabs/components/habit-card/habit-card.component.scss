@@ -1,0 +1,141 @@
+.card-container {
+  margin-left: 1rem;
+  margin-right: 1rem;
+  z-index: 1001;
+
+  &.card-container-nested {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+.card-container.disallow-complete {
+  opacity: 0.75;
+}
+.card {
+  width: 100%;
+  background-color: var(--ion-color-white);
+  border-radius: 15px;
+  border: 1px solid;
+  padding: 0.7rem;
+  margin-top: 0.8rem;
+  display: flex;
+  position: relative;
+
+  &.card-goal {
+    border-width: 3px;
+    padding: 0.7rem 1rem;
+  }
+}
+
+.card-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+
+  &.card-badge-circle {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    padding: 0;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 1rem;
+    }
+  }
+
+  &.card-badge-date {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    padding: 0;
+    flex-direction: column;
+    font-weight: 500;
+    text-transform: uppercase;
+    line-height: 1.1;
+
+    .badge-date-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .badge-month {
+      font-size: 0.45rem;
+    }
+
+    .badge-day {
+      font-size: 0.6rem;
+      font-weight: bold;
+    }
+  }
+
+  /* Goal: inside card, left side, vertically centered */
+  &.card-badge-inside {
+    position: absolute;
+    left: calc(1rem - 5px);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+button {
+  background-color: transparent;
+}
+button.card-checkbox {
+  margin-left: 5px;
+  margin-right: 0.7rem;
+  width: 1.5rem;
+  touch-action: manipulation;
+  ion-icon {
+    font-size: 1.5rem;
+  }
+}
+
+.card-content {
+  flex: 1;
+  min-width: 0;
+  padding-right: 0.5rem;
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  &.card-content-goal {
+    padding-left: calc(3rem - 15px);
+  }
+}
+
+.goal-date-range {
+  align-self: center;
+  margin-left: auto;
+  margin-right: 0.5rem;
+  text-align: right;
+  font-weight: normal;
+  white-space: nowrap;
+  font-size: 0.7rem;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+}
+
+button.card-more {
+  color: var(--ion-color-dark-gray);
+  width: 1.5rem;
+  touch-action: manipulation;
+  cursor: pointer;
+  ion-icon {
+    font-size: 1rem;
+  }
+
+  &.card-more-goal {
+    margin-right: -10px;
+    padding-right: 0;
+  }
+}
+
+.txt-small {
+  font-size: 0.85rem;
+  color: var(--ion-color-dark-gray);
+}

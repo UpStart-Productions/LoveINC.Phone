@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
+import { REGISTERED_TOOL_ROUTES } from '../registered-tools';
 
 export const routes: Routes = [
   {
@@ -66,11 +67,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('../tools/tools.page').then((m) => m.ToolsPage),
       },
-      {
-        path: 'goal-tracker',
-        loadComponent: () =>
-          import('@upstart-productions/goal-tracker').then((m) => m.GoalTrackerPage),
-      },
+      ...REGISTERED_TOOL_ROUTES,
       {
         path: 'saved-items',
         loadComponent: () =>
