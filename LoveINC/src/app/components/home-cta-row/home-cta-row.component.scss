@@ -19,11 +19,28 @@
   flex-shrink: 0;
 }
 
-.donor-progress-bar,
 .cta-progress-bar {
   height: 0.375rem;
   border-radius: 0.1875rem;
-  --background: var(--ion-color-light);
-  --progress-background: var(--love-inc-gold);
+  /* Visible track on grey home background; fill set inline (tier colors) */
+  --background: var(--app-card-background);
+}
+
+/* Bold + fixed xs size; tier colors on the ratio only (suffix stays secondary) */
+.cta-row-item ion-label p.app-body-secondary-xs .cta-progress-figures {
+  font-size: var(--app-font-size-xs);
+  font-weight: var(--app-font-weight-bold);
+}
+
+.cta-progress-figures--low {
+  color: var(--ion-color-danger);
+}
+
+.cta-progress-figures--mid {
+  color: var(--love-inc-gold);
+}
+
+.cta-progress-figures--high {
+  color: var(--ion-color-success);
 }
 

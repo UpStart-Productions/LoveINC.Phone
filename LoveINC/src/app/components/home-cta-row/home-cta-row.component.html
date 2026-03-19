@@ -14,12 +14,19 @@
     @if (contextSubtitle) {
       <p class="app-body-secondary-xs m-t-4">{{ contextSubtitle }}</p>
     }
-    @if (showProgressBar && progressText) {
-      <p class="app-body-secondary-xs m-t-4">{{ progressText }}</p>
+    @if (showProgressBar && progressAmountsText) {
+      <p class="app-body-secondary-xs m-t-4">
+        <span
+          class="cta-progress-figures"
+          [class.cta-progress-figures--low]="progressFigureLevel === 'low'"
+          [class.cta-progress-figures--mid]="progressFigureLevel === 'mid'"
+          [class.cta-progress-figures--high]="progressFigureLevel === 'high'"
+        >{{ progressAmountsText }}</span>{{ progressUnitSuffix }}
+      </p>
       <ion-progress-bar
         [value]="progressValue"
         class="cta-progress-bar m-t-6"
-        [style.--progress-background]="accentColor">
+        [style.--progress-background]="progressBarFillColor">
       </ion-progress-bar>
     }
   </ion-label>

@@ -41,12 +41,37 @@ export class HomeCtaRowComponent {
     return Math.min(1, c / g);
   }
 
-  get progressText(): string {
+  /** Progress text color: under 30% red, 30–60% donate gold, over 60% green */
+  get progressFigureLevel(): 'low' | 'mid' | 'high' {
+    const v = this.progressValue;
+    if (v < 0.3) return 'low';
+    if (v <= 0.6) return 'mid';
+    return 'high';
+  }
+
+  /** Progress bar fill — matches tier colors on the ratio text */
+  get progressBarFillColor(): string {
+    switch (this.progressFigureLevel) {
+      case 'low':
+        return 'var(--ion-color-danger)';
+      case 'mid':
+        return 'var(--love-inc-gold)';
+      default:
+        return 'var(--ion-color-success)';
+    }
+  }
+
+  /** "143/200" / "200/1000" — shown bold in template */
+  get progressAmountsText(): string {
     const g = this.cta?.goalValue;
     const c = this.cta?.currentValue;
     if (g == null || c == null) return '';
-    const unit = this.cta?.unitLabel?.trim() ? ` ${this.cta.unitLabel}` : '';
-    return `${c}/${g}${unit}`.trim();
+    return `${c}/${g}`;
+  }
+
+  get progressUnitSuffix(): string {
+    const unit = this.cta?.unitLabel?.trim();
+    return unit ? ` ${unit}` : '';
   }
 
   get showProgressBar(): boolean {

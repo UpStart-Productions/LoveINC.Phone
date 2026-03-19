@@ -19,7 +19,7 @@ import {
   IonLabel,
   IonSelect,
   IonSelectOption,
-  IonChip,
+  IonToggle,
   PopoverController,
 } from '@ionic/angular/standalone';
 import {
@@ -70,7 +70,7 @@ const CATEGORY_PALETTE = [
     IonLabel,
     IonSelect,
     IonSelectOption,
-    IonChip,
+    IonToggle,
     PieChartComponent,
   ],
 })
@@ -137,8 +137,9 @@ export class SimpleBudgetReportsPage implements OnInit {
     }
   }
 
-  onChartTypeChange() {
-    this.chartType = this.chartType === 'spending' ? 'income' : 'spending';
+  onChartTypeToggleChange(ev: Event) {
+    const checked = (ev as CustomEvent<{ checked: boolean }>).detail.checked;
+    this.chartType = checked ? 'income' : 'spending';
     if (this.reportMode === 'week' && this.plan) {
       this.buildChartFromWeek();
     } else if (this.reportMode === 'month' && this.monthlyWeeks.length) {
@@ -247,5 +248,24 @@ export class SimpleBudgetReportsPage implements OnInit {
 
   get hasChartData(): boolean {
     return this.chartSlices.length > 0 && this.chartSlices.some((s) => s.value > 0);
+  }
+
+  get chartTotal(): number {
+    return this.chartSlices.reduce((sum, s) => sum + (s.value ?? 0), 0);
+  }
+
+  /** e.g. "Spending $2,450.83" / "Income $3,212.18" */
+  get chartTitleText(): string {
+    const label = this.chartType === 'spending' ? 'Spending' : 'Income';
+    return `${label} ${this.formatUsd(this.chartTotal)}`;
+  }
+
+  private formatUsd(n: number): string {
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(n);
   }
 }
