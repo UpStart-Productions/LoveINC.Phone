@@ -19,7 +19,7 @@
     <app-week-scroller
       [initialWeekStart]="selectedWeekStart"
       [earliestWeekStart]="earliestWeekStart"
-      [weeksWithEntries]="weeksWithEntries"
+      [weekBalances]="weekBalances"
       (weekSelectedEvent)="onWeekSelected($event)"
     ></app-week-scroller>
   </div>
@@ -30,11 +30,10 @@
 
   <div *ngIf="!loading && plan" class="budget-form">
     <!-- Starting balance -->
-    <div class="category-list">
-      <div class="budget-card starting-balance-card">
-        <ion-label class="card-name">Starting balance</ion-label>
+    <div class="budget-section-card starting-balance-card">
+      <div class="category-row">
+        <span class="starting-balance-label">Starting balance</span>
         <span class="currency-input-wrap">
-          <span class="currency-prefix">$</span>
           <ion-input
             appCurrencyInput
             #startInput
@@ -53,17 +52,20 @@
     </div>
 
     <!-- Money Coming In -->
-    <h3 class="section-title">Money Coming In</h3>
-    <div class="category-list">
+    <div class="budget-section-card" [ngClass]="getBorderClass('income')">
+      <div class="card-header">
+        <h3 class="card-title">Money Coming In</h3>
+        <ion-button fill="solid" color="red-orange" shape="round" size="small" (click)="addCategory('income')">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </div>
       <div
         *ngFor="let c of incomeCategories; let i = index"
-        class="budget-card"
-        [ngClass]="getBorderClass('income')"
+        class="category-row"
         (click)="openNotesModal(c)"
       >
         <ion-label class="card-name">{{ c.name }}<ion-icon *ngIf="c.notes?.trim()" name="document-text-outline" class="notes-icon"></ion-icon></ion-label>
         <span class="currency-input-wrap" (click)="$event.stopPropagation()">
-          <span class="currency-prefix">$</span>
           <ion-input
             appCurrencyInput
             #amtInput
@@ -81,24 +83,23 @@
           <ion-icon name="close"></ion-icon>
         </button>
       </div>
-      <ion-button fill="solid" color="red-orange" size="small" (click)="addCategory('income')" class="add-btn">
-        <ion-icon name="add-outline"></ion-icon>
-        Add
-      </ion-button>
     </div>
 
     <!-- Bills Due This Week -->
-    <h3 class="section-title">Bills Due This Week</h3>
-    <div class="category-list">
+    <div class="budget-section-card" [ngClass]="getBorderClass('bills')">
+      <div class="card-header">
+        <h3 class="card-title">Bills Due This Week</h3>
+        <ion-button fill="solid" color="red-orange" shape="round" size="small" (click)="addCategory('bills')">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </div>
       <div
         *ngFor="let c of billsCategories; let i = index"
-        class="budget-card"
-        [ngClass]="getBorderClass('bills')"
+        class="category-row"
         (click)="openNotesModal(c)"
       >
         <ion-label class="card-name">{{ c.name }}<ion-icon *ngIf="c.notes?.trim()" name="document-text-outline" class="notes-icon"></ion-icon></ion-label>
         <span class="currency-input-wrap" (click)="$event.stopPropagation()">
-          <span class="currency-prefix">$</span>
           <ion-input
             appCurrencyInput
             #amtInput
@@ -116,24 +117,23 @@
           <ion-icon name="close"></ion-icon>
         </button>
       </div>
-      <ion-button fill="solid" color="red-orange" size="small" (click)="addCategory('bills')" class="add-btn">
-        <ion-icon name="add-outline"></ion-icon>
-        Add
-      </ion-button>
     </div>
 
     <!-- Flexible Targets -->
-    <h3 class="section-title">Flexible Targets</h3>
-    <div class="category-list">
+    <div class="budget-section-card" [ngClass]="getBorderClass('flexible')">
+      <div class="card-header">
+        <h3 class="card-title">Flexible Targets</h3>
+        <ion-button fill="solid" color="red-orange" shape="round" size="small" (click)="addCategory('flexible')">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </div>
       <div
         *ngFor="let c of flexibleCategories; let i = index"
-        class="budget-card"
-        [ngClass]="getBorderClass('flexible')"
+        class="category-row"
         (click)="openNotesModal(c)"
       >
         <ion-label class="card-name">{{ c.name }}<ion-icon *ngIf="c.notes?.trim()" name="document-text-outline" class="notes-icon"></ion-icon></ion-label>
         <span class="currency-input-wrap" (click)="$event.stopPropagation()">
-          <span class="currency-prefix">$</span>
           <ion-input
             appCurrencyInput
             #amtInput
@@ -151,10 +151,6 @@
           <ion-icon name="close"></ion-icon>
         </button>
       </div>
-      <ion-button fill="solid" color="red-orange" size="small" (click)="addCategory('flexible')" class="add-btn">
-        <ion-icon name="add-outline"></ion-icon>
-        Add
-      </ion-button>
     </div>
 
     <!-- Summary -->

@@ -1,4 +1,3 @@
-/* Match Goal Tracker header and layout */
 ion-header {
   --background: #ffffff;
   background: #ffffff;
@@ -7,19 +6,19 @@ ion-header {
 ion-toolbar.custom-toolbar {
   --background: #ffffff;
   background: #ffffff;
-  --color: var(--ion-color-dark, #222428);
-  color: var(--ion-color-dark, #222428);
+  --color: var(--ion-color-dark);
+  color: var(--ion-color-dark);
 
   ion-title {
-    --color: var(--ion-color-dark, #222428);
-    color: var(--ion-color-dark, #222428);
+    --color: var(--ion-color-dark);
+    color: var(--ion-color-dark);
     font-size: 1rem;
     font-weight: 500;
   }
 
   ion-back-button {
-    --color: var(--ion-color-dark, #222428);
-    color: var(--ion-color-dark, #222428);
+    --color: var(--ion-color-dark);
+    color: var(--ion-color-dark);
   }
 
   .remaining-badge {
@@ -51,41 +50,57 @@ ion-toolbar.custom-toolbar {
 }
 
 ion-content.weekly-content {
-  --background: var(--ion-color-light, #f5f5f5);
+  --background: var(--ion-color-light);
   --padding-top: 10vh;
 }
 
-.section-title {
-  padding: 0.5rem 1rem;
-  font-size: var(--app-font-size-sm);
-  font-weight: 600;
-  text-transform: uppercase;
+.budget-form .budget-section-card:first-child {
+  margin-top: 1rem;
 }
 
-.category-list {
-  margin: 0 1rem 1rem;
-
-  &:first-child {
-    margin-top: 1rem;
-  }
+.budget-section-card {
+  margin: 1rem;
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 15px;
+  border: 1px solid rgba(var(--ion-color-dark-rgb), 0.1);
 }
 
-.budget-card {
+.budget-section-card .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.7rem 1rem;
-  margin-top: 0.8rem;
-  background: #ffffff;
-  border-radius: 15px;
-  border: 1px solid;
+  padding: 0 0 0.5rem;
+  margin: 0 0 0.5rem;
+  border-bottom: 1px solid rgba(var(--ion-color-dark-rgb), 0.1);
+}
+
+.budget-section-card .card-title {
+  font-size: var(--app-font-size-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0;
+  margin: 0;
+}
+
+.budget-section-card > .card-title {
+  padding: 0 0 0.5rem;
+  margin: 0 0 0.5rem;
+  border-bottom: 1px solid rgba(var(--ion-color-dark-rgb), 0.1);
+}
+
+.budget-section-card .category-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0;
   gap: 0.5rem;
   cursor: pointer;
 
   .card-name {
     flex: 1;
     min-width: 0;
-    font-weight: 600;
+    font-weight: 400;
     font-size: 1rem;
     display: flex;
     align-items: center;
@@ -103,14 +118,7 @@ ion-content.weekly-content {
     align-items: center;
     flex: 0 0 6.9375rem;
     min-width: 6.9375rem;
-    transform: translateX(20px);
-  }
-
-  .currency-prefix {
-    color: var(--ion-color-medium, #808289);
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-inline-end: 0.25rem;
+    transform: translateX(25px);
   }
 
   .card-amount {
@@ -147,19 +155,39 @@ ion-content.weekly-content {
   border-color: var(--simple-budget-green) !important;
 }
 
+.border-prussian-blue {
+  border-color: var(--ion-color-prussian-blue) !important;
+}
+
+.border-picton-blue {
+  border-color: var(--ion-color-picton-blue) !important;
+}
+
 .starting-balance-card {
   border-color: rgba(var(--ion-color-dark-rgb), 0.1);
+  padding-top: 5px;
+  padding-bottom: 5px;
 
-  .currency-input-wrap {
-    transform: translateX(28px);
+  .category-row {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .starting-balance-label {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    font-size: var(--app-font-size-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .category-row .currency-input-wrap {
+    transform: translateX(35px);
+    flex: 0 0 calc(6.9375rem - 10px);
+    min-width: calc(6.9375rem - 10px);
   }
 }
-
-.add-btn {
-  margin-top: 0.5rem;
-  --border-radius: 0.5rem;
-}
-
 .summary-card {
   margin: 1.5rem 1rem;
   padding: 1rem;
@@ -185,17 +213,15 @@ ion-content.weekly-content {
   }
 }
 
-.over-amount {
+.over-amount, .negative {
   color: var(--ion-color-danger);
+}
+.over-amount {
   font-weight: 600;
 }
 
-.negative {
-  color: var(--ion-color-danger);
-}
-
 .summary-card .positive {
-  color: var(--simple-budget-green, #1e9e5a);
+  color: var(--simple-budget-green);
 }
 
 .summary-card-title {
@@ -213,5 +239,5 @@ ion-content.weekly-content {
 
 .loading {
   padding: 1.5rem;
-  text-align: center;
+  text-align: center
 }

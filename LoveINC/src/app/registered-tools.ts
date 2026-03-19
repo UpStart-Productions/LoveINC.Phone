@@ -58,6 +58,13 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
           ),
       },
       {
+        path: 'reports',
+        loadComponent: () =>
+          import('@app/simple-budget-tabs/simple-budget-reports.page').then(
+            (m) => m.SimpleBudgetReportsPage
+          ),
+      },
+      {
         path: '',
         redirectTo: 'weekly',
         pathMatch: 'full',

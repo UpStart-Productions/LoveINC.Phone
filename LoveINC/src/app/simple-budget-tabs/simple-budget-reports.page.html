@@ -1,0 +1,72 @@
+<ion-header [translucent]="false">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tools"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Reports</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="segment-container">
+    <ion-segment [(ngModel)]="reportMode" class="export-mode-segment" (ionChange)="onReportModeChange()">
+      <ion-segment-button value="week">
+        <ion-label>Week</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="month">
+        <ion-label>Month</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading…</div>
+
+  <div *ngIf="!loading && reportMode === 'week' && plan" class="export-content">
+    <ion-card class="summary-card">
+      <ion-card-header>
+        <div class="chart-title-row">
+          <ion-card-title>{{ chartType === 'spending' ? 'Spending' : 'Income' }}</ion-card-title>
+          <ion-chip (click)="onChartTypeChange()" class="chart-type-toggle" [ngClass]="chartType === 'spending' ? 'chart-type-toggle-income' : 'chart-type-toggle-spending'">
+            {{ chartType === 'spending' ? 'Income' : 'Spending' }}
+          </ion-chip>
+        </div>
+        <ion-card-subtitle *ngIf="weekDateRange">Week of {{ weekDateRange }}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="pie-chart-container" *ngIf="hasChartData">
+          <app-pie-chart [slices]="chartSlices" [animateTrigger]="chartKey" [fill]="true" [donut]="true"></app-pie-chart>
+        </div>
+        <p *ngIf="!hasChartData" class="no-data">No data to display.</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="!loading && reportMode === 'month' && selectedMonthKey" class="export-content">
+    <ion-card class="summary-card">
+      <ion-card-header class="month-card-header">
+        <div class="chart-title-row">
+          <ion-card-title>{{ chartType === 'spending' ? 'Spending' : 'Income' }}</ion-card-title>
+          <ion-chip (click)="onChartTypeChange()" class="chart-type-toggle" [ngClass]="chartType === 'spending' ? 'chart-type-toggle-income' : 'chart-type-toggle-spending'">
+            {{ chartType === 'spending' ? 'Income' : 'Spending' }}
+          </ion-chip>
+        </div>
+        <ion-select
+          [(ngModel)]="selectedMonthKey"
+          interface="popover"
+          [interfaceOptions]="monthSelectPopoverOptions"
+          placeholder="Select month"
+          (ionChange)="onMonthChange()"
+          class="month-select-below"
+        >
+          <ion-select-option *ngFor="let m of monthsWithEntries" [value]="m.key">{{ m.label }}</ion-select-option>
+        </ion-select>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="pie-chart-container" *ngIf="hasChartData">
+          <app-pie-chart [slices]="chartSlices" [animateTrigger]="chartKey" [fill]="true" [donut]="true"></app-pie-chart>
+        </div>
+        <p *ngIf="!hasChartData" class="no-data">No data to display.</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

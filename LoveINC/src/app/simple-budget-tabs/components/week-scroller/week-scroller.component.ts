@@ -19,7 +19,8 @@ export interface WeekScrollerWeek {
   labelLong: string;
   isCurrentWeek: boolean;
   isSelected: boolean;
-  hasEntries: boolean;
+  balancePositive: boolean;
+  balanceNegative: boolean;
 }
 
 @Component({
@@ -33,16 +34,16 @@ export class WeekScrollerComponent implements OnInit, OnChanges, AfterViewChecke
   @ViewChild('weekScroller', { static: false }) weekScroller!: ElementRef;
   @Input() initialWeekStart?: string;
   @Input() earliestWeekStart?: string;
-  @Input() weeksWithEntries: string[] = [];
+  @Input() weekBalances: Record<string, number> = {};
   @Output() weekSelectedEvent = new EventEmitter<string>();
 
   weeks: WeekScrollerWeek[] = [];
   private _shouldScrollToCurrent = true;
 
-  selectWeek(week: WeekScrollerWeek) {
+  selectWeek(week: WeekScrollerWeek, emit = true) {
     this.weeks.forEach((w) => (w.isSelected = false));
     week.isSelected = true;
-    this.weekSelectedEvent.emit(week.weekStartDate);
+    if (emit) this.weekSelectedEvent.emit(week.weekStartDate);
   }
 
   private getSundayForDate(d: Date): Date {
@@ -77,13 +78,15 @@ export class WeekScrollerComponent implements OnInit, OnChanges, AfterViewChecke
       const labelLong = `Week ${format(sunday, 'MMM d')} – ${format(weekEnd, 'MMM d')}`;
       const isCurrent = weekStart === thisWeekStart;
 
+      const remaining = this.weekBalances[weekStart] ?? 0;
       this.weeks.push({
         weekStartDate: weekStart,
         labelShort,
         labelLong,
         isCurrentWeek: isCurrent,
         isSelected: false,
-        hasEntries: this.weeksWithEntries.includes(weekStart),
+        balancePositive: remaining > 0,
+        balanceNegative: remaining < 0,
       });
     }
 
@@ -91,8 +94,8 @@ export class WeekScrollerComponent implements OnInit, OnChanges, AfterViewChecke
     const toSelect = initial
       ? this.weeks.find((w) => w.weekStartDate === initial)
       : this.weeks.find((w) => w.isCurrentWeek);
-    if (toSelect) this.selectWeek(toSelect);
-    else if (this.weeks.length) this.selectWeek(this.weeks[0]);
+    if (toSelect) this.selectWeek(toSelect, false);
+    else if (this.weeks.length) this.selectWeek(this.weeks[0], false);
     this._selectionOverride = undefined;
   }
 
@@ -120,12 +123,12 @@ export class WeekScrollerComponent implements OnInit, OnChanges, AfterViewChecke
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['earliestWeekStart'] || changes['weeksWithEntries']) {
+    if (changes['earliestWeekStart'] || changes['weekBalances']) {
       this._selectionOverride = this.weeks.find((w) => w.isSelected)?.weekStartDate;
       this.calculateWeekRange();
-      const selected = this.weeks.find((w) => w.isSelected);
-      if (selected) this.weekSelectedEvent.emit(selected.weekStartDate);
-      this._shouldScrollToCurrent = true;
+      if (changes['earliestWeekStart']) {
+        this._shouldScrollToCurrent = true;
+      }
     }
   }
 

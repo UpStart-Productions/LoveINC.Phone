@@ -223,6 +223,16 @@ ion-popover.chart-bar-popover {
   pointer-events: none;
 }
 
+/* Chart pie popover (Simple Budget reports) – dark popover on slice tap, backdrop dismiss, auto-fade */
+ion-popover.chart-pie-popover {
+  --background: rgba(34, 36, 40, 0.95);
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --width: fit-content;
+  --max-width: 10rem;
+  --backdrop-opacity: 0.01;
+  pointer-events: none;
+}
+
 /* Month select popover (Simple Budget export) – white background, no grey */
 ion-popover.month-select-popover {
   --background: #ffffff;
@@ -372,6 +382,32 @@ ion-modal.entry-notes-modal {
 
   ion-content {
     --background: #ffffff !important;
+  }
+}
+
+/* Budget section card add button – smaller button, larger icon */
+.budget-section-card .card-header ion-button {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  min-width: 1.5rem !important;
+  min-height: 1.5rem !important;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --border-radius: 50%;
+
+  &::part(native) {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+    min-width: 1.5rem !important;
+    min-height: 1.5rem !important;
+    padding: 0 !important;
+  }
+
+  ion-icon {
+    font-size: 1.25rem;
+    font-weight: 700;
   }
 }
 

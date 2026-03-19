@@ -1,0 +1,15 @@
+<div class="pie-chart" [class.pie-chart-fill]="fill" [style.width.px]="fill ? null : size" [style.height.px]="fill ? null : size">
+  <svg viewBox="0 0 100 100" *ngIf="paths.length" [class.animate-in]="animating">
+    <path
+      *ngFor="let p of paths"
+      [attr.d]="p.d"
+      [attr.fill]="p.color"
+      [style.animation-delay]="animating ? (p.index * 50) + 'ms' : '0ms'"
+      (click)="onSliceTap($event, p)"
+      (keydown.enter)="onSliceTap($event, p)"
+      (keydown.space)="$event.preventDefault(); onSliceTap($event, p)"
+      role="button"
+      tabindex="0"
+    />
+  </svg>
+</div>

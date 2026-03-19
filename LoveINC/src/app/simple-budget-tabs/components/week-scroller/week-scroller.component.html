@@ -6,7 +6,8 @@
     [ngClass]="{
       today: week.isCurrentWeek,
       selected: week.isSelected,
-      'has-entries': week.hasEntries
+      'balance-positive': week.balancePositive,
+      'balance-negative': week.balanceNegative
     }"
   >
     <span [ngClass]="{ today: week.isCurrentWeek, selected: week.isSelected }" class="txt-small-caps">WEEK</span>

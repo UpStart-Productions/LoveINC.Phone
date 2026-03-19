@@ -65,7 +65,7 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
   saving = false;
   selectedWeekStart = '';
   earliestWeekStart = '';
-  weeksWithEntries: string[] = [];
+  weekBalances: Record<string, number> = {};
   private displayAmounts: Record<string, string> = {};
   private saveTimeout: ReturnType<typeof setTimeout> | null = null;
   private readonly SAVE_DEBOUNCE_MS = 600;
@@ -78,15 +78,21 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    const plans = await this.weekPlanService.listWeeks();
-    if (plans.length) {
-      this.earliestWeekStart =
-        plans.reduce((a, b) =>
-          a.weekStartDate < b.weekStartDate ? a : b
-        ).weekStartDate;
-      this.weeksWithEntries = plans
-        .filter((p) => (p.categoryInstances?.length ?? 0) > 0)
-        .map((p) => p.weekStartDate);
+    try {
+      const plans = await this.weekPlanService.listWeeks();
+      if (plans.length) {
+        this.earliestWeekStart =
+          plans.reduce((a, b) =>
+            a.weekStartDate < b.weekStartDate ? a : b
+          ).weekStartDate;
+        this.weekBalances = {};
+        for (const p of plans) {
+          const summary = calculateWeekSummary(p);
+          this.weekBalances[p.weekStartDate] = summary.remaining;
+        }
+      }
+    } catch (err) {
+      console.warn('Simple Budget list weeks error:', err);
     }
     const weekStart =
       this.budgetState.selectedWeekStart || this.getCurrentWeekStart();
@@ -94,15 +100,21 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
   }
 
   async ionViewDidEnter() {
-    const plans = await this.weekPlanService.listWeeks();
-    if (plans.length) {
-      this.earliestWeekStart =
-        plans.reduce((a, b) =>
-          a.weekStartDate < b.weekStartDate ? a : b
-        ).weekStartDate;
-      this.weeksWithEntries = plans
-        .filter((p) => (p.categoryInstances?.length ?? 0) > 0)
-        .map((p) => p.weekStartDate);
+    try {
+      const plans = await this.weekPlanService.listWeeks();
+      if (plans.length) {
+        this.earliestWeekStart =
+          plans.reduce((a, b) =>
+            a.weekStartDate < b.weekStartDate ? a : b
+          ).weekStartDate;
+        this.weekBalances = {};
+        for (const p of plans) {
+          const summary = calculateWeekSummary(p);
+          this.weekBalances[p.weekStartDate] = summary.remaining;
+        }
+      }
+    } catch (err) {
+      console.warn('Simple Budget list weeks error:', err);
     }
     if (this.selectedWeekStart) this.loadForWeek(this.selectedWeekStart);
   }
@@ -142,6 +154,7 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
   private updateSummary() {
     if (!this.plan) return;
     this.summary = calculateWeekSummary(this.plan);
+    this.weekBalances = { ...this.weekBalances, [this.plan.weekStartDate]: this.summary.remaining };
   }
 
   get incomeCategories(): CategoryInstance[] {

@@ -41,8 +41,11 @@
   border: 1px solid var(--ion-color-secondary);
 }
 
-.date-scroller .date.has-entries:not(.selected) {
+.date-scroller .date.balance-positive:not(.selected):not(.today) {
   border: 1px solid var(--ion-color-emerald);
+}
+.date-scroller .date.balance-negative:not(.selected):not(.today) {
+  border: 1px solid var(--ion-color-danger);
 }
 button span {
   color: var(--ion-color-black) !important;
