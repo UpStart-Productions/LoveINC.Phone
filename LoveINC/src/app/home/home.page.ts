@@ -18,6 +18,7 @@ import { PlatformApiService } from '../services/platform/platform-api.service';
 import type { PlatformCta, PlatformClass, PlatformEvent, PlatformHomeFeedItem } from '../services/platform/types';
 import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.component';
 import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-widget/verse-of-the-day-widget.component';
+import { SimpleBudgetHomeWidgetComponent } from '../components/simple-budget-home-widget/simple-budget-home-widget.component';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
@@ -53,6 +54,7 @@ export type ClientSupportCardState =
     UserTypeCardComponent,
     HomeCtaRowComponent,
     VerseOfTheDayWidgetComponent,
+    SimpleBudgetHomeWidgetComponent,
     NotificationsButtonComponent,
   ],
 })
