@@ -353,7 +353,7 @@ ion-modal.date-picker-modal-sheet {
   }
 }
 
-/* Entry notes modal (Simple Budget – half-screen) */
+/* Entry notes modal (Simple Budget – half-screen, also used for adjust strategies) */
 ion-modal.entry-notes-modal {
   --width: 100%;
   --border-radius: 0;
@@ -383,6 +383,33 @@ ion-modal.entry-notes-modal {
   ion-content {
     --background: #ffffff !important;
   }
+}
+
+/* Budget summary adjust link and strategies card */
+.summary-row .adjust-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: var(--ion-color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.strategies-card .strategies-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+.strategies-card .strategies-list li {
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.strategies-card .strategies-list .strategy-check {
+  color: var(--simple-budget-green);
+  font-size: 0.875rem;
+  flex-shrink: 0;
 }
 
 /* Budget section card add button – smaller button, larger icon */

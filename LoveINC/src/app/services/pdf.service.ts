@@ -53,6 +53,8 @@ export class PdfService {
     const pdfContent = this.htmlToPdfmake(modifiedHtml);
     let contentArray = (Array.isArray(pdfContent) ? pdfContent : [pdfContent]) as Content[];
     contentArray = this.applyTableLayout(contentArray, 'budgetTable');
+    contentArray = this.stripTableCellBorders(contentArray);
+    contentArray = this.applyTableWidths(contentArray);
 
     const headerContent: Content[] = [];
     if (title) {
@@ -191,6 +193,16 @@ export class PdfService {
       const obj = item as unknown as Record<string, unknown>;
       if (!obj || typeof obj !== 'object') return item;
       if (obj['table']) {
+        const table = obj['table'] as { body?: unknown[][] };
+        const body = table?.body;
+        if (Array.isArray(body)) {
+          const newBody = body.map((row) =>
+            Array.isArray(row)
+              ? row.map((cell) => this.applyTableLayoutToCell(cell as Record<string, unknown>, layout))
+              : row
+          );
+          return { ...obj, layout, table: { ...table, body: newBody } } as Content;
+        }
         return { ...obj, layout } as Content;
       }
       const stack = obj['stack'];
@@ -213,6 +225,222 @@ export class PdfService {
       }
       return item;
     });
+  }
+
+  private applyTableLayoutToCell(cell: Record<string, unknown>, layout: string): Record<string, unknown> {
+    const stack = cell['stack'];
+    if (Array.isArray(stack)) {
+      return { ...cell, stack: this.applyTableLayout(stack as Content[], layout) };
+    }
+    return cell;
+  }
+
+  private stripTableCellBorders(content: Content[]): Content[] {
+    return content.map((item) => {
+      const obj = item as unknown as Record<string, unknown>;
+      if (!obj || typeof obj !== 'object') return item;
+      if (obj['table']) {
+        const table = obj['table'] as { body?: unknown[][] };
+        const body = table?.body;
+        if (Array.isArray(body)) {
+          const newBody = body.map((row) =>
+            Array.isArray(row)
+              ? row.map((cell) => this.stripCellBorders(cell as Record<string, unknown>))
+              : row
+          );
+          return { ...obj, table: { ...table, body: newBody } } as Content;
+        }
+        return item;
+      }
+      const stack = obj['stack'];
+      if (Array.isArray(stack)) {
+        return { ...obj, stack: this.stripTableCellBorders(stack as Content[]) } as Content;
+      }
+      const columns = obj['columns'];
+      if (Array.isArray(columns)) {
+        return {
+          ...obj,
+          columns: columns.map((col: unknown) => {
+            const colObj = col as unknown as Record<string, unknown>;
+            const colStack = colObj?.['stack'];
+            if (Array.isArray(colStack)) {
+              return { ...colObj, stack: this.stripTableCellBorders(colStack as Content[]) };
+            }
+            return col;
+          }),
+        } as Content;
+      }
+      return item;
+    });
+  }
+
+  private applyTableWidths(content: Content[]): Content[] {
+    return content.map((item) => {
+      const obj = item as unknown as Record<string, unknown>;
+      if (!obj || typeof obj !== 'object') return item;
+      if (obj['table']) {
+        const table = obj['table'] as { body?: unknown[][]; widths?: unknown[] };
+        const body = table?.body;
+        if (Array.isArray(body) && body.length > 0) {
+          const firstRow = body[0];
+          const colCount = Array.isArray(firstRow) ? firstRow.length : 0;
+          let widths: unknown[] | undefined;
+          if (colCount === 2) {
+            widths = ['50%', '50%'];
+          } else if (colCount === 6) {
+            widths = ['*', '*', '*', '*', '*', '*'];
+          }
+          if (widths) {
+            const newBody = body.map((row) =>
+              Array.isArray(row)
+                ? row.map((cell) => this.applyTableWidthsToCell(cell as Record<string, unknown>))
+                : row
+            );
+            return { ...obj, table: { ...table, body: newBody, widths } } as Content;
+          }
+          const newBody = body.map((row) =>
+            Array.isArray(row)
+              ? row.map((cell) => this.applyTableWidthsToCell(cell as Record<string, unknown>))
+              : row
+          );
+          return { ...obj, table: { ...table, body: newBody } } as Content;
+        }
+        return item;
+      }
+      const stack = obj['stack'];
+      if (Array.isArray(stack)) {
+        return { ...obj, stack: this.applyTableWidths(stack as Content[]) } as Content;
+      }
+      const columns = obj['columns'];
+      if (Array.isArray(columns)) {
+        return {
+          ...obj,
+          columns: columns.map((col: unknown) => {
+            const colObj = col as unknown as Record<string, unknown>;
+            const colStack = colObj?.['stack'];
+            if (Array.isArray(colStack)) {
+              return { ...colObj, stack: this.applyTableWidths(colStack as Content[]) };
+            }
+            return col;
+          }),
+        } as Content;
+      }
+      return item;
+    });
+  }
+
+  private applySummaryCellMargins(content: Content[]): Content[] {
+    const summaryMargin: [number, number, number, number] = [0, 10, 0, 0];
+    return content.map((item) => {
+      const obj = item as unknown as Record<string, unknown>;
+      if (!obj || typeof obj !== 'object') return item;
+      if (obj['table']) {
+        const table = obj['table'] as { body?: unknown[][] };
+        const body = table?.body;
+        if (Array.isArray(body) && body.length > 0) {
+          const firstRow = body[0];
+          const colCount = Array.isArray(firstRow) ? firstRow.length : 0;
+          const firstCell = Array.isArray(firstRow) ? firstRow[0] : null;
+          const firstCellText = this.getCellText(firstCell);
+          const isSummaryTable =
+            colCount === 2 &&
+            body.length >= 5 &&
+            (firstCellText?.includes('Starting balance') ||
+              firstCellText?.includes('Total income') ||
+              firstCellText?.includes('Money available'));
+          if (isSummaryTable) {
+            const newBody = body.map((row) =>
+              Array.isArray(row)
+                ? row.map((cell, colIdx) =>
+                    colIdx === 0 ? this.addCellMargin(cell as Record<string, unknown>, summaryMargin) : cell
+                  )
+                : row
+            );
+            return { ...obj, table: { ...table, body: newBody } } as Content;
+          }
+        }
+        const newBody = body?.map((row) =>
+          Array.isArray(row)
+            ? row.map((cell) => this.applySummaryCellMarginsToCell(cell as Record<string, unknown>))
+            : row
+        );
+        return newBody ? { ...obj, table: { ...table, body: newBody } } as Content : item;
+      }
+      const stack = obj['stack'];
+      if (Array.isArray(stack)) {
+        return { ...obj, stack: this.applySummaryCellMargins(stack as Content[]) } as Content;
+      }
+      const columns = obj['columns'];
+      if (Array.isArray(columns)) {
+        return {
+          ...obj,
+          columns: columns.map((col: unknown) => {
+            const colObj = col as unknown as Record<string, unknown>;
+            const colStack = colObj?.['stack'];
+            if (Array.isArray(colStack)) {
+              return { ...colObj, stack: this.applySummaryCellMargins(colStack as Content[]) };
+            }
+            return col;
+          }),
+        } as Content;
+      }
+      return item;
+    });
+  }
+
+  private getCellText(cell: unknown): string | null {
+    if (!cell || typeof cell !== 'object') return null;
+    const c = cell as Record<string, unknown>;
+    if (typeof c['text'] === 'string') return c['text'] as string;
+    const stack = c['stack'];
+    if (Array.isArray(stack) && stack.length > 0) {
+      const first = stack[0];
+      if (first && typeof first === 'object' && typeof (first as Record<string, unknown>)['text'] === 'string') {
+        return (first as Record<string, unknown>)['text'] as string;
+      }
+    }
+    return null;
+  }
+
+  private addCellMargin(cell: Record<string, unknown>, margin: [number, number, number, number]): Record<string, unknown> {
+    if (cell['text'] !== undefined) {
+      return { ...cell, margin };
+    }
+    const stack = cell['stack'];
+    if (Array.isArray(stack) && stack.length > 0) {
+      const first = stack[0] as Record<string, unknown>;
+      if (first?.['text'] !== undefined) {
+        return { ...cell, stack: [{ ...first, margin }, ...stack.slice(1)] };
+      }
+    }
+    return cell;
+  }
+
+  private applySummaryCellMarginsToCell(cell: Record<string, unknown>): Record<string, unknown> {
+    const stack = cell['stack'];
+    if (Array.isArray(stack)) {
+      return { ...cell, stack: this.applySummaryCellMargins(stack as Content[]) };
+    }
+    return cell;
+  }
+
+  private applyTableWidthsToCell(cell: Record<string, unknown>): Record<string, unknown> {
+    const stack = cell['stack'];
+    if (Array.isArray(stack)) {
+      return { ...cell, stack: this.applyTableWidths(stack as Content[]) };
+    }
+    return cell;
+  }
+
+  private stripCellBorders(cell: Record<string, unknown>): Record<string, unknown> {
+    const next = { ...cell };
+    delete next['border'];
+    delete next['borderColor'];
+    const stack = next['stack'];
+    if (Array.isArray(stack)) {
+      return { ...next, stack: this.stripTableCellBorders(stack as Content[]) };
+    }
+    return next;
   }
 
   private buildFooter(): (currentPage: number, pageCount: number) => object {

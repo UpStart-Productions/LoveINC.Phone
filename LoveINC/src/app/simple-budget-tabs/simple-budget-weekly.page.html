@@ -180,6 +180,22 @@
         <span class="app-body">Safe to spend per day</span>
         <span class="app-title" [class.positive]="summary.safeToSpendPerDay >= 0" [class.negative]="summary.safeToSpendPerDay < 0">{{ formatCurrency(summary.safeToSpendPerDay) }}</span>
       </div>
+      @if (summary.remaining < 0 || summary.safeToSpendPerDay < 0) {
+        <div class="summary-row">
+          <button type="button" class="adjust-link" (click)="openAdjustModal()">Adjust your plan</button>
+        </div>
+      }
     </div>
+
+    @if (plan?.strategyNotes?.trim()) {
+      <div class="summary-card strategies-card">
+        <h3 class="summary-card-title">Adjustment strategies</h3>
+        <ul class="strategies-list">
+          @for (label of strategyLabels; track label) {
+            <li><ion-icon name="checkmark" class="strategy-check"></ion-icon>{{ label }}</li>
+          }
+        </ul>
+      </div>
+    }
   </div>
 </ion-content>

@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar class="entry-notes-toolbar">
+    <ion-title>Adjust your plan</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()" fill="clear" class="done-button">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="entry-notes-content">
+  <ion-list lines="none" class="options-list">
+    <ion-item *ngFor="let opt of options" [class.disabled]="!isSelected(opt.id) && selectedIds.size >= 2">
+      <ion-checkbox
+        slot="start"
+        [checked]="isSelected(opt.id)"
+        (ionChange)="toggleOption(opt.id)"
+        [disabled]="!isSelected(opt.id) && selectedIds.size >= 2"
+      ></ion-checkbox>
+      <ion-label>{{ opt.label }}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

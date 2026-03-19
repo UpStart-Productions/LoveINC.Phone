@@ -12,13 +12,13 @@ import {
   IonItem,
   IonLabel,
   IonTextarea,
-  IonButton,
 } from '@ionic/angular/standalone';
 import {
   WeekPlanService,
   DEFAULT_CONFIG,
 } from '@upstart-productions/simple-budget';
 import type { WeekPlan } from '@upstart-productions/simple-budget';
+import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
 
 @Component({
   selector: 'app-simple-budget-review',
@@ -38,18 +38,19 @@ import type { WeekPlan } from '@upstart-productions/simple-budget';
     IonItem,
     IonLabel,
     IonTextarea,
-    IonButton,
   ],
 })
 export class SimpleBudgetReviewPage implements OnInit, OnDestroy {
   plan: WeekPlan | null = null;
   loading = true;
   saving = false;
-  copying = false;
   private saveTimeout: ReturnType<typeof setTimeout> | null = null;
   private readonly SAVE_DEBOUNCE_MS = 600;
 
-  constructor(private weekPlanService: WeekPlanService) {}
+  constructor(
+    private weekPlanService: WeekPlanService,
+    private budgetState: SimpleBudgetStateService
+  ) {}
 
   async ngOnInit() {
     await this.load();
@@ -70,12 +71,21 @@ export class SimpleBudgetReviewPage implements OnInit, OnDestroy {
     }
     this.loading = true;
     try {
-      this.plan = await this.weekPlanService.getOrCreateCurrentWeek(DEFAULT_CONFIG);
+      const weekStart =
+        this.budgetState.selectedWeekStart || this.getCurrentWeekStart();
+      this.plan = await this.weekPlanService.getOrCreateWeekByDate(
+        weekStart,
+        DEFAULT_CONFIG
+      );
     } catch (err) {
       console.warn('Review load error:', err);
     } finally {
       this.loading = false;
     }
+  }
+
+  private getCurrentWeekStart(): string {
+    return this.weekPlanService.getWeekStartForDate(new Date(), 0);
   }
 
   scheduleSave(): void {
@@ -96,18 +106,6 @@ export class SimpleBudgetReviewPage implements OnInit, OnDestroy {
       console.warn('Save error:', err);
     } finally {
       this.saving = false;
-    }
-  }
-
-  async copyToNextWeek() {
-    if (!this.plan) return;
-    this.copying = true;
-    try {
-      this.plan = await this.weekPlanService.copyToNextWeek(this.plan, DEFAULT_CONFIG);
-    } catch (err) {
-      console.warn('Copy error:', err);
-    } finally {
-      this.copying = false;
     }
   }
 }

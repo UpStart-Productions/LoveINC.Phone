@@ -21,6 +21,7 @@
           (ionInput)="scheduleSave()"
           placeholder="e.g. Car repair cost more than expected"
           rows="2"
+          autocapitalize="sentences"
         ></ion-textarea>
       </ion-item>
       <ion-item>
@@ -30,6 +31,7 @@
           (ionInput)="scheduleSave()"
           placeholder="e.g. Overtime pay, gift"
           rows="2"
+          autocapitalize="sentences"
         ></ion-textarea>
       </ion-item>
       <ion-item>
@@ -39,6 +41,7 @@
           (ionInput)="scheduleSave()"
           placeholder="e.g. Electric bill was $20 more"
           rows="2"
+          autocapitalize="sentences"
         ></ion-textarea>
       </ion-item>
       <ion-item>
@@ -48,13 +51,9 @@
           (ionInput)="scheduleSave()"
           placeholder="Anything else you want to remember"
           rows="2"
+          autocapitalize="sentences"
         ></ion-textarea>
       </ion-item>
     </ion-list>
-
-    <ion-button expand="block" fill="outline" (click)="copyToNextWeek()" [disabled]="copying" class="copy-button">
-      {{ copying ? 'Copying…' : 'Copy to next week' }}
-    </ion-button>
-    <p class="app-caption copy-hint">Creates a new week with the same categories. Income and bills reset; flexible targets carry forward.</p>
   </div>
 </ion-content>

@@ -37,13 +37,6 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
           ),
       },
       {
-        path: 'quick-adjust',
-        loadComponent: () =>
-          import('@app/simple-budget-tabs/simple-budget-quick-adjust.page').then(
-            (m) => m.SimpleBudgetQuickAdjustPage
-          ),
-      },
-      {
         path: 'review',
         loadComponent: () =>
           import('@app/simple-budget-tabs/simple-budget-review.page').then(

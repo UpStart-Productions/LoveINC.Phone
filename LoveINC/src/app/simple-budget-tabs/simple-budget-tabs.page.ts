@@ -57,8 +57,7 @@ export class SimpleBudgetTabsPage implements OnInit, OnDestroy {
     const url = this.router.url;
     this.isWeeklyTab =
       url.includes('/simple-budget/weekly') || url === '/tabs/simple-budget';
-    if (url.includes('/simple-budget/quick-adjust')) this.headerTitle = 'Quick Adjust';
-    else if (url.includes('/simple-budget/review')) this.headerTitle = 'Weekly Review';
+    if (url.includes('/simple-budget/review')) this.headerTitle = 'Weekly Review';
     else if (url.includes('/simple-budget/reports')) this.headerTitle = 'Reports';
     else if (url.includes('/simple-budget/export')) this.headerTitle = 'Export';
     else this.headerTitle = 'Simple Budget';

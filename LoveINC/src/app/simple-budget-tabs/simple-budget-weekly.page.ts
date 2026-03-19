@@ -19,6 +19,7 @@ import {
 import {
   WeekPlanService,
   calculateWeekSummary,
+  QUICK_ADJUST_OPTIONS,
   DEFAULT_CONFIG,
 } from '@upstart-productions/simple-budget';
 import type { WeekPlan, CategoryInstance, WeekSummary } from '@upstart-productions/simple-budget';
@@ -26,6 +27,7 @@ import { addDays, format } from 'date-fns';
 import { WeekScrollerComponent } from './components/week-scroller/week-scroller.component';
 import { AddCategorySheetComponent } from './components/add-category-sheet/add-category-sheet.component';
 import { EntryNotesModalComponent } from './components/entry-notes-modal/entry-notes-modal.component';
+import { AdjustStrategiesModalComponent } from './components/adjust-strategies-modal/adjust-strategies-modal.component';
 import { CurrencyInputDirective } from './directives/currency-input.directive';
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
 
@@ -176,6 +178,31 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
   onAmountChange() {
     this.updateSummary();
     this.scheduleSave();
+  }
+
+  get strategyLabels(): string[] {
+    const notes = (this.plan?.strategyNotes ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+    const idToLabel = new Map(QUICK_ADJUST_OPTIONS.map((o) => [o.id, o.label]));
+    return notes.map((id) => idToLabel.get(id) ?? id).filter(Boolean);
+  }
+
+  async openAdjustModal() {
+    if (!this.plan) return;
+    const modal = await this.modalCtrl.create({
+      component: AdjustStrategiesModalComponent,
+      cssClass: 'entry-notes-modal',
+      componentProps: { plan: this.plan },
+      presentingElement: await this.modalCtrl.getTop(),
+      showBackdrop: true,
+      backdropDismiss: true,
+      breakpoints: [0, 0.5, 1],
+      initialBreakpoint: 0.5,
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss<string>();
+    if (data !== undefined && this.plan) {
+      this.plan.strategyNotes = data;
+    }
   }
 
   async openNotesModal(c: CategoryInstance) {
