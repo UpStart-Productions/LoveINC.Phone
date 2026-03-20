@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ModalController } from '@ionic/angular/standalone';
 import { VolunteerModalComponent } from '../components/volunteer-modal/volunteer-modal.component';
+import { OnboardingService } from './onboarding.service';
 
 /** Minimal volunteer position – usable from donations, services, content, etc. */
 export interface VolunteerPositionInfo {
@@ -25,9 +26,13 @@ export interface OpenVolunteerModalOptions {
   providedIn: 'root'
 })
 export class VolunteerActionSheetService {
-  constructor(private modalController: ModalController) {}
+  constructor(
+    private modalController: ModalController,
+    private onboarding: OnboardingService
+  ) {}
 
   async openVolunteerActionSheet(options: OpenVolunteerModalOptions): Promise<void> {
+    if (!this.onboarding.canShowVolunteerRequestUi()) return;
     const { organizationName, address, positions, scheduleFallback } = options;
     if (!positions?.length) return;
 

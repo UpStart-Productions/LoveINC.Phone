@@ -21,6 +21,7 @@ import { NotificationsButtonComponent } from '../components/notifications-button
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 import { CalendarService } from '../services/calendar/calendar.service';
+import { OnboardingService } from '../services/onboarding.service';
 import {
   PlatformApiService,
   type PlatformClass,
@@ -74,7 +75,8 @@ export class UpdatesPage implements OnInit {
     private sharingService: SharingService,
     private volunteerActionSheetService: VolunteerActionSheetService,
     private scheduleFormatting: ScheduleFormattingService,
-    private calendarService: CalendarService
+    private calendarService: CalendarService,
+    private onboarding: OnboardingService
   ) {}
 
   ngOnInit() {
@@ -228,7 +230,7 @@ export class UpdatesPage implements OnInit {
       {
         lucideIcon: 'heart-handshake',
         handler: () => this.onVolunteerClick(item),
-        show: !!item.volunteerPositions?.length,
+        show: !!item.volunteerPositions?.length && this.onboarding.canShowVolunteerRequestUi(),
         buttonClass: 'volunteer-button',
       },
       {

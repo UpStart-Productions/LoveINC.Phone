@@ -138,6 +138,22 @@ export class OnboardingService {
   }
 
   /**
+   * User chose "Get Help" (client path). Intake / service access flows apply.
+   * Volunteer-only, Give-only, or exploring users are not on this path.
+   */
+  selectedGetHelpOnboarding(): boolean {
+    return this.hasSelectedOption('get-help');
+  }
+
+  /**
+   * Volunteer signup UI (card icons, action sheets, detail Volunteer buttons).
+   * Hidden for Get Help clients; browse-only entry points (e.g. Open Volunteer Positions) stay available.
+   */
+  canShowVolunteerRequestUi(): boolean {
+    return !this.selectedGetHelpOnboarding();
+  }
+
+  /**
    * Update specific onboarding data fields
    */
   updateOnboardingData(updates: Partial<OnboardingData>): void {

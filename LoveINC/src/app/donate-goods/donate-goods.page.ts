@@ -23,6 +23,7 @@ import { NotificationsButtonComponent } from '../components/notifications-button
 import { PlatformApiService } from '../services/platform/platform-api.service';
 import type { PlatformAddress, PlatformDonation, PlatformVolunteerPosition } from '../services/platform/types';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
+import { OnboardingService } from '../services/onboarding.service';
 import type { CardBadge } from '../components/card/card.component';
 
 /** Category → icon + color for donation badges (matches home card style) */
@@ -102,7 +103,8 @@ export class DonateGoodsPage implements OnInit {
     private volunteerActionSheetService: VolunteerActionSheetService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
-    private scheduleFormatting: ScheduleFormattingService
+    private scheduleFormatting: ScheduleFormattingService,
+    private onboarding: OnboardingService
   ) {}
 
   ngOnInit() {
@@ -296,7 +298,12 @@ export class DonateGoodsPage implements OnInit {
       { icon: 'location-outline', handler: () => this.onMapPinClick(location), show: !!location.address, buttonClass: 'map-button' },
       { icon: 'call-outline', handler: () => this.onPhoneClick(location), show: !!location.phone, buttonClass: 'phone-button' },
       { icon: 'mail-outline', handler: () => this.onEmailClick(location), show: !!location.email, buttonClass: 'email-button' },
-      { lucideIcon: 'heart-handshake', handler: () => this.onVolunteerClick(location), show: !!location.volunteerPositions?.length, buttonClass: 'volunteer-button' },
+      {
+        lucideIcon: 'heart-handshake',
+        handler: () => this.onVolunteerClick(location),
+        show: !!location.volunteerPositions?.length && this.onboarding.canShowVolunteerRequestUi(),
+        buttonClass: 'volunteer-button',
+      },
     ];
   }
 

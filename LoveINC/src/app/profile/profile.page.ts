@@ -171,6 +171,11 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.loadProfile();
   }
 
+  /** Service Access (QR intake) is only for users who chose Get Help in onboarding. */
+  get showServiceAccessSection(): boolean {
+    return this.onboardingService.selectedGetHelpOnboarding();
+  }
+
   private loadProfile(): void {
     const deviceId = this.deviceId.getDeviceId();
     const profile = this.userProfileService.getProfile();

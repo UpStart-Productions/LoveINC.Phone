@@ -14,6 +14,10 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonCheckbox,
   AlertController
 } from '@ionic/angular/standalone';
 import { OnboardingService } from '../services/onboarding.service';
@@ -24,6 +28,13 @@ import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { GoalTrackerSeedService } from '@upstart-productions/goal-tracker';
 import { SimpleBudgetDatabaseService, WeekPlanService } from '@upstart-productions/simple-budget';
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
+
+const ONBOARDING_OPTION_LABELS: Record<string, string> = {
+  'get-help': 'Get Help',
+  volunteer: 'Volunteer',
+  give: 'Give',
+  exploring: 'Just exploring',
+};
 
 @Component({
   selector: 'app-developer-options',
@@ -42,12 +53,24 @@ import { SimpleBudgetStateService } from '../services/simple-budget-state.servic
     IonBackButton,
     IonButtons,
     IonButton,
-    IonIcon
+    IonIcon,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonCheckbox
   ],
 })
 export class DeveloperOptionsPage {
   seeding = false;
   seedingBudget = false;
+  onboardingCompleted = false;
+  onboardingSelectionLabels: string[] = [];
+
+  /** Dev editor — mirrors stored selections (Get Help and Volunteer are mutually exclusive). */
+  devGetHelp = false;
+  devVolunteer = false;
+  devGive = false;
+  devExploring = false;
 
   constructor(
     private router: Router,
@@ -60,6 +83,89 @@ export class DeveloperOptionsPage {
     private weekPlanService: WeekPlanService,
     private budgetState: SimpleBudgetStateService
   ) {}
+
+  ionViewWillEnter(): void {
+    this.refreshOnboardingSelections();
+  }
+
+  private refreshOnboardingSelections(): void {
+    this.onboardingCompleted = this.onboardingService.hasCompletedOnboarding();
+    const ids = this.onboardingService.getSelectedOptions();
+    this.onboardingSelectionLabels = ids.map((id) => this.onboardingOptionLabel(id));
+    this.syncDevOnboardingCheckboxes(ids);
+  }
+
+  private syncDevOnboardingCheckboxes(ids: string[]): void {
+    const s = new Set(ids);
+    this.devGetHelp = s.has('get-help');
+    this.devVolunteer = s.has('volunteer');
+    this.devGive = s.has('give');
+    this.devExploring = s.has('exploring');
+  }
+
+  private applyDevOnboardingSelections(next: Set<string>): void {
+    this.onboardingService.updateOnboardingData({ selectedOptions: Array.from(next) });
+    this.refreshOnboardingSelections();
+  }
+
+  onDevGetHelpChange(event: CustomEvent): void {
+    const checked = !!event.detail?.checked;
+    const next = new Set(this.onboardingService.getSelectedOptions());
+    if (checked) {
+      next.delete('volunteer');
+      next.add('get-help');
+      next.delete('exploring');
+    } else {
+      next.delete('get-help');
+    }
+    this.applyDevOnboardingSelections(next);
+  }
+
+  onDevVolunteerChange(event: CustomEvent): void {
+    const checked = !!event.detail?.checked;
+    const next = new Set(this.onboardingService.getSelectedOptions());
+    if (checked) {
+      next.delete('get-help');
+      next.add('volunteer');
+      next.delete('exploring');
+    } else {
+      next.delete('volunteer');
+    }
+    this.applyDevOnboardingSelections(next);
+  }
+
+  onDevGiveChange(event: CustomEvent): void {
+    const checked = !!event.detail?.checked;
+    const next = new Set(this.onboardingService.getSelectedOptions());
+    if (checked) {
+      next.add('give');
+      next.delete('exploring');
+    } else {
+      next.delete('give');
+    }
+    this.applyDevOnboardingSelections(next);
+  }
+
+  onDevExploringChange(event: CustomEvent): void {
+    const checked = !!event.detail?.checked;
+    if (checked) {
+      this.applyDevOnboardingSelections(new Set(['exploring']));
+    } else {
+      const next = new Set(this.onboardingService.getSelectedOptions());
+      next.delete('exploring');
+      this.applyDevOnboardingSelections(next);
+    }
+  }
+
+  private onboardingOptionLabel(id: string): string {
+    if (ONBOARDING_OPTION_LABELS[id]) {
+      return ONBOARDING_OPTION_LABELS[id];
+    }
+    return id
+      .split('-')
+      .map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1) : ''))
+      .join(' ');
+  }
 
   resetOnboarding() {
     this.onboardingService.clearOnboarding();

@@ -92,13 +92,15 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Service Access -->
-  <app-service-access-section
-    [scanClickHandler]="onScanRequested"
-    [apiIntakeCompleted]="apiIntakeCompleted"
-    [intakeRequired]="intakeRequired"
-    [customerName]="customerName">
-  </app-service-access-section>
+  @if (showServiceAccessSection) {
+    <!-- Service Access (clients who chose Get Help only) -->
+    <app-service-access-section
+      [scanClickHandler]="onScanRequested"
+      [apiIntakeCompleted]="apiIntakeCompleted"
+      [intakeRequired]="intakeRequired"
+      [customerName]="customerName">
+    </app-service-access-section>
+  }
 
   <!-- Settings -->
   <ion-card class="section-card">

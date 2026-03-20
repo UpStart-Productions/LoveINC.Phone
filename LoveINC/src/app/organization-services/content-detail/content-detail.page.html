@@ -189,16 +189,16 @@
         </ion-button>
       </div>
 
-      <!-- Volunteer (Volunteer CTA) -->
-      <div class="action-buttons m-t-24" *ngIf="isVolunteer()">
+      <!-- Volunteer (Volunteer CTA) — hidden for Get Help clients -->
+      <div class="action-buttons m-t-24" *ngIf="isVolunteer() && showVolunteerRequestActions">
         <ion-button expand="block" color="primary" (click)="openVolunteerActionSheet()">
           <ion-icon slot="start" name="heart-outline"></ion-icon>
           Volunteer
         </ion-button>
       </div>
 
-      <!-- Volunteer (Volunteer Position detail) -->
-      <div class="action-buttons m-t-24" *ngIf="isVolunteerPosition()">
+      <!-- Volunteer (Volunteer Position detail) — hidden for Get Help clients -->
+      <div class="action-buttons m-t-24" *ngIf="isVolunteerPosition() && showVolunteerRequestActions">
         <ion-button expand="block" color="primary" (click)="onVolunteerPositionClick()">
           <ion-icon slot="start" name="heart-outline"></ion-icon>
           Volunteer

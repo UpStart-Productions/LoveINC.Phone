@@ -416,11 +416,13 @@ export class HomePage implements OnInit {
   }
 
   getActionIcons(card: HomeCard): CardActionIcon[] {
+    const showVolunteer =
+      !!card.volunteerPositions?.length && this.onboardingService.canShowVolunteerRequestUi();
     return [
       {
         lucideIcon: 'heart-handshake',
         handler: () => this.onVolunteerClick(card),
-        show: !!card.volunteerPositions?.length,
+        show: showVolunteer,
         buttonClass: 'volunteer-button',
       },
     ];

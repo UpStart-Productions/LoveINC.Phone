@@ -71,6 +71,7 @@ import {
   // More Menu Icons
   menu,
   menuOutline,
+  listOutline,
   // Content Icons
   calendarOutline,
   starOutline,
@@ -367,6 +368,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // More Menu Icons
       menu,
       menuOutline,
+      listOutline,
       // Content Icons
       calendarOutline,
       starOutline,

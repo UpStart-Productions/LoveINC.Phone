@@ -336,7 +336,12 @@ export class GapMinistriesPage implements OnInit {
       { icon: 'location-outline', handler: () => this.onMapPinClick(service), show: !!service.address, buttonClass: 'map-button' },
       { icon: 'call-outline', handler: () => this.onPhoneClick(service), show: true, buttonClass: 'phone-button' },
       { icon: 'ticket-outline', handler: () => this.onVoucherClick(service), show: showVoucher, buttonClass: 'voucher-button' },
-      { lucideIcon: 'heart-handshake', handler: () => this.onVolunteerClick(service), show: !!service.volunteerPositions?.length, buttonClass: 'volunteer-button' },
+      {
+        lucideIcon: 'heart-handshake',
+        handler: () => this.onVolunteerClick(service),
+        show: !!service.volunteerPositions?.length && this.onboarding.canShowVolunteerRequestUi(),
+        buttonClass: 'volunteer-button',
+      },
       { icon: 'calendar-outline', handler: () => this.onCalendarClick(service), show: true, buttonClass: 'calendar-button' },
     ];
     return icons;
@@ -426,7 +431,9 @@ export class GapMinistriesPage implements OnInit {
   }
 
   async onPhoneClick(service: GapService) {
-    const canContact = this.serviceUnlock.canContactProvider();
+    const clientPath = this.onboarding.selectedGetHelpOnboarding();
+    const canContact =
+      !clientPath || this.serviceUnlock.canContactProvider();
     if (service.phone && canContact) {
       window.open(`tel:${service.phone}`, '_self');
     } else if (service.phone && !canContact) {

@@ -1,5 +1,10 @@
 # Ionic Framework Rules
 
+## Love INC–specific: client / volunteer onboarding (READ BEFORE DEBUGGING)
+- **Not a universal nonprofit rule.** This app intentionally treats **Get Help** (`get-help`) and **Volunteer** (`volunteer`) as **mutually exclusive** in onboarding and gates volunteer **signup** UI (card icons, action sheet, some detail buttons) for users on the **client** path.
+- If volunteer actions “don’t appear” or the volunteer sheet “does nothing” for a **Get Help** user, that is often **by design**, not a broken build.
+- **Full reference:** `LoveINC/docs/ONBOARDING_CLIENT_VOLUNTEER_RULE.md` — update that doc when product rules change. Other forks/projects may remove or replace this behavior.
+
 ## Reference Projects (CRITICAL – Check Before Implementing)
 - **SuperSimpleWorkout**: `/Users/jeffdenton/Projects/MobileApps/SuperSimpleWorkout`
   - Goal Tracker UI: FAB, date scroller, color picker, weekday picker – COPY from SuperSimpleWorkout, do NOT guess

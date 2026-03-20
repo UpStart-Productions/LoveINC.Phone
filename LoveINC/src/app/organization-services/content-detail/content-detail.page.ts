@@ -939,6 +939,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     return !!(this.contentItem?.volunteerPositions?.length);
   }
 
+  /** Volunteer signup buttons hidden for Get Help clients. */
+  get showVolunteerRequestActions(): boolean {
+    return this.onboarding.canShowVolunteerRequestUi();
+  }
+
   openDonateActionSheet(): void {
     if (this.isDonationDrive() && this.contentItem?.donation?.id) {
       this.router.navigate(['/tabs/donate-goods'], {
