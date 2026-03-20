@@ -418,6 +418,7 @@ export class ProfilePage implements OnInit, OnDestroy {
         lastName: data.lastName,
         email: data.email,
       });
+      await this.saveProfileToApi(data.firstName ?? '', data.lastName ?? '', data.email ?? '');
       this.router.navigate(['/tabs/service-unlock/scan']);
     }
   };

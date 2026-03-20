@@ -123,25 +123,12 @@ export class OnboardingStep3Page {
         email: '',
         wantsNewsletter: false,
       });
-      this.registerDevice();
+      // Do not call registerAppUser here – it would create blank records.
+      // User will be registered when they provide name/email (volunteer, contact, profile, scan).
     } else {
       this.onboardingService.skipOnboarding();
     }
     this.router.navigate(['/tabs']);
-  }
-
-  private async registerDevice() {
-    try {
-      const { platform, model } = await this.deviceInfo.getDeviceInfo();
-      await this.platformApi.registerAppUser({
-        deviceId: this.deviceId.getDeviceId(),
-        devicePlatform: platform,
-        deviceModel: model,
-        newsletterOptIn: false,
-      });
-    } catch (err) {
-      console.warn('Onboarding: API register failed (continuing)', err);
-    }
   }
 
   toggleNewsletter() {
