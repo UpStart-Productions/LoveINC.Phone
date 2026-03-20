@@ -66,10 +66,4 @@ export class ChurchPartnershipsPage implements OnInit {
     return parts.join(', ');
   }
 
-  getCardDetail(partner: PlatformPartner): string | undefined {
-    const short = partner.shortDescription;
-    const addr = this.formatAddress(partner);
-    const parts = [short, addr].filter(Boolean);
-    return parts.length ? parts.join(' · ') : undefined;
-  }
 }

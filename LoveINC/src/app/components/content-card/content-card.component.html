@@ -28,6 +28,9 @@
               {{ title }}
             }
           </h2>
+          @if (underTitle) {
+            <p class="app-body-secondary">{{ underTitle }}</p>
+          }
         </div>
         <div class="content-card-right">
           @if (imageUrl) {

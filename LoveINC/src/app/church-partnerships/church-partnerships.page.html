@@ -21,7 +21,8 @@
       @for (partner of partners; track partner.id) {
         <app-content-card
           [title]="partner.name"
-          [detail]="getCardDetail(partner)"
+          [underTitle]="formatAddress(partner) || undefined"
+          [detail]="partner.shortDescription?.trim() || undefined"
           [imageUrl]="getPhotoUrl(partner) || undefined"
           [iconName]="getPhotoUrl(partner) ? undefined : 'business-outline'"
           [iconBackgroundColor]="'#349394'"

@@ -32,6 +32,9 @@ export class ContentCardComponent {
   /** When set, title is built from segments (e.g. colored amounts); overrides plain `title` display. */
   @Input() titleSegments?: ContentCardTextSegment[];
 
+  /** Optional line directly under the title (e.g. address), left column only */
+  @Input() underTitle?: string;
+
   /** Detail text below title (e.g. "2-5 min", "4-6 min") */
   @Input() detail?: string;
 
