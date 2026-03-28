@@ -136,23 +136,25 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
 
     // Content: prefer meta, fall back to top-level itemType/itemId (API sends both)
     const m = notification.meta as NotificationMeta | undefined;
+    const metaType = (m?.itemType ?? notification.itemType ?? '').trim();
+    const metaId = (m?.itemId?.trim() || notification.itemId?.trim() || '').trim();
     const effectiveMeta: NotificationMeta = {
-      itemType: m?.itemType ?? notification.itemType,
-      itemId: m?.itemId ?? notification.itemId,
+      itemType: metaType,
+      itemId: metaId,
       tenantSlug: m?.tenantSlug,
       ctaType: m?.ctaType,
     };
     const routeType = mapNotificationMetaToContentType(effectiveMeta);
-    const itemId = effectiveMeta.itemId?.trim() ?? '';
+    const itemId = metaId;
 
     if (!routeType || !itemId) {
       return;
     }
 
-    await this.modalController.dismiss();
-    const navigated = await this.router.navigate(['/tabs/content-detail', routeType, itemId]);
-    if (navigated !== false && !notification.read) {
-      await this.notificationsService.markAsRead(notification.id);
+    if (!notification.read) {
+      await this.notificationsService.markAsRead(String(notification.id));
     }
+    await this.modalController.dismiss();
+    await this.router.navigate(['/tabs/content-detail', routeType, itemId]);
   }
 }

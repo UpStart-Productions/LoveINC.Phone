@@ -29,6 +29,9 @@ export interface AppNotification extends PlatformNotification {
 export class NotificationsService {
   private refresh$ = new BehaviorSubject<void>(undefined);
 
+  /** Content notification IDs marked read this session (SQLite may lag or fail; UI must still update). */
+  private readonly contentReadIdsSession = new Set<string>();
+
   readonly notifications$: Observable<AppNotification[]> = this.refresh$.pipe(
     switchMap(() => {
       const content$ = this.platformApi.getNotifications().pipe(
@@ -39,7 +42,7 @@ export class NotificationsService {
             map((readIds) =>
               list.map((n) => ({
                 ...n,
-                read: readIds.has(String(n.id)),
+                read: this.isContentNotificationRead(n.id, readIds),
                 source: 'content' as const,
               }))
             ),
@@ -52,7 +55,7 @@ export class NotificationsService {
               return of(
                 list.map((n) => ({
                   ...n,
-                  read: false,
+                  read: this.isContentNotificationRead(n.id, new Set<string>()),
                   source: 'content' as const,
                 }))
               );
@@ -137,9 +140,35 @@ export class NotificationsService {
     this.refresh$.next();
   }
 
-  /** Mark content notification (AppNotification) as read — uses local DB */
+  private normalizeContentNotificationId(id: unknown): string {
+    if (id === null || id === undefined) return '';
+    return String(id).trim();
+  }
+
+  private isContentNotificationRead(
+    apiId: unknown,
+    readIdsFromDb: Set<string>
+  ): boolean {
+    const key = this.normalizeContentNotificationId(apiId);
+    if (!key) return false;
+    return this.contentReadIdsSession.has(key) || readIdsFromDb.has(key);
+  }
+
+  /** Mark content notification (AppNotification) as read — session + SQLite; returns before DB write finishes. */
   async markAsRead(notificationId: string): Promise<void> {
-    await this.grovlinkDb.markNotificationAsRead(notificationId);
+    const key = this.normalizeContentNotificationId(notificationId);
+    if (!key) return;
+    this.contentReadIdsSession.add(key);
+    this.refresh();
+    void this.persistContentNotificationRead(key);
+  }
+
+  private async persistContentNotificationRead(key: string): Promise<void> {
+    try {
+      await this.grovlinkDb.markNotificationAsRead(key);
+    } catch (err) {
+      console.warn('NotificationsService: mark content notification read failed', err);
+    }
     this.refresh();
   }
 

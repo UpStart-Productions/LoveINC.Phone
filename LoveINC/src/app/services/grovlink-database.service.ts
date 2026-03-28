@@ -139,11 +139,15 @@ export class GrovLinkDatabaseService {
     const db = await this.getDbConnection();
     const result = await db.query('SELECT id FROM read_notifications');
     const ids = new Set<string>();
-    if (result?.values) {
-      for (const row of result.values) {
-        const id = (Array.isArray(row) ? row[0] : (row as Record<string, unknown>)['id']) as string;
-        if (id) ids.add(id);
+    for (const row of result?.values ?? []) {
+      let raw: unknown;
+      if (Array.isArray(row)) {
+        raw = row[0];
+      } else if (row && typeof row === 'object' && 'id' in row) {
+        raw = (row as Record<string, unknown>)['id'];
       }
+      const key = raw !== null && raw !== undefined ? String(raw).trim() : '';
+      if (key) ids.add(key);
     }
     return ids;
   }
