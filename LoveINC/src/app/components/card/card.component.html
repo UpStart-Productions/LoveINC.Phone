@@ -31,9 +31,9 @@
       <div class="card-content-inner">
         <div class="card-content-left">
           @if (description) {
-            <div [innerHTML]="description"></div>
+            <div [innerHTML]="description" (click)="onContentAreaClick($event)"></div>
           } @else if (contentHtml) {
-            <div [innerHTML]="contentHtml | safeHtml"></div>
+            <div [innerHTML]="contentHtml | safeHtml" (click)="onContentAreaClick($event)"></div>
           }
         </div>
         <div class="card-content-right">
@@ -65,9 +65,9 @@
       }
     } @else {
       @if (description) {
-        <div [innerHTML]="description"></div>
+        <div [innerHTML]="description" (click)="onContentAreaClick($event)"></div>
       } @else if (contentHtml) {
-        <div [innerHTML]="contentHtml | safeHtml"></div>
+        <div [innerHTML]="contentHtml | safeHtml" (click)="onContentAreaClick($event)"></div>
       }
       @if (hasActionIcons) {
         <div class="action-icons p-t-12">

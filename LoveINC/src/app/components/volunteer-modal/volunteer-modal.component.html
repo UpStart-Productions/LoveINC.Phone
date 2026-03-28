@@ -19,7 +19,12 @@
           <div>
             <span>{{ organizationName }}</span>
             @if (address) {
-              <div class="app-body-secondary-sm m-t-3">{{ address }}</div>
+              <button
+                type="button"
+                class="volunteer-address-map-link app-body-secondary-sm"
+                (click)="openAddressOnMap($event)">
+                {{ address }}
+              </button>
             }
           </div>
         </div>

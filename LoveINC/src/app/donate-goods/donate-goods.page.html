@@ -31,6 +31,7 @@
           [badge]="location.badge"
           [contentHtml]="getLocationContentHtml(location)"
           [actionIcons]="getActionIcons(location)"
+          (contentAreaClick)="onDonationCardContentAreaClick($event, location)"
           (shareClick)="onShareLocation(location)">
         </app-card>
       </div>

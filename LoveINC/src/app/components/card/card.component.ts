@@ -67,6 +67,8 @@ export class CardComponent {
 
   @Output() cardClick = new EventEmitter<Event>();
   @Output() shareClick = new EventEmitter<Event>();
+  /** Bubbled from description / contentHtml area (e.g. tappable address inside HTML). */
+  @Output() contentAreaClick = new EventEmitter<Event>();
 
   get visibleActionIcons(): CardActionIcon[] {
     const icons = this.actionIcons?.filter((a) => a.show !== false) || [];
@@ -102,5 +104,9 @@ export class CardComponent {
   onActionClick(e: Event, action: CardActionIcon) {
     e.stopPropagation();
     action.handler?.(e);
+  }
+
+  onContentAreaClick(e: Event) {
+    this.contentAreaClick.emit(e);
   }
 }

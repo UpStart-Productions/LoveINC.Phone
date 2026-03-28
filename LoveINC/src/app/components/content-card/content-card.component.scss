@@ -5,6 +5,17 @@
   padding-right: 0.875rem !important;
 }
 
+.content-card-under-title-map {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+}
+
 .content-card-inner {
   display: flex;
   flex-direction: column;

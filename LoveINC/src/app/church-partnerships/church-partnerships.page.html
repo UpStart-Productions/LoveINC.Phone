@@ -22,6 +22,7 @@
         <app-content-card
           [title]="partner.name"
           [underTitle]="formatAddress(partner) || undefined"
+          [tapUnderTitleToOpenMap]="!!formatAddress(partner)"
           [detail]="partner.shortDescription?.trim() || undefined"
           [imageUrl]="getPhotoUrl(partner) || undefined"
           [iconName]="getPhotoUrl(partner) ? undefined : 'business-outline'"

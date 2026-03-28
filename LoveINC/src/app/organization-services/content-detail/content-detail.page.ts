@@ -42,6 +42,7 @@ import { DonateActionSheetService } from '../../services/donate-action-sheet.ser
 import { VolunteerActionSheetService } from '../../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 import { CalendarService } from '../../services/calendar/calendar.service';
+import { LocationMapModalService } from '../../services/location-map-modal.service';
 import {
   PlatformApiService,
   type PlatformClass,
@@ -108,7 +109,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     private deviceId: DeviceIdService,
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
-    private calendarService: CalendarService
+    private calendarService: CalendarService,
+    private locationMapModal: LocationMapModalService
   ) {}
 
   ngOnInit() {
@@ -859,6 +861,15 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   hasLocation(): boolean {
     return !!this.contentItem?.location;
+  }
+
+  async openLocationMapModal(): Promise<void> {
+    const loc = this.contentItem?.location?.trim();
+    if (!loc || !this.contentItem) return;
+    await this.locationMapModal.present({
+      title: this.contentItem.title,
+      address: loc,
+    });
   }
 
   hasPhone(): boolean {

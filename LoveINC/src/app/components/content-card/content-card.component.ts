@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
+import { LocationMapModalService } from '../../services/location-map-modal.service';
 
 /** Optional fragments for coloring numeric parts (e.g. budget amounts). */
 export type ContentCardTextSegment = {
@@ -59,11 +60,26 @@ export class ContentCardComponent {
   /** Route to navigate to on click (e.g. '/tabs/goal-tracker') */
   @Input() route?: string;
 
-  constructor(private router: Router) {}
+  /** When true, tapping `underTitle` opens the map modal (stops card navigation). */
+  @Input() tapUnderTitleToOpenMap = false;
+
+  constructor(
+    private router: Router,
+    private locationMapModal: LocationMapModalService
+  ) {}
 
   handleClick() {
     if (this.route && this.clickable) {
       this.router.navigateByUrl(this.route);
     }
+  }
+
+  async onUnderTitleMapTap(event: Event): Promise<void> {
+    event.stopPropagation();
+    if (!this.tapUnderTitleToOpenMap || !this.underTitle?.trim()) return;
+    await this.locationMapModal.present({
+      title: this.title,
+      address: this.underTitle,
+    });
   }
 }

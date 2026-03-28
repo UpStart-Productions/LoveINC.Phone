@@ -51,6 +51,7 @@ export class DonationLocationMapModalComponent implements AfterViewInit, OnDestr
   mapLoadError = false;
   private map: any = null;
   private popover: any = null;
+  private initialPopoverShown = false;
 
   constructor(
     private modalController: ModalController,
@@ -132,6 +133,15 @@ export class DonationLocationMapModalComponent implements AfterViewInit, OnDestr
         marker.addListener('click', () => {
           this.ngZone.run(() => {
             this.showLocationPopover(marker);
+          });
+        });
+
+        google.maps.event.addListenerOnce(this.map, 'idle', () => {
+          this.ngZone.run(() => {
+            if (!this.initialPopoverShown) {
+              this.initialPopoverShown = true;
+              this.showLocationPopover(marker);
+            }
           });
         });
       });

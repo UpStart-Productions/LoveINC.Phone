@@ -3,6 +3,29 @@
   margin: 0 0 0.75rem 0;
 }
 
+/* Location row: text + address map link align start (ion-button defaults to centered label) */
+.volunteer-detail-row > div {
+  flex: 1;
+  min-width: 0;
+  text-align: start;
+}
+
+/* Native button: ion-button clipped multi-line text / showed mask-like edge on some builds */
+.volunteer-address-map-link {
+  display: block;
+  width: 100%;
+  margin: 0.375rem 0 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: start;
+  white-space: pre-line;
+  line-height: var(--app-line-height-relaxed);
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Match alerts-modal header styling for UI consistency */
 ion-header {
   ion-toolbar {

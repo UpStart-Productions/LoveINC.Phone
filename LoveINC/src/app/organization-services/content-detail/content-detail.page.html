@@ -113,7 +113,7 @@
         </ion-item>
 
         <!-- Location -->
-        <ion-item *ngIf="hasLocation()">
+        <ion-item *ngIf="hasLocation()" button detail="false" (click)="openLocationMapModal()">
           <ion-icon slot="start" name="location-outline" color="dark"></ion-icon>
           <ion-label>
             <h3 class="app-body">Location</h3>

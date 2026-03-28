@@ -45,6 +45,11 @@
 @import './theme/forms.scss';
 @import './theme/goal-tracker-colors.scss';
 
+/* Address rows inside card HTML that open the map modal (Gap Ministries, Donate Goods) */
+.map-address-tappable {
+  cursor: pointer;
+}
+
 /* -----------------------------------------------------------------------------
  * Custom Font - Ilisarniq
  * ----------------------------------------------------------------------------- */
@@ -501,6 +506,13 @@ ion-modal.alerts-modal-sheet {
   &::part(backdrop) {
     background: rgba(0, 0, 0, 0.4);
   }
+}
+
+/* ion-title vs ion-padding body: ~10px nudge (entry-notes / add-category sheet already pad title) */
+ion-modal.alerts-modal-sheet ion-header ion-toolbar ion-title,
+ion-modal.date-picker-modal-sheet ion-header ion-toolbar ion-title,
+ion-modal.donation-map-modal-fullscreen ion-header ion-toolbar ion-title {
+  padding-inline-start: 0.625rem !important;
 }
 
 /* Global Pill Styling (typography in theme/typography.scss) */

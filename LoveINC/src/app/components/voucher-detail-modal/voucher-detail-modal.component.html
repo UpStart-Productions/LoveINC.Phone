@@ -39,35 +39,20 @@
             </div>
           }
           @if (displayVoucher.location) {
-            <div class="voucher-modal-location-row">
+            <div class="voucher-modal-location-row voucher-modal-location-row--tappable">
               <ion-icon name="location-outline" class="voucher-modal-location-icon"></ion-icon>
-              <span class="voucher-modal-location-text voucher-modal-address app-body-secondary">{{ formatLocation(displayVoucher.location) }}</span>
+              <ion-button
+                fill="clear"
+                size="small"
+                class="ion-no-margin ion-text-wrap voucher-modal-map-link"
+                (click)="openVoucherLocationMap($event)">
+                <span class="voucher-modal-location-text voucher-modal-address app-body-secondary">{{ formatLocation(displayVoucher.location) }}</span>
+              </ion-button>
             </div>
           }
         </div>
       }
     </div>
-    @if (displayVoucher.location) {
-      <div class="voucher-modal-map-section">
-        <p class="voucher-modal-map-label app-title">
-          <ion-icon name="map-outline"></ion-icon>
-          Provider Location
-        </p>
-        <div id="voucher-map" class="voucher-modal-map-container"></div>
-        @if (mapLoadError) {
-          <p class="voucher-modal-map-message app-body-secondary-sm">Map could not load.</p>
-        }
-        @if (geocodeError) {
-          <p class="voucher-modal-map-message app-body-secondary-sm">Could not find location on map.</p>
-        }
-        @if (mapLoading) {
-          <div class="voucher-modal-map-loading">
-            <ion-spinner name="crescent"></ion-spinner>
-            <span>Loading map…</span>
-          </div>
-        }
-      </div>
-    }
     @if (canRedeem) {
       <ion-button expand="block" class="voucher-modal-redeem" (click)="redeem()" [disabled]="redeeming">
         @if (redeeming) {

@@ -1,10 +1,4 @@
-import {
-  Component,
-  Input,
-  AfterViewInit,
-  OnDestroy,
-  NgZone,
-} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonContent,
@@ -13,12 +7,10 @@ import {
   IonSpinner,
 } from '@ionic/angular/standalone';
 import { ModalController, AlertController } from '@ionic/angular/standalone';
-import { GoogleMapsLoaderService } from '../../services/google-maps-loader.service';
 import { VoucherModalService } from '../../services/voucher-modal.service';
 import { PlatformApiService } from '../../services/platform/platform-api.service';
+import { LocationMapModalService } from '../../services/location-map-modal.service';
 import type { Voucher, VoucherLocation } from '@upstart-productions/service-unlock/src/lib/types/service-unlock.types';
-
-declare var google: any;
 
 @Component({
   selector: 'app-voucher-detail-modal',
@@ -33,25 +25,20 @@ declare var google: any;
     IonSpinner,
   ],
 })
-export class VoucherDetailModalComponent implements AfterViewInit, OnDestroy {
+export class VoucherDetailModalComponent {
   @Input() voucher!: Voucher;
   @Input() deviceId?: string | null;
   @Input() email?: string | null;
 
-  mapLoading = true;
   redeeming = false;
-  mapLoadError = false;
-  geocodeError = false;
   modalPhotoLoadFailed = false;
-  private map: any = null;
 
   constructor(
     private modalController: ModalController,
     private alertController: AlertController,
-    private ngZone: NgZone,
-    private googleMapsLoader: GoogleMapsLoaderService,
     private voucherModalService: VoucherModalService,
-    private platformApi: PlatformApiService
+    private platformApi: PlatformApiService,
+    private locationMapModal: LocationMapModalService
   ) {}
 
   /** Resolved voucher: prefer service (set before modal open) for reliable location/providerOffering */
@@ -83,6 +70,28 @@ export class VoucherDetailModalComponent implements AfterViewInit, OnDestroy {
       return lines.join('\n');
     }
     return String(location).trim();
+  }
+
+  /** Single-line address for geocoding (matches previous inline map behavior). */
+  private geocodeAddressString(location: VoucherLocation | string): string {
+    if (typeof location === 'object') {
+      return [location.address, location.locationName, `${location.city}, ${location.state} ${location.zip}`]
+        .filter(Boolean)
+        .join(', ');
+    }
+    return String(location).trim();
+  }
+
+  async openVoucherLocationMap(ev: Event): Promise<void> {
+    ev.stopPropagation();
+    const v = this.displayVoucher;
+    if (!v?.location) return;
+    const address = this.geocodeAddressString(v.location);
+    if (!address) return;
+    await this.locationMapModal.present({
+      title: v.providerOffering ?? v.serviceLabel ?? 'Location',
+      address,
+    });
   }
 
   close(): void {
@@ -127,92 +136,5 @@ export class VoucherDetailModalComponent implements AfterViewInit, OnDestroy {
     } finally {
       this.redeeming = false;
     }
-  }
-
-  ngAfterViewInit(): void {
-    const v = this.displayVoucher;
-    if (v?.location) {
-      this.initMap(v);
-    } else {
-      this.mapLoading = false;
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.map = null;
-  }
-
-  private async initMap(voucher?: Voucher | null): Promise<void> {
-    const v = voucher ?? this.displayVoucher;
-    const mapEl = document.getElementById('voucher-map');
-    if (!mapEl) {
-      setTimeout(() => this.initMap(v), 100);
-      return;
-    }
-
-    try {
-      await this.googleMapsLoader.load();
-    } catch {
-      this.ngZone.run(() => {
-        this.mapLoading = false;
-        this.mapLoadError = true;
-      });
-      return;
-    }
-
-    const loc = v?.location;
-    if (!loc) {
-      this.ngZone.run(() => {
-        this.mapLoading = false;
-      });
-      return;
-    }
-
-    const address =
-      typeof loc === 'object'
-        ? [loc.address, loc.locationName, `${loc.city}, ${loc.state} ${loc.zip}`]
-            .filter(Boolean)
-            .join(', ')
-        : String(loc).trim();
-
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ address }, (results: any[] | null, status: string) => {
-      this.ngZone.run(() => {
-        this.mapLoading = false;
-        if (status !== 'OK' || !results?.[0]) {
-          this.geocodeError = true;
-          return;
-        }
-        const place = results[0];
-        const position = place.geometry.location;
-        this.map = new google.maps.Map(mapEl, {
-          zoom: 15,
-          center: position,
-          mapTypeId: 'roadmap',
-          gestureHandling: 'cooperative',
-          disableDefaultUI: false,
-          zoomControl: true,
-          mapTypeControl: false,
-          scaleControl: false,
-          streetViewControl: false,
-          rotateControl: false,
-          fullscreenControl: true,
-          styles: [
-            {
-              featureType: 'poi',
-              elementType: 'labels',
-              stylers: [{ visibility: 'off' }],
-            },
-          ],
-        });
-        const v = this.displayVoucher;
-        new google.maps.Marker({
-          position,
-          map: this.map,
-          title: v?.providerOffering ?? v?.serviceLabel,
-          animation: google.maps.Animation.DROP,
-        });
-      });
-    });
   }
 }

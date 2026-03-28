@@ -14,7 +14,6 @@ import {
   IonLabel,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
-import { ModalController } from '@ionic/angular/standalone';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
@@ -32,6 +31,7 @@ import { ActionSheetController } from '@ionic/angular/standalone';
 import { VolunteerActionSheetService } from '../../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 import { CalendarService } from '../../services/calendar/calendar.service';
+import { LocationMapModalService } from '../../services/location-map-modal.service';
 
 export interface GapServiceVoucher {
   id: string;
@@ -100,7 +100,6 @@ export class GapMinistriesPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private alertController: AlertController,
-    private modalController: ModalController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
@@ -113,7 +112,8 @@ export class GapMinistriesPage implements OnInit {
     private actionSheetController: ActionSheetController,
     private volunteerActionSheetService: VolunteerActionSheetService,
     private scheduleFormatting: ScheduleFormattingService,
-    private calendarService: CalendarService
+    private calendarService: CalendarService,
+    private locationMapModal: LocationMapModalService
   ) {}
 
   async ngOnInit() {
@@ -319,7 +319,27 @@ export class GapMinistriesPage implements OnInit {
     const esc = (s: string | null | undefined) =>
       (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     return `<p class="app-body">${esc(service.church)}</p>` +
-      (service.address ? `<p class="app-body-secondary">${esc(service.address)}</p>` : '');
+      (service.address
+        ? `<p class="app-body-secondary map-address-tappable">${esc(service.address)}</p>`
+        : '');
+  }
+
+  onGapCardContentAreaClick(ev: Event, service: GapService): void {
+    const t = (ev.target as HTMLElement).closest('.map-address-tappable');
+    if (!t || !service.address?.trim()) return;
+    ev.stopPropagation();
+    void this.openServiceLocationMap(service);
+  }
+
+  private async openServiceLocationMap(service: GapService): Promise<void> {
+    if (!service.address?.trim()) return;
+    await this.locationMapModal.present({
+      title: service.service,
+      address: service.address,
+      hours: service.daysTimes ?? null,
+      acceptedItems: service.church ? [service.church] : [],
+      itemsIcon: 'business-outline',
+    });
   }
 
   /** Show voucher icon when: (org requires intake AND user completed) OR (org doesn't require intake). */
@@ -412,22 +432,7 @@ export class GapMinistriesPage implements OnInit {
   }
 
   async onMapPinClick(service: GapService) {
-    if (!service.address) return;
-    const { DonationLocationMapModalComponent } = await import(
-      '../../components/donation-location-map-modal/donation-location-map-modal.component'
-    );
-    const modal = await this.modalController.create({
-      component: DonationLocationMapModalComponent,
-      componentProps: {
-        organization: service.service,
-        address: service.address,
-        hours: service.daysTimes ?? null,
-        acceptedItems: service.church ? [service.church] : [],
-        itemsIcon: 'business-outline',
-      },
-      cssClass: 'donation-map-modal-fullscreen',
-    });
-    await modal.present();
+    await this.openServiceLocationMap(service);
   }
 
   async onPhoneClick(service: GapService) {

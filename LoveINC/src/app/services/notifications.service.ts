@@ -8,6 +8,8 @@ import {
   catchError,
   of,
   combineLatest,
+  startWith,
+  timeout,
 } from 'rxjs';
 import { PlatformApiService, type PlatformNotification } from './platform/platform-api.service';
 import { GrovLinkDatabaseService } from './grovlink-database.service';
@@ -30,17 +32,33 @@ export class NotificationsService {
   readonly notifications$: Observable<AppNotification[]> = this.refresh$.pipe(
     switchMap(() => {
       const content$ = this.platformApi.getNotifications().pipe(
-        switchMap((apiNotifications) =>
-          from(this.grovlinkDb.getReadNotificationIds()).pipe(
+        switchMap((apiNotifications) => {
+          const list = apiNotifications ?? [];
+          return from(this.grovlinkDb.getReadNotificationIds()).pipe(
+            timeout({ first: 5_000 }),
             map((readIds) =>
-              (apiNotifications ?? []).map((n) => ({
+              list.map((n) => ({
                 ...n,
-                read: readIds.has(n.id),
+                read: readIds.has(String(n.id)),
                 source: 'content' as const,
               }))
-            )
-          )
-        ),
+            ),
+            /** Never drop API notifications because local read-state failed, timed out, or DB is wedged */
+            catchError((err) => {
+              console.warn(
+                'NotificationsService: read-state skipped, showing content as unread',
+                err?.message ?? err
+              );
+              return of(
+                list.map((n) => ({
+                  ...n,
+                  read: false,
+                  source: 'content' as const,
+                }))
+              );
+            }),
+          );
+        }),
         catchError((err) => {
           console.warn('NotificationsService: content notifications failed', err?.message ?? err);
           return of([]);
@@ -52,12 +70,16 @@ export class NotificationsService {
       const onboarding = this.onboardingService.getOnboardingData();
       const email = (profile.email ?? onboarding?.email)?.trim();
 
+      /** Profile is merged for voucher-style alerts. It must not block content (event/class/CTA/service) notifications:
+       * combineLatest waits for each stream's first emission — without startWith([]), the list stays empty until
+       * getAppUserProfile completes (or hangs forever if that request never returns). */
       const user$ =
         deviceId || email
           ? this.platformApi.getAppUserProfile({
               deviceId: deviceId || undefined,
               email: email || undefined,
             }).pipe(
+              timeout({ first: 15_000 }),
               map((res) => {
                 const list = res?.profile?.notifications ?? [];
                 return list.map((n) => ({
@@ -75,7 +97,8 @@ export class NotificationsService {
               catchError((err) => {
                 console.warn('NotificationsService: profile notifications failed', err?.message ?? err);
                 return of([]);
-              })
+              }),
+              startWith([] as AppNotification[]),
             )
           : of([]);
 

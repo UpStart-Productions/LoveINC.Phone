@@ -33,6 +33,7 @@
           [style.--app-card-margin-bottom]="'0.75rem'"
           [clickable]="true"
           (cardClick)="onCardClick(service)"
+          (contentAreaClick)="onGapCardContentAreaClick($event, service)"
           (shareClick)="onShareService(service)">
         </app-card>
       </div>

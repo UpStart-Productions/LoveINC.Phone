@@ -13,7 +13,6 @@ import {
   IonLabel,
   IonSearchbar
 } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular/standalone';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
@@ -24,6 +23,7 @@ import { PlatformApiService } from '../services/platform/platform-api.service';
 import type { PlatformAddress, PlatformDonation, PlatformVolunteerPosition } from '../services/platform/types';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 import { OnboardingService } from '../services/onboarding.service';
+import { LocationMapModalService } from '../services/location-map-modal.service';
 import type { CardBadge } from '../components/card/card.component';
 
 /** Category → icon + color for donation badges (matches home card style) */
@@ -98,13 +98,13 @@ export class DonateGoodsPage implements OnInit {
     private platformApi: PlatformApiService,
     private route: ActivatedRoute,
     private router: Router,
-    private modalController: ModalController,
     private donateButtonService: DonateButtonService,
     private volunteerActionSheetService: VolunteerActionSheetService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
     private scheduleFormatting: ScheduleFormattingService,
-    private onboarding: OnboardingService
+    private onboarding: OnboardingService,
+    private locationMapModal: LocationMapModalService
   ) {}
 
   ngOnInit() {
@@ -277,7 +277,11 @@ export class DonateGoodsPage implements OnInit {
     parts.push(`<div class="location-header"><h2>${esc(location.organization)}</h2></div><div class="donation-details">`);
     if (location.address || location.hours) {
       parts.push(`<div class="donation-address-schedule p-t-12 p-b-12">`);
-      if (location.address) parts.push(`<div class="donation-detail-row"><ion-icon name="location-outline"></ion-icon><span>${esc(location.address)}</span></div>`);
+      if (location.address) {
+        parts.push(
+          `<div class="donation-detail-row map-address-tappable"><ion-icon name="location-outline"></ion-icon><span>${esc(location.address)}</span></div>`
+        );
+      }
       if (location.hours) parts.push(`<div class="donation-detail-row"><ion-icon name="time-outline"></ion-icon><span>${esc(location.hours)}</span></div>`);
       parts.push(`</div>`);
     }
@@ -307,22 +311,25 @@ export class DonateGoodsPage implements OnInit {
     ];
   }
 
-  async onMapPinClick(location: DonationLocation) {
-    if (!location.address) return;
-    const { DonationLocationMapModalComponent } = await import(
-      '../components/donation-location-map-modal/donation-location-map-modal.component'
-    );
-    const modal = await this.modalController.create({
-      component: DonationLocationMapModalComponent,
-      componentProps: {
-        organization: location.organization,
-        address: location.address,
-        hours: location.hours ?? null,
-        acceptedItems: location.acceptedItems ?? [],
-      },
-      cssClass: 'donation-map-modal-fullscreen',
+  onDonationCardContentAreaClick(ev: Event, location: DonationLocation): void {
+    const t = (ev.target as HTMLElement).closest('.map-address-tappable');
+    if (!t || !location.address?.trim()) return;
+    ev.stopPropagation();
+    void this.openDonationLocationMap(location);
+  }
+
+  private async openDonationLocationMap(location: DonationLocation): Promise<void> {
+    if (!location.address?.trim()) return;
+    await this.locationMapModal.present({
+      title: location.organization,
+      address: location.address,
+      hours: location.hours ?? null,
+      acceptedItems: location.acceptedItems ?? [],
     });
-    await modal.present();
+  }
+
+  async onMapPinClick(location: DonationLocation) {
+    await this.openDonationLocationMap(location);
   }
 
   onPhoneClick(location: DonationLocation) {

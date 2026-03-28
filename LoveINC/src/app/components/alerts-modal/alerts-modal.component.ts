@@ -4,7 +4,10 @@ import { ModalController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { NotificationsService, type AppNotification } from '../../services/notifications.service';
-import { mapNotificationMetaToContentType } from '../../shared/utils/notification-deeplink';
+import {
+  mapNotificationMetaToContentType,
+  type NotificationMeta,
+} from '../../shared/utils/notification-deeplink';
 import {
   IonHeader,
   IonToolbar,
@@ -121,30 +124,35 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
   }
 
   async onNotificationTap(notification: AppNotification): Promise<void> {
-    // Optimistically remove from list so it disappears immediately
-    this.notifications = this.notifications.filter((n) => n.id !== notification.id);
-
-    if (!notification.read) {
-      if (notification.source === 'user') {
-        await this.notificationsService.markUserNotificationAsRead(notification.id);
-      } else {
-        await this.notificationsService.markAsRead(notification.id);
-      }
-    }
-
-    // User notifications (e.g. voucher approved) — dismiss and optionally go to profile
+    // User notifications (e.g. voucher approved) — dismiss, mark read, go to profile
     if (notification.source === 'user') {
+      if (!notification.read) {
+        await this.notificationsService.markUserNotificationAsRead(notification.id);
+      }
       await this.modalController.dismiss();
-      this.router.navigate(['/tabs/profile']);
+      await this.router.navigate(['/tabs/profile']);
       return;
     }
 
-    // Content notifications — deep link to event, class, CTA, service
-    const { meta } = notification;
-    const routeType = mapNotificationMetaToContentType(meta);
-    if (routeType && meta?.itemId) {
-      await this.modalController.dismiss();
-      this.router.navigate(['/tabs/content-detail', routeType, meta.itemId]);
+    // Content: prefer meta, fall back to top-level itemType/itemId (API sends both)
+    const m = notification.meta as NotificationMeta | undefined;
+    const effectiveMeta: NotificationMeta = {
+      itemType: m?.itemType ?? notification.itemType,
+      itemId: m?.itemId ?? notification.itemId,
+      tenantSlug: m?.tenantSlug,
+      ctaType: m?.ctaType,
+    };
+    const routeType = mapNotificationMetaToContentType(effectiveMeta);
+    const itemId = effectiveMeta.itemId?.trim() ?? '';
+
+    if (!routeType || !itemId) {
+      return;
+    }
+
+    await this.modalController.dismiss();
+    const navigated = await this.router.navigate(['/tabs/content-detail', routeType, itemId]);
+    if (navigated !== false && !notification.read) {
+      await this.notificationsService.markAsRead(notification.id);
     }
   }
 }

@@ -24,6 +24,7 @@ import { UserProfileService } from '../../services/user-profile.service';
 import { PlatformApiService } from '../../services/platform/platform-api.service';
 import { DeviceInfoService } from '../../services/device-info.service';
 import { DeviceIdService } from '../../services/device-id.service';
+import { LocationMapModalService } from '../../services/location-map-modal.service';
 
 export interface VolunteerPosition {
   id: string;
@@ -81,6 +82,7 @@ export class VolunteerModalComponent implements OnInit {
     private platformApi: PlatformApiService,
     private deviceInfo: DeviceInfoService,
     private deviceId: DeviceIdService,
+    private locationMapModal: LocationMapModalService
   ) {}
 
   ngOnInit() {
@@ -105,6 +107,17 @@ export class VolunteerModalComponent implements OnInit {
 
   async dismiss() {
     await this.modalController.dismiss();
+  }
+
+  async openAddressOnMap(ev: Event): Promise<void> {
+    ev.stopPropagation();
+    const addr = this.address?.trim();
+    if (!addr) return;
+    await this.locationMapModal.present({
+      title: this.organizationName,
+      address: addr,
+      hours: this.locationHours ?? null,
+    });
   }
 
   async onVolunteer(position: VolunteerPosition) {

@@ -29,7 +29,13 @@
             }
           </h2>
           @if (underTitle) {
-            <p class="app-body-secondary">{{ underTitle }}</p>
+            @if (tapUnderTitleToOpenMap) {
+              <button type="button" class="content-card-under-title-map" (click)="onUnderTitleMapTap($event)">
+                <span class="app-body-secondary">{{ underTitle }}</span>
+              </button>
+            } @else {
+              <p class="app-body-secondary">{{ underTitle }}</p>
+            }
           }
         </div>
         <div class="content-card-right">

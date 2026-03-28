@@ -129,51 +129,16 @@
   flex: 1;
 }
 
-.voucher-modal-map-section {
-  position: relative;
-  margin-bottom: 1rem;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  background: var(--ion-color-light);
-}
-
-.voucher-modal-map-label {
-  display: flex;
+.voucher-modal-location-row--tappable {
   align-items: center;
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0.75rem 1rem;
-  border-bottom: 0.0625rem solid var(--ion-color-light-shade);
-
-  ion-icon {
-    color: var(--ion-color-primary);
-  }
 }
 
-.voucher-modal-map-container {
-  width: 100%;
-  height: 11.25rem;
-  min-height: 11.25rem;
-}
-
-.voucher-modal-map-loading,
-.voucher-modal-map-message {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background: var(--ion-color-light);
-}
-
-.voucher-modal-map-message {
-  padding: 1rem;
-  text-align: center;
+.voucher-modal-map-link {
+  flex: 1;
+  min-width: 0;
+  height: auto;
+  --padding-start: 0;
+  --padding-end: 0;
 }
 
 .voucher-modal-redeem {
