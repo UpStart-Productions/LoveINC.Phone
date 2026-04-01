@@ -5,6 +5,7 @@ import {
   SQLiteDBConnection,
 } from '@capacitor-community/sqlite';
 import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 /**
  * GrovLink Database Service
@@ -38,6 +39,19 @@ export class GrovLinkDatabaseService {
     } catch {
       // Plugin may not be ready on web before jeep-sqlite init
     }
+    // Keep JS connection map matches native (see NephoPhone database-base); avoids stale handles after resume/restart
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const { result } = await this.sqlite.checkConnectionsConsistency();
+        if (result === false) {
+          GrovLinkDatabaseService.sharedDb = null;
+          this.db = null;
+        }
+      } catch {
+        GrovLinkDatabaseService.sharedDb = null;
+        this.db = null;
+      }
+    }
     return true;
   }
 
@@ -62,6 +76,7 @@ export class GrovLinkDatabaseService {
           if (!isOpen) await this.db.open();
         }
         GrovLinkDatabaseService.sharedDb = this.db;
+        await this.createTables();
         return;
       } catch {
         // No existing connection

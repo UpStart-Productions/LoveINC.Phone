@@ -10,6 +10,7 @@ import {
   combineLatest,
   startWith,
   timeout,
+  mergeMap,
 } from 'rxjs';
 import { PlatformApiService, type PlatformNotification } from './platform/platform-api.service';
 import { GrovLinkDatabaseService } from './grovlink-database.service';
@@ -29,8 +30,8 @@ export interface AppNotification extends PlatformNotification {
 export class NotificationsService {
   private refresh$ = new BehaviorSubject<void>(undefined);
 
-  /** Content notification IDs marked read this session (SQLite may lag or fail; UI must still update). */
-  private readonly contentReadIdsSession = new Set<string>();
+  /** Notification IDs marked read this session (SQLite may lag or fail; UI must still update). */
+  private readonly localReadIdsSession = new Set<string>();
 
   readonly notifications$: Observable<AppNotification[]> = this.refresh$.pipe(
     switchMap(() => {
@@ -42,7 +43,7 @@ export class NotificationsService {
             map((readIds) =>
               list.map((n) => ({
                 ...n,
-                read: this.isContentNotificationRead(n.id, readIds),
+                read: this.isNotificationRead(n.id, readIds),
                 source: 'content' as const,
               }))
             ),
@@ -55,7 +56,7 @@ export class NotificationsService {
               return of(
                 list.map((n) => ({
                   ...n,
-                  read: this.isContentNotificationRead(n.id, new Set<string>()),
+                  read: this.isNotificationRead(n.id, new Set<string>()),
                   source: 'content' as const,
                 }))
               );
@@ -83,19 +84,43 @@ export class NotificationsService {
               email: email || undefined,
             }).pipe(
               timeout({ first: 15_000 }),
-              map((res) => {
+              mergeMap((res) => {
                 const list = res?.profile?.notifications ?? [];
-                return list.map((n) => ({
-                  id: n.id,
-                  itemType: n.type,
-                  itemId: '',
-                  title: n.title,
-                  body: n.body ?? '',
-                  meta: (n.meta ?? {}) as PlatformNotification['meta'],
-                  createdAt: n.createdAt,
-                  read: !!n.readAt,
-                  source: 'user' as const,
-                }));
+                return from(this.grovlinkDb.getReadNotificationIds()).pipe(
+                  timeout({ first: 5_000 }),
+                  map((readIds) =>
+                    list.map((n) => ({
+                      id: n.id,
+                      itemType: n.type,
+                      itemId: '',
+                      title: n.title,
+                      body: n.body ?? '',
+                      meta: (n.meta ?? {}) as PlatformNotification['meta'],
+                      createdAt: n.createdAt,
+                      read: !!n.readAt || this.isNotificationRead(n.id, readIds),
+                      source: 'user' as const,
+                    }))
+                  ),
+                  catchError((err) => {
+                    console.warn(
+                      'NotificationsService: user notification read-state skipped',
+                      err?.message ?? err
+                    );
+                    return of(
+                      list.map((n) => ({
+                        id: n.id,
+                        itemType: n.type,
+                        itemId: '',
+                        title: n.title,
+                        body: n.body ?? '',
+                        meta: (n.meta ?? {}) as PlatformNotification['meta'],
+                        createdAt: n.createdAt,
+                        read: !!n.readAt || this.isNotificationRead(n.id, new Set<string>()),
+                        source: 'user' as const,
+                      }))
+                    );
+                  })
+                );
               }),
               catchError((err) => {
                 console.warn('NotificationsService: profile notifications failed', err?.message ?? err);
@@ -145,48 +170,51 @@ export class NotificationsService {
     return String(id).trim();
   }
 
-  private isContentNotificationRead(
-    apiId: unknown,
-    readIdsFromDb: Set<string>
-  ): boolean {
+  private isNotificationRead(apiId: unknown, readIdsFromDb: Set<string>): boolean {
     const key = this.normalizeContentNotificationId(apiId);
     if (!key) return false;
-    return this.contentReadIdsSession.has(key) || readIdsFromDb.has(key);
+    return this.localReadIdsSession.has(key) || readIdsFromDb.has(key);
   }
 
-  /** Mark content notification (AppNotification) as read — session + SQLite; returns before DB write finishes. */
+  /** Mark content notification (broadcast) as read — session + SQLite. */
   async markAsRead(notificationId: string): Promise<void> {
     const key = this.normalizeContentNotificationId(notificationId);
     if (!key) return;
-    this.contentReadIdsSession.add(key);
+    this.localReadIdsSession.add(key);
     this.refresh();
-    void this.persistContentNotificationRead(key);
+    await this.persistReadNotificationId(key);
   }
 
-  private async persistContentNotificationRead(key: string): Promise<void> {
+  private async persistReadNotificationId(key: string): Promise<void> {
     try {
       await this.grovlinkDb.markNotificationAsRead(key);
     } catch (err) {
-      console.warn('NotificationsService: mark content notification read failed', err);
+      console.warn('NotificationsService: persist read notification failed', err);
     }
     this.refresh();
   }
 
-  /** Mark user notification (AppUserNotification) as read — uses API */
+  /** Mark user notification as read — API plus local SQLite so reads survive app restarts. */
   async markUserNotificationAsRead(notificationId: string): Promise<void> {
+    const key = this.normalizeContentNotificationId(notificationId);
+    if (!key) return;
+    this.localReadIdsSession.add(key);
+    this.refresh();
+
     const deviceId = this.deviceId.getDeviceId();
     const profile = this.userProfileService.getProfile();
     const onboarding = this.onboardingService.getOnboardingData();
     const email = (profile.email ?? onboarding?.email)?.trim();
-    if (!deviceId && !email) return;
-    try {
-      await this.platformApi.markNotificationRead(notificationId, {
-        deviceId: deviceId || undefined,
-        email: email || undefined,
-      });
-    } catch (err) {
-      console.warn('NotificationsService: mark user notification read failed', err);
+    if (deviceId || email) {
+      try {
+        await this.platformApi.markNotificationRead(notificationId, {
+          deviceId: deviceId || undefined,
+          email: email || undefined,
+        });
+      } catch (err) {
+        console.warn('NotificationsService: mark user notification read failed', err);
+      }
     }
-    this.refresh();
+    await this.persistReadNotificationId(key);
   }
 }
