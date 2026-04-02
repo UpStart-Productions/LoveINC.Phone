@@ -30,6 +30,7 @@ import {
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { ContentDetail, ContentType } from './content-detail.model';
+import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 import { SharingService } from '../../services/sharing/sharing.service';
 import { AppUserDataService } from '../../services/app-user-data.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
@@ -74,6 +75,7 @@ import {
   IonLabel,
   IonList,
   IonSpinner,
+  SafeHtmlPipe,
 ],
   providers: [AlertController, ActionSheetController, ToastController]
 })

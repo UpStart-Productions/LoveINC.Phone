@@ -27,7 +27,7 @@
             <ion-label>{{ faq.question }}</ion-label>
           </ion-item>
           <div slot="content" class="faq-answer app-body">
-            <div [innerHTML]="faq.answer"></div>
+            <div class="rich-html" [innerHTML]="faq.answer | safeHtml"></div>
           </div>
         </ion-accordion>
       </ion-accordion-group>

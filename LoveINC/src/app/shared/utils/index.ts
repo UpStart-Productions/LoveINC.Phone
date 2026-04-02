@@ -4,6 +4,7 @@
  */
 export { shouldHideMainTabBar } from './route-utils';
 export { mapNotificationMetaToContentType, type NotificationMeta } from './notification-deeplink';
+export { markQuillParagraphGaps } from './quill-rich-html';
 export {
   formatEventDatesCompact,
   formatDateRangeCompact,

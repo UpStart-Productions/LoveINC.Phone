@@ -34,11 +34,11 @@
         </div>
       </div>
       @if (pos.shortDescription) {
-        <div class="app-body-secondary-sm m-b-6" [innerHTML]="pos.shortDescription | safeHtml"></div>
+        <div class="app-body-secondary-sm rich-html m-b-6" [innerHTML]="pos.shortDescription | safeHtml"></div>
       }
       @if (pos.longDescription ?? pos.description) {
         @if ((pos.longDescription ?? pos.description) !== pos.shortDescription) {
-          <div class="app-body-secondary-sm m-b-6" [innerHTML]="(pos.longDescription ?? pos.description ?? '') | safeHtml"></div>
+          <div class="app-body-secondary-sm rich-html m-b-6" [innerHTML]="(pos.longDescription ?? pos.description ?? '') | safeHtml"></div>
         }
       }
       <p class="app-disclaimer m-b-6">We cannot guarantee open volunteer positions but we will save your information and be in touch soon.</p>

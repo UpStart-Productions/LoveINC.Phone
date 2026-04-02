@@ -15,6 +15,7 @@ import {
   IonIcon,
 } from '@ionic/angular/standalone';
 import { FaqService, FAQ } from '../services/faq.service';
+import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-faq',
@@ -35,6 +36,7 @@ import { FaqService, FAQ } from '../services/faq.service';
     IonLabel,
     IonSpinner,
     IonIcon,
+    SafeHtmlPipe,
   ],
 })
 export class FaqPage implements OnInit {

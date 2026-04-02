@@ -43,7 +43,7 @@
 
       <p *ngIf="contentItem.subtitle && contentType !== 'event' && contentType !== 'class' && !getHeaderDateLabel()" class="app-title m-b-24 content-subtitle">{{ contentItem.subtitle }}</p>
 
-      <div *ngIf="contentItem.description" class="app-body-secondary m-b-24" [innerHTML]="contentItem.description"></div>
+      <div *ngIf="contentItem.description" class="app-body-secondary rich-html m-b-24" [innerHTML]="contentItem.description | safeHtml"></div>
 
       <ion-list lines="none" class="info-list">
         <!-- Instructor (for classes) -->

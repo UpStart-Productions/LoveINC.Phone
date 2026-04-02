@@ -50,6 +50,26 @@
   cursor: pointer;
 }
 
+/*
+ * Rich HTML from admin Quill: single Enter → sibling <p> blocks; double Enter →
+ * empty <p> with <br> (often <br class="...">). SafeHtmlPipe replaces those with
+ * .rich-html-para-gap divs so WebKit cannot collapse the spacer.
+ */
+.rich-html {
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .rich-html-para-gap {
+    display: block;
+    height: 1em;
+    margin: 0.5em 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+}
+
 /* -----------------------------------------------------------------------------
  * Custom Font - Ilisarniq
  * ----------------------------------------------------------------------------- */
