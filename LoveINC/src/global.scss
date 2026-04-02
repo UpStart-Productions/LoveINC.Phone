@@ -68,6 +68,32 @@
     overflow: hidden;
     pointer-events: none;
   }
+
+  /* Quill external CTA embed — match ion-button primary (rounded, brand colors) */
+  .rich-content-cta-block {
+    margin: 0.75rem 0;
+  }
+
+  .rich-html a.rich-content-cta {
+    display: inline-block;
+    margin: 0.125rem 0;
+    padding: 0.625rem 1.25rem;
+    border-radius: 3.125rem;
+    background: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: var(--app-font-size-body);
+    line-height: var(--app-line-height-tight);
+    text-align: center;
+    box-sizing: border-box;
+    min-height: 2.75rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .rich-html a.rich-content-cta:active {
+    opacity: 0.88;
+  }
 }
 
 /* -----------------------------------------------------------------------------
