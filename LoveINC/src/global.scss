@@ -74,7 +74,7 @@
     margin: 0.75rem 0;
   }
 
-  .rich-html a.rich-content-cta {
+  a.rich-content-cta {
     display: inline-block;
     margin: 0.125rem 0;
     padding: 0.625rem 1.25rem;
@@ -91,7 +91,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .rich-html a.rich-content-cta:active {
+  a.rich-content-cta:active {
     opacity: 0.88;
   }
 }
