@@ -218,11 +218,11 @@ export class DeveloperOptionsPage {
     this.seedingBudget = true;
     try {
       await this.weekPlanService.seedBudgetData();
-      this.budgetState.selectedWeekStart = '2026-03-08';
+      this.budgetState.selectedWeekStart = '2026-04-05';
       this.router.navigate(['/tabs/simple-budget/weekly']);
       const alert = await this.alertController.create({
         header: 'Simple Budget Seeded',
-        message: 'Seeded 11 weeks (Dec 28, 2025 – Mar 8, 2026). Navigating to Simple Budget.',
+        message: 'Seeded 6 weeks (Mar 1 – Apr 5, 2026). Navigating to Simple Budget on the current week.',
         buttons: ['OK'],
       });
       await alert.present();

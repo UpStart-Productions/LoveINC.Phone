@@ -17,6 +17,16 @@ export class VerseOfTheDayWidgetComponent implements OnInit {
   constructor(private verseOfTheDayService: VerseOfTheDayService) {}
 
   ngOnInit() {
+    this.loadVerse();
+  }
+
+  /** Re-fetch verse (e.g. pull-to-refresh on Home). */
+  refresh(): void {
+    this.loadVerse();
+  }
+
+  private loadVerse(): void {
+    this.loading = true;
     this.verseOfTheDayService.getVerseOfTheDay().subscribe({
       next: (v) => {
         this.verse = v;

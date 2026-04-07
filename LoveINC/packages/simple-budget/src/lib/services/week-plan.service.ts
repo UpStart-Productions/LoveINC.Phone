@@ -331,24 +331,18 @@ export class WeekPlanService {
   }
 
   /**
-   * Seeds 3 months of budget data (Jan, Feb, Mar 2026) with realistic sample entries.
-   * Uses Monday as week start. Overwrites any existing plans for those weeks.
+   * Seeds ~6 Sunday-start weeks from early March through the week of Apr 5–7, 2026
+   * (aligned with the weekly page / home widget). Overwrites any existing plans for those weeks.
    */
   async seedBudgetData(): Promise<void> {
-    // Use Sunday-based weeks to match the app's week scroller (getSundayForDate)
-    // Start from week containing Jan 1, 2026 (Sun Dec 28, 2025 – Jan 3, 2026)
+    // Sunday-based weeks: 2026-03-01 … 2026-04-05 (current week around Tue Apr 7, 2026)
     const weekDates: string[] = [
-      '2025-12-28',
-      '2026-01-04',
-      '2026-01-11',
-      '2026-01-18',
-      '2026-01-25',
-      '2026-02-01',
-      '2026-02-08',
-      '2026-02-15',
-      '2026-02-22',
       '2026-03-01',
       '2026-03-08',
+      '2026-03-15',
+      '2026-03-22',
+      '2026-03-29',
+      '2026-04-05',
     ];
 
     const baseIncome = [

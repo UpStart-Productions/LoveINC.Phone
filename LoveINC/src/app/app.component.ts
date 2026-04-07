@@ -172,16 +172,16 @@ export class AppComponent implements OnInit, OnDestroy {
       window.location.reload();
     };
 
-    // Expose seedBudgetData for dev/testing - seeds Jan, Feb, Mar 2026
+    // Expose seedBudgetData for dev/testing - seeds Mar–early Apr 2026 (around current week)
     (window as any).seedBudgetData = async () => {
       await this.weekPlanService.seedBudgetData();
-      console.log('Simple Budget: seeded 3 months of data (Jan–Mar 2026)');
+      console.log('Simple Budget: seeded sample weeks (Mar–Apr 2026, through current week)');
       window.location.reload();
     };
 
     console.log('%c🎉 Love INC App Loaded', 'color: #349394; font-size: 16px; font-weight: bold;');
     console.log('%c💡 Testing Tip: Type clearOnboarding() in console to reset onboarding', 'color: #214491; font-size: 12px;');
-    console.log('%c💡 Type seedBudgetData() in console to seed Simple Budget (Jan–Mar 2026)', 'color: #214491; font-size: 12px;');
+    console.log('%c💡 Type seedBudgetData() in console to seed Simple Budget (Mar–Apr 2026)', 'color: #214491; font-size: 12px;');
   }
 
   async ngOnInit() {

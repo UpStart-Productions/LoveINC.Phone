@@ -13,6 +13,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <!-- User Type Cards and CTA rows - full width, no extra margin/padding -->
   <div class="home-top-items">
     <app-user-type-card

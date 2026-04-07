@@ -1,10 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { forkJoin, combineLatest } from 'rxjs';
+import { forkJoin, combineLatest, firstValueFrom, type Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { startOfDay } from 'date-fns';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon } from '@ionic/angular/standalone';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButton,
+  IonButtons,
+  IonIcon,
+  IonRefresher,
+  IonRefresherContent,
+} from '@ionic/angular/standalone';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { OnboardingService } from '../services/onboarding.service';
@@ -46,6 +56,8 @@ export type ClientSupportCardState =
     IonToolbar,
     IonTitle,
     IonContent,
+    IonRefresher,
+    IonRefresherContent,
     IonButton,
     IonButtons,
     IonIcon,
@@ -61,6 +73,9 @@ export type ClientSupportCardState =
 export class HomePage implements OnInit {
   @ViewChild(SimpleBudgetHomeWidgetComponent)
   private budgetHomeWidget?: SimpleBudgetHomeWidgetComponent;
+
+  @ViewChild(VerseOfTheDayWidgetComponent)
+  private verseHomeWidget?: VerseOfTheDayWidgetComponent;
 
   cards: HomeCard[] = [];
   welcomeTitle: string = 'Welcome to Love INC';
@@ -110,10 +125,59 @@ export class HomePage implements OnInit {
       this.loadClientContext();
     }
 
-    // For testing - add to window for easy access in console
     (window as any).clearOnboarding = () => {
       this.onboardingService.clearOnboarding();
     };
+  }
+
+  async onRefresh(event: Event): Promise<void> {
+    const refresher = (event as CustomEvent).target as HTMLIonRefresherElement;
+    try {
+      const firstName = this.onboardingService.getUserFirstName();
+      this.welcomeTitle = firstName ? `Welcome, ${firstName}!` : 'Welcome to Love INC';
+      this.loadUserTypes();
+      this.budgetHomeWidget?.refresh();
+      this.verseHomeWidget?.refresh();
+
+      const tasks: Promise<unknown>[] = [
+        firstValueFrom(this.fetchHomeCards$()).then((cards) => {
+          this.cards = cards;
+        }),
+        firstValueFrom(this.platformApi.getCtas()).then((ctas) => this.applyLoadedCtas(ctas)),
+      ];
+
+      if (this.selectedUserTypes.includes('get-help')) {
+        tasks.push(this.reloadClientContext(true));
+      }
+
+      await Promise.all(tasks);
+    } catch {
+      // ignore
+    } finally {
+      refresher?.complete?.();
+    }
+  }
+
+  private fetchHomeCards$(): Observable<HomeCard[]> {
+    return forkJoin({
+      homeFeed: this.platformApi.getHomeFeed(),
+      events: this.platformApi.getEvents(),
+      classes: this.platformApi.getClasses(),
+    }).pipe(
+      map(({ homeFeed, events, classes }) => {
+        const today = startOfDay(new Date()).getTime();
+        const eventMap = new Map<string, PlatformEvent>((events ?? []).map((e) => [e.id, e]));
+        const classMap = new Map<string, PlatformClass>((classes ?? []).map((c) => [c.id, c]));
+        const cards = (homeFeed ?? [])
+          .filter((item): item is typeof item & { type: CardType } =>
+            this.isSupportedCardType(item.type))
+          .filter((item) => !this.isCtaCardType(item.type))
+          .filter((item) => this.isNotPastEventOrClass(item, today))
+          .map((item) => this.mapFeedItemToHomeCard(item, eventMap, classMap))
+          .sort((a, b) => a.priority - b.priority);
+        return this.limitImpactStories(cards, 1);
+      })
+    );
   }
 
   loadUserTypes() {
@@ -127,11 +191,19 @@ export class HomePage implements OnInit {
   }
 
   private loadClientContext(): void {
+    void this.reloadClientContext(false);
+  }
+
+  /** @param fromRefresh When true, skip local "browse services" display counter bumps and no-identify early exit. */
+  private async reloadClientContext(fromRefresh: boolean): Promise<void> {
     const deviceId = this.deviceIdService.getDeviceId();
     const profile = this.userProfileService.getProfile();
     const onboarding = this.onboardingService.getOnboardingData();
     const email = (profile.email ?? onboarding?.email)?.trim();
     if (!deviceId && !email) {
+      if (fromRefresh) {
+        return;
+      }
       const count = this.getBrowseServicesDisplayCount();
       if (count >= BROWSE_SERVICES_MAX_DISPLAYS) {
         this.clientSupportCardState = 'browse_services_hidden';
@@ -142,53 +214,53 @@ export class HomePage implements OnInit {
       return;
     }
 
-    combineLatest({
-      clientAccess: this.platformApi.getClientAccess(),
-      appUserProfile: this.platformApi.getAppUserProfile({
-        deviceId: deviceId || undefined,
-        email: email || undefined,
-      }),
-    })
-      .pipe(take(1))
-      .subscribe({
-        next: ({ clientAccess, appUserProfile }) => {
-          const intakeRequired = clientAccess?.intakeRequired ?? true;
-          const profileIntakeCompleted = appUserProfile?.profile?.intakeCompleted ?? false;
-          const apiIntakeCompleted =
-            profileIntakeCompleted || this.appUserDataService.hasIntakeCompleted();
+    try {
+      const { clientAccess, appUserProfile } = await firstValueFrom(
+        combineLatest({
+          clientAccess: this.platformApi.getClientAccess(),
+          appUserProfile: this.platformApi.getAppUserProfile({
+            deviceId: deviceId || undefined,
+            email: email || undefined,
+          }),
+        }).pipe(take(1))
+      );
+      const intakeRequired = clientAccess?.intakeRequired ?? true;
+      const profileIntakeCompleted = appUserProfile?.profile?.intakeCompleted ?? false;
+      const apiIntakeCompleted =
+        profileIntakeCompleted || this.appUserDataService.hasIntakeCompleted();
 
-          const voucherRequests = appUserProfile?.profile?.voucherRequests ?? [];
-          const dismissedIds = this.dismissedVouchersService.getDismissed();
-          const validVouchers = voucherRequests.filter((vr) => {
-            if (dismissedIds.has(vr.id)) return false;
-            if (vr.status !== 'approved') return false;
-            if (vr.deniedAt) return false;
-            const expiresAt = vr.expiresAt ?? vr.createdAt;
-            return new Date(expiresAt) > new Date();
-          });
-          this.clientSupportVoucherCount = validVouchers.length;
-
-          if (intakeRequired && !apiIntakeCompleted) {
-            this.clientSupportCardState = 'intake_required';
-            return;
-          }
-          if (this.clientSupportVoucherCount > 0) {
-            this.clientSupportCardState = 'has_vouchers';
-            return;
-          }
-
-          const count = this.getBrowseServicesDisplayCount();
-          if (count >= BROWSE_SERVICES_MAX_DISPLAYS) {
-            this.clientSupportCardState = 'browse_services_hidden';
-          } else {
-            this.clientSupportCardState = 'browse_services';
-            this.incrementBrowseServicesDisplayCount();
-          }
-        },
-        error: () => {
-          this.clientSupportCardState = 'browse_services';
-        },
+      const voucherRequests = appUserProfile?.profile?.voucherRequests ?? [];
+      const dismissedIds = this.dismissedVouchersService.getDismissed();
+      const validVouchers = voucherRequests.filter((vr) => {
+        if (dismissedIds.has(vr.id)) return false;
+        if (vr.status !== 'approved') return false;
+        if (vr.deniedAt) return false;
+        const expiresAt = vr.expiresAt ?? vr.createdAt;
+        return new Date(expiresAt) > new Date();
       });
+      this.clientSupportVoucherCount = validVouchers.length;
+
+      if (intakeRequired && !apiIntakeCompleted) {
+        this.clientSupportCardState = 'intake_required';
+        return;
+      }
+      if (this.clientSupportVoucherCount > 0) {
+        this.clientSupportCardState = 'has_vouchers';
+        return;
+      }
+
+      const count = this.getBrowseServicesDisplayCount();
+      if (count >= BROWSE_SERVICES_MAX_DISPLAYS) {
+        this.clientSupportCardState = 'browse_services_hidden';
+      } else {
+        this.clientSupportCardState = 'browse_services';
+        if (!fromRefresh) {
+          this.incrementBrowseServicesDisplayCount();
+        }
+      }
+    } catch {
+      this.clientSupportCardState = 'browse_services';
+    }
   }
 
   private getBrowseServicesDisplayCount(): number {
@@ -215,22 +287,24 @@ export class HomePage implements OnInit {
 
   loadCtas() {
     this.platformApi.getCtas().subscribe({
-      next: (ctas) => {
-        const today = startOfDay(new Date()).getTime();
-        const active = (c: PlatformCta) => this.isActiveCta(c, today);
-        this.giveCtas = ctas
-          .filter((c) => this.isGiveCtaType(c.type))
-          .filter(active)
-          .sort((a, b) => a.sortOrder - b.sortOrder);
-        this.volunteerCtas = ctas
-          .filter((c) => c.type === 'volunteer_call')
-          .filter(active)
-          .sort((a, b) => a.sortOrder - b.sortOrder);
-      },
+      next: (ctas) => this.applyLoadedCtas(ctas),
       error: (err) => {
         console.error('Error loading CTAs:', err);
       },
     });
+  }
+
+  private applyLoadedCtas(ctas: PlatformCta[]): void {
+    const today = startOfDay(new Date()).getTime();
+    const active = (c: PlatformCta) => this.isActiveCta(c, today);
+    this.giveCtas = ctas
+      .filter((c) => this.isGiveCtaType(c.type))
+      .filter(active)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+    this.volunteerCtas = ctas
+      .filter((c) => c.type === 'volunteer_call')
+      .filter(active)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
   private isGiveCtaType(type: string): boolean {
@@ -283,34 +357,14 @@ export class HomePage implements OnInit {
   }
 
   loadCards() {
-    forkJoin({
-      homeFeed: this.platformApi.getHomeFeed(),
-      events: this.platformApi.getEvents(),
-      classes: this.platformApi.getClasses(),
-    })
-      .pipe(
-        map(({ homeFeed, events, classes }) => {
-          const today = startOfDay(new Date()).getTime();
-          const eventMap = new Map<string, PlatformEvent>((events ?? []).map((e) => [e.id, e]));
-          const classMap = new Map<string, PlatformClass>((classes ?? []).map((c) => [c.id, c]));
-          const cards = (homeFeed ?? [])
-            .filter((item): item is typeof item & { type: CardType } =>
-              this.isSupportedCardType(item.type))
-            .filter((item) => !this.isCtaCardType(item.type))
-            .filter((item) => this.isNotPastEventOrClass(item, today))
-            .map((item) => this.mapFeedItemToHomeCard(item, eventMap, classMap))
-            .sort((a, b) => a.priority - b.priority);
-          return this.limitImpactStories(cards, 1);
-        })
-      )
-      .subscribe({
-        next: (cards) => {
-          this.cards = cards;
-        },
-        error: (err) => {
-          console.error('Error loading home feed:', err);
-        },
-      });
+    this.fetchHomeCards$().subscribe({
+      next: (cards) => {
+        this.cards = cards;
+      },
+      error: (err) => {
+        console.error('Error loading home feed:', err);
+      },
+    });
   }
 
   private isSupportedCardType(type: string): type is CardType {
