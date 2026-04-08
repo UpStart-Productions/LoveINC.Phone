@@ -1,0 +1,19 @@
+/* Solid white scroll area (same pattern as connection-center / class details) */
+ion-content.hesed-house-page {
+  --background: #ffffff;
+  --ion-background-color: #ffffff;
+}
+
+.hesed-house-photo {
+  width: 100%;
+  height: 30vh;
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}

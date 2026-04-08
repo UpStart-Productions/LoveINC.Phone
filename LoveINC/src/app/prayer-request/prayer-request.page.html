@@ -1,0 +1,79 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backDefaultHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Prayer Request</ion-title>
+    <ion-buttons slot="end">
+      <app-notifications-button></app-notifications-button>
+      <ion-button *ngIf="showDonateButton" (click)="openDonateMenu()" class="donate-header-button">
+        <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="prayer-request-page">
+  <div class="prayer-request-photo">
+    <img
+      src="assets/photos/prayer-request-header.png"
+      alt="Hands folded in prayer over an open Bible"
+    />
+  </div>
+
+  <div class="p-l-18 p-r-18 p-t-18 p-b-36">
+    <p class="app-body-secondary m-b-24">
+      Love INC Newberg has a Prayer Team that would love to pray for you and your needs. All prayer requests are kept
+      strictly confidential and no names are shared or made public.
+    </p>
+
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">First Name</ion-label>
+        <ion-input
+          type="text"
+          [(ngModel)]="form.firstName"
+          name="prayerFirstName"
+          autocapitalize="words"
+          autocomplete="given-name">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Last Name</ion-label>
+        <ion-input
+          type="text"
+          [(ngModel)]="form.lastName"
+          name="prayerLastName"
+          autocapitalize="words"
+          autocomplete="family-name">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email Address</ion-label>
+        <ion-input
+          type="email"
+          [(ngModel)]="form.email"
+          name="prayerEmail"
+          autocomplete="email">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Prayer Request</ion-label>
+        <ion-textarea
+          [(ngModel)]="form.prayerRequest"
+          name="prayerRequestBody"
+          rows="6"
+          autocapitalize="sentences"
+          [autoGrow]="true">
+        </ion-textarea>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="block" color="primary" class="m-t-18" [disabled]="!canSubmit()" (click)="onSubmit()">
+      Submit Request
+    </ion-button>
+  </div>
+</ion-content>

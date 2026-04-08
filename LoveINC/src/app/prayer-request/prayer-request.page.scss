@@ -1,0 +1,25 @@
+/* Solid white scroll area (same pattern as other service info pages) */
+ion-content.prayer-request-page {
+  --background: #ffffff;
+  --ion-background-color: #ffffff;
+}
+
+.prayer-request-photo {
+  width: 100%;
+  height: 30vh;
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+ion-list {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}

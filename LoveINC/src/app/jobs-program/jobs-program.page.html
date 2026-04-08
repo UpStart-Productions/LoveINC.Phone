@@ -1,0 +1,73 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backDefaultHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>J.O.B.S. Program</ion-title>
+    <ion-buttons slot="end">
+      <app-notifications-button></app-notifications-button>
+      <ion-button *ngIf="showDonateButton" (click)="openDonateMenu()" class="donate-header-button">
+        <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="jobs-program-page">
+  <div class="jobs-program-photo">
+    <img
+      src="assets/photos/jobs-program-header.png"
+      alt="Professional coaching and mentoring in a bright office setting"
+    />
+  </div>
+
+  <div class="p-l-18 p-r-18 p-t-18 p-b-36">
+    <p class="app-body-secondary m-b-24">
+      Are you ready to jump over barriers and land your dream job? The Love INC J.O.B.S. Program is here to empower
+      you with the tools and knowledge you need to succeed in today's competitive job market. Over the course of four
+      enriching evenings, you'll experience 8 hours of targeted coursework to identify your skills, improve your job
+      search, and practice interviewing. You will be offered the opportunity to work at your own computer station to
+      search jobs that match your identified skills and create or upgrade your resume so you will be more marketable in
+      our area's job market.
+    </p>
+
+    <h2 class="app-title m-b-12">Why Join the J.O.B.S. Program?</h2>
+    <ul class="jobs-program-list app-body-secondary m-b-24">
+      <li>
+        <strong>Expert-Led Training:</strong> Learn from seasoned professionals who know what it takes to succeed.
+      </li>
+      <li>
+        <strong>Professional Coaching &amp; Mentoring:</strong> Benefit from personalized guidance to refine your
+        skills and strategies.
+      </li>
+      <li>
+        <strong>Certificate of Completion:</strong> Enhance your resume with a certificate that showcases your
+        commitment and capabilities.
+      </li>
+      <li>
+        <strong>Small Class Sizes:</strong> Enjoy a focused learning environment that ensures personalized attention
+        and support.
+      </li>
+    </ul>
+
+    <h2 class="app-title m-b-12">Workshops Include:</h2>
+    <ul class="jobs-program-list app-body-secondary m-b-24">
+      <li>Reality Bootcamp</li>
+      <li>Transferrable Skills</li>
+      <li>Resume Design and Update</li>
+      <li>Job Search</li>
+      <li>Interview Skills</li>
+      <li>Coaching and Mentoring</li>
+      <li>Networking</li>
+    </ul>
+
+    <p class="app-body-secondary m-b-24">
+      Take the first step towards a brighter future. Apply now and transform your potential into performance!
+    </p>
+
+    <ion-button expand="block" color="primary" (click)="openApplicationForm()">
+      <ion-icon slot="start" name="link-outline"></ion-icon>
+      Apply for J.O.B.S. Now
+    </ion-button>
+  </div>
+</ion-content>

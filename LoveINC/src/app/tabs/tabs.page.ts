@@ -83,7 +83,7 @@ export class TabsPage implements OnInit, OnDestroy {
           text: 'Connection Center',
           icon: 'people-circle-outline',
           handler: () => {
-            this.showServiceDetail('Connection Center');
+            this.router.navigate(['/tabs/connection-center']);
           }
         },
         {
@@ -104,21 +104,21 @@ export class TabsPage implements OnInit, OnDestroy {
           text: 'J.O.B.S.',
           icon: 'briefcase-outline',
           handler: () => {
-            this.showServiceDetail('J.O.B.S.');
+            this.router.navigate(['/tabs/jobs-program']);
           }
         },
         {
           text: 'Hesed House',
           icon: 'house-outline',
           handler: () => {
-            this.showServiceDetail('Hesed House');
+            this.router.navigate(['/tabs/hesed-house']);
           }
         },
         {
-          text: 'Prayer',
+          text: 'Prayer Request',
           icon: 'heart-outline',
           handler: () => {
-            this.showServiceDetail('Prayer');
+            this.router.navigate(['/tabs/prayer-request']);
           }
         },
         {

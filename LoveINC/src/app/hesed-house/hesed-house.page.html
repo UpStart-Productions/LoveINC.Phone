@@ -1,0 +1,36 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backDefaultHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Hesed House</ion-title>
+    <ion-buttons slot="end">
+      <app-notifications-button></app-notifications-button>
+      <ion-button *ngIf="showDonateButton" (click)="openDonateMenu()" class="donate-header-button">
+        <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="hesed-house-page">
+  <div class="hesed-house-photo">
+    <img
+      src="assets/photos/hesed-house-header.png"
+      alt="Women and child together outdoors, smiling"
+    />
+  </div>
+
+  <div class="p-l-18 p-r-18 p-t-18 p-b-36">
+    <p class="app-body-secondary m-b-24">
+      The Hesed House, our Women's Transitional Living Program, is a Christ-Centered program that aims to empower
+      women to gain self-sufficiency and life transformation. We offer Bible Studies, Transformational Ministry Classes,
+      Christian Mentors, Christian Counselors, and Case Management Services. If you or someone you know is in need of
+      these services please give us a call at: 503-537-3999
+    </p>
+    <ion-button expand="block" color="primary" (click)="callHesedHouse()">
+      <ion-icon slot="start" name="call-outline"></ion-icon>
+      Call Hesed House
+    </ion-button>
+  </div>
+</ion-content>

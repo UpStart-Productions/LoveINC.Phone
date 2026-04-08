@@ -104,6 +104,26 @@ export const routes: Routes = [
           import('../church-map/church-map.page').then((m) => m.ChurchMapPage),
       },
       {
+        path: 'connection-center',
+        loadComponent: () =>
+          import('../connection-center/connection-center.page').then((m) => m.ConnectionCenterPage),
+      },
+      {
+        path: 'jobs-program',
+        loadComponent: () =>
+          import('../jobs-program/jobs-program.page').then((m) => m.JobsProgramPage),
+      },
+      {
+        path: 'hesed-house',
+        loadComponent: () =>
+          import('../hesed-house/hesed-house.page').then((m) => m.HesedHousePage),
+      },
+      {
+        path: 'prayer-request',
+        loadComponent: () =>
+          import('../prayer-request/prayer-request.page').then((m) => m.PrayerRequestPage),
+      },
+      {
         path: 'gap-ministries',
         loadComponent: () =>
           import('../organization-services/gap-ministries/gap-ministries.page').then((m) => m.GapMinistriesPage),

@@ -1,0 +1,34 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backDefaultHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Connection Center</ion-title>
+    <ion-buttons slot="end">
+      <app-notifications-button></app-notifications-button>
+      <ion-button *ngIf="showDonateButton" (click)="openDonateMenu()" class="donate-header-button">
+        <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="connection-center-page">
+  <div class="connection-center-photo">
+    <img src="assets/photos/connection-center-header.png" alt="Connection Center volunteers and community" />
+  </div>
+
+  <div class="p-l-18 p-r-18 p-t-18 p-b-36">
+    <p class="app-body-secondary m-b-24">
+      The Connection Center works closely with 23 churches to provide essential services, known as GAP Ministries,
+      that meet needs otherwise unmet in the community. These services include clothing, non-food pantry items,
+      bikes, linens, showers, firewood, and kitchen items and many more. Our regular volunteers are the heart of the
+      Connection Center, listening to people's stories, providing practical assistance, offering financial guidance,
+      and praying with clients, resulting in life-changing moments of peace and support.
+    </p>
+    <ion-button expand="block" color="primary" (click)="callLoveInc()">
+      <ion-icon slot="start" name="call-outline"></ion-icon>
+      Call Love INC
+    </ion-button>
+  </div>
+</ion-content>

@@ -54,10 +54,7 @@ export class ServicesPage implements OnInit {
     {
       name: 'Connection Center',
       icon: 'people-circle-outline',
-      handler: () => {
-        // TODO: Navigate to Connection Center detail page
-        console.log('Connection Center selected');
-      },
+      route: '/tabs/connection-center',
     },
     {
       name: 'Gap Ministries',
@@ -73,26 +70,17 @@ export class ServicesPage implements OnInit {
     {
       name: 'J.O.B.S.',
       icon: 'briefcase-outline',
-      handler: () => {
-        // TODO: Navigate to J.O.B.S. detail page
-        console.log('J.O.B.S. selected');
-      },
+      route: '/tabs/jobs-program',
     },
     {
       name: 'Hesed House',
       icon: 'house-outline',
-      handler: () => {
-        // TODO: Navigate to Hesed House detail page
-        console.log('Hesed House selected');
-      },
+      route: '/tabs/hesed-house',
     },
     {
-      name: 'Prayer',
+      name: 'Prayer Request',
       icon: 'heart-outline',
-      handler: () => {
-        // TODO: Navigate to Prayer detail page
-        console.log('Prayer selected');
-      },
+      route: '/tabs/prayer-request',
     },
   ];
 
