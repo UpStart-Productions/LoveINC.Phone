@@ -34,6 +34,10 @@
     <!-- Hero Image -->
     <div class="hero-image-container" *ngIf="contentItem.photoUrl">
       <img [src]="contentItem.photoUrl" [alt]="contentItem.title" class="hero-image" />
+      <span
+        class="class-registered-pill"
+        *ngIf="contentType === 'class' && isRegisteredForThisClass"
+      >REGISTERED</span>
     </div>
 
     <!-- Content Info -->
@@ -168,9 +172,14 @@
         </div>
       </ion-list>
 
-      <!-- Class registration (in-app) -->
-      <div class="action-buttons m-t-24" *ngIf="showClassRegisterButton()">
-        <ion-button expand="block" color="primary" (click)="navigateToClassRegistration()">
+      <!-- Class registration (in-app) + calendar -->
+      <div class="action-buttons m-t-24" *ngIf="showClassActionButtons()">
+        <ion-button
+          *ngIf="showClassRegisterButton()"
+          expand="block"
+          color="primary"
+          (click)="navigateToClassRegistration()"
+        >
           <ion-icon slot="start" name="create-outline"></ion-icon>
           Register
         </ion-button>

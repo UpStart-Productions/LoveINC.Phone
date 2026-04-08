@@ -55,6 +55,7 @@ import {
   type PlatformService,
   type PlatformVolunteerPositionWithAffiliate,
 } from '../../services/platform';
+import { GrovLinkDatabaseService } from '../../services/grovlink-database.service';
 
 @Component({
   selector: 'app-content-detail',
@@ -88,6 +89,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   loading = false;
   error: string | null = null;
 
+  /** From GrovLink local DB after a successful in-app registration for this class. */
+  isRegisteredForThisClass = false;
+
   /** Org-level: when true, user must complete intake before accessing voucher-gated services. Default true until API responds (conservative: hide voucher icons until we know). */
   intakeRequired = true;
   /** User has completed intake (from API or local unlock state). */
@@ -112,7 +116,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
     private calendarService: CalendarService,
-    private locationMapModal: LocationMapModalService
+    private locationMapModal: LocationMapModalService,
+    private grovlinkDb: GrovLinkDatabaseService
   ) {}
 
   ngOnInit() {
@@ -150,6 +155,24 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     this.pageTitle = this.getPageTitle();
     
     this.loadContentDetail();
+  }
+
+  async ionViewWillEnter(): Promise<void> {
+    if (this.contentType === 'class' && this.contentId?.trim()) {
+      await this.refreshClassRegistrationLocalStatus();
+    }
+  }
+
+  private async refreshClassRegistrationLocalStatus(): Promise<void> {
+    if (this.contentType !== 'class' || !this.contentId?.trim()) {
+      this.isRegisteredForThisClass = false;
+      return;
+    }
+    try {
+      this.isRegisteredForThisClass = await this.grovlinkDb.isRegisteredForClass(this.contentId);
+    } catch {
+      this.isRegisteredForThisClass = false;
+    }
   }
 
   private getDefaultBackRoute(): string {
@@ -248,6 +271,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         this.contentItem = filteredData.find((item) => item.id === this.contentId) || null;
         if (!this.contentItem) {
           console.error('Content item not found:', this.contentId);
+        }
+        if (this.contentType === 'class') {
+          void this.refreshClassRegistrationLocalStatus();
         }
       },
       error: (err) => {
@@ -659,6 +685,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         if (!this.contentItem) {
           console.error('Class not found:', this.contentId);
         }
+        void this.refreshClassRegistrationLocalStatus();
       },
       error: (err) => {
         console.error('Error loading class detail:', err);
@@ -953,8 +980,23 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       this.contentType === 'class' &&
       !!this.contentItem &&
       !this.loading &&
-      !this.error
+      !this.error &&
+      !this.isRegisteredForThisClass
     );
+  }
+
+  /** Class action row: Register until local DB says registered; Add to Calendar when there is a schedule. */
+  showClassActionButtons(): boolean {
+    if (
+      this.contentType !== 'class' ||
+      !this.contentItem ||
+      this.loading ||
+      this.error
+    ) {
+      return false;
+    }
+    if (!this.isRegisteredForThisClass) return true;
+    return this.hasSchedule();
   }
 
   navigateToClassRegistration(): void {

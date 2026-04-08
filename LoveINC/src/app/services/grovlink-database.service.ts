@@ -227,4 +227,21 @@ export class GrovLinkDatabaseService {
     );
     return id;
   }
+
+  /** True if this device has a locally stored successful registration for the class. */
+  async isRegisteredForClass(classId: string): Promise<boolean> {
+    const id = classId?.trim();
+    if (!id) return false;
+    try {
+      const db = await this.getDbConnection();
+      const result = await db.query(
+        'SELECT 1 AS ok FROM class_registrations WHERE class_id = ? LIMIT 1',
+        [id]
+      );
+      const rows = result?.values ?? [];
+      return rows.length > 0;
+    } catch {
+      return false;
+    }
+  }
 }
