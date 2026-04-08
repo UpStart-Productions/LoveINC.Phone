@@ -1,0 +1,44 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Class registration</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="class-registration-page">
+  @if (classNotFound && !classTitle) {
+    <p class="app-body-secondary class-registration-padded">This class could not be loaded. Try again from the class list.</p>
+  } @else if (loadingClass && !classTitle) {
+    <div class="class-registration-loading">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else {
+    @if (classPhotoUrl) {
+      <div class="hero-image-container">
+        <img [src]="classPhotoUrl" [alt]="classTitle || 'Class'" class="hero-image" />
+      </div>
+    }
+
+    <div class="class-registration-intro">
+      @if (classScheduleLabel) {
+        <p class="app-body-secondary-sm content-subtitle m-b-12">{{ classScheduleLabel }}</p>
+      }
+      @if (classTitle) {
+        <h2 class="app-body m-b-18">{{ classTitle }}</h2>
+      }
+    </div>
+
+    @if (classId) {
+      <div class="class-registration-form-wrap">
+        <app-class-registration-form
+          [classId]="classId"
+          [classTitle]="classTitle || null"
+          [classScheduleLabel]="classScheduleLabel || null"
+          (submitted)="onFormSubmitted()"
+        ></app-class-registration-form>
+      </div>
+    }
+  }
+</ion-content>

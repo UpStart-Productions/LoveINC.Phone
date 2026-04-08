@@ -360,6 +360,51 @@ export class PlatformApiService {
   }
 
   /**
+   * Submit class registration. POST /public/:customerSlug/:tenantSlug/class-registration
+   */
+  postClassRegistration(payload: {
+    classId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    mailingAddress: string;
+    birthDate: string;
+    answers?: Record<string, string | number | boolean>;
+    deviceId?: string;
+  }): Promise<{ id: string }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const url = `${this.basePath}/class-registration`;
+    const body: Record<string, unknown> = {
+      classId: payload.classId.trim(),
+      firstName: payload.firstName.trim(),
+      lastName: payload.lastName.trim(),
+      email: payload.email.trim().toLowerCase(),
+      phone: payload.phone.trim(),
+      mailingAddress: payload.mailingAddress.trim(),
+      birthDate: payload.birthDate.trim(),
+    };
+    if (payload.answers && Object.keys(payload.answers).length > 0) {
+      body['answers'] = payload.answers;
+    }
+    if (payload.deviceId?.trim()) body['deviceId'] = payload.deviceId.trim();
+
+    return firstValueFrom(
+      this.http.post<{ id: string }>(url, body, { headers: this.headers }).pipe(
+        tap((res) => console.debug('PlatformApiService: class-registration OK', res)),
+        catchError((err) => {
+          const status = err?.status ?? err?.error?.status;
+          const message = err?.error?.message ?? err?.message ?? JSON.stringify(err?.error);
+          console.error('PlatformApiService: class-registration failed', { url, status, message, err });
+          throw err;
+        })
+      )
+    );
+  }
+
+  /**
    * Get full app user profile (voucher requests, notifications). GET app-user/profile
    */
   getAppUserProfile(params: { deviceId?: string; email?: string }): Observable<{

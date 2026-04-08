@@ -941,7 +941,33 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   hasActionButton(): boolean {
+    if (this.contentType === 'class') {
+      return false;
+    }
     return !!(this.contentItem?.registrationLink || this.contentItem?.actionButtonLink || this.contentItem?.actionButtonText);
+  }
+
+  /** In-app class registration (platform classes). */
+  showClassRegisterButton(): boolean {
+    return (
+      this.contentType === 'class' &&
+      !!this.contentItem &&
+      !this.loading &&
+      !this.error
+    );
+  }
+
+  navigateToClassRegistration(): void {
+    if (!this.contentItem?.id) return;
+    const scheduleLabel =
+      this.contentType === 'class' ? (this.getHeaderDateLabel() ?? this.contentItem.subtitle ?? '') : '';
+    this.router.navigate(['/tabs/class-registration', this.contentItem.id], {
+      state: {
+        classTitle: this.contentItem.title,
+        classPhotoUrl: this.contentItem.photoUrl?.trim() || '',
+        classScheduleLabel: scheduleLabel?.trim() ?? '',
+      },
+    });
   }
 
   isDonationDrive(): boolean {

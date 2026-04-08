@@ -1,0 +1,217 @@
+<div class="class-registration-form">
+  <ion-list>
+    <ion-item>
+      <ion-label position="stacked">First name <span class="required-star" aria-hidden="true">*</span></ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="form.firstName"
+        name="firstName"
+        autocomplete="given-name"
+        autocapitalize="on"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Last name <span class="required-star" aria-hidden="true">*</span></ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="form.lastName"
+        name="lastName"
+        autocomplete="family-name"
+        autocapitalize="on"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Street address line 1 <span class="required-star" aria-hidden="true">*</span></ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="form.addressStreet1"
+        name="addressStreet1"
+        autocomplete="address-line1"
+        autocapitalize="on"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Street address line 2</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="form.addressStreet2"
+        name="addressStreet2"
+        autocomplete="address-line2"
+        autocapitalize="on">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">City <span class="required-star" aria-hidden="true">*</span></ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="form.addressCity"
+        name="addressCity"
+        autocomplete="address-level2"
+        autocapitalize="on"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">State <span class="required-star" aria-hidden="true">*</span></ion-label>
+      <div class="select-border-wrapper">
+        <ion-select
+          [(ngModel)]="form.addressState"
+          name="addressState"
+          placeholder="Select state"
+          required
+          interface="action-sheet">
+          @for (opt of stateOptions; track opt.value) {
+            <ion-select-option [value]="opt.value">{{ opt.label }}</ion-select-option>
+          }
+        </ion-select>
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">ZIP code <span class="required-star" aria-hidden="true">*</span></ion-label>
+      <ion-input
+        type="text"
+        inputmode="numeric"
+        [(ngModel)]="form.addressZip"
+        name="addressZip"
+        autocomplete="postal-code"
+        autocapitalize="on"
+        placeholder="97000 or 97000-0000"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Email <span class="required-star" aria-hidden="true">*</span></ion-label>
+      <div class="form-field-with-error">
+        <ion-input
+          type="email"
+          [(ngModel)]="form.email"
+          name="email"
+          autocomplete="email"
+          autocapitalize="on"
+          appEmailValidator
+          required
+          #email="ngModel"
+          [class.ion-invalid]="email.invalid && email.touched">
+        </ion-input>
+        @if (getEmailError(email)) {
+          <p class="form-error-text">{{ getEmailError(email) }}</p>
+        }
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Phone (for texts) <span class="required-star" aria-hidden="true">*</span></ion-label>
+      <div class="form-field-with-error">
+        <ion-input
+          type="tel"
+          [(ngModel)]="form.phone"
+          name="phone"
+          autocomplete="tel"
+          autocapitalize="on"
+          appPhoneFormatter
+          appPhoneValidator
+          required
+          #phone="ngModel"
+          [class.ion-invalid]="phone.invalid && phone.touched">
+        </ion-input>
+        @if (getPhoneError(phone)) {
+          <p class="form-error-text">{{ getPhoneError(phone) }}</p>
+        }
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Birth date and year <span class="required-star" aria-hidden="true">*</span></ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="form.birthDate"
+        name="birthDate"
+        autocapitalize="on"
+        placeholder="e.g. April 1990"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">
+        Love INC shuttle (Newberg)? <span class="required-star" aria-hidden="true">*</span>
+      </ion-label>
+      <div class="select-border-wrapper">
+        <ion-select [(ngModel)]="form.shuttleNeeded" name="shuttleNeeded" placeholder="Select one" required interface="action-sheet">
+          <ion-select-option value="yes">Yes</ion-select-option>
+          <ion-select-option value="no">No</ion-select-option>
+        </ion-select>
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">
+        Children attending Good News Club during class? <span class="required-star" aria-hidden="true">*</span>
+      </ion-label>
+      <div class="select-border-wrapper">
+        <ion-select
+          [(ngModel)]="form.childrenGoodNewsClub"
+          name="childrenGoodNewsClub"
+          placeholder="Select one"
+          required
+          interface="action-sheet">
+          <ion-select-option value="yes">Yes</ion-select-option>
+          <ion-select-option value="no">No</ion-select-option>
+        </ion-select>
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">About your children (names and birthdates)</ion-label>
+      <ion-textarea
+        [(ngModel)]="form.childrenDetails"
+        name="childrenDetails"
+        rows="3"
+        autocapitalize="on"
+        placeholder="If bringing children, list names and birthdates">
+      </ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Prayer requests (confidential)</ion-label>
+      <ion-textarea
+        [(ngModel)]="form.prayerRequests"
+        name="prayerRequests"
+        rows="3"
+        autocapitalize="on"
+        placeholder="Optional">
+      </ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Anything else we should know?</ion-label>
+      <ion-textarea
+        [(ngModel)]="form.additionalInfo"
+        name="additionalInfo"
+        rows="3"
+        autocapitalize="on"
+        placeholder="Optional">
+      </ion-textarea>
+    </ion-item>
+  </ion-list>
+
+  <p class="required-legend app-body-secondary-sm ion-padding-start ion-padding-end">* Required</p>
+
+  <ion-button
+    expand="block"
+    color="primary"
+    [disabled]="!canSubmit() || submitting"
+    (click)="onSubmit()">
+    {{ submitting ? 'Submitting…' : 'Submit registration' }}
+  </ion-button>
+</div>

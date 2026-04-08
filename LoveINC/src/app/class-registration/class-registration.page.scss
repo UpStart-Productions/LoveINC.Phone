@@ -1,0 +1,46 @@
+/* Same as content-detail: fullscreen + translucent toolbar relies on default
+   ion-content padding (incl. top safe area) — do not zero --padding-top or the
+   hero scrolls under the header. Hero stays edge-to-edge like class details. */
+ion-content.class-registration-page {
+  --background: var(--ion-background-color);
+}
+
+/* Match content-detail.page.scss hero */
+.hero-image-container {
+  width: 100%;
+  height: 15.625rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f5f9fa 0%, #e0e7ea 100%);
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Match standard ion-padding (1rem) for text + form — same horizontal rhythm as Request Assistance. */
+.class-registration-padded,
+.class-registration-intro,
+.class-registration-form-wrap {
+  padding-left: var(--ion-padding, 1rem);
+  padding-right: var(--ion-padding, 1rem);
+}
+
+.class-registration-intro {
+  padding-top: 1rem;
+}
+
+.class-registration-form-wrap {
+  padding-bottom: 3rem;
+}
+
+.content-subtitle {
+  white-space: pre-line;
+}
+
+.class-registration-loading {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}

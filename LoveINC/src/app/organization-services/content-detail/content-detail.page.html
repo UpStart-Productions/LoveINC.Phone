@@ -168,7 +168,20 @@
         </div>
       </ion-list>
 
-      <!-- Action Buttons -->
+      <!-- Class registration (in-app) -->
+      <div class="action-buttons m-t-24" *ngIf="showClassRegisterButton()">
+        <ion-button expand="block" color="primary" (click)="navigateToClassRegistration()">
+          <ion-icon slot="start" name="create-outline"></ion-icon>
+          Register
+        </ion-button>
+
+        <ion-button *ngIf="hasSchedule()" expand="block" fill="outline" color="primary" (click)="onAddToCalendarClick()">
+          <ion-icon slot="start" name="calendar-outline"></ion-icon>
+          Add to Calendar
+        </ion-button>
+      </div>
+
+      <!-- Action Buttons (non-class content) -->
       <div class="action-buttons m-t-24" *ngIf="hasActionButton()">
         <ion-button expand="block" color="primary" (click)="onActionButtonClick()">
           <ion-icon slot="start" name="link-outline"></ion-icon>

@@ -7,6 +7,19 @@ import {
 import { Platform } from '@ionic/angular';
 import { Capacitor } from '@capacitor/core';
 
+/** Body sent to POST class-registration; stored locally after a successful submit. */
+export interface ClassRegistrationPayloadForStorage {
+  classId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  mailingAddress: string;
+  birthDate: string;
+  answers?: Record<string, string | number | boolean>;
+  deviceId?: string;
+}
+
 /**
  * GrovLink Database Service
  *
@@ -125,6 +138,21 @@ export class GrovLinkDatabaseService {
         json TEXT NOT NULL
       );
     `);
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS class_registrations (
+        id TEXT PRIMARY KEY,
+        server_id TEXT NOT NULL,
+        class_id TEXT NOT NULL,
+        class_title TEXT,
+        class_schedule_label TEXT,
+        submitted_at TEXT NOT NULL,
+        payload_json TEXT NOT NULL
+      );
+    `);
+    await db.execute(`
+      CREATE INDEX IF NOT EXISTS idx_class_registrations_class_id
+      ON class_registrations (class_id);
+    `);
   }
 
   async getDbConnection(): Promise<SQLiteDBConnection> {
@@ -165,5 +193,38 @@ export class GrovLinkDatabaseService {
       if (key) ids.add(key);
     }
     return ids;
+  }
+
+  /**
+   * Persist a successful class registration for this device (GrovLink SQLite).
+   */
+  async saveClassRegistration(params: {
+    serverId: string;
+    classId: string;
+    classTitle?: string | null;
+    classScheduleLabel?: string | null;
+    payload: ClassRegistrationPayloadForStorage;
+  }): Promise<string> {
+    const id =
+      typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    const submittedAt = new Date().toISOString();
+    const db = await this.getDbConnection();
+    await db.run(
+      `INSERT INTO class_registrations (
+        id, server_id, class_id, class_title, class_schedule_label, submitted_at, payload_json
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        id,
+        params.serverId,
+        params.classId,
+        params.classTitle ?? null,
+        params.classScheduleLabel ?? null,
+        submittedAt,
+        JSON.stringify(params.payload),
+      ]
+    );
+    return id;
   }
 }

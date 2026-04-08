@@ -119,6 +119,11 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'class-registration/:classId',
+        loadComponent: () =>
+          import('../class-registration/class-registration.page').then((m) => m.ClassRegistrationPage),
+      },
+      {
         path: 'content-detail/:type/:id',
         loadComponent: () =>
           import('../organization-services/content-detail/content-detail.page').then((m) => m.ContentDetailPage),
