@@ -27,6 +27,7 @@ import {
   IonLabel,
   IonList,
   IonSpinner,
+  IonAvatar,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { ContentDetail, ContentType } from './content-detail.model';
@@ -76,6 +77,7 @@ import { GrovLinkDatabaseService } from '../../services/grovlink-database.servic
   IonLabel,
   IonList,
   IonSpinner,
+  IonAvatar,
   SafeHtmlPipe,
 ],
   providers: [AlertController, ActionSheetController, ToastController]
@@ -723,6 +725,12 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       .filter((d) => d.url)
       .map((d) => ({ title: d.title, url: d.url!, type: undefined as 'handout' | 'worksheet' | 'resource' | undefined }));
 
+    const cPhoto = c as PlatformClass & { instructor_photo_url?: string };
+    const rawInstructorPhoto = c.instructorPhotoUrl ?? cPhoto.instructor_photo_url;
+    const instructorPhotoUrl = rawInstructorPhoto
+      ? (this.platformApi.resolveUploadUrl(rawInstructorPhoto) || rawInstructorPhoto)
+      : undefined;
+
     return {
       id: c.id,
       title: c.title,
@@ -730,6 +738,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',
       subtitle,
       teacher: c.instructor,
+      instructorPhotoUrl: instructorPhotoUrl || undefined,
       location,
       durationMinutes: c.durationMinutes,
       cost: c.cost,
@@ -877,7 +886,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   hasInstructor(): boolean {
-    return !!this.contentItem?.teacher;
+    if (!this.contentItem) return false;
+    return !!(
+      this.contentItem.teacher ||
+      (this.contentType === 'class' && this.contentItem.instructorPhotoUrl)
+    );
   }
 
   hasSchedule(): boolean {

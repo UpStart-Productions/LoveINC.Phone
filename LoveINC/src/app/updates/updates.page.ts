@@ -13,7 +13,7 @@ import {
 } from '@ionic/angular/standalone';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CardComponent, CardActionIcon } from '../components/card/card.component';
+import { CardComponent, CardActionIcon, type CardBadge } from '../components/card/card.component';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { SharingService } from '../services/sharing/sharing.service';
@@ -21,6 +21,7 @@ import { NotificationsButtonComponent } from '../components/notifications-button
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 import { CalendarService } from '../services/calendar/calendar.service';
+import { CardFormattingService } from '../services/card-formatting.service';
 import { OnboardingService } from '../services/onboarding.service';
 import {
   PlatformApiService,
@@ -44,6 +45,7 @@ export interface UpdateItem {
   endDate?: string;
   volunteerPositions?: Array<{ id: string; title?: string; shortDescription?: string; description?: string; schedule?: string }>;
   address?: string | null;
+  badge: CardBadge;
 }
 
 @Component({
@@ -76,6 +78,7 @@ export class UpdatesPage implements OnInit {
     private volunteerActionSheetService: VolunteerActionSheetService,
     private scheduleFormatting: ScheduleFormattingService,
     private calendarService: CalendarService,
+    private cardFormatting: CardFormattingService,
     private onboarding: OnboardingService
   ) {}
 
@@ -166,6 +169,7 @@ export class UpdatesPage implements OnInit {
       endDate: e.endDate,
       volunteerPositions,
       address,
+      badge: this.cardFormatting.formatForCard(e, 'event').badge,
     };
   }
 
@@ -176,10 +180,8 @@ export class UpdatesPage implements OnInit {
 
   private mapClassToUpdateItem(c: PlatformClass, startDate: string): UpdateItem {
     const session = c.nextSession ?? this.deriveSessionFromOfferings(c.offerings);
-    const start = new Date(startDate);
-    const dateStr = format(start, 'EEEE, MMMM d, yyyy');
-    const timeStr = session?.time ? ` • ${session.time}` : '';
-    const subtitle = `${dateStr}${timeStr}`;
+    const formatted = this.cardFormatting.formatForCard(c, 'class');
+    const { subtitle, badge } = formatted;
     const rawPositions = (c.volunteerPositions ?? (c as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
     const address = c.address ? this.formatAddress(c.address) : null;
     const volunteerPositions = rawPositions.length
@@ -203,6 +205,7 @@ export class UpdatesPage implements OnInit {
       endDate: session?.endDate,
       volunteerPositions,
       address,
+      badge,
     };
   }
 

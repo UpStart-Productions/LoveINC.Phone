@@ -556,8 +556,7 @@ ion-modal.alerts-modal-sheet {
 
 /* ion-title vs ion-padding body: ~10px nudge (entry-notes / add-category sheet already pad title) */
 ion-modal.alerts-modal-sheet ion-header ion-toolbar ion-title,
-ion-modal.date-picker-modal-sheet ion-header ion-toolbar ion-title,
-ion-modal.donation-map-modal-fullscreen ion-header ion-toolbar ion-title {
+ion-modal.date-picker-modal-sheet ion-header ion-toolbar ion-title {
   padding-inline-start: 0.625rem !important;
 }
 

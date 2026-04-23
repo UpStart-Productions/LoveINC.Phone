@@ -18,9 +18,13 @@ import {
   IonSpinner,
 } from '@ionic/angular/standalone';
 import { PopoverController } from '@ionic/angular/standalone';
+import { CapacitorHttp } from '@capacitor/core';
 import { GoogleMapsLoaderService } from '../../services/google-maps-loader.service';
 
 declare var google: any;
+
+/** Improves geocode hits for this affiliate when street-only or ambiguous strings are used. */
+const TENANT_GEOCODE_SUFFIX = ', Newberg, OR, USA';
 
 @Component({
   selector: 'app-donation-location-map-modal',
@@ -42,6 +46,8 @@ declare var google: any;
 export class DonationLocationMapModalComponent implements AfterViewInit, OnDestroy {
   @Input() organization = '';
   @Input() address = '';
+  @Input() latitude: number | undefined;
+  @Input() longitude: number | undefined;
   @Input() hours: string | null = null;
   @Input() acceptedItems: string[] = [];
   @Input() itemsIcon = 'gift-outline';
@@ -65,7 +71,8 @@ export class DonationLocationMapModalComponent implements AfterViewInit, OnDestr
   }
 
   ngAfterViewInit() {
-    this.initMap();
+    // Defer so Ionic modal has applied @Input() from componentProps.
+    setTimeout(() => void this.initMap(), 0);
   }
 
   ngOnDestroy() {
@@ -73,6 +80,123 @@ export class DonationLocationMapModalComponent implements AfterViewInit, OnDestr
     if (this.popover) {
       this.popover.dismiss();
     }
+  }
+
+  private isValidMapCoordinate(lat: number | undefined, lng: number | undefined): boolean {
+    if (lat === undefined || lng === undefined) return false;
+    if (typeof lat !== 'number' || typeof lng !== 'number') return false;
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return false;
+    return Math.abs(lat) <= 90 && Math.abs(lng) <= 180;
+  }
+
+  /** Strips HTML and normalizes newlines (CMS/API may include markup). */
+  private normalizeForGeocode(raw: string): string {
+    const noTags = raw.replace(/<[^>]+>/g, ' ');
+    return noTags
+      .replace(/\r\n|\n|\r/g, ', ')
+      .replace(/\s+/g, ' ')
+      .replace(/,\s*,/g, ',')
+      .replace(/^[\s,]+|[\s,]+$/g, '')
+      .trim();
+  }
+
+  /**
+   * Resolves a place string to coordinates. Tries Google Geocoder, then a
+   * Nominatim (OSM) request via CapacitorHttp. Google’s JS Geocoder needs the
+   * Geocoding API enabled on the same GCP project as the key; if that is off or
+   * the key is mis-restricted, Google returns REQUEST_DENIED and the OSM path still works.
+   */
+  private geocodeGooglePromise(address: string): Promise<any | null> {
+    return new Promise((resolve) => {
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address, region: 'us' }, (results: any[] | null, status: string) => {
+        if (status === 'OK' && results?.[0]?.geometry?.location) {
+          resolve(results[0].geometry.location);
+          return;
+        }
+        if (status && status !== 'OK' && status !== 'ZERO_RESULTS') {
+          console.warn('DonationLocationMapModal: Google Geocoder', status, address);
+        }
+        resolve(null);
+      });
+    });
+  }
+
+  private async geocodeNominatimUs(query: string): Promise<{ lat: number; lng: number } | null> {
+    const q = encodeURIComponent(query);
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=1&countrycodes=us`;
+    try {
+      const { status, data } = await CapacitorHttp.get({
+        url,
+        headers: {
+          'User-Agent': 'LoveINCMobile/1.0 (Grovlink; nonprofit app)',
+          Accept: 'application/json',
+        },
+      });
+      if (status !== 200) return null;
+      const rows = typeof data === 'string' ? (JSON.parse(data) as unknown) : data;
+      if (!Array.isArray(rows) || !rows[0]) return null;
+      const r = rows[0] as { lat?: string; lon?: string };
+      const lat = r.lat != null ? parseFloat(r.lat) : NaN;
+      const lng = r.lon != null ? parseFloat(r.lon) : NaN;
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+      if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+      return { lat, lng };
+    } catch (e) {
+      console.warn('DonationLocationMapModal: Nominatim request failed', e);
+      return null;
+    }
+  }
+
+  private async resolvePositionForAddress(address: string): Promise<any | null> {
+    let pos = await this.geocodeGooglePromise(address);
+    if (pos) return pos;
+    if (!/\b(OR|Oregon|97132)\b/i.test(address) && !address.includes(TENANT_GEOCODE_SUFFIX)) {
+      pos = await this.geocodeGooglePromise(address + TENANT_GEOCODE_SUFFIX);
+      if (pos) return pos;
+    }
+    let osm = await this.geocodeNominatimUs(address);
+    if (osm) return osm;
+    if (!/\b(OR|Oregon|97132)\b/i.test(address) && !address.includes(TENANT_GEOCODE_SUFFIX)) {
+      osm = await this.geocodeNominatimUs(address + TENANT_GEOCODE_SUFFIX);
+    }
+    return osm;
+  }
+
+  private buildMapWithPosition(mapEl: HTMLElement, position: any): void {
+    this.map = new google.maps.Map(mapEl, {
+      zoom: 15,
+      center: position,
+      mapTypeId: 'roadmap',
+      styles: [
+        {
+          featureType: 'poi',
+          elementType: 'labels',
+          stylers: [{ visibility: 'off' }],
+        },
+      ],
+    });
+    const marker = new google.maps.Marker({
+      position,
+      map: this.map,
+      title: this.organization,
+      animation: google.maps.Animation.DROP,
+    });
+
+    marker.addListener('click', () => {
+      this.ngZone.run(() => {
+        this.showLocationPopover(marker);
+      });
+    });
+
+    google.maps.event.addListenerOnce(this.map, 'idle', () => {
+      this.ngZone.run(() => {
+        if (!this.initialPopoverShown) {
+          this.initialPopoverShown = true;
+          this.showLocationPopover(marker);
+        }
+      });
+    });
   }
 
   private async initMap() {
@@ -93,7 +217,17 @@ export class DonationLocationMapModalComponent implements AfterViewInit, OnDestr
       return;
     }
 
-    if (!this.address?.trim()) {
+    if (this.isValidMapCoordinate(this.latitude, this.longitude)) {
+      this.ngZone.run(() => {
+        this.loading = false;
+        this.geocodeError = false;
+        this.buildMapWithPosition(mapEl, { lat: this.latitude!, lng: this.longitude! });
+      });
+      return;
+    }
+
+    const normalized = this.normalizeForGeocode(this.address ?? '');
+    if (!normalized) {
       this.ngZone.run(() => {
         this.loading = false;
         this.geocodeError = true;
@@ -101,50 +235,16 @@ export class DonationLocationMapModalComponent implements AfterViewInit, OnDestr
       return;
     }
 
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ address: this.address }, (results: any[] | null, status: string) => {
-      this.ngZone.run(() => {
-        this.loading = false;
-        if (status !== 'OK' || !results?.[0]) {
-          this.geocodeError = true;
-          return;
-        }
-        const place = results[0];
-        const position = place.geometry.location;
-        this.map = new google.maps.Map(mapEl, {
-          zoom: 15,
-          center: position,
-          mapTypeId: 'roadmap',
-          styles: [
-            {
-              featureType: 'poi',
-              elementType: 'labels',
-              stylers: [{ visibility: 'off' }],
-            },
-          ],
-        });
-        const marker = new google.maps.Marker({
-          position,
-          map: this.map,
-          title: this.organization,
-          animation: google.maps.Animation.DROP,
-        });
-
-        marker.addListener('click', () => {
-          this.ngZone.run(() => {
-            this.showLocationPopover(marker);
-          });
-        });
-
-        google.maps.event.addListenerOnce(this.map, 'idle', () => {
-          this.ngZone.run(() => {
-            if (!this.initialPopoverShown) {
-              this.initialPopoverShown = true;
-              this.showLocationPopover(marker);
-            }
-          });
-        });
-      });
+    const position = await this.resolvePositionForAddress(normalized);
+    this.ngZone.run(() => {
+      this.loading = false;
+      if (position) {
+        this.geocodeError = false;
+        this.buildMapWithPosition(mapEl, position);
+      } else {
+        this.geocodeError = true;
+        console.warn('DonationLocationMapModal: all geocoding strategies failed for', normalized);
+      }
     });
   }
 

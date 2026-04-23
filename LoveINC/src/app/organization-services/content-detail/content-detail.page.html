@@ -52,10 +52,16 @@
       <ion-list lines="none" class="info-list">
         <!-- Instructor (for classes) -->
         <ion-item *ngIf="hasInstructor()">
-          <ion-icon slot="start" name="person-outline" color="dark"></ion-icon>
+          @if (contentType === 'class' && contentItem.instructorPhotoUrl) {
+            <ion-avatar slot="start" aria-hidden="true">
+              <img [src]="contentItem.instructorPhotoUrl" [alt]="contentItem.teacher || 'Instructor'" />
+            </ion-avatar>
+          } @else {
+            <ion-icon slot="start" name="person-outline" color="dark"></ion-icon>
+          }
           <ion-label>
             <h3 class="app-body">Instructor</h3>
-            <p>{{ contentItem.teacher }}</p>
+            <p *ngIf="contentItem.teacher">{{ contentItem.teacher }}</p>
           </ion-label>
         </ion-item>
 

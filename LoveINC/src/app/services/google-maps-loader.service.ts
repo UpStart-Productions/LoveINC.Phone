@@ -3,6 +3,11 @@ import { Injectable } from '@angular/core';
 const MAPS_API_KEY = 'AIzaSyCXCiRrX0kFHhD1eru5XMphJprgIsgKSS0';
 const MAPS_SCRIPT_URL = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}`;
 
+/**
+ * **GCP:** In the same project as this key, enable **Maps JavaScript API** (this script) and
+ * **Geocoding API** (required for `google.maps.Geocoder`; otherwise the geocoder returns
+ * `REQUEST_DENIED`). The map modal also falls back to Nominatim if Google geocoding fails.
+ */
 @Injectable({ providedIn: 'root' })
 export class GoogleMapsLoaderService {
   private loadPromise: Promise<void> | null = null;

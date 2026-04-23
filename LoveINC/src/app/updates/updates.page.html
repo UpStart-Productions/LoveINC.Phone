@@ -18,6 +18,7 @@
       *ngFor="let item of items"
       class="app-card-compact"
       [imageUrl]="item.photoUrl"
+      [badge]="item.badge"
       [title]="item.title"
       [subtitle]="item.subtitle"
       [description]="item.shortDescription || item.description"

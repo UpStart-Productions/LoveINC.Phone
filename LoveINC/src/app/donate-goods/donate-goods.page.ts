@@ -48,6 +48,9 @@ interface DonationLocation {
   category: string;
   organization: string;
   address: string | null;
+  /** From platform when provided; avoids geocoding. */
+  latitude?: number;
+  longitude?: number;
   phone: string | null;
   email?: string | null;
   hours: string | null;
@@ -165,11 +168,13 @@ export class DonateGoodsPage implements OnInit {
         schedule: this.scheduleFormatting.getPositionSchedule(v) ?? undefined,
       };
     });
+    const coords = this.coordinatesFromPlatformAddress(d.address);
     return {
       id: d.id,
       category,
       organization: d.provider?.name ?? d.title ?? '',
       address: this.formatAddress(d.address),
+      ...(coords ? { latitude: coords.lat, longitude: coords.lng } : {}),
       phone: d.provider?.phone ?? null,
       email: d.provider?.email ?? null,
       hours: this.scheduleFormatting.formatScheduleRule(this.scheduleFormatting.normalizeScheduleRule(d.scheduleRule)) ?? null,
@@ -191,10 +196,37 @@ export class DonateGoodsPage implements OnInit {
     return { icon, label, color };
   }
 
+  /**
+   * Prefer street + locality; if the API only fills locationName, still produce a
+   * geocodable string (e.g. venue name + city + state).
+   */
   private formatAddress(addr: PlatformAddress | undefined): string | null {
     if (!addr) return null;
-    const parts = [addr.address, addr.city, addr.state, addr.zip].filter(Boolean);
-    return parts.length ? parts.join(', ') : addr.locationName ?? null;
+    const line = (v: string | undefined | null) =>
+      v != null && String(v).trim() !== '' ? String(v).trim() : null;
+    const fromStreet = [line(addr.address), line(addr.city), line(addr.state), line(addr.zip)].filter(
+      (p): p is string => !!p
+    );
+    if (fromStreet.length) return fromStreet.join(', ');
+    const fromName = [line(addr.locationName), line(addr.city), line(addr.state), line(addr.zip)].filter(
+      (p): p is string => !!p
+    );
+    return fromName.length ? fromName.join(', ') : null;
+  }
+
+  private coordinatesFromPlatformAddress(
+    addr: PlatformAddress | undefined
+  ): { lat: number; lng: number } | null {
+    if (!addr) return null;
+    const ext = addr as unknown as Record<string, unknown>;
+    const rawLat = addr.latitude ?? ext['lat'];
+    const rawLng = addr.longitude ?? ext['lng'] ?? ext['long'];
+    if (rawLat == null || rawLng == null) return null;
+    const lat = typeof rawLat === 'number' ? rawLat : Number(rawLat);
+    const lng = typeof rawLng === 'number' ? rawLng : Number(rawLng);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+    return { lat, lng };
   }
 
   groupLocationsByCategory() {
@@ -299,7 +331,17 @@ export class DonateGoodsPage implements OnInit {
 
   getActionIcons(location: DonationLocation): CardActionIcon[] {
     return [
-      { icon: 'location-outline', handler: () => this.onMapPinClick(location), show: !!location.address, buttonClass: 'map-button' },
+      {
+        icon: 'location-outline',
+        handler: () => this.onMapPinClick(location),
+        show:
+          !!location.address?.trim() ||
+          (location.latitude != null &&
+            location.longitude != null &&
+            Number.isFinite(location.latitude) &&
+            Number.isFinite(location.longitude)),
+        buttonClass: 'map-button',
+      },
       { icon: 'call-outline', handler: () => this.onPhoneClick(location), show: !!location.phone, buttonClass: 'phone-button' },
       { icon: 'mail-outline', handler: () => this.onEmailClick(location), show: !!location.email, buttonClass: 'email-button' },
       {
@@ -319,10 +361,18 @@ export class DonateGoodsPage implements OnInit {
   }
 
   private async openDonationLocationMap(location: DonationLocation): Promise<void> {
-    if (!location.address?.trim()) return;
+    const hasAddr = !!location.address?.trim();
+    const hasCoords =
+      location.latitude != null &&
+      location.longitude != null &&
+      Number.isFinite(location.latitude) &&
+      Number.isFinite(location.longitude);
+    if (!hasAddr && !hasCoords) return;
     await this.locationMapModal.present({
       title: location.organization,
-      address: location.address,
+      address: location.address ?? '',
+      latitude: location.latitude,
+      longitude: location.longitude,
       hours: location.hours ?? null,
       acceptedItems: location.acceptedItems ?? [],
     });

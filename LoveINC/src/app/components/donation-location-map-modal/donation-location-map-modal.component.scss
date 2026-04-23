@@ -1,3 +1,9 @@
+/* Same width as the close button so the title centers (matches modal patterns with end-only actions) */
+ion-button.map-modal-toolbar-balance {
+  pointer-events: none;
+  opacity: 0;
+}
+
 /* Map fills ion-content; message overlays for loading/error */
 .map-container {
   width: 100%;

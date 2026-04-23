@@ -9,6 +9,9 @@ export interface PlatformAddress {
   city: string;
   state: string;
   zip: string;
+  /** When the API provides coordinates, the map can skip geocoding. */
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface PlatformOrganization {
@@ -71,6 +74,8 @@ export interface PlatformClass {
   shortDescription?: string;
   longDescription?: string;
   instructor?: string;
+  /** Resolved upload path or absolute URL; API may also send `instructor_photo_url` */
+  instructorPhotoUrl?: string;
   address?: PlatformAddress;
   capacity?: number;
   durationMinutes?: number;

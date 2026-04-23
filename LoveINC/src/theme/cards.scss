@@ -123,6 +123,11 @@ ion-card-content .voucher-card-exp .exp-day {
   font-weight: var(--app-font-weight-normal) !important;
 }
 
+/* Transformation Classes: date line not semibold (matches class-card on app-card only) */
+.class-card ion-card-header ion-card-subtitle {
+  font-weight: var(--app-font-weight-normal) !important;
+}
+
 /* -----------------------------------------------------------------------------
  * Cards container (home, updates, etc.)
  * ----------------------------------------------------------------------------- */

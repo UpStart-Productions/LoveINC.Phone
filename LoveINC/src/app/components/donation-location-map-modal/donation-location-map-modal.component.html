@@ -1,9 +1,18 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title class="app-title">{{ organization }}</ion-title>
+    <ion-buttons slot="start" aria-hidden="true">
+      <ion-button
+        fill="clear"
+        disabled
+        class="map-modal-toolbar-balance"
+        [attr.tabindex]="-1">
+        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ organization }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="dismiss()">
-        <ion-icon name="close"></ion-icon>
+      <ion-button (click)="dismiss()" fill="clear" aria-label="Close map">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
