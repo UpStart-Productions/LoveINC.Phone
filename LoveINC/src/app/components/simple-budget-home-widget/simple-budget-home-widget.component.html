@@ -1,6 +1,8 @@
 @if (showCard) {
   <div class="m-t-12 m-b-6">
     <app-content-card
+      [compactCategoryLabel]="true"
+      [compactDetail]="true"
       [category]="'Simple Budget'"
       [categoryIcon]="'wallet-outline'"
       [title]="cardTitle"

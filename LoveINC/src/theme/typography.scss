@@ -97,6 +97,16 @@ span {
   font-weight: var(--app-font-weight-medium);
 }
 
+/** Bold font weight – compose with app-title, app-body, etc. */
+.app-font-bold {
+  font-weight: var(--app-font-weight-bold);
+}
+
+/** Compound: ensure bold wins over `.app-title` (same single-class specificity otherwise) */
+.app-title.app-font-bold {
+  font-weight: var(--app-font-weight-bold);
+}
+
 /** Mission/body text in Ilisarniq – centered, color inherits */
 .app-font-ilisarniq-center {
   font-family: var(--app-font-family-ilisarniq);

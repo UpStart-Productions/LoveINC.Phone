@@ -41,33 +41,41 @@
       
       <div class="service-list">
         <div class="service-item">
-          <ion-icon name="heart-outline" class="m-t-3"></ion-icon>
-          <div>
-            <h4 class="app-title m-b-3">Holistic Care</h4>
+          <div class="service-item-icon">
+            <ion-icon name="heart-outline" class="m-t-3"></ion-icon>
+          </div>
+          <div class="service-item-body">
+            <h4 class="app-title app-font-bold m-b-3">Holistic Care</h4>
             <p class="app-body-secondary">Addressing spiritual, mental, emotional, and physical needs</p>
           </div>
         </div>
         
         <div class="service-item">
-          <ion-icon name="people-circle-outline" class="m-t-3"></ion-icon>
-          <div>
-            <h4 class="app-title m-b-3">Church Collaboration</h4>
+          <div class="service-item-icon">
+            <i-lucide name="church" [size]="24" color="var(--app-text-accent)" class="m-t-3"></i-lucide>
+          </div>
+          <div class="service-item-body">
+            <h4 class="app-title app-font-bold m-b-3">Church Collaboration</h4>
             <p class="app-body-secondary">Each church leans into its strengths, working together</p>
           </div>
         </div>
         
         <div class="service-item">
-          <i-lucide name="hand-helping" [size]="28" color="var(--ion-color-primary)" slot="start" class="m-t-3"></i-lucide>
-          <div>
-            <h4 class="app-title m-b-3">Gap Ministries</h4>
+          <div class="service-item-icon">
+            <i-lucide name="hand-helping" [size]="28" color="var(--ion-color-primary)" class="m-t-3"></i-lucide>
+          </div>
+          <div class="service-item-body">
+            <h4 class="app-title app-font-bold m-b-3">Gap Ministries</h4>
             <p class="app-body-secondary">Filling unmet needs in the community through partner churches</p>
           </div>
         </div>
         
         <div class="service-item">
-          <ion-icon name="school-outline" class="m-t-3"></ion-icon>
-          <div>
-            <h4 class="app-title m-b-3">Transformational Ministry</h4>
+          <div class="service-item-icon">
+            <ion-icon name="book-outline" class="m-t-3"></ion-icon>
+          </div>
+          <div class="service-item-body">
+            <h4 class="app-title app-font-bold m-b-3">Transformational Ministry</h4>
             <p class="app-body-secondary">Educational classes, mentorship, and community events</p>
           </div>
         </div>
@@ -75,7 +83,7 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Impact Stats -->
+  <!-- Impact Stats (hidden for now)
   <ion-card class="stats-card">
     <ion-card-content>
       <div class="stats-grid m-t-18">
@@ -86,6 +94,7 @@
       </div>
     </ion-card-content>
   </ion-card>
+  -->
 
   <!-- The Love INC Model -->
   <ion-card>
@@ -100,27 +109,25 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Statement of Faith (Collapsible) -->
-  <ion-accordion-group class="m-18">
-    <ion-accordion value="faith">
-      <ion-item slot="header" color="light">
-        <ion-label>Statement of Faith</ion-label>
-      </ion-item>
-      <div class="ion-padding" slot="content">
-        <h3>The Apostles' Creed</h3>
-        <p class="m-b-18">
-          I believe in God, the Father almighty, creator of heaven and earth.
-          <br><br>
-          I believe in Jesus Christ, God's only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died, and was buried; he descended to the dead. On the third day he rose again; he ascended into heaven, he is seated at the right hand of the Father, and he will come to judge the living and the dead.
-          <br><br>
-          I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and the life everlasting. Amen.
-        </p>
-        <p class="app-body-secondary m-t-18 p-t-18">
-          We hold Scripture as divinely inspired and the ultimate authority for faith and life.
-        </p>
-      </div>
-    </ion-accordion>
-  </ion-accordion-group>
+  <!-- Statement of Faith -->
+  <ion-card class="m-18">
+    <ion-card-header>
+      <ion-card-title>Statement of Faith</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h3>The Apostles' Creed</h3>
+      <p class="m-b-18">
+        I believe in God, the Father almighty, creator of heaven and earth.
+        <br><br>
+        I believe in Jesus Christ, God's only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died, and was buried; he descended to the dead. On the third day he rose again; he ascended into heaven, he is seated at the right hand of the Father, and he will come to judge the living and the dead.
+        <br><br>
+        I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and the life everlasting. Amen.
+      </p>
+      <p class="app-body-secondary m-t-18 p-t-18">
+        We hold Scripture as divinely inspired and the ultimate authority for faith and life.
+      </p>
+    </ion-card-content>
+  </ion-card>
 
   <!-- Call to Action -->
   <div class="cta-section p-30 p-l-24 p-r-24 m-18 m-t-0 m-l-18 m-r-18">

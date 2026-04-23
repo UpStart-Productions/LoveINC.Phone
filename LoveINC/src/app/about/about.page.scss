@@ -19,16 +19,37 @@
   gap: 1rem;
 }
 
+// Fixed-width icon column so titles/descriptions share the same left edge
+.service-item-icon {
+  flex: 0 0 var(--app-icon-size-xl);
+  width: var(--app-icon-size-xl);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.service-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
 .service-item {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  
+
   ion-icon {
     color: var(--app-text-accent);
     flex-shrink: 0;
+    font-size: var(--app-icon-size-lg);
+    width: var(--app-icon-size-lg);
+    height: var(--app-icon-size-lg);
   }
-  
+
+  i-lucide {
+    flex-shrink: 0;
+  }
+
   p {
     margin: 0;
   }
@@ -62,9 +83,6 @@
     opacity: 0.9;
   }
 }
-
-// Accordion (Statement of Faith)
-// Margin handled by utility class in HTML
 
 // Call to Action Section
 .cta-section {

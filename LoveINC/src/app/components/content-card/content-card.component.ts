@@ -63,6 +63,21 @@ export class ContentCardComponent {
   /** When true, tapping `underTitle` opens the map modal (stops card navigation). */
   @Input() tapUnderTitleToOpenMap = false;
 
+  /**
+   * Tools page: larger main title, category and detail use default shared secondary
+   * typography (other screens keep the compact title line).
+   */
+  @Input() forToolsPage = false;
+
+  /**
+   * Smaller top category line (one step on the type scale). Used with forToolsPage
+   * and for home promos (e.g. Verse of the Day, Simple Budget) that share the same look.
+   */
+  @Input() compactCategoryLabel = false;
+
+  /** One step smaller than default detail line (e.g. Simple Budget home card subtext). */
+  @Input() compactDetail = false;
+
   constructor(
     private router: Router,
     private locationMapModal: LocationMapModalService

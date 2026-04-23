@@ -11,6 +11,7 @@
   <div class="tools-list">
     @for (card of toolCards; track card.title) {
       <app-content-card
+        [forToolsPage]="true"
         [category]="card.category"
         [categoryIcon]="card.categoryIcon"
         [categoryExtra]="card.categoryExtra"

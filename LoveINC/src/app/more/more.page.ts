@@ -53,9 +53,9 @@ interface MoreItem {
 export class MorePage implements OnInit {
   moreItems: MoreItem[] = [
     {
-      name: 'My Profile',
-      icon: 'person-circle-outline',
-      route: '/tabs/profile',
+      name: 'Impact Stories',
+      icon: 'heart-outline',
+      route: '/tabs/impact-stories',
     },
     {
       name: 'Verse of the Day',
@@ -63,14 +63,9 @@ export class MorePage implements OnInit {
       route: '/tabs/verse-of-the-day',
     },
     {
-      name: 'Impact Stories',
-      icon: 'heart-outline',
-      route: '/tabs/impact-stories',
-    },
-    {
-      name: 'Open Volunteer Positions',
-      icon: 'hand-left-outline',
-      route: '/tabs/volunteer-positions',
+      name: 'Learning Tools',
+      icon: 'construct-outline',
+      route: '/tabs/tools',
     },
     {
       name: 'FAQ',
@@ -84,15 +79,15 @@ export class MorePage implements OnInit {
       route: '/tabs/church-partnerships',
     },
     {
-      name: 'Tools',
-      icon: 'construct-outline',
-      route: '/tabs/tools',
+      name: 'My Profile',
+      icon: 'person-circle-outline',
+      route: '/tabs/profile',
     },
-    {
-      name: 'Developer Options',
-      icon: 'code-outline',
-      route: '/tabs/developer-options',
-    },
+    // {
+    //   name: 'Developer Options',
+    //   icon: 'code-outline',
+    //   route: '/tabs/developer-options',
+    // },
     // {
     //   name: 'Saved Items',
     //   icon: 'bookmark-outline',

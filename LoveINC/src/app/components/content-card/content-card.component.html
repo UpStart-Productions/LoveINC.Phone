@@ -1,4 +1,10 @@
-<ion-card class="content-card" [class.clickable]="clickable" (click)="route && handleClick()">
+<ion-card
+  class="content-card"
+  [class.content-card--for-tools-page]="forToolsPage"
+  [class.content-card--compact-category-label]="forToolsPage || compactCategoryLabel"
+  [class.clickable]="clickable"
+  (click)="route && handleClick()"
+>
   <ion-card-content>
     <div class="content-card-inner">
       <div class="content-card-top-row">
@@ -50,7 +56,10 @@
       </div>
       @if (detailSegments?.length || detail) {
         <div class="content-card-detail">
-          <p class="app-body-secondary">
+          <p
+            [class.app-body-secondary]="!compactDetail"
+            [class.app-body-secondary-sm]="compactDetail"
+          >
             @if (detailSegments?.length) {
               @for (seg of detailSegments; track $index) {
                 <span
