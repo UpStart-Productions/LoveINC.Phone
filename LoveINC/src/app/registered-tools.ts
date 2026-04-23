@@ -131,10 +131,10 @@ export const REGISTERED_TOOL_CARDS: ToolCard[] = [
     iconBackgroundColor: '#d56132',
   },
   {
-    category: 'Spiritual Growth',
+    category: 'Personal Growth',
     categoryIcon: 'book-outline',
-    title: 'Prayer Journal',
-    detail: 'Record prayers and reflections',
+    title: 'Journal',
+    detail: 'Capture notes and personal reflection',
     iconName: 'book-outline',
     iconBackgroundColor: '#2c5f7d',
   },
