@@ -12,6 +12,10 @@ import { DeviceIdService } from './services/device-id.service';
 import { PlatformApiService } from './services/platform/platform-api.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
 import { GoalTrackerDatabaseService } from '@upstart-productions/goal-tracker';
+import {
+  JournalDatabaseService,
+  JournalQuillFloatingToolbarComponent,
+} from '@upstart-productions/journal';
 import { SimpleBudgetDatabaseService, WeekPlanService } from '@upstart-productions/simple-budget';
 import { GoalTrackerRefreshService } from './goal-tracker-tabs/services/goal-tracker-refresh.service';
 import { PushRegistrationService } from './services/push-registration.service';
@@ -72,6 +76,7 @@ import {
   menu,
   menuOutline,
   listOutline,
+  reorderTwoOutline,
   // Content Icons
   calendarOutline,
   starOutline,
@@ -138,7 +143,7 @@ import {
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet],
+  imports: [IonApp, IonRouterOutlet, JournalQuillFloatingToolbarComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppComponent implements OnInit, OnDestroy {
@@ -155,6 +160,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private platform: Platform,
     private grovlinkDb: GrovLinkDatabaseService,
     private goalTrackerDb: GoalTrackerDatabaseService,
+    private journalDb: JournalDatabaseService,
     private simpleBudgetDb: SimpleBudgetDatabaseService,
     private weekPlanService: WeekPlanService,
     private goalTrackerRefresh: GoalTrackerRefreshService,
@@ -219,6 +225,9 @@ export class AppComponent implements OnInit, OnDestroy {
       }),
       this.simpleBudgetDb.getDbConnection().catch((err) => {
         console.warn('Simple Budget DB init deferred:', err);
+      }),
+      this.journalDb.getDbConnection().catch((err) => {
+        console.warn('Journal DB init deferred:', err);
       }),
     ]).catch(() => {});
     this.appReady = true;
@@ -369,6 +378,7 @@ export class AppComponent implements OnInit, OnDestroy {
       menu,
       menuOutline,
       listOutline,
+      reorderTwoOutline,
       // Content Icons
       calendarOutline,
       starOutline,

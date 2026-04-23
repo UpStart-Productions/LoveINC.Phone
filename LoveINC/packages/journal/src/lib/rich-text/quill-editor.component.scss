@@ -1,0 +1,68 @@
+.quill-editor-container {
+  height: 100%;
+  width: 100%;
+  border: 1px solid var(--ion-color-light);
+  border-radius: 8px;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+
+  ::ng-deep .ql-editor {
+    line-height: 1.5;
+    color: var(--ion-text-color);
+    padding: 16px;
+    min-height: 100%;
+    width: 100% !important;
+    word-wrap: break-word;
+    box-sizing: border-box;
+    overflow-y: auto;
+    flex: 1;
+    cursor: text;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    direction: ltr;
+  }
+
+  ::ng-deep .ql-editor *,
+  ::ng-deep .ql-editor *::before,
+  ::ng-deep .ql-editor *::after {
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    direction: ltr;
+  }
+
+  ::ng-deep .ql-editor h1,
+  ::ng-deep .ql-editor h2,
+  ::ng-deep .ql-editor h3 {
+    display: block;
+    margin: 0 0 16px 0;
+    line-height: 1.2;
+  }
+
+  ::ng-deep .ql-toolbar {
+    display: none;
+  }
+
+  ::ng-deep .ql-container {
+    border: none;
+    height: 100%;
+    width: 100% !important;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  ::ng-deep .ql-editor.ql-blank::before {
+    left: 16px;
+    right: 16px;
+  }
+
+  ::ng-deep quill-editor {
+    width: 100% !important;
+    display: block !important;
+  }
+}

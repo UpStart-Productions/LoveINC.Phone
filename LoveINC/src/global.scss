@@ -44,6 +44,12 @@
 @import './theme/whitespace.scss';
 @import './theme/forms.scss';
 @import './theme/goal-tracker-colors.scss';
+@import "quill/dist/quill.snow.css";
+
+/* Journal / ngx-quill: hide built-in toolbar (floating toolbar handles format) */
+.ql-toolbar {
+  display: none !important;
+}
 
 /* Address rows inside card HTML that open the map modal (Gap Ministries, Donate Goods) */
 .map-address-tappable {

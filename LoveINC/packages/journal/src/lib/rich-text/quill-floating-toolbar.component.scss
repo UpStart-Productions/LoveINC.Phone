@@ -1,0 +1,125 @@
+.quill-floating-toolbar {
+  position: fixed;
+  bottom: -76px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 50px;
+  z-index: 99999;
+  transition: bottom 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  overflow: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  background: var(--ion-background-color, #ffffff);
+  border-top: 1px solid var(--ion-color-light-shade);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  pointer-events: auto;
+}
+
+.toolbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 8px 0;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+
+  ion-button + ion-button {
+    margin-left: -2px !important;
+  }
+
+  ion-button + .toolbar-divider {
+    margin-left: -1px !important;
+  }
+
+  .toolbar-divider + ion-button {
+    margin-left: -1px !important;
+  }
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.15);
+  margin: 0 4px;
+  flex-shrink: 0;
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(255, 255, 255, 0.25);
+  }
+}
+
+ion-button {
+  --border-radius: 8px;
+  --padding-start: 0 !important;
+  --padding-end: 0 !important;
+  --margin-start: 0 !important;
+  --margin-end: 0 !important;
+  --min-width: 32px !important;
+  --min-height: 30px;
+  width: 32px !important;
+  height: 30px;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  flex-basis: 32px !important;
+  --color: var(--ion-color-medium-shade);
+  --background: transparent;
+  --background-hover: rgba(var(--ion-color-primary-rgb), 0.08);
+  --background-activated: rgba(var(--ion-color-primary-rgb), 0.12);
+  transition: all 0.2s ease;
+
+  ion-icon {
+    font-size: 20px;
+  }
+
+  &.active {
+    --color: var(--ion-color-primary);
+    --background: rgba(var(--ion-color-primary-rgb), 0.1);
+  }
+}
+
+.tool-label {
+  font-size: 16px;
+  color: var(--ion-color-medium-shade);
+  transition: all 0.2s ease;
+
+  &.bold {
+    font-weight: 500;
+  }
+
+  &.italic {
+    font-style: italic;
+  }
+
+  &.underline {
+    text-decoration: underline;
+  }
+}
+
+ion-button.active .tool-label {
+  color: var(--ion-color-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .quill-floating-toolbar {
+    background: var(--ion-color-dark, #1e1e1e);
+    border-top: 1px solid var(--ion-color-dark-shade);
+  }
+
+  .tool-label {
+    color: var(--ion-color-light);
+  }
+
+  ion-button.active .tool-label {
+    color: var(--ion-color-primary);
+  }
+}

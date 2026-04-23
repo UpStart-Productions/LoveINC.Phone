@@ -2,6 +2,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
+import { provideQuillConfig } from 'ngx-quill/config';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 import { INTAKE_VALIDATE_PROVIDER } from '@upstart-productions/service-unlock';
 import {
@@ -54,6 +55,7 @@ window.addEventListener('unhandledrejection', (e) => {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideQuillConfig({ theme: 'snow' }),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular({ mode: 'ios' }),
     provideRouter(routes),

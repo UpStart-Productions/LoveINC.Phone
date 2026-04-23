@@ -1,0 +1,132 @@
+import { Injectable } from '@angular/core';
+import {
+  CapacitorSQLite,
+  SQLiteConnection,
+  SQLiteDBConnection,
+} from '@capacitor-community/sqlite';
+import { Platform } from '@ionic/angular';
+
+/**
+ * SQLite for the journal package. Uses a dedicated DB file `loveinc_journal`.
+ */
+@Injectable({
+  providedIn: 'root',
+})
+export class JournalDatabaseService {
+  private sqlite: SQLiteConnection;
+  private db: SQLiteDBConnection | null = null;
+  private platform = '';
+  private static sharedDb: SQLiteDBConnection | null = null;
+  private static isInitializing = false;
+  private readonly DB_NAME = 'loveinc_journal';
+
+  constructor(private platformService: Platform) {
+    this.sqlite = new SQLiteConnection(CapacitorSQLite);
+  }
+
+  async initializePlugin(): Promise<boolean> {
+    if (this.platformService.is('ios') || this.platformService.is('android')) {
+      this.platform = 'native';
+    } else {
+      this.platform = 'web';
+    }
+    try {
+      await CapacitorSQLite.isSecretStored();
+    } catch {
+      // jeep-sqlite / timing
+    }
+    try {
+      await this.sqlite.checkConnectionsConsistency();
+    } catch {
+      // ignore
+    }
+    return true;
+  }
+
+  async openDatabase(): Promise<void> {
+    if (JournalDatabaseService.isInitializing) {
+      while (JournalDatabaseService.isInitializing) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      if (JournalDatabaseService.sharedDb) {
+        this.db = JournalDatabaseService.sharedDb;
+        return;
+      }
+    }
+
+    JournalDatabaseService.isInitializing = true;
+    try {
+      try {
+        this.db = await this.sqlite.retrieveConnection(this.DB_NAME, false);
+        if (typeof this.db.isDBOpen === 'function') {
+          const isOpen = await this.db.isDBOpen();
+          if (!isOpen) await this.db.open();
+        }
+        JournalDatabaseService.sharedDb = this.db;
+        return;
+      } catch {
+        // no prior connection
+      }
+
+      if (this.platform === 'web') {
+        await this.sqlite.saveToStore(this.DB_NAME);
+      }
+
+      try {
+        this.db = await this.sqlite.createConnection(
+          this.DB_NAME,
+          false,
+          'no-encryption',
+          1,
+          false
+        );
+      } catch (error: unknown) {
+        const msg = (error as Error)?.message ?? '';
+        if (msg.includes('Connection') && msg.includes('already exists')) {
+          this.db = await this.sqlite.retrieveConnection(this.DB_NAME, false);
+        } else {
+          throw error;
+        }
+      }
+
+      await this.db.open();
+      JournalDatabaseService.sharedDb = this.db;
+      await this.createTables();
+    } finally {
+      JournalDatabaseService.isInitializing = false;
+    }
+  }
+
+  private async createTables(): Promise<void> {
+    const db = await this.getDbConnection();
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS journal_entries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL,
+        createdAt TEXT NOT NULL,
+        updatedAt TEXT NOT NULL
+      );
+    `);
+  }
+
+  resetConnection(): void {
+    this.db = null;
+    JournalDatabaseService.sharedDb = null;
+  }
+
+  async getDbConnection(): Promise<SQLiteDBConnection> {
+    if (!this.db) {
+      await this.initializePlugin();
+      await this.openDatabase();
+    }
+    if (!this.db) {
+      throw new Error('Failed to establish journal database connection');
+    }
+    if (typeof this.db.isDBOpen === 'function') {
+      const isOpen = await this.db.isDBOpen();
+      if (!isOpen) await this.db.open();
+    }
+    return this.db;
+  }
+}

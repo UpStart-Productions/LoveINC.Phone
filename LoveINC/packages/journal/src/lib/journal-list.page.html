@@ -1,0 +1,40 @@
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tools" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Journal</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addEntry()" fill="clear" aria-label="Add entry">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div *ngIf="loading" class="ion-padding">
+    <p class="app-body-secondary">Loading…</p>
+  </div>
+  <div
+    *ngIf="!loading && entries.length === 0"
+    class="ion-padding empty-state"
+  >
+    <p class="app-body-secondary">No journal entries yet.</p>
+    <p class="app-caption">Tap + to add your first entry.</p>
+  </div>
+  <ion-list *ngIf="!loading && entries.length > 0" [inset]="true" lines="full">
+    <ion-item
+      *ngFor="let e of entries"
+      [routerLink]="['/tabs/journal', e.id]"
+      [detail]="true"
+      [button]="true"
+    >
+      <ion-label>
+        <h2 class="ion-text-wrap">{{ e.title || 'Untitled' }}</h2>
+        <p class="app-body-secondary">Created: {{ formatDate(e.createdAt) }}</p>
+        <p class="app-caption">Updated: {{ formatDate(e.updatedAt) }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

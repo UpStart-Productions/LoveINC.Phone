@@ -89,6 +89,28 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
       },
     ],
   },
+  {
+    path: 'journal',
+    loadComponent: () =>
+      import('@upstart-productions/journal').then((m) => m.JournalShellPage),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('@upstart-productions/journal').then((m) => m.JournalListPage),
+      },
+      {
+        path: 'new',
+        loadComponent: () =>
+          import('@upstart-productions/journal').then((m) => m.JournalEntryPage),
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('@upstart-productions/journal').then((m) => m.JournalEntryPage),
+      },
+    ],
+  },
 ];
 
 /**
@@ -137,5 +159,6 @@ export const REGISTERED_TOOL_CARDS: ToolCard[] = [
     detail: 'Capture notes and personal reflection',
     iconName: 'book-outline',
     iconBackgroundColor: '#2c5f7d',
+    route: '/tabs/journal',
   },
 ];
