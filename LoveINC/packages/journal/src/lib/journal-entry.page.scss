@@ -1,3 +1,30 @@
+ion-header {
+  --background: #ffffff;
+}
+
+ion-content.journal-entry-content {
+  --background: #ffffff;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+/* ion-input (scoped, not shadow): Ionic iOS uses --highlight-color-focused for
+   caret-color when focused. Do not set that to transparent or the caret is invisible. */
+.title-field ion-input {
+  --background: transparent;
+  --color: var(--ion-text-color, #222428);
+  font-family: 'CrimsonPro', serif;
+  font-weight: 500;
+  /* Body scale + 0.5rem (was +1rem) */
+  font-size: calc(var(--app-font-size-body, 1rem) + 0.5rem);
+  --border-width: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  /* --highlight-height: 0 is MD only; iOS has no line from this. */
+  --highlight-height: 0;
+}
+
 .quill-block {
-  padding-top: 0;
+  margin: 0 1rem;
+  padding: 0;
 }

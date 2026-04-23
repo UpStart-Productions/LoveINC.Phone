@@ -13,6 +13,33 @@ import { CommonModule } from '@angular/common';
 import { QuillEditorComponent } from 'ngx-quill';
 import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { QuillToolbarService } from './quill-toolbar.service';
+import { registerJournalQuillDividerBlot } from './journal-divider-blot';
+
+/**
+ * For the incremental `text-change` delta, approximate collapsed-caret index after the change
+ * when getSelection is temporarily null (e.g. some WebViews / composition).
+ */
+function cursorIndexAfterThisChangeDelta(changeDelta: { ops?: Array<Record<string, unknown>> }): number | null {
+  const ops = changeDelta?.ops;
+  if (!ops?.length) {
+    return null;
+  }
+  let index = 0;
+  for (const op of ops) {
+    if (typeof op['retain'] === 'number') {
+      index += op['retain'] as number;
+    }
+    const ins = op['insert'];
+    if (ins != null) {
+      if (typeof ins === 'string') {
+        index += (ins as string).length;
+      } else {
+        index += 1;
+      }
+    }
+  }
+  return index;
+}
 
 export interface JournalQuillEditorConfig {
   placeholder?: string;
@@ -62,13 +89,32 @@ export class JournalQuillEditorComponent
     // CVA
   };
   private editorInstance: any = null;
+  private focusInListener: (() => void) | null = null;
+  private focusOutListener: (() => void) | null = null;
+  private dashToDividerListener: ((d: unknown, o: unknown, s: string) => void) | null = null;
+  private processingDividerRule = false;
 
   ngAfterViewInit(): void {
     // layout hooks
   }
 
   ngOnDestroy(): void {
+    const root = this.editorInstance?.root as HTMLElement | undefined;
+    if (root) {
+      if (this.focusInListener) {
+        root.removeEventListener('focusin', this.focusInListener);
+      }
+      if (this.focusOutListener) {
+        root.removeEventListener('focusout', this.focusOutListener);
+      }
+    }
+    this.focusInListener = null;
+    this.focusOutListener = null;
     if (this.editorInstance) {
+      if (this.dashToDividerListener) {
+        this.editorInstance.off('text-change', this.dashToDividerListener);
+        this.dashToDividerListener = null;
+      }
       this.quillToolbarService.unregisterQuillEditor();
     }
   }
@@ -85,12 +131,112 @@ export class JournalQuillEditorComponent
 
   onEditorCreated(editor: any): void {
     this.editorInstance = editor;
+    // Must be the `Quill` from the same JS module as this instance, or the blot is never in the
+    // instance registry (and insertEmbed is a no-op / wrong format).
+    const Quill = Object.getPrototypeOf(editor).constructor as typeof import('quill').default;
+    registerJournalQuillDividerBlot(Quill);
     if (!this.config.disableToolbarAutoRegister) {
       this.quillToolbarService.registerQuillEditor(editor);
     }
+    this.focusInListener = () => this.quillToolbarService.notifyEditorContentFocus();
+    this.focusOutListener = () => this.quillToolbarService.notifyEditorContentBlur();
+    const root = editor.root as HTMLElement;
+    root.addEventListener('focusin', this.focusInListener);
+    root.addEventListener('focusout', this.focusOutListener);
+    this.applyHtmlToEditor(editor, this.content);
+    this.dashToDividerListener = (delta, oldDelta, source) => {
+      this.onTextChangeForTripleDash(
+        editor,
+        source,
+        delta as { ops?: Array<Record<string, unknown>> },
+        oldDelta
+      );
+    };
+    editor.on('text-change', this.dashToDividerListener);
     this.editorCreated.emit(editor);
     this.enforceHorizontalTextOrientation();
     this.fixH1CursorJumping(editor);
+  }
+
+  /** Notion-style: a line that is only `---` (optional leading spaces) becomes a light divider. */
+  private onTextChangeForTripleDash(
+    editor: any,
+    source: string,
+    changeDelta: { ops?: Array<Record<string, unknown>> },
+    _oldDelta: unknown
+  ): void {
+    if (this.processingDividerRule) {
+      return;
+    }
+    // Do not run on our own delete/insert or silent setContents; 'silent' is Quill 2.
+    if (source === 'silent' || String(source) === 'silent') {
+      return;
+    }
+
+    const run = (range: { index: number; length: number } | null) => {
+      if (!range || range.length > 0) {
+        return;
+      }
+      const textBefore = editor.getText(0, range.index);
+      const lastLine = textBefore.split('\n').pop() ?? '';
+      if (lastLine.trim() !== '---') {
+        return;
+      }
+      const lineStart = range.index - lastLine.length;
+      if (lineStart < 0) {
+        return;
+      }
+      this.processingDividerRule = true;
+      try {
+        editor.deleteText(lineStart, lastLine.length, 'user');
+        editor.insertEmbed(lineStart, 'journalDivider', true, 'user');
+        const after = lineStart + 1;
+        editor.setSelection(after, 0, 'user');
+      } finally {
+        this.processingDividerRule = false;
+      }
+    };
+
+    // Sync: right after user input Quill has usually updated selection; focus helps WebViews.
+    let range = (editor.getSelection(true) as { index: number; length: number } | null) ?? null;
+    if (!range) {
+      const idx = cursorIndexAfterThisChangeDelta(changeDelta);
+      if (idx != null) {
+        range = { index: idx, length: 0 };
+      }
+    }
+    if (range) {
+      run(range);
+    } else {
+      // Next frame: iOS/IME often report selection only after a tick.
+      queueMicrotask(() => {
+        if (this.processingDividerRule) {
+          return;
+        }
+        const r =
+          (editor.getSelection(true) as { index: number; length: number } | null) ??
+          (() => {
+            const idx = cursorIndexAfterThisChangeDelta(changeDelta);
+            return idx != null ? { index: idx, length: 0 } : null;
+          })();
+        if (r) {
+          run(r);
+        }
+      });
+    }
+  }
+
+  /**
+   * Must go through Quill's clipboard so the internal Delta matches the DOM.
+   * Assigning root.innerHTML directly desyncs the model and often drops the first character on reload.
+   */
+  private applyHtmlToEditor(editor: any, html: string): void {
+    if (!editor?.clipboard) return;
+    if (html == null || html === '') {
+      editor.setText('');
+      return;
+    }
+    editor.clipboard.dangerouslyPasteHTML(html);
   }
 
   private enforceHorizontalTextOrientation(): void {
@@ -135,18 +281,13 @@ export class JournalQuillEditorComponent
   }
 
   writeValue(value: string | null): void {
-    const newContent = value || '';
+    const newContent = value ?? '';
     if (newContent === this.content) {
       return;
     }
     this.content = newContent;
     if (this.editorInstance) {
-      this.editorInstance.root.innerHTML = this.content;
-    } else {
-      const el = this.elementRef.nativeElement.querySelector('.ql-editor');
-      if (el) {
-        el.innerHTML = this.content;
-      }
+      this.applyHtmlToEditor(this.editorInstance, newContent);
     }
   }
 

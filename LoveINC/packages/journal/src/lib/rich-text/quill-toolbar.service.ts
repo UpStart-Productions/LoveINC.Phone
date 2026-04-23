@@ -44,9 +44,12 @@ export class QuillToolbarService {
 
   private keyboardHeight = 0;
   private isKeyboardOpen = false;
+  private focusOutTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly estimatedKeyboardHeightPx = 300;
 
   constructor() {
     void this.initializeKeyboardListeners();
+    this.attachVisualViewportListener();
   }
 
   get activeQuillEditor(): Observable<any> {
@@ -60,6 +63,31 @@ export class QuillToolbarService {
   registerQuillEditor(editor: any): void {
     this.activeQuillEditor$.next(editor);
     this.updateToolbarState();
+  }
+
+  /**
+   * Call when the Quill contenteditable gains focus (e.g. user tapped the field).
+   * Shows the bar even if @capacitor/keyboard has not fired yet.
+   */
+  notifyEditorContentFocus(): void {
+    if (this.focusOutTimer) {
+      clearTimeout(this.focusOutTimer);
+      this.focusOutTimer = null;
+    }
+    this.isKeyboardOpen = true;
+    if (this.keyboardHeight < 1) {
+      this.keyboardHeight = this.estimatedKeyboardHeightPx;
+    }
+    this.updateToolbarState();
+  }
+
+  /** Call when the Quill root loses focus. Debounced so toolbar taps (mousedown) do not dismiss the bar. */
+  notifyEditorContentBlur(): void {
+    this.focusOutTimer = setTimeout(() => {
+      this.isKeyboardOpen = false;
+      this.keyboardHeight = 0;
+      this.updateToolbarState();
+    }, 150);
   }
 
   unregisterQuillEditor(): void {
@@ -231,8 +259,7 @@ export class QuillToolbarService {
         await Keyboard.addListener('keyboardWillHide', () => {
           this.keyboardHeight = 0;
           this.isKeyboardOpen = false;
-          const currentState = this.toolbarState$.value;
-          this.toolbarState$.next({ ...currentState, isVisible: false, keyboardHeight: 0 });
+          this.updateToolbarState();
         });
         await Keyboard.addListener('keyboardDidShow', (info: KeyboardInfo) => {
           this.keyboardHeight = info.keyboardHeight;
@@ -242,8 +269,7 @@ export class QuillToolbarService {
         await Keyboard.addListener('keyboardDidHide', () => {
           this.keyboardHeight = 0;
           this.isKeyboardOpen = false;
-          const currentState = this.toolbarState$.value;
-          this.toolbarState$.next({ ...currentState, isVisible: false, keyboardHeight: 0 });
+          this.updateToolbarState();
         });
       } catch {
         this.setupWebKeyboardDetection();
@@ -268,6 +294,27 @@ export class QuillToolbarService {
       this.updateToolbarState();
     };
     window.addEventListener('resize', handleResize);
+  }
+
+  /**
+   * WKWebView + iOS: keyboard height often tracks visualViewport; Capacitor events still apply when present.
+   */
+  private attachVisualViewportListener(): void {
+    if (typeof window === 'undefined' || !window.visualViewport) {
+      return;
+    }
+    const vv = window.visualViewport;
+    const updateFromViewport = () => {
+      const winH = window.innerHeight;
+      const overlapFromBottom = winH - (vv.height + vv.offsetTop);
+      if (overlapFromBottom > 64) {
+        this.keyboardHeight = Math.round(overlapFromBottom);
+        this.isKeyboardOpen = true;
+        this.updateToolbarState();
+      }
+    };
+    vv.addEventListener('resize', updateFromViewport);
+    vv.addEventListener('scroll', updateFromViewport);
   }
 
   private updateToolbarState(): void {

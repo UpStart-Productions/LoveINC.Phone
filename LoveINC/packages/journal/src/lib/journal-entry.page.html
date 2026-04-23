@@ -1,12 +1,12 @@
-<ion-header [translucent]="true" class="ion-no-border">
+<ion-header [translucent]="false" class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button [defaultHref]="backHref()" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ isNew ? 'New entry' : 'Edit entry' }}</ion-title>
+    <ion-title>{{ routeIsNew ? 'New entry' : 'Edit entry' }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
-        *ngIf="!isNew"
+        *ngIf="!routeIsNew"
         (click)="confirmDelete()"
         fill="clear"
         color="danger"
@@ -15,36 +15,36 @@
         <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
       </ion-button>
       <ion-button
-        (click)="save()"
+        (click)="done()"
         [disabled]="saving"
-        strong="true"
-        aria-label="Save entry"
+        aria-label="Done editing entry"
       >
-        {{ saving ? 'Saving…' : 'Save' }}
+        {{ saving ? 'Saving…' : 'Done' }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="journal-entry-content">
   <div *ngIf="loading" class="ion-padding">
-    <p class="app-body-secondary">Loading…</p>
+    <p>Loading…</p>
   </div>
   <ng-container *ngIf="!loading">
-    <ion-list [inset]="true" lines="none">
-      <ion-item>
-        <ion-input
-          label="Title"
-          labelPlacement="stacked"
-          [(ngModel)]="title"
-          name="title"
-          placeholder="Entry title"
-        ></ion-input>
-      </ion-item>
-    </ion-list>
-    <div class="ion-padding quill-block">
+    <div class="ion-padding title-field">
+      <ion-input
+        fill="clear"
+        [(ngModel)]="title"
+        (ngModelChange)="scheduleAutoSave()"
+        name="title"
+        placeholder="Title"
+        autocapitalize="words"
+        inputmode="text"
+      ></ion-input>
+    </div>
+    <div class="quill-block">
       <app-journal-quill-editor
         [(ngModel)]="content"
+        (contentChanged)="scheduleAutoSave()"
         [config]="quillConfig"
         name="content"
       ></app-journal-quill-editor>

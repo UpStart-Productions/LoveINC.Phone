@@ -5,6 +5,8 @@ PODS:
     - Capacitor
   - CapacitorAppLauncher (8.0.0):
     - Capacitor
+  - CapacitorCamera (8.0.0):
+    - Capacitor
   - CapacitorCommunityFileOpener (8.0.0):
     - Capacitor
   - CapacitorCommunitySqlite (8.0.0):
@@ -94,6 +96,7 @@ DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorAppLauncher (from `../../node_modules/@capacitor/app-launcher`)"
+  - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
   - "CapacitorCommunityFileOpener (from `../../node_modules/@capacitor-community/file-opener`)"
   - "CapacitorCommunitySqlite (from `../../node_modules/@capacitor-community/sqlite`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
@@ -133,6 +136,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/app"
   CapacitorAppLauncher:
     :path: "../../node_modules/@capacitor/app-launcher"
+  CapacitorCamera:
+    :path: "../../node_modules/@capacitor/camera"
   CapacitorCommunityFileOpener:
     :path: "../../node_modules/@capacitor-community/file-opener"
   CapacitorCommunitySqlite:
@@ -166,6 +171,7 @@ SPEC CHECKSUMS:
   Capacitor: ff35b0f66370b84aa238251b35b91886a3207c16
   CapacitorApp: 3963a84197280757b84f126afd1520a85ae3b092
   CapacitorAppLauncher: 7f2330aa2d8a72a4767ab05af9df4bf68166ebf0
+  CapacitorCamera: 592acb7ab9fb748e2d8571eb03af30ec4e1ace12
   CapacitorCommunityFileOpener: 66cdeac0ff2670dbeb08bc293aba76eb6da80f7a
   CapacitorCommunitySqlite: 8a61c1d599927d4321c13b28f132de8ca94b6d95
   CapacitorCordova: 0d65b9bb74e995dcecb9463f34f1af2aba6f955c
@@ -195,6 +201,6 @@ SPEC CHECKSUMS:
   SQLCipher: eb79c64049cb002b4e9fcb30edb7979bf4706dfc
   ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
 
-PODFILE CHECKSUM: 1da08bfa5fbe0b8009444fe286e44cd65c2a15af
+PODFILE CHECKSUM: d51df516b635589bc37c98c1adad94946ea523e0
 
 COCOAPODS: 1.16.2

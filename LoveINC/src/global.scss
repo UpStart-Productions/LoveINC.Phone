@@ -140,6 +140,35 @@
   font-style: normal;
 }
 
+/* Journal – Crimson Pro (from NephoPhone assets; Light + Medium + italics) */
+@font-face {
+  font-family: 'CrimsonPro';
+  src: url('/assets/fonts/CrimsonPro-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CrimsonPro';
+  src: url('/assets/fonts/CrimsonPro-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'CrimsonPro';
+  src: url('/assets/fonts/CrimsonPro-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CrimsonPro';
+  src: url('/assets/fonts/CrimsonPro-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+}
+
 /* -----------------------------------------------------------------------------
  * Love INC Heart Logo SVG
  * ----------------------------------------------------------------------------- */

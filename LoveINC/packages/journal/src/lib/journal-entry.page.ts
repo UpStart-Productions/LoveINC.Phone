@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,8 +11,6 @@ import {
   IonButtons,
   IonButton,
   IonBackButton,
-  IonList,
-  IonItem,
   IonInput,
   IonIcon,
 } from '@ionic/angular/standalone';
@@ -38,17 +36,16 @@ import { JournalEntry } from './types/journal-entry.model';
     IonButtons,
     IonButton,
     IonBackButton,
-    IonList,
-    IonItem,
     IonInput,
     IonIcon,
     JournalQuillEditorComponent,
   ],
 })
-export class JournalEntryPage implements OnInit {
+export class JournalEntryPage implements OnInit, OnDestroy {
   title = '';
   content = '';
-  isNew = true;
+  /** True when the route is `/journal/new` (only list → `:id` is "edit" in the URL). */
+  routeIsNew = false;
   entryId: number | null = null;
   saving = false;
   loading = true;
@@ -57,6 +54,11 @@ export class JournalEntryPage implements OnInit {
     height: 'min(55vh, 400px)',
   };
 
+  private lastSavedTitle = '';
+  private lastSavedContent = '';
+  private autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly autoSaveDelayMs = 1200;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -64,13 +66,20 @@ export class JournalEntryPage implements OnInit {
     private alertController: AlertController
   ) {}
 
+  ngOnDestroy(): void {
+    this.clearAutoSaveTimer();
+  }
+
   async ngOnInit(): Promise<void> {
     const pathTail = this.route.snapshot.url[0]?.path;
-    this.isNew = pathTail === 'new';
+    this.routeIsNew = pathTail === 'new';
     this.loading = true;
-    if (this.isNew) {
+    if (this.routeIsNew) {
+      this.entryId = null;
       this.title = '';
       this.content = '';
+      this.lastSavedTitle = '';
+      this.lastSavedContent = '';
     } else {
       const id = pathTail ? parseInt(pathTail, 10) : NaN;
       if (Number.isNaN(id)) {
@@ -91,40 +100,82 @@ export class JournalEntryPage implements OnInit {
   private hydrateFromEntry(e: JournalEntry): void {
     this.title = e.title;
     this.content = e.content;
+    this.lastSavedTitle = e.title.trim();
+    this.lastSavedContent = e.content;
   }
 
   backHref(): string {
     return '/tabs/journal';
   }
 
-  async save(): Promise<void> {
-    if (this.saving) return;
+  /** Debounced auto-save on title or body changes. */
+  scheduleAutoSave(): void {
+    if (this.loading) return;
+    this.clearAutoSaveTimer();
+    this.autoSaveTimer = setTimeout(() => {
+      this.autoSaveTimer = null;
+      void this.saveNow().catch((err) => console.error('Journal auto-save failed', err));
+    }, this.autoSaveDelayMs);
+  }
+
+  private clearAutoSaveTimer(): void {
+    if (this.autoSaveTimer) {
+      clearTimeout(this.autoSaveTimer);
+      this.autoSaveTimer = null;
+    }
+  }
+
+  private async waitForInFlightSave(): Promise<void> {
+    const maxMs = 10_000;
+    const start = Date.now();
+    while (this.saving && Date.now() - start < maxMs) {
+      await new Promise((r) => setTimeout(r, 40));
+    }
+  }
+
+  /**
+   * Persists if the current values differ from what was last written to the DB.
+   * Does not create a row for a new entry until the user has non-empty title or content.
+   */
+  private async saveNow(): Promise<boolean> {
+    if (this.loading) return true;
+    if (this.saving) return true;
+
+    const t = this.title.trim();
+    const c = this.content;
+    if (t === this.lastSavedTitle && c === this.lastSavedContent) return true;
+    if (this.entryId == null && t === '' && c === '') return true;
+
     this.saving = true;
     try {
-      if (this.isNew) {
-        const t = this.title.trim();
-        const c = this.content;
+      if (this.entryId == null) {
         const id = await this.journalService.create({ title: t, content: c });
-        await this.router.navigate(['/tabs/journal', id], { replaceUrl: true });
-        this.isNew = false;
         this.entryId = id;
-        const loaded = await this.journalService.getById(id);
-        if (loaded) {
-          this.hydrateFromEntry(loaded);
-        }
-      } else if (this.entryId != null) {
-        const t = this.title.trim();
-        const c = this.content;
+      } else {
         await this.journalService.update(this.entryId, { title: t, content: c });
-        await this.router.navigateByUrl('/tabs/journal');
       }
+      this.lastSavedTitle = t;
+      this.lastSavedContent = c;
+      return true;
+    } catch (err) {
+      console.error('Journal auto-save failed', err);
+      return false;
     } finally {
       this.saving = false;
     }
   }
 
+  async done(): Promise<void> {
+    this.clearAutoSaveTimer();
+    await this.waitForInFlightSave();
+    if (!(await this.saveNow())) {
+      return;
+    }
+    await this.router.navigateByUrl('/tabs/journal');
+  }
+
   async confirmDelete(): Promise<void> {
-    if (this.isNew || this.entryId == null) return;
+    if (this.routeIsNew || this.entryId == null) return;
     const a = await this.alertController.create({
       header: 'Delete entry',
       message: 'This cannot be undone.',

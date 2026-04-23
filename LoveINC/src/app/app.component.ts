@@ -77,6 +77,9 @@ import {
   menuOutline,
   listOutline,
   reorderTwoOutline,
+  imageOutline,
+  cameraOutline,
+  imagesOutline,
   // Content Icons
   calendarOutline,
   starOutline,
@@ -379,6 +382,10 @@ export class AppComponent implements OnInit, OnDestroy {
       menuOutline,
       listOutline,
       reorderTwoOutline,
+      'editor-ol': './assets/custom-icons/editor-ol.svg',
+      imageOutline,
+      cameraOutline,
+      imagesOutline,
       // Content Icons
       calendarOutline,
       starOutline,

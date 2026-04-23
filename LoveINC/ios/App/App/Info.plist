@@ -27,7 +27,9 @@
 	<key>NSCalendarsFullAccessUsageDescription</key>
 	<string>Love INC would like to add events and classes to your calendar so you don't miss them.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app uses the camera to scan QR codes from your Love INC intake materials.</string>
+	<string>This app uses the camera to scan QR codes from your Love INC intake materials and to add photos in your journal.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Love INC needs access to your photo library so you can add images to your journal.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

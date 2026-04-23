@@ -1,18 +1,26 @@
 .quill-editor-container {
   height: 100%;
   width: 100%;
-  border: 1px solid var(--ion-color-light);
-  border-radius: 8px;
   overflow: visible;
   display: flex;
   flex-direction: column;
   flex: 1;
   min-height: 0;
 
+  /* quill.snow uses 13px on .ql-container; global p/span use --app-font-size-body.
+     List markers inherit the container/li chain while <p> gets global p rules, so OL/UL
+     numbers and the line after them can render at different sizes. Align to app body. */
+  ::ng-deep .ql-container {
+    font-family: 'CrimsonPro', serif;
+    font-weight: 300;
+    font-size: var(--app-font-size-body, 1rem);
+  }
+
   ::ng-deep .ql-editor {
-    line-height: 1.5;
-    color: var(--ion-text-color);
-    padding: 16px;
+    font-family: 'CrimsonPro', serif;
+    font-weight: 300;
+    font-size: var(--app-font-size-body, 1rem);
+    padding: 16px 0;
     min-height: 100%;
     width: 100% !important;
     word-wrap: break-word;
@@ -25,20 +33,98 @@
     direction: ltr;
   }
 
+  ::ng-deep .ql-editor p {
+    font-size: 1em;
+  }
+
+  /* Notion-style divider: typing --- on its own line inserts this <hr> */
+  ::ng-deep .ql-editor hr.ql-journal-hr {
+    border: 0;
+    height: 1px;
+    margin: 1.15em 0;
+    background: var(--ion-color-light-shade, #d0d0d0);
+  }
+
+  /* quill.snow: ol/li use padding-left 1.5em; nested li uses 4.5em, 7.5em, … — trim 0.5rem */
+  ::ng-deep .ql-editor ol,
+  ::ng-deep .ql-editor ul {
+    padding-left: max(0px, calc(1.5em - 0.5rem));
+  }
+
+  ::ng-deep .ql-editor li {
+    font-size: 1em;
+    padding-left: max(0px, calc(1.5em - 0.5rem));
+  }
+
+  ::ng-deep .ql-editor li.ql-indent-1:not(.ql-direction-rtl) {
+    padding-left: max(0px, calc(4.5em - 0.5rem));
+  }
+  ::ng-deep .ql-editor li.ql-indent-2:not(.ql-direction-rtl) {
+    padding-left: max(0px, calc(7.5em - 0.5rem));
+  }
+  ::ng-deep .ql-editor li.ql-indent-3:not(.ql-direction-rtl) {
+    padding-left: max(0px, calc(10.5em - 0.5rem));
+  }
+  ::ng-deep .ql-editor li.ql-indent-4:not(.ql-direction-rtl) {
+    padding-left: max(0px, calc(13.5em - 0.5rem));
+  }
+  ::ng-deep .ql-editor li.ql-indent-5:not(.ql-direction-rtl) {
+    padding-left: max(0px, calc(16.5em - 0.5rem));
+  }
+  ::ng-deep .ql-editor li.ql-indent-6:not(.ql-direction-rtl) {
+    padding-left: max(0px, calc(19.5em - 0.5rem));
+  }
+  ::ng-deep .ql-editor li.ql-indent-7:not(.ql-direction-rtl) {
+    padding-left: max(0px, calc(22.5em - 0.5rem));
+  }
+  ::ng-deep .ql-editor li.ql-indent-8:not(.ql-direction-rtl) {
+    padding-left: max(0px, calc(25.5em - 0.5rem));
+  }
+  ::ng-deep .ql-editor li.ql-indent-9:not(.ql-direction-rtl) {
+    padding-left: max(0px, calc(28.5em - 0.5rem));
+  }
+
+  ::ng-deep .ql-editor li p {
+    font-size: 1em;
+  }
+
+  ::ng-deep .ql-editor li .ql-ui {
+    /* Counter glyph uses the same font-size as the list line */
+    font-size: 1em;
+  }
+
+  ::ng-deep .ql-editor li span:not(.ql-ui) {
+    font-size: inherit;
+  }
+
+  /* Map Quill bold/italic to Medium / Medium Italic faces */
+  ::ng-deep .ql-editor strong,
+  ::ng-deep .ql-editor b {
+    font-family: 'CrimsonPro', serif;
+    font-weight: 500;
+  }
+
+  ::ng-deep .ql-editor em,
+  ::ng-deep .ql-editor i {
+    font-family: 'CrimsonPro', serif;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  ::ng-deep .ql-editor strong em,
+  ::ng-deep .ql-editor strong i,
+  ::ng-deep .ql-editor b em,
+  ::ng-deep .ql-editor b i {
+    font-weight: 500;
+    font-style: italic;
+  }
+
   ::ng-deep .ql-editor *,
   ::ng-deep .ql-editor *::before,
   ::ng-deep .ql-editor *::after {
     writing-mode: horizontal-tb;
     text-orientation: mixed;
     direction: ltr;
-  }
-
-  ::ng-deep .ql-editor h1,
-  ::ng-deep .ql-editor h2,
-  ::ng-deep .ql-editor h3 {
-    display: block;
-    margin: 0 0 16px 0;
-    line-height: 1.2;
   }
 
   ::ng-deep .ql-toolbar {
@@ -57,8 +143,8 @@
   }
 
   ::ng-deep .ql-editor.ql-blank::before {
-    left: 16px;
-    right: 16px;
+    left: 0;
+    right: 0;
   }
 
   ::ng-deep quill-editor {

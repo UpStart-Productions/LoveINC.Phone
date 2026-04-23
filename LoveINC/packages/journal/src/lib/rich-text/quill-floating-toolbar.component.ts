@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, ElementRef, Renderer2, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonButton, IonIcon, AlertController } from '@ionic/angular/standalone';
+import { IonButton, IonIcon, AlertController, ActionSheetController } from '@ionic/angular/standalone';
 import { Subscription } from 'rxjs';
 import { QuillToolbarService, QuillToolbarState } from './quill-toolbar.service';
 import { Keyboard } from '@capacitor/keyboard';
 import { Capacitor } from '@capacitor/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 @Component({
   selector: 'app-journal-quill-floating-toolbar',
@@ -35,6 +36,7 @@ export class JournalQuillFloatingToolbarComponent implements OnInit, OnDestroy, 
   private quillEditor: any = null;
   private lastSelectionIndex: number | null = null;
   private alertController = inject(AlertController);
+  private actionSheetController = inject(ActionSheetController);
 
   constructor(
     private quillToolbarService: QuillToolbarService,
@@ -95,7 +97,9 @@ export class JournalQuillFloatingToolbarComponent implements OnInit, OnDestroy, 
     const toolbar = this.elementRef.nativeElement.querySelector('.quill-floating-toolbar');
     if (!toolbar) return;
     if (this.toolbarState.isVisible) {
-      this.renderer.setStyle(toolbar, 'bottom', '0px');
+      // Sit directly above the keyboard: offset from the bottom of the screen by keyboard height
+      const kh = this.toolbarState.keyboardHeight > 0 ? this.toolbarState.keyboardHeight : 0;
+      this.renderer.setStyle(toolbar, 'bottom', `${kh}px`);
     } else {
       this.renderer.setStyle(toolbar, 'bottom', '-76px');
     }
@@ -139,6 +143,68 @@ export class JournalQuillFloatingToolbarComponent implements OnInit, OnDestroy, 
         this.quillEditor.setSelection(this.lastSelectionIndex, 0);
       }
     }, 50);
+  }
+
+  async onPhotoClick(): Promise<void> {
+    if (!this.quillEditor) return;
+    try {
+      const actionSheet = await this.actionSheetController.create({
+        header: 'Add photo',
+        buttons: [
+          {
+            text: 'Take Photo',
+            icon: 'camera-outline',
+            handler: () => {
+              void this.capturePhoto(CameraSource.Camera);
+            },
+          },
+          {
+            text: 'Choose from Library',
+            icon: 'images-outline',
+            handler: () => {
+              void this.capturePhoto(CameraSource.Photos);
+            },
+          },
+          {
+            text: 'Cancel',
+            icon: 'close-outline',
+            role: 'cancel',
+          },
+        ],
+      });
+      await actionSheet.present();
+    } catch {
+      // ignore
+    }
+  }
+
+  private async capturePhoto(source: CameraSource): Promise<void> {
+    if (!this.quillEditor) return;
+    try {
+      const photo = await Camera.getPhoto({
+        quality: 80,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source,
+      });
+      if (photo.dataUrl && this.quillEditor) {
+        const selection = this.quillEditor.getSelection();
+        const index = selection ? selection.index : this.quillEditor.getLength();
+        this.quillEditor.insertEmbed(index, 'image', photo.dataUrl);
+        this.quillEditor.setSelection(index + 1, 0);
+      }
+    } catch (err) {
+      const msg = String((err as Error)?.message ?? err);
+      if (/cancel|dismiss|denied/i.test(msg)) {
+        return;
+      }
+      const alert = await this.alertController.create({
+        header: 'Photo',
+        message: 'Could not add the photo. Check camera and photo library permissions in Settings.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    }
   }
 
   async onLinkClick(): Promise<void> {
