@@ -81,6 +81,14 @@ ion-button {
     font-size: 20px;
   }
 
+  i-lucide {
+    color: var(--ion-color-medium-shade);
+  }
+
+  &.active i-lucide {
+    color: var(--ion-color-primary);
+  }
+
   &.active {
     --color: var(--ion-color-primary);
     --background: rgba(var(--ion-color-primary-rgb), 0.1);
@@ -119,7 +127,15 @@ ion-button.active .tool-label {
     color: var(--ion-color-light);
   }
 
+  ion-button i-lucide {
+    color: var(--ion-color-light);
+  }
+
   ion-button.active .tool-label {
+    color: var(--ion-color-primary);
+  }
+
+  ion-button.active i-lucide {
     color: var(--ion-color-primary);
   }
 }

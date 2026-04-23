@@ -1,3 +1,11 @@
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  box-sizing: border-box;
+}
+
 .quill-editor-container {
   height: 100%;
   width: 100%;
@@ -16,16 +24,21 @@
     font-size: var(--app-font-size-body, 1rem);
   }
 
+  /* UpStart quill-editor: overflow-y scroll on .ql-editor, ql-container overflow hidden, flex column */
   ::ng-deep .ql-editor {
     font-family: 'CrimsonPro', serif;
     font-weight: 300;
     font-size: var(--app-font-size-body, 1rem);
     padding: 16px 0;
     min-height: 100%;
+    max-height: none;
+    height: 100%;
     width: 100% !important;
     word-wrap: break-word;
+    white-space: pre-wrap;
     box-sizing: border-box;
-    overflow-y: auto;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
     flex: 1;
     cursor: text;
     writing-mode: horizontal-tb;
@@ -37,7 +50,6 @@
     font-size: 1em;
   }
 
-  /* Notion-style divider: typing --- on its own line inserts this <hr> */
   ::ng-deep .ql-editor hr.ql-journal-hr {
     border: 0;
     height: 1px;
@@ -150,5 +162,17 @@
   ::ng-deep quill-editor {
     width: 100% !important;
     display: block !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .quill-editor-container {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .quill-editor-container ::ng-deep .ql-editor {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }

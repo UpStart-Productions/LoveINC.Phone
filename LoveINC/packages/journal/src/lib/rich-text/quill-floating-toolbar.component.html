@@ -58,6 +58,23 @@
       fill="clear"
       size="small"
       (mousedown)="$event.preventDefault()"
+      (click)="onHrClick($event)"
+    >
+      <i-lucide name="minus" [size]="20" slot="icon-only"></i-lucide>
+    </ion-button>
+    <ion-button
+      fill="clear"
+      size="small"
+      [class.active]="isFormatActive('blockquote')"
+      (mousedown)="$event.preventDefault()"
+      (click)="onQuoteClick($event)"
+    >
+      <i-lucide name="quote" [size]="20" slot="icon-only"></i-lucide>
+    </ion-button>
+    <ion-button
+      fill="clear"
+      size="small"
+      (mousedown)="$event.preventDefault()"
       (click)="onLinkClick()"
     >
       <ion-icon name="link-outline" slot="icon-only"></ion-icon>

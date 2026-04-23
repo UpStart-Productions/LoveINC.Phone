@@ -17,7 +17,7 @@
     <ion-list lines="none">
     <ion-item
       button
-      detail="true"
+      [detail]="false"
       *ngFor="let item of moreItems"
       [class.profile-item]="item.name === 'My Profile'"
       (click)="handleItemClick(item)">
@@ -27,6 +27,12 @@
         <ion-icon *ngIf="!(item.name === 'My Profile' && userFirstInitial) && !item.lucideIcon" [name]="item.icon"></ion-icon>
       </div>
       <ion-label>{{ item.name }}</ion-label>
+      <ion-icon
+        class="list-row-chevron"
+        name="chevron-forward-outline"
+        slot="end"
+        aria-hidden="true"
+      ></ion-icon>
     </ion-item>
   </ion-list>
   </ion-card>

@@ -1,12 +1,12 @@
 <ion-header [translucent]="false" class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button [defaultHref]="backHref()" text=""></ion-back-button>
+      <ion-back-button [defaultHref]="backHref()"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ routeIsNew ? 'New entry' : 'Edit entry' }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
-        *ngIf="!routeIsNew"
+        *ngIf="entryId !== null"
         (click)="confirmDelete()"
         fill="clear"
         color="danger"
@@ -15,11 +15,12 @@
         <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
       </ion-button>
       <ion-button
-        (click)="done()"
-        [disabled]="saving"
-        aria-label="Done editing entry"
+        (click)="shareEntry()"
+        [disabled]="!canShareEntry"
+        fill="clear"
+        aria-label="Share entry"
       >
-        {{ saving ? 'Saving…' : 'Done' }}
+        <ion-icon slot="icon-only" name="share-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -30,24 +31,26 @@
     <p>Loading…</p>
   </div>
   <ng-container *ngIf="!loading">
-    <div class="ion-padding title-field">
-      <ion-input
-        fill="clear"
-        [(ngModel)]="title"
-        (ngModelChange)="scheduleAutoSave()"
-        name="title"
-        placeholder="Title"
-        autocapitalize="words"
-        inputmode="text"
-      ></ion-input>
-    </div>
-    <div class="quill-block">
-      <app-journal-quill-editor
-        [(ngModel)]="content"
-        (contentChanged)="scheduleAutoSave()"
-        [config]="quillConfig"
-        name="content"
-      ></app-journal-quill-editor>
+    <div class="journal-entry-body">
+      <div class="ion-padding title-field">
+        <ion-input
+          fill="clear"
+          [(ngModel)]="title"
+          (ngModelChange)="scheduleAutoSave()"
+          name="title"
+          placeholder="Title"
+          autocapitalize="words"
+          inputmode="text"
+        ></ion-input>
+      </div>
+      <div class="quill-block">
+        <app-journal-quill-editor
+          [(ngModel)]="content"
+          (contentChanged)="scheduleAutoSave()"
+          [config]="quillConfig"
+          name="content"
+        ></app-journal-quill-editor>
+      </div>
     </div>
   </ng-container>
 </ion-content>

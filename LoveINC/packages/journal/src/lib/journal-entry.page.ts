@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,6 +14,7 @@ import {
   IonInput,
   IonIcon,
 } from '@ionic/angular/standalone';
+import { JOURNAL_ENTRY_SHARE, type JournalEntryShareOptions } from './journal-entry-share.token';
 import { JournalService } from './services/journal.service';
 import {
   JournalQuillEditorComponent,
@@ -42,16 +43,18 @@ import { JournalEntry } from './types/journal-entry.model';
   ],
 })
 export class JournalEntryPage implements OnInit, OnDestroy {
+  private readonly shareViaAppActionSheet = inject(JOURNAL_ENTRY_SHARE, { optional: true });
+
   title = '';
   content = '';
   /** True when the route is `/journal/new` (only list → `:id` is "edit" in the URL). */
   routeIsNew = false;
   entryId: number | null = null;
-  saving = false;
+  private saving = false;
   loading = true;
   quillConfig: JournalQuillEditorConfig = {
     placeholder: 'Write your thoughts…',
-    height: 'min(55vh, 400px)',
+    height: '100%',
   };
 
   private lastSavedTitle = '';
@@ -106,6 +109,17 @@ export class JournalEntryPage implements OnInit, OnDestroy {
 
   backHref(): string {
     return '/tabs/journal';
+  }
+
+  /** True when there is a title or non-empty body (plain text), so Share is useful. */
+  get canShareEntry(): boolean {
+    if (this.loading) {
+      return false;
+    }
+    if (this.title.trim().length > 0) {
+      return true;
+    }
+    return this.plainTextFromContent(this.content).length > 0;
   }
 
   /** Debounced auto-save on title or body changes. */
@@ -165,17 +179,44 @@ export class JournalEntryPage implements OnInit, OnDestroy {
     }
   }
 
-  async done(): Promise<void> {
+  async shareEntry(): Promise<void> {
     this.clearAutoSaveTimer();
     await this.waitForInFlightSave();
     if (!(await this.saveNow())) {
       return;
     }
-    await this.router.navigateByUrl('/tabs/journal');
+    if (!this.canShareEntry) {
+      return;
+    }
+    const share = this.shareViaAppActionSheet;
+    if (!share) {
+      return;
+    }
+    const title = (this.title.trim() || 'Journal entry').replace(/\s+/g, ' ');
+    const htmlContent = this.buildJournalShareHtml(title, this.content);
+    const options: JournalEntryShareOptions = {
+      title,
+      subject: title,
+      htmlContent,
+    };
+    try {
+      await share(options);
+    } catch {
+      // Action sheet or share pipeline dismissed / failed
+    }
+  }
+
+  private buildJournalShareHtml(heading: string, bodyHtml: string): string {
+    const esc = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    if (!bodyHtml || bodyHtml.trim() === '') {
+      return `<h1>${esc(heading)}</h1>`;
+    }
+    return `<h1>${esc(heading)}</h1>\n${bodyHtml}`;
   }
 
   async confirmDelete(): Promise<void> {
-    if (this.routeIsNew || this.entryId == null) return;
+    if (this.entryId == null) return;
     const a = await this.alertController.create({
       header: 'Delete entry',
       message: 'This cannot be undone.',
@@ -197,5 +238,22 @@ export class JournalEntryPage implements OnInit, OnDestroy {
     if (this.entryId == null) return;
     await this.journalService.delete(this.entryId);
     await this.router.navigateByUrl('/tabs/journal');
+  }
+
+  private plainTextFromContent(html: string): string {
+    if (html == null || html === '') {
+      return '';
+    }
+    if (typeof document === 'undefined') {
+      return String(html)
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<\/p>/gi, '\n')
+        .replace(/<[^>]+>/g, '')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+    }
+    const d = document.createElement('div');
+    d.innerHTML = html;
+    return (d.textContent ?? d.innerText ?? '').replace(/\n{3,}/g, '\n\n').trim();
   }
 }

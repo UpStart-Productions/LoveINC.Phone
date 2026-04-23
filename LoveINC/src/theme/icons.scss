@@ -144,6 +144,21 @@ ion-item[detail="true"] ion-icon[slot="end"] {
   color: var(--app-text-secondary) !important;
 }
 
+/* More + Journal: explicit end-slot chevrons (built-in detail= chevron is in shadow; CSS
+   was not reliably overridable). Must match on both pages. */
+ion-card.journal-list-card ion-icon.list-row-chevron,
+ion-card.more-list-card ion-icon.list-row-chevron {
+  font-size: var(--app-icon-size-sm);
+  width: var(--app-icon-size-sm);
+  height: var(--app-icon-size-sm);
+  min-width: var(--app-icon-size-sm);
+  color: var(--ion-color-dark);
+  opacity: 1;
+  margin: 0;
+  align-self: center;
+  flex-shrink: 0;
+}
+
 /* User type card icons */
 .user-type-icon {
   font-size: var(--app-icon-size-md);

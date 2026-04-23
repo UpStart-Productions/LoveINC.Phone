@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ElementRef, Renderer2, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule } from 'lucide-angular';
 import { IonButton, IonIcon, AlertController, ActionSheetController } from '@ionic/angular/standalone';
 import { Subscription } from 'rxjs';
 import { QuillToolbarService, QuillToolbarState } from './quill-toolbar.service';
@@ -12,7 +13,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
   templateUrl: './quill-floating-toolbar.component.html',
   styleUrls: ['./quill-floating-toolbar.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonButton, IonIcon],
+  imports: [CommonModule, LucideAngularModule, IonButton, IonIcon],
 })
 export class JournalQuillFloatingToolbarComponent implements OnInit, OnDestroy, AfterViewInit {
   toolbarState: QuillToolbarState = {
@@ -24,12 +25,14 @@ export class JournalQuillFloatingToolbarComponent implements OnInit, OnDestroy, 
     isBulletList: false,
     isOrderedList: false,
     isHeader1: false,
+    isBlockquote: false,
     boldMode: false,
     italicMode: false,
     underlineMode: false,
     bulletMode: false,
     orderedMode: false,
     header1Mode: false,
+    blockquoteMode: false,
   };
 
   private subscriptions: Subscription[] = [];
@@ -97,9 +100,11 @@ export class JournalQuillFloatingToolbarComponent implements OnInit, OnDestroy, 
     const toolbar = this.elementRef.nativeElement.querySelector('.quill-floating-toolbar');
     if (!toolbar) return;
     if (this.toolbarState.isVisible) {
-      // Sit directly above the keyboard: offset from the bottom of the screen by keyboard height
-      const kh = this.toolbarState.keyboardHeight > 0 ? this.toolbarState.keyboardHeight : 0;
-      this.renderer.setStyle(toolbar, 'bottom', `${kh}px`);
+      // Tabs use KeyboardResize.None: the view is still full height and the system keyboard
+      // overlays the bottom. Fix `bottom: 0` to the top of the keyboard (same idea as
+      // Nepho / pre–Body-resize). `keyboardHeight` comes from @capacitor/keyboard and focus fallback.
+      const kb = Math.max(0, this.toolbarState.keyboardHeight || 0);
+      this.renderer.setStyle(toolbar, 'bottom', `${kb}px`);
     } else {
       this.renderer.setStyle(toolbar, 'bottom', '-76px');
     }
@@ -119,6 +124,8 @@ export class JournalQuillFloatingToolbarComponent implements OnInit, OnDestroy, 
         return this.toolbarState.isOrderedList || this.toolbarState.orderedMode;
       case 'header1':
         return this.toolbarState.isHeader1 || this.toolbarState.header1Mode;
+      case 'blockquote':
+        return this.toolbarState.isBlockquote || this.toolbarState.blockquoteMode;
       default:
         return false;
     }
@@ -145,24 +152,66 @@ export class JournalQuillFloatingToolbarComponent implements OnInit, OnDestroy, 
     }, 50);
   }
 
+  onHrClick(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (!this.quillEditor) {
+      return;
+    }
+    const selection = this.quillEditor.getSelection(true);
+    const index = selection ? selection.index : Math.max(0, this.quillEditor.getLength() - 1);
+    this.quillEditor.insertEmbed(index, 'journalDivider', true, 'user');
+    this.quillEditor.setSelection(index + 1, 0, 'user');
+    this.lastSelectionIndex = index + 1;
+    this.quillToolbarService.updateFormatState();
+  }
+
+  onQuoteClick(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (!this.quillEditor) {
+      return;
+    }
+    const selection = this.quillEditor.getSelection();
+    if (selection && selection.length > 0) {
+      const isActive = this.isFormatActive('blockquote');
+      this.quillToolbarService.executeFormat('blockquote', !isActive);
+    } else {
+      this.quillToolbarService.toggleFormatMode('blockquote');
+    }
+    setTimeout(() => {
+      if (this.quillEditor && this.lastSelectionIndex !== null) {
+        this.quillEditor.setSelection(this.lastSelectionIndex, 0);
+      }
+    }, 50);
+  }
+
   async onPhotoClick(): Promise<void> {
-    if (!this.quillEditor) return;
+    if (!this.quillEditor) {
+      return;
+    }
+    let source: CameraSource | null = null;
     try {
       const actionSheet = await this.actionSheetController.create({
         header: 'Add photo',
+        cssClass: 'services-action-sheet',
         buttons: [
           {
             text: 'Take Photo',
             icon: 'camera-outline',
             handler: () => {
-              void this.capturePhoto(CameraSource.Camera);
+              source = CameraSource.Camera;
             },
           },
           {
             text: 'Choose from Library',
             icon: 'images-outline',
             handler: () => {
-              void this.capturePhoto(CameraSource.Photos);
+              source = CameraSource.Photos;
             },
           },
           {
@@ -173,13 +222,28 @@ export class JournalQuillFloatingToolbarComponent implements OnInit, OnDestroy, 
         ],
       });
       await actionSheet.present();
+      // iOS: do not call Camera.getPhoto (another modal) until this action sheet has fully
+      // dismissed, or presentation can fail before the camera/permission flow — see
+      // https://developer.apple.com/documentation/uikit/uiviewcontroller/1621380-present
+      await actionSheet.onDidDismiss();
     } catch {
-      // ignore
+      return;
     }
+    if (source == null) {
+      return;
+    }
+    await this.capturePhoto(source);
   }
 
+  /**
+   * Photo options and insert logic match
+   * UpStart.MobileComponents/.../quill-floating-toolbar.component.ts.
+   * getPhoto is only called after the action sheet is dismissed (see onPhotoClick).
+   */
   private async capturePhoto(source: CameraSource): Promise<void> {
-    if (!this.quillEditor) return;
+    if (!this.quillEditor) {
+      return;
+    }
     try {
       const photo = await Camera.getPhoto({
         quality: 80,
@@ -195,12 +259,12 @@ export class JournalQuillFloatingToolbarComponent implements OnInit, OnDestroy, 
       }
     } catch (err) {
       const msg = String((err as Error)?.message ?? err);
-      if (/cancel|dismiss|denied/i.test(msg)) {
+      if (/User cancelled|cancelled photos app/i.test(msg)) {
         return;
       }
       const alert = await this.alertController.create({
         header: 'Photo',
-        message: 'Could not add the photo. Check camera and photo library permissions in Settings.',
+        message: 'Unable to capture photo. Please check camera permissions.',
         buttons: ['OK'],
       });
       await alert.present();

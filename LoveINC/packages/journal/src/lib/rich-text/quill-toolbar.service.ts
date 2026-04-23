@@ -12,12 +12,14 @@ export interface QuillToolbarState {
   isBulletList: boolean;
   isOrderedList: boolean;
   isHeader1: boolean;
+  isBlockquote: boolean;
   boldMode: boolean;
   italicMode: boolean;
   underlineMode: boolean;
   bulletMode: boolean;
   orderedMode: boolean;
   header1Mode: boolean;
+  blockquoteMode: boolean;
 }
 
 @Injectable({
@@ -34,12 +36,14 @@ export class QuillToolbarService {
     isBulletList: false,
     isOrderedList: false,
     isHeader1: false,
+    isBlockquote: false,
     boldMode: false,
     italicMode: false,
     underlineMode: false,
     bulletMode: false,
     orderedMode: false,
     header1Mode: false,
+    blockquoteMode: false,
   });
 
   private keyboardHeight = 0;
@@ -102,6 +106,8 @@ export class QuillToolbarService {
         editor.format('list', value ? format : false);
       } else if (format === 'header1') {
         editor.format('header', value ? 1 : false);
+      } else if (format === 'blockquote') {
+        editor.format('blockquote', value);
       } else {
         editor.format(format, value);
       }
@@ -128,12 +134,14 @@ export class QuillToolbarService {
         isBulletList: format.list === 'bullet',
         isOrderedList: format.list === 'ordered',
         isHeader1: format.header === 1,
+        isBlockquote: !!format.blockquote,
         boldMode: !!format.bold ? currentState.boldMode : false,
         italicMode: !!format.italic ? currentState.italicMode : false,
         underlineMode: !!format.underline ? currentState.underlineMode : false,
         bulletMode: format.list === 'bullet' ? currentState.bulletMode : false,
         orderedMode: format.list === 'ordered' ? currentState.orderedMode : false,
         header1Mode: format.header === 1 ? currentState.header1Mode : false,
+        blockquoteMode: !!format.blockquote ? currentState.blockquoteMode : false,
       };
 
       this.toolbarState$.next(newState);
@@ -157,12 +165,14 @@ export class QuillToolbarService {
         isBulletList: currentFormat.list === 'bullet',
         isOrderedList: currentFormat.list === 'ordered',
         isHeader1: currentFormat.header === 1,
+        isBlockquote: !!currentFormat.blockquote,
         boldMode: false,
         italicMode: false,
         underlineMode: false,
         bulletMode: false,
         orderedMode: false,
         header1Mode: false,
+        blockquoteMode: false,
       };
 
       this.toolbarState$.next(newState);
@@ -194,6 +204,9 @@ export class QuillToolbarService {
       case 'header1':
         newState.header1Mode = !newState.header1Mode;
         break;
+      case 'blockquote':
+        newState.blockquoteMode = !newState.blockquoteMode;
+        break;
     }
 
     this.toolbarState$.next(newState);
@@ -206,6 +219,8 @@ export class QuillToolbarService {
         editor.format('list', formatValue ? format : false);
       } else if (format === 'header1') {
         editor.format('header', formatValue ? 1 : false, 'user');
+      } else if (format === 'blockquote') {
+        editor.format('blockquote', formatValue, 'user');
       } else {
         editor.format(format, formatValue);
       }
@@ -222,6 +237,7 @@ export class QuillToolbarService {
       bulletMode: false,
       orderedMode: false,
       header1Mode: false,
+      blockquoteMode: false,
     };
 
     this.toolbarState$.next(newState);
@@ -233,6 +249,7 @@ export class QuillToolbarService {
       editor.format('underline', false);
       editor.format('list', false);
       editor.format('header', false);
+      editor.format('blockquote', false);
     }
   }
 

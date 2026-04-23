@@ -1,7 +1,7 @@
 <ion-header [translucent]="true" class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/tools" text=""></ion-back-button>
+      <ion-back-button defaultHref="/tabs/tools"></ion-back-button>
     </ion-buttons>
     <ion-title>Journal</ion-title>
     <ion-buttons slot="end">
@@ -23,18 +23,32 @@
     <p class="app-body-secondary">No journal entries yet.</p>
     <p class="app-caption">Tap + to add your first entry.</p>
   </div>
-  <ion-list *ngIf="!loading && entries.length > 0" [inset]="true" lines="full">
-    <ion-item
-      *ngFor="let e of entries"
-      [routerLink]="['/tabs/journal', e.id]"
-      [detail]="true"
-      [button]="true"
-    >
-      <ion-label>
-        <h2 class="ion-text-wrap">{{ e.title || 'Untitled' }}</h2>
-        <p class="app-body-secondary">Created: {{ formatDate(e.createdAt) }}</p>
-        <p class="app-caption">Updated: {{ formatDate(e.updatedAt) }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+  <ion-card *ngIf="!loading && entries.length > 0" class="journal-list-card">
+    <ion-list lines="none">
+      <ion-item
+        *ngFor="let e of entries"
+        [routerLink]="['/tabs/journal', e.id]"
+        [detail]="false"
+        [button]="true"
+      >
+        <ion-label class="ion-text-wrap">
+          <p class="app-body-sm">{{ e.title || 'Untitled' }}</p>
+        </ion-label>
+        <ion-badge
+          *ngIf="e.updatedAt"
+          class="journal-entry-updated-badge"
+          slot="end"
+          color="success"
+        >
+          {{ formatUpdatedMonthDay(e.updatedAt) }}
+        </ion-badge>
+        <ion-icon
+          class="list-row-chevron"
+          name="chevron-forward-outline"
+          slot="end"
+          aria-hidden="true"
+        ></ion-icon>
+      </ion-item>
+    </ion-list>
+  </ion-card>
 </ion-content>

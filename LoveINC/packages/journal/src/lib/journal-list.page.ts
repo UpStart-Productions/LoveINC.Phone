@@ -13,6 +13,8 @@ import {
   IonItem,
   IonLabel,
   IonBackButton,
+  IonCard,
+  IonBadge,
 } from '@ionic/angular/standalone';
 import { JournalService } from './services/journal.service';
 import { JournalEntry } from './types/journal-entry.model';
@@ -36,6 +38,8 @@ import { JournalEntry } from './types/journal-entry.model';
     IonItem,
     IonLabel,
     IonBackButton,
+    IonCard,
+    IonBadge,
   ],
 })
 export class JournalListPage {
@@ -60,15 +64,20 @@ export class JournalListPage {
     void this.router.navigate(['/tabs/journal', 'new']);
   }
 
-  formatDate(iso: string): string {
-    if (!iso) return '';
-    try {
-      return new Date(iso).toLocaleString(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      });
-    } catch {
-      return iso;
+  private readonly monthAbbrev = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ] as const;
+
+  /** e.g. "Apr 7" (3-letter month, day with no leading zero) in local time. */
+  formatUpdatedMonthDay(iso: string): string {
+    if (!iso) {
+      return '';
     }
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) {
+      return '';
+    }
+    return `${this.monthAbbrev[d.getMonth()]} ${d.getDate()}`;
   }
 }

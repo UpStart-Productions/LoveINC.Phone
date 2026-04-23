@@ -8,8 +8,21 @@ ion-content.journal-entry-content {
   --padding-end: 0;
 }
 
+/* Fill viewport under header; quill area gets flex-1 with min-height:0 so .ql-editor can scroll
+   (UpStart.MobileComponents quill-editor.component.scss flex + overflow pattern). */
+.journal-entry-body {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - env(safe-area-inset-top, 0px) - 56px);
+  box-sizing: border-box;
+}
+
 /* ion-input (scoped, not shadow): Ionic iOS uses --highlight-color-focused for
    caret-color when focused. Do not set that to transparent or the caret is invisible. */
+.title-field {
+  flex-shrink: 0;
+}
+
 .title-field ion-input {
   --background: transparent;
   --color: var(--ion-text-color, #222428);
@@ -25,6 +38,17 @@ ion-content.journal-entry-content {
 }
 
 .quill-block {
+  flex: 1 1 0;
+  min-height: 0;
   margin: 0 1rem;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.quill-block app-journal-quill-editor {
+  flex: 1;
+  min-height: 0;
+  display: block;
+  height: 100%;
 }

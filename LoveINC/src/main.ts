@@ -5,6 +5,7 @@ import { importProvidersFrom } from '@angular/core';
 import { provideQuillConfig } from 'ngx-quill/config';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 import { INTAKE_VALIDATE_PROVIDER } from '@upstart-productions/service-unlock';
+import { JOURNAL_ENTRY_SHARE, type JournalEntryShareOptions } from '@upstart-productions/journal';
 import {
   VERSE_OF_THE_DAY_CACHE,
   VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL,
@@ -40,7 +41,9 @@ import {
   Check,
   HandHelping,
   HeartHandshake,
-  Church
+  Church,
+  Minus,
+  Quote
 } from 'lucide-angular';
 
 import { routes } from './app/app.routes';
@@ -84,6 +87,18 @@ bootstrapApplication(AppComponent, {
       deps: [SharingService],
     },
     { provide: VERSE_OF_THE_DAY_BACK_DEFAULT_HREF, useValue: '/tabs/more' },
+    {
+      provide: JOURNAL_ENTRY_SHARE,
+      useFactory: (sharing: SharingService) => {
+        return (options: JournalEntryShareOptions) =>
+          sharing.shareContent({
+            title: options.title,
+            subject: options.subject ?? options.title,
+            htmlContent: options.htmlContent,
+          });
+      },
+      deps: [SharingService],
+    },
     {
       provide: INTAKE_VALIDATE_PROVIDER,
       useFactory: (platformApi: PlatformApiService, userProfile: UserProfileService) => ({
@@ -131,7 +146,9 @@ bootstrapApplication(AppComponent, {
         Check,
         HandHelping,
         HeartHandshake,
-        Church
+        Church,
+        Minus,
+        Quote
       })
     ),
   ],
