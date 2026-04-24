@@ -106,6 +106,16 @@
     <ion-card-content>
       <p class="app-body-secondary">In every community, people possess gifts and talents that can be used for ministry, but they often don't know how to connect with neighbors in need who are seeking those exact skills at that exact time.</p>
       <p class="app-body-secondary">Love INC helps churches mobilize their members to reach out to their neighbors in need, by creating specific, manageable opportunities that utilize the unique skills and talents of their congregation to fill unmet needs in the community.</p>
+      <div *ngIf="showMeetStaffButton" class="m-t-18">
+        <ion-button
+          expand="block"
+          color="primary"
+          shape="round"
+          routerLink="/tabs/staff"
+        >
+          Meet our Staff
+        </ion-button>
+      </div>
     </ion-card-content>
   </ion-card>
 

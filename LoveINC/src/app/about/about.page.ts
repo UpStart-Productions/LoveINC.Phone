@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
+import { PlatformApiService } from '../services/platform';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { 
   IonHeader, 
@@ -48,15 +49,26 @@ export class AboutPage implements OnInit {
     { number: '100+', label: 'Active Volunteers' }
   ];
   showDonateButton: boolean = false;
+  /** Shown when GET /team returns at least one member. */
+  showMeetStaffButton = false;
 
   constructor(
     private router: Router,
     private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService
+    private donateActionSheetService: DonateActionSheetService,
+    private platformApi: PlatformApiService
   ) {}
 
   ngOnInit() {
     this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
+    this.platformApi.getTeam().subscribe({
+      next: (team) => {
+        this.showMeetStaffButton = (team?.length ?? 0) > 0;
+      },
+      error: () => {
+        this.showMeetStaffButton = false;
+      },
+    });
   }
 
   openDonateMenu() {

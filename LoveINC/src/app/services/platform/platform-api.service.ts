@@ -15,6 +15,7 @@ import type {
   PlatformOrganization,
   PlatformPartner,
   PlatformService,
+  PlatformTeamMember,
   PlatformVolunteerPositionWithAffiliate,
 } from './types';
 
@@ -31,6 +32,7 @@ export type {
   PlatformOrganization,
   PlatformPartner,
   PlatformService,
+  PlatformTeamMember,
   PlatformVoucher,
   PlatformVolunteerPositionWithAffiliate,
 } from './types';
@@ -176,6 +178,13 @@ export class PlatformApiService {
   getOrganizationPartners(): Observable<PlatformPartner[]> {
     return this.get<{ partners: PlatformPartner[] }>('/organization-partners').pipe(
       map((res) => res?.partners ?? [])
+    );
+  }
+
+  /** GET /public/:customerSlug/:tenantSlug/team */
+  getTeam(): Observable<PlatformTeamMember[]> {
+    return this.get<{ teamMembers: PlatformTeamMember[] }>('/team').pipe(
+      map((res) => res?.teamMembers ?? [])
     );
   }
 

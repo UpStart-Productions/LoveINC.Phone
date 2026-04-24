@@ -18,6 +18,11 @@ export const routes: Routes = [
           import('../about/about.page').then((m) => m.AboutPage),
       },
       {
+        path: 'staff',
+        loadComponent: () =>
+          import('../staff/staff.page').then((m) => m.StaffPage),
+      },
+      {
         path: 'updates',
         loadComponent: () =>
           import('../updates/updates.page').then((m) => m.UpdatesPage),

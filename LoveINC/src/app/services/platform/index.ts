@@ -12,6 +12,7 @@ export type {
   PlatformServiceItem,
   PlatformOffering,
   PlatformScheduleRule,
+  PlatformTeamMember,
   PlatformVolunteerPositionWithAffiliate,
   HomeFeedItemType,
 } from './types';

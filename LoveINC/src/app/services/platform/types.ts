@@ -39,6 +39,21 @@ export interface PlatformCustomer {
   name: string;
 }
 
+/** GET /public/.../team — affiliate staff (admin Team), not app users. */
+export interface PlatformTeamMember {
+  id: string;
+  firstName: string;
+  lastName: string;
+  title?: string;
+  interests?: string;
+  email?: string;
+  phone?: string;
+  photoUrl?: string;
+  /** Quill HTML from admin */
+  bio?: string;
+  sortOrder: number;
+}
+
 export interface PlatformEvent {
   id: string;
   slug: string;

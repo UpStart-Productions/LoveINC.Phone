@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/about"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Our staff</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (loading) {
+    <div class="loading-container">
+      <p class="app-body-secondary">Loading…</p>
+    </div>
+  } @else if (members.length === 0) {
+    <div class="empty-state">
+      <p class="app-body-secondary">No team members to show.</p>
+    </div>
+  } @else {
+    <div class="cards-container">
+      @for (m of members; track m.id) {
+        <ion-card>
+          @if (getPhotoUrl(m)) {
+            <div class="staff-photo-wrap">
+              <img [src]="getPhotoUrl(m)" [alt]="displayName(m)" />
+            </div>
+          }
+          <ion-card-header>
+            <ion-card-title>{{ displayName(m) }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            @if (m.title) {
+              <p class="app-body-secondary m-b-6">{{ m.title }}</p>
+            }
+            @if (m.interests) {
+              <p class="app-body-secondary m-b-6">{{ m.interests }}</p>
+            }
+            @if (m.email) {
+              <p class="m-b-3">
+                <a [href]="'mailto:' + m.email" class="app-link">{{ m.email }}</a>
+              </p>
+            }
+            @if (m.phone) {
+              <p class="m-b-6">
+                <a [href]="'tel:' + m.phone" class="app-link">{{ m.phone }}</a>
+              </p>
+            }
+            @if (m.bio) {
+              <div class="rich-html staff-bio" [innerHTML]="m.bio | safeHtml"></div>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+    </div>
+  }
+</ion-content>
