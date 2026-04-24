@@ -26,3 +26,9 @@
   --progress-background: var(--love-inc-gold);
 }
 
+/* Slightly smaller + regular weight (global .action-pill is sm + semibold) */
+:host .action-pill {
+  font-size: var(--app-font-size-xs) !important;
+  font-weight: var(--app-font-weight-normal) !important;
+}
+

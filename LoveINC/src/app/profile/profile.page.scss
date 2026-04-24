@@ -1,7 +1,8 @@
 :host {
   ion-card.section-card,
   app-service-access-section ::ng-deep ion-card.section-card,
-  app-vouchers-panel ::ng-deep ion-card.section-card {
+  app-vouchers-panel ::ng-deep ion-card.section-card,
+  app-onboarding-identity-select ::ng-deep ion-card.section-card {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
   }

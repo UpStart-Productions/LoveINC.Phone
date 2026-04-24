@@ -1,1 +1,18 @@
-// Styles for assistance thank you page
+ion-content.assistance-thank-you-page {
+  --background: #ffffff;
+  --ion-background-color: #ffffff;
+}
+
+.assistance-thank-you-hero {
+  width: 100%;
+  height: 30vh;
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}

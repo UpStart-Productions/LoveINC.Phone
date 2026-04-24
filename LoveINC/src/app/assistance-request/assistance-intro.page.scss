@@ -1,3 +1,22 @@
+ion-content.assistance-intro-page {
+  --background: #ffffff;
+  --ion-background-color: #ffffff;
+}
+
+.assistance-intro-hero {
+  width: 100%;
+  height: 30vh;
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
 .assistance-steps {
   padding-left: 1.25rem;
   li {

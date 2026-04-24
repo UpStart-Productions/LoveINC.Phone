@@ -1,0 +1,19 @@
+:host .section-card ion-card-title {
+  gap: 0.5rem;
+
+  .section-icon {
+    margin-right: 0.25rem;
+  }
+}
+
+:host .identity-list {
+  --background: transparent;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+:host .identity-list ion-item {
+  --background: transparent;
+  --ion-item-background: transparent;
+}

@@ -22,6 +22,7 @@
       *ngFor="let userType of selectedUserTypesForUserCards"
       [userType]="userType"
       [getHelpDescription]="clientSupportCardDescription"
+      [getHelpIntakeWithConnectionLink]="clientSupportCardState === 'intake_required'"
       [getHelpAction]="clientSupportCardAction">
     </app-user-type-card>
 

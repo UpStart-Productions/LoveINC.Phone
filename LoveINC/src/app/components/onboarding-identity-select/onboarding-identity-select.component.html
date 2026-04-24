@@ -1,0 +1,73 @@
+<ion-card class="section-card">
+  <ion-card-header>
+    <ion-card-title>
+      <ion-icon name="person-outline" class="section-icon"></ion-icon>
+      @if (variant === 'profile') {
+        I am a...
+      } @else {
+        Onboarding selections
+      }
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    @if (variant === 'developer') {
+      <p class="app-body-secondary m-b-12">
+        {{ introText }}
+      </p>
+    }
+    <ion-list lines="full" class="identity-list">
+      <ion-item>
+        <ion-checkbox
+          slot="start"
+          [checked]="devGetHelp"
+          (ionChange)="onDevGetHelpChange($event)">
+        </ion-checkbox>
+        <ion-label>
+          <p>Client</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox
+          slot="start"
+          [checked]="devVolunteer"
+          (ionChange)="onDevVolunteerChange($event)">
+        </ion-checkbox>
+        <ion-label>
+          <p>Volunteer</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox
+          slot="start"
+          [checked]="devGive"
+          (ionChange)="onDevGiveChange($event)">
+        </ion-checkbox>
+        <ion-label>
+          <p>Donor</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox
+          slot="start"
+          [checked]="devExploring"
+          (ionChange)="onDevExploringChange($event)">
+        </ion-checkbox>
+        <ion-label>
+          <p>Just exploring</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    @if (variant === 'developer') {
+      @if (!onboardingCompleted) {
+        <p class="app-body-secondary m-t-12">Onboarding flag was not set; saving a selection above will mark onboarding complete.</p>
+      } @else if (onboardingSelectionLabels.length === 0) {
+        <p class="app-body-secondary m-t-12">Current stored list is empty.</p>
+      } @else {
+        <p class="app-body-secondary m-t-12 m-b-6">Stored as:</p>
+        @for (label of onboardingSelectionLabels; track $index) {
+          <p class="app-body">{{ label }}</p>
+        }
+      }
+    }
+  </ion-card-content>
+</ion-card>

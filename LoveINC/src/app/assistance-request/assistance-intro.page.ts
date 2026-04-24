@@ -8,7 +8,9 @@ import {
   IonButton,
   IonButtons,
   IonBackButton,
+  IonIcon,
 } from '@ionic/angular/standalone';
+import { LOVE_INC_OFFICE_TEL } from '../shared/love-inc-contact.constants';
 
 @Component({
   selector: 'app-assistance-intro',
@@ -23,10 +25,15 @@ import {
     IonButton,
     IonButtons,
     IonBackButton,
+    IonIcon,
   ],
 })
 export class AssistanceIntroPage {
   constructor(private router: Router) {}
+
+  callConnectionCenter(): void {
+    window.open(`tel:${LOVE_INC_OFFICE_TEL}`, '_self');
+  }
 
   onGetStarted() {
     this.router.navigate(['/assistance/signup']);

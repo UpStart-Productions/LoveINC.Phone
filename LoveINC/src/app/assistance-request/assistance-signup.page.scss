@@ -1,0 +1,8 @@
+/* Extra bottom inset so the last form fields can scroll clear of the keyboard. */
+ion-content.assistance-signup-content {
+  --padding-bottom: max(4rem, env(safe-area-inset-bottom, 0px));
+}
+
+.assistance-signup-temp-link {
+  text-align: center;
+}

@@ -7,7 +7,19 @@
   (click)="onCardClick()">
   <ion-icon [name]="config.icon" slot="start" [style.color]="config.color" class="user-type-icon m-r-18"></ion-icon>
   <ion-label>
-    <p class="app-title">{{ displayDescription }}</p>
+    @if (userType === 'get-help' && getHelpIntakeWithConnectionLink) {
+      <p class="app-title">
+        Start your intake at<br />
+        <a
+          class="app-link"
+          routerLink="/tabs/connection-center"
+          (click)="$event.stopPropagation()"
+        >Connection Center</a><br />
+        to access services.
+      </p>
+    } @else {
+      <p class="app-title">{{ displayDescription }}</p>
+    }
     @if (userType === 'give') {
       <ion-progress-bar 
         [value]="donorProgress" 

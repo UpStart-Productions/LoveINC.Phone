@@ -6,6 +6,7 @@
         type="text"
         [(ngModel)]="form.firstName"
         name="firstName"
+        autocapitalize="words"
         required>
       </ion-input>
     </ion-item>
@@ -16,6 +17,7 @@
         type="text"
         [(ngModel)]="form.lastName"
         name="lastName"
+        autocapitalize="words"
         required>
       </ion-input>
     </ion-item>
@@ -45,6 +47,7 @@
           type="tel"
           [(ngModel)]="form.phone"
           name="phone"
+          autocapitalize="none"
           appPhoneFormatter
           appPhoneValidator
           #phone="ngModel"
@@ -63,6 +66,7 @@
           type="email"
           [(ngModel)]="form.email"
           name="email"
+          autocapitalize="none"
           appEmailValidator
           required
           #email="ngModel"
@@ -98,6 +102,7 @@
         [(ngModel)]="form.comments"
         name="comments"
         rows="4"
+        autocapitalize="sentences"
         placeholder="Enter your questions or concerns here...">
       </ion-textarea>
     </ion-item>

@@ -14,6 +14,7 @@ import {
 } from '@ionic/angular/standalone';
 import { ToastController } from '@ionic/angular/standalone';
 import { OnboardingService } from '../../services/onboarding.service';
+import { UserProfileService } from '../../services/user-profile.service';
 import { PlatformApiService } from '../../services/platform/platform-api.service';
 import { DeviceIdService } from '../../services/device-id.service';
 import {
@@ -62,6 +63,7 @@ export class ContactAssistanceFormComponent implements OnInit {
 
   constructor(
     private onboardingService: OnboardingService,
+    private userProfile: UserProfileService,
     private platformApi: PlatformApiService,
     private deviceId: DeviceIdService,
     private toastController: ToastController,
@@ -122,6 +124,11 @@ export class ContactAssistanceFormComponent implements OnInit {
         deviceId: this.deviceId.getDeviceId(),
         newsletterOptIn: this.form.wantsNewsletter,
         textOptIn: false,
+      });
+      this.userProfile.setProfile({
+        firstName: this.form.firstName.trim(),
+        lastName: this.form.lastName.trim(),
+        email: this.form.email.trim(),
       });
       this.submitted.emit();
     } catch (err) {

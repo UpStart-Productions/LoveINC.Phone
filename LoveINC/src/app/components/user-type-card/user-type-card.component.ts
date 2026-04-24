@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   IonItem,
   IonLabel,
@@ -25,6 +25,7 @@ interface UserTypeConfig {
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     IonItem,
     IonLabel,
     IonIcon,
@@ -38,6 +39,8 @@ export class UserTypeCardComponent {
   @Input() volunteerOpportunitiesCount?: number = 2; // Default for volunteer
   /** Override description for get-help card (context-aware). */
   @Input() getHelpDescription?: string;
+  /** When true, show fixed intake copy with a link to Connection Center (ignores getHelpDescription for body text). */
+  @Input() getHelpIntakeWithConnectionLink = false;
   /** Override action for get-help card: 'profile' | 'gap-ministries' | 'assistance-intro'. */
   @Input() getHelpAction?: 'profile' | 'gap-ministries' | 'assistance-intro';
   @Output() cardClick = new EventEmitter<void>();
@@ -109,6 +112,9 @@ export class UserTypeCardComponent {
   get displayDescription(): string {
     switch (this.userType) {
       case 'get-help':
+        if (this.getHelpIntakeWithConnectionLink) {
+          return '';
+        }
         return this.getHelpDescription ?? this.clientDescription;
       case 'volunteer':
         return this.volunteerDescription;
@@ -157,7 +163,7 @@ export class UserTypeCardComponent {
   get actionPillText(): string {
     switch (this.userType) {
       case 'get-help':
-        return 'Support';
+        return 'Start';
       case 'volunteer':
         return 'Serve';
       case 'give':

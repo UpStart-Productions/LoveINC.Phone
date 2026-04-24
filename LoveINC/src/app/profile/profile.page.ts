@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OnboardingService } from '../services/onboarding.service';
@@ -32,6 +32,7 @@ import { VouchersPanelComponent } from '../../../packages/service-unlock/src/lib
 import type { Voucher } from '../../../packages/service-unlock/src/lib/types/service-unlock.types';
 import { UserProfileFormModalComponent } from '../components/user-profile-form-modal/user-profile-form-modal.component';
 import { VoucherDetailModalComponent } from '../components/voucher-detail-modal/voucher-detail-modal.component';
+import { OnboardingIdentitySelectComponent } from '../components/onboarding-identity-select/onboarding-identity-select.component';
 import { VoucherModalService } from '../services/voucher-modal.service';
 import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
 import { Subscription, firstValueFrom } from 'rxjs';
@@ -46,6 +47,7 @@ type UserType = 'client' | 'donor' | 'volunteer';
     CommonModule,
     ServiceAccessSectionComponent,
     VouchersPanelComponent,
+    OnboardingIdentitySelectComponent,
     IonHeader,
     IonRefresher,
     IonRefresherContent,
@@ -64,6 +66,8 @@ type UserType = 'client' | 'donor' | 'volunteer';
   ],
 })
 export class ProfilePage implements OnInit, OnDestroy {
+  @ViewChild(OnboardingIdentitySelectComponent) identitySelect?: OnboardingIdentitySelectComponent;
+
   selectedUserType: UserType = 'client';
 
   profileInfo = { email: '', firstName: '', lastName: '' };
@@ -169,6 +173,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   ionViewWillEnter(): void {
     this.loadProfile();
+    setTimeout(() => this.identitySelect?.refresh());
   }
 
   /** Service Access (QR intake) is only for users who chose Get Help in onboarding. */

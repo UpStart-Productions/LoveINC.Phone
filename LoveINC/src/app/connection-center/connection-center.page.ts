@@ -15,8 +15,7 @@ import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 
-/** Office line for Love INC Newberg (same as FAQ / Gap Ministries). */
-const LOVE_INC_PHONE_TEL = '5035373999';
+import { LOVE_INC_OFFICE_TEL } from '../shared/love-inc-contact.constants';
 
 @Component({
   selector: 'app-connection-center',
@@ -64,6 +63,6 @@ export class ConnectionCenterPage implements OnInit {
   }
 
   callLoveInc() {
-    window.open(`tel:${LOVE_INC_PHONE_TEL}`, '_self');
+    window.open(`tel:${LOVE_INC_OFFICE_TEL}`, '_self');
   }
 }

@@ -4,12 +4,36 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
-  <h2 class="m-b-18">Thank You</h2>
-  <p class="app-body-secondary m-b-24">
-    Your assistance request has been received. Our team will be in touch within 1–2 business days.
-  </p>
-  <ion-button expand="block" color="primary" (click)="onDone()">
-    Done
-  </ion-button>
+<ion-content [fullscreen]="true" class="assistance-thank-you-page">
+  <div class="assistance-thank-you-hero">
+    <img
+      src="assets/photos/assistance-thank-you-header.png"
+      alt="Connection Center volunteers with donated linens" />
+  </div>
+
+  <div class="ion-padding">
+    <h2 class="m-b-18">{{ greetingLine }}</h2>
+    <p class="app-body m-b-24">
+      Your assistance request has been received by our Connection Center. Our team will be in touch with you
+      shortly.
+    </p>
+    <p class="app-body-secondary m-b-24">
+      The Connection Center works closely with 23 churches to provide essential services, known as GAP Ministries,
+      that meet needs otherwise unmet in the community. These services include clothing, non-food pantry items,
+      bikes, linens, showers, firewood, and kitchen items and many more. Our regular volunteers are the heart of the
+      Connection Center, listening to people's stories, providing practical assistance, offering financial guidance,
+      and praying with clients, resulting in life-changing moments of peace and support.
+    </p>
+    <ion-button
+      expand="block"
+      fill="outline"
+      class="m-b-12"
+      (click)="callConnectionCenter()">
+      <ion-icon slot="start" name="call-outline"></ion-icon>
+      Call Connection Center
+    </ion-button>
+    <ion-button expand="block" color="primary" (click)="onDone()">
+      Done
+    </ion-button>
+  </div>
 </ion-content>

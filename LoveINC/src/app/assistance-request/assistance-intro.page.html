@@ -7,25 +7,41 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
-  <h2 class="m-b-18">Request Assistance</h2>
-  <p class="app-body-secondary m-b-24">
-    We're here to help. After you sign up, here's what you can expect:
-  </p>
-  <ul class="assistance-steps m-b-24">
-    <li>Our team will review your request within 1–2 business days.</li>
-    <li>We'll reach out by phone or email to learn more about your situation.</li>
-    <li>Together we'll connect you with the right resources and support.</li>
-  </ul>
-  <p class="app-body-secondary m-b-24">
-    Your information is kept confidential and used only to provide you with the best possible assistance.
-  </p>
-  <ion-button expand="block" color="primary" (click)="onGetStarted()">
-    Get Started
-  </ion-button>
-  <div class="exploring-link m-t-12">
-    <button type="button" class="link-button app-body-secondary" (click)="onHaveQRCode()">
-      I have a QR code
-    </button>
+<ion-content [fullscreen]="true" class="assistance-intro-page">
+  <div class="assistance-intro-hero">
+    <img
+      src="assets/photos/connection-center-header.png"
+      alt="Connection Center volunteers and community" />
+  </div>
+
+  <div class="ion-padding">
+    <h2 class="m-b-18">We're Here to Help</h2>
+    <p class="app-body-secondary m-b-24">
+      After you sign up, here's what you can expect:
+    </p>
+    <ul class="assistance-steps m-b-24">
+      <li>Our team will review your request within 1–2 business days.</li>
+      <li>We'll reach out by phone or email to learn more about your situation.</li>
+      <li>Together we'll connect you with the right resources and support.</li>
+    </ul>
+    <p class="app-body-secondary m-b-24">
+      Your information is kept confidential and used only to provide you with the best possible assistance.
+    </p>
+    <ion-button expand="block" color="primary" (click)="onGetStarted()">
+      Get Started
+    </ion-button>
+    <ion-button
+      expand="block"
+      fill="outline"
+      class="m-t-12"
+      (click)="callConnectionCenter()">
+      <ion-icon slot="start" name="call-outline"></ion-icon>
+      Call Connection Center
+    </ion-button>
+    <div class="exploring-link m-t-12">
+      <button type="button" class="link-button app-body-secondary" (click)="onHaveQRCode()">
+        I have a QR code
+      </button>
+    </div>
   </div>
 </ion-content>
