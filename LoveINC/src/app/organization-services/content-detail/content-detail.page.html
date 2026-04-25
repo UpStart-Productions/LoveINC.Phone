@@ -181,6 +181,15 @@
       <!-- Class registration (in-app) + calendar -->
       <div class="action-buttons m-t-24" *ngIf="showClassActionButtons()">
         <ion-button
+          *ngIf="showClassCompleteIntakeButton()"
+          expand="block"
+          color="primary"
+          (click)="navigateToAssistanceIntro()"
+        >
+          <ion-icon slot="start" name="document-text-outline"></ion-icon>
+          Complete Intake to Register
+        </ion-button>
+        <ion-button
           *ngIf="showClassRegisterButton()"
           expand="block"
           color="primary"

@@ -12,6 +12,9 @@ import {
   IonIcon,
   IonItem,
   IonLabel,
+  IonList,
+  IonCard,
+  IonThumbnail,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
@@ -32,6 +35,7 @@ import { VolunteerActionSheetService } from '../../services/volunteer-action-she
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 import { CalendarService } from '../../services/calendar/calendar.service';
 import { LocationMapModalService } from '../../services/location-map-modal.service';
+import { GapAccessService } from '../../services/gap-access.service';
 
 export interface GapServiceVoucher {
   id: string;
@@ -78,6 +82,9 @@ export interface GapService {
     IonIcon,
     IonItem,
     IonLabel,
+    IonList,
+    IonCard,
+    IonThumbnail,
     CardComponent,
     NotificationsButtonComponent,
   ],
@@ -94,6 +101,15 @@ export class GapMinistriesPage implements OnInit {
   ];
   fromServices: boolean = false;
   showDonateButton: boolean = false;
+  /** Photo + title list only; tap rows go to I Need Assistance. */
+  restrictGapList = false;
+
+  /** Alphabetical list for the reduced Gap view. */
+  get restrictedListServices(): GapService[] {
+    return [...this.services].sort((a, b) =>
+      a.service.localeCompare(b.service, undefined, { sensitivity: 'base' })
+    );
+  }
 
   constructor(
     private platformApi: PlatformApiService,
@@ -113,12 +129,15 @@ export class GapMinistriesPage implements OnInit {
     private volunteerActionSheetService: VolunteerActionSheetService,
     private scheduleFormatting: ScheduleFormattingService,
     private calendarService: CalendarService,
-    private locationMapModal: LocationMapModalService
+    private locationMapModal: LocationMapModalService,
+    private gapAccess: GapAccessService
   ) {}
 
   async ngOnInit() {
     await this.serviceUnlock.ensureInitialized();
-    this.loadClientAccess();
+    await this.gapAccess.refreshState();
+    this.restrictGapList = this.gapAccess.isRestrictedListActive;
+    this.intakeRequired = this.gapAccess.orgIntakeRequired;
     this.loadServices();
     const fromParam = this.route.snapshot.queryParamMap.get('from');
     this.fromServices = fromParam === 'services';
@@ -128,19 +147,14 @@ export class GapMinistriesPage implements OnInit {
     this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
   }
 
-  openDonateMenu() {
-    this.donateActionSheetService.openDonateActionSheet();
+  async ionViewWillEnter(): Promise<void> {
+    await this.gapAccess.refreshState();
+    this.restrictGapList = this.gapAccess.isRestrictedListActive;
+    this.intakeRequired = this.gapAccess.orgIntakeRequired;
   }
 
-  loadClientAccess() {
-    this.platformApi.getClientAccess().subscribe({
-      next: (res) => {
-        this.intakeRequired = res?.intakeRequired ?? false;
-      },
-      error: (err) => {
-        console.error('Error loading client access:', err);
-      },
-    });
+  openDonateMenu() {
+    this.donateActionSheetService.openDonateActionSheet();
   }
 
   loadServices() {
@@ -500,6 +514,10 @@ export class GapMinistriesPage implements OnInit {
     this.router.navigate(['/tabs/content-detail', 'gap-ministry', service.id], {
       queryParams: { from: 'gap-ministries' },
     });
+  }
+
+  onRestrictedGapItemClick(): void {
+    this.router.navigate(['/assistance/intro']);
   }
 
   async onShareService(service: GapService) {

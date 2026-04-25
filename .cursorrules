@@ -16,6 +16,15 @@
   - App component: `src/app/app.component.ts` – DB init, platform.resume handling
 - Before implementing SQLite, Capacitor, live reload, or database features: READ the reference project first. Do NOT guess or search the web.
 
+## Reuse in-app UI before inventing (CRITICAL)
+- **Do not free-hand layout, typography, spacing, or list/card structure** for screens that have an obvious sibling elsewhere in this repo. The app already encodes the correct design in concrete files—**find the closest existing instance and copy it** (markup, utilities, and page SCSS that apply to that pattern), then adapt only what differs.
+- **Before** adding new `ion-list` / `ion-item` / `ion-card` rows, new intro copy blocks, or new horizontal padding: open the **More** page and match it unless the product explicitly needs something different.
+  - **Reference: More list (full-bleed card, row typography, chevron, spacing):** `LoveINC/src/app/more/more.page.html` and `more.page.scss` (e.g. `more-list-card`, `ion-list` + `ion-item` structure, `item-icon-slot` where applicable, end `list-row-chevron`).
+- **Ionic + lists:** `ion-text-wrap` on `ion-label` **inside** `ion-item` is **not** the same as the More list. Ionic’s `ion-text-wrap` label styling can **reduce label font size** (notably on iOS). The More list uses a plain `ion-label` for the main title. If long text must wrap, use plain `ion-label` plus a **scoped** class in that page with only what you need (e.g. `white-space: normal`)—**do not** add `ion-text-wrap` to match “look” without checking More.
+- **Padding:** Do not wrap a second screen’s content in `ion-padding` if the **reference** page places `ion-card` **directly** under `ion-content` with no extra horizontal inset—**padding mistakes are a common source of “why doesn’t this match More?”** Put horizontal padding on specific blocks (e.g. intro `p`) if copy needs insets, not on the whole column around the card, unless the reference does.
+- **Headings in list labels:** `h2` / `h3` inside `ion-item` `ion-label` are governed by `src/theme/typography.scss` (often **larger** than body). If the reference list uses **plain text** in `ion-label`, do **not** switch to `h3` for “bold” or emphasis—**match the reference**; bold can be a separate, explicit request and must not change the established size scale.
+- If you must extend the pattern, add the **smallest** diff and prefer **global/theme** or the same file’s existing SCSS over new one-off visual systems.
+
 ## Platform and Data Storage (CRITICAL – Never Forget)
 - This project ONLY runs in the iOS/Android simulator or on a physical device. It NEVER runs on web.
 - NEVER add a dev proxy, proxy.conf.json, or proxyConfig. The app always calls APIs directly (https://api.grovlink.com, etc.). Do not reintroduce proxy-based routing.

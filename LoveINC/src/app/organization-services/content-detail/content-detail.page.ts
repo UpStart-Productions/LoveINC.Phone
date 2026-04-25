@@ -45,6 +45,7 @@ import { VolunteerActionSheetService } from '../../services/volunteer-action-she
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 import { CalendarService } from '../../services/calendar/calendar.service';
 import { LocationMapModalService } from '../../services/location-map-modal.service';
+import { GapAccessService } from '../../services/gap-access.service';
 import {
   PlatformApiService,
   type PlatformClass,
@@ -94,6 +95,12 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   /** From GrovLink local DB after a successful in-app registration for this class. */
   isRegisteredForThisClass = false;
 
+  /**
+   * Client / exploring + org requires intake + intake not done (same as Gap gating).
+   * When true, class detail shows "Complete Intake to Register" instead of "Register".
+   */
+  classIntakeGateActive = false;
+
   /** Org-level: when true, user must complete intake before accessing voucher-gated services. Default true until API responds (conservative: hide voucher icons until we know). */
   intakeRequired = true;
   /** User has completed intake (from API or local unlock state). */
@@ -119,7 +126,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     private actionSheetController: ActionSheetController,
     private calendarService: CalendarService,
     private locationMapModal: LocationMapModalService,
-    private grovlinkDb: GrovLinkDatabaseService
+    private grovlinkDb: GrovLinkDatabaseService,
+    private gapAccess: GapAccessService
   ) {}
 
   ngOnInit() {
@@ -161,6 +169,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   async ionViewWillEnter(): Promise<void> {
     if (this.contentType === 'class' && this.contentId?.trim()) {
+      await this.gapAccess.refreshState();
+      this.classIntakeGateActive = this.gapAccess.isRestrictedListActive;
       await this.refreshClassRegistrationLocalStatus();
     }
   }
@@ -427,18 +437,25 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   private loadServiceFromApi() {
-    this.platformApi.getServices().subscribe({
-      next: (services) => {
-        const { item, service } = this.findServiceOrOfferingById(services ?? [], this.contentId);
-        this.contentItem = item && service ? this.mapPlatformServiceToContentDetail(item, service) : null;
-        if (!this.contentItem) {
-          console.error('Gap ministry not found:', this.contentId);
-        }
-      },
-      error: (err) => {
-        console.error('Error loading gap ministry detail:', err);
-      },
-    });
+    void (async () => {
+      await this.gapAccess.refreshState();
+      if (this.gapAccess.isRestrictedListActive) {
+        await this.router.navigateByUrl('/assistance/intro', { replaceUrl: true });
+        return;
+      }
+      this.platformApi.getServices().subscribe({
+        next: (services) => {
+          const { item, service } = this.findServiceOrOfferingById(services ?? [], this.contentId);
+          this.contentItem = item && service ? this.mapPlatformServiceToContentDetail(item, service) : null;
+          if (!this.contentItem) {
+            console.error('Gap ministry not found:', this.contentId);
+          }
+        },
+        error: (err) => {
+          console.error('Error loading gap ministry detail:', err);
+        },
+      });
+    })();
   }
 
   private findServiceOrOfferingById(
@@ -994,7 +1011,20 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       !!this.contentItem &&
       !this.loading &&
       !this.error &&
-      !this.isRegisteredForThisClass
+      !this.isRegisteredForThisClass &&
+      !this.classIntakeGateActive
+    );
+  }
+
+  /** I Need Assistance for users who must complete intake before registering (same rules as Gap list). */
+  showClassCompleteIntakeButton(): boolean {
+    return (
+      this.contentType === 'class' &&
+      !!this.contentItem &&
+      !this.loading &&
+      !this.error &&
+      !this.isRegisteredForThisClass &&
+      this.classIntakeGateActive
     );
   }
 
@@ -1023,6 +1053,10 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         classScheduleLabel: scheduleLabel?.trim() ?? '',
       },
     });
+  }
+
+  navigateToAssistanceIntro(): void {
+    void this.router.navigateByUrl('/assistance/intro');
   }
 
   isDonationDrive(): boolean {

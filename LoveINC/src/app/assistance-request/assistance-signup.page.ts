@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import {
   IonHeader,
@@ -26,7 +26,6 @@ import { ContactAssistanceFormComponent } from '../components/contact-assistance
     IonButtons,
     IonBackButton,
     ContactAssistanceFormComponent,
-    RouterLink,
   ],
 })
 export class AssistanceSignupPage {
