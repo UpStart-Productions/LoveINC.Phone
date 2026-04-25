@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { format, startOfDay } from 'date-fns';
+import { startOfDay } from 'date-fns';
 import {
   IonHeader,
   IonToolbar,
@@ -23,6 +23,7 @@ import { ScheduleFormattingService } from '../services/schedule-formatting.servi
 import { CalendarService } from '../services/calendar/calendar.service';
 import { CardFormattingService } from '../services/card-formatting.service';
 import { OnboardingService } from '../services/onboarding.service';
+import { formatEventSubtitle, joinWithAppDot } from '../shared/utils';
 import {
   PlatformApiService,
   type PlatformClass,
@@ -138,14 +139,7 @@ export class UpdatesPage implements OnInit {
   }
 
   private mapEventToUpdateItem(e: PlatformEvent): UpdateItem {
-    const start = new Date(e.startDate);
-    const end = new Date(e.endDate);
-    const dateStr = format(start, 'EEEE, MMMM d, yyyy');
-    const timeStr =
-      start.getTime() !== end.getTime()
-        ? `${format(start, 'h:mm a')} – ${format(end, 'h:mm a')}`
-        : format(start, 'h:mm a');
-    const subtitle = `${dateStr} • ${timeStr}`;
+    const subtitle = formatEventSubtitle(e.startDate, e.endDate);
     const rawPositions = (e.volunteerPositions ?? (e as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
     const address = e.address ? this.formatAddress(e.address) : null;
     const volunteerPositions = rawPositions.length
@@ -224,7 +218,7 @@ export class UpdatesPage implements OnInit {
     const dayOfWeek = rule?.daysOfWeek?.length
       ? rule.daysOfWeek.map((n) => DAY_NAMES[n] ?? '').join(', ')
       : '';
-    const time = [rule?.startTime, rule?.endTime].filter(Boolean).join(' – ') || '';
+    const time = joinWithAppDot(rule?.startTime, rule?.endTime) || '';
     return { startDate, endDate, dayOfWeek, time };
   }
 

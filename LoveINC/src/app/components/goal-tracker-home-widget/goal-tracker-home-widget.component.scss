@@ -1,0 +1,9 @@
+:host {
+  display: block;
+}
+
+.home-widget-below-verse {
+  ::ng-deep .content-card {
+    margin-bottom: 0;
+  }
+}

@@ -49,22 +49,43 @@
 
       <div *ngIf="contentItem.description" class="app-body-secondary rich-html m-b-24" [innerHTML]="contentItem.description | safeHtml"></div>
 
-      <ion-list lines="none" class="info-list">
-        <!-- Instructor (for classes) -->
-        <ion-item *ngIf="hasInstructor()">
+      <!-- Instructor (classes): minicard, large avatar left -->
+      <div *ngIf="hasInstructor()" class="instructor-minicard m-b-24">
+        <div class="instructor-minicard-avatar" aria-hidden="true">
           @if (contentType === 'class' && contentItem.instructorPhotoUrl) {
-            <ion-avatar slot="start" aria-hidden="true">
-              <img [src]="contentItem.instructorPhotoUrl" [alt]="contentItem.teacher || 'Instructor'" />
-            </ion-avatar>
+            <img
+              [src]="contentItem.instructorPhotoUrl"
+              [attr.alt]="contentItem.teacher ? '' : 'Instructor'"
+            />
           } @else {
-            <ion-icon slot="start" name="person-outline" color="dark"></ion-icon>
+            <ion-icon name="person-outline" color="dark"></ion-icon>
           }
-          <ion-label>
-            <h3 class="app-body">Instructor</h3>
-            <p *ngIf="contentItem.teacher">{{ contentItem.teacher }}</p>
-          </ion-label>
-        </ion-item>
+        </div>
+        <div class="instructor-minicard-text">
+          <h3 class="app-uppercase-thin">Instructor</h3>
+          <div
+            *ngIf="instructorDisplayName || instructorTitleDisplay || hasInstructorNotes()"
+            class="instructor-minicard-body"
+          >
+            <p *ngIf="instructorDisplayName" class="instructor-name-line">{{ instructorDisplayName }}</p>
+            <div *ngIf="instructorTitleDisplay || hasInstructorNotes()" class="instructor-title-pill-row">
+              <p *ngIf="instructorTitleDisplay" class="instructor-title-line app-body-secondary-sm">
+                {{ instructorTitleDisplay }}
+              </p>
+              <button
+                *ngIf="hasInstructorNotes()"
+                type="button"
+                class="instructor-bio-pill item-pill"
+                (click)="openInstructorNotesModal()"
+              >
+                BIO
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <ion-list lines="none" class="info-list">
         <!-- Schedule (for volunteer positions) -->
         <ion-item *ngIf="hasVolunteerSchedule()">
           <ion-icon slot="start" name="calendar-outline" color="dark"></ion-icon>

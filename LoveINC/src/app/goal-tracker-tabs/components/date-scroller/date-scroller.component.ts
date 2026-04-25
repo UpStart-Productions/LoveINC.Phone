@@ -70,7 +70,8 @@ export class DateScrollerComponent implements OnInit {
       });
       current.setDate(current.getDate() + 1);
     }
-    this.dates.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    // Keep chronological order (past → future, left → right). Do not sort descending
+    // or the scroller reads backward.
   }
 
   private scrollToCurrentDate() {

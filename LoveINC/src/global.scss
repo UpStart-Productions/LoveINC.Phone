@@ -466,6 +466,21 @@ ion-modal.entry-notes-modal {
     --border-width: 0;
   }
 
+  /* Global app header forces white title text; sheet has white toolbar — use dark text. */
+  ion-title {
+    --color: var(--ion-color-dark);
+    color: var(--ion-color-dark);
+  }
+
+  ion-buttons ion-button {
+    --color: var(--ion-color-dark);
+    color: var(--ion-color-dark);
+  }
+
+  ion-buttons ion-button ion-icon {
+    color: var(--ion-color-dark);
+  }
+
   ion-content {
     --background: #ffffff !important;
   }
@@ -747,8 +762,8 @@ app-add-goal-habit-modal .date-input-row {
   }
 }
 
-/* Goal Tracker goals list – hidden scrollbar */
-ion-content.goals-content::part(scroll) {
+/* All pages: hide scrollbars on ion-content (scroll still works). New screens pick this up automatically. */
+ion-content::part(scroll) {
   scrollbar-width: none;
   -ms-overflow-style: none;
 

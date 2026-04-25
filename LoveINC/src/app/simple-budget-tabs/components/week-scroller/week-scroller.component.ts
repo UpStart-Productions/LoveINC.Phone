@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { addDays, differenceInDays, format, startOfDay } from 'date-fns';
+import { joinWithAppDot } from '../../../shared/utils';
 
 export interface WeekScrollerWeek {
   weekStartDate: string;
@@ -81,7 +82,7 @@ export class WeekScrollerComponent implements OnInit, OnChanges, AfterViewChecke
       const day = sunday.getDate();
       const labelShort = `${month}/${day}`;
       const weekEnd = addDays(sunday, 6);
-      const labelLong = `Week ${format(sunday, 'MMM d')} – ${format(weekEnd, 'MMM d')}`;
+      const labelLong = `Week ${joinWithAppDot(format(sunday, 'MMM d'), format(weekEnd, 'MMM d'))}`;
       const isCurrent = weekStart === thisWeekStart;
 
       const remaining = this.weekBalances[weekStart] ?? 0;

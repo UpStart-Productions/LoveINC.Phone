@@ -50,6 +50,101 @@ ion-content.content-detail-page {
   --ion-background-color: #ffffff;
 }
 
+/* Class instructor: light minicard, large avatar left, label + name right */
+.instructor-minicard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--app-card-radius);
+  background: var(--ion-color-light);
+}
+
+.instructor-minicard-avatar {
+  flex-shrink: 0;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--app-card-background);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  ion-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
+
+.instructor-minicard-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+
+  h3 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.instructor-minicard-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.instructor-name-line {
+  margin: 0;
+  font-size: var(--app-font-size-body);
+  color: var(--app-text-primary);
+  line-height: var(--app-line-height-relaxed);
+}
+
+.instructor-title-pill-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.instructor-title-line {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.instructor-bio-pill {
+  flex-shrink: 0;
+  margin: 0;
+  align-self: center;
+  background-color: var(--ion-color-success) !important;
+  color: var(--ion-color-success-contrast) !important;
+  border: none;
+  padding: 0.125rem 0.4rem !important;
+  /* Override global .item-pill (sm + semibold) */
+  font-size: var(--app-font-size-xs) !important;
+  font-weight: var(--app-font-weight-normal) !important;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
 ion-list {
   margin: 0;
   padding: 0;

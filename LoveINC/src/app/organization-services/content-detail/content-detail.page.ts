@@ -12,6 +12,8 @@ import {
   dayTo2Letter,
   dayNumberTo2Letter,
   uppercaseMonth,
+  APP_DOT,
+  joinWithAppDot,
 } from '../../shared/utils';
 import { HttpClient } from '@angular/common/http';
 import { 
@@ -27,7 +29,7 @@ import {
   IonLabel,
   IonList,
   IonSpinner,
-  IonAvatar,
+  ModalController,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { ContentDetail, ContentType } from './content-detail.model';
@@ -78,7 +80,6 @@ import { GrovLinkDatabaseService } from '../../services/grovlink-database.servic
   IonLabel,
   IonList,
   IonSpinner,
-  IonAvatar,
   SafeHtmlPipe,
 ],
   providers: [AlertController, ActionSheetController, ToastController]
@@ -127,7 +128,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     private calendarService: CalendarService,
     private locationMapModal: LocationMapModalService,
     private grovlinkDb: GrovLinkDatabaseService,
-    private gapAccess: GapAccessService
+    private gapAccess: GapAccessService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -498,9 +500,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         const time =
           this.formatSessionTime(firstSession.startDate) +
           (firstSession.endDate
-            ? ` – ${this.formatSessionTime(firstSession.endDate)}`
+            ? `${APP_DOT}${this.formatSessionTime(firstSession.endDate)}`
             : '');
-        subtitle = [off.provider?.name, `${dayName} ${time}`].filter(Boolean).join(' · ');
+        subtitle = joinWithAppDot(off.provider?.name, `${dayName} ${time}`);
         nextSession = {
           startDate: firstSession.startDate,
           endDate: firstSession.endDate ?? firstSession.startDate,
@@ -512,9 +514,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       } else if (rule?.daysOfWeek?.length) {
         const names = rule.daysOfWeek.map((d) => DAY_NAMES[d] ?? '').filter(Boolean);
         const schedule = names.length === 1 ? names[0] : names.length > 1 ? 'Open Weekdays' : 'By Appointment';
-        const rawTime = [rule.startTime, rule.endTime].filter(Boolean).join(' – ') || '';
+        const rawTime = joinWithAppDot(rule.startTime, rule.endTime) || '';
         const time = rawTime ? formatTimeStringFull(rawTime) : '';
-        subtitle = [off.provider?.name, time ? `${schedule} ${time}` : schedule].filter(Boolean).join(' · ');
+        subtitle = joinWithAppDot(off.provider?.name, time ? `${schedule} ${time}` : schedule);
         nextSession = rule.startDate && rule.endDate
           ? {
               startDate: rule.startDate,
@@ -742,11 +744,20 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       .filter((d) => d.url)
       .map((d) => ({ title: d.title, url: d.url!, type: undefined as 'handout' | 'worksheet' | 'resource' | undefined }));
 
-    const cPhoto = c as PlatformClass & { instructor_photo_url?: string };
+    const cPhoto = c as PlatformClass & {
+      instructor_photo_url?: string;
+      instructor_title?: string;
+      instructor_notes?: string;
+    };
     const rawInstructorPhoto = c.instructorPhotoUrl ?? cPhoto.instructor_photo_url;
     const instructorPhotoUrl = rawInstructorPhoto
       ? (this.platformApi.resolveUploadUrl(rawInstructorPhoto) || rawInstructorPhoto)
       : undefined;
+    const instructorTitle =
+      (c.instructorTitle ?? cPhoto.instructor_title ?? '').trim() || undefined;
+    const rawNotes = c.instructorNotes ?? cPhoto.instructor_notes ?? '';
+    const instructorNotes =
+      (typeof rawNotes === 'string' ? rawNotes : '').trim() || undefined;
 
     return {
       id: c.id,
@@ -755,6 +766,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',
       subtitle,
       teacher: c.instructor,
+      instructorTitle,
+      instructorNotes,
       instructorPhotoUrl: instructorPhotoUrl || undefined,
       location,
       durationMinutes: c.durationMinutes,
@@ -790,7 +803,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       rule?.daysOfWeek?.length
         ? rule.daysOfWeek.map((n) => dayNumberTo2Letter(n)).join(', ')
         : '';
-    const rawTime = [rule?.startTime, rule?.endTime].filter(Boolean).join(' – ') || '';
+    const rawTime = joinWithAppDot(rule?.startTime, rule?.endTime) || '';
     const time = formatTimeStringFull(rawTime) || rawTime;
     return { startDate, endDate, dayOfWeek, time };
   }
@@ -904,10 +917,58 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   hasInstructor(): boolean {
     if (!this.contentItem) return false;
-    return !!(
-      this.contentItem.teacher ||
-      (this.contentType === 'class' && this.contentItem.instructorPhotoUrl)
+    const item = this.contentItem;
+    if (this.contentType === 'class') {
+      return !!(
+        item.teacher?.trim() ||
+        item.instructorPhotoUrl ||
+        item.instructorTitle?.trim() ||
+        item.instructorNotes?.trim()
+      );
+    }
+    return !!item.teacher?.trim();
+  }
+
+  /** Instructor display name only (not job title). */
+  get instructorDisplayName(): string {
+    return (this.contentItem?.teacher ?? '').trim();
+  }
+
+  /** Job / role title (smaller type in the minicard, below name). */
+  get instructorTitleDisplay(): string {
+    return (this.contentItem?.instructorTitle ?? '').trim();
+  }
+
+  hasInstructorNotes(): boolean {
+    return !!this.contentItem?.instructorNotes?.trim();
+  }
+
+  async openInstructorNotesModal(): Promise<void> {
+    if (!this.contentItem || !this.hasInstructorNotes()) return;
+    const { InstructorBioModalComponent } = await import(
+      '../../components/instructor-bio-modal/instructor-bio-modal.component'
     );
+    const item = this.contentItem;
+    const name = (item.teacher ?? '').trim() || 'Instructor';
+    const modal = await this.modalController.create({
+      component: InstructorBioModalComponent,
+      componentProps: {
+        instructorName: name,
+        jobTitle: (item.instructorTitle ?? '').trim(),
+        notes: (item.instructorNotes ?? '').trim(),
+        photoUrl:
+          this.contentType === 'class' && item.instructorPhotoUrl
+            ? item.instructorPhotoUrl
+            : undefined,
+      },
+      cssClass: 'entry-notes-modal',
+      presentingElement: await this.modalController.getTop(),
+      showBackdrop: true,
+      backdropDismiss: true,
+      breakpoints: [0, 0.5, 1],
+      initialBreakpoint: 0.55,
+    });
+    await modal.present();
   }
 
   hasSchedule(): boolean {
@@ -1216,7 +1277,16 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     }
     
     if (this.contentItem.teacher) {
-      html += `<p><strong>Instructor:</strong> ${this.contentItem.teacher}</p>`;
+      const t = (this.contentItem.instructorTitle ?? '').trim();
+      const line = t
+        ? `${this.contentItem.teacher}: ${t}`
+        : this.contentItem.teacher;
+      html += `<p><strong>Instructor:</strong> ${line}</p>`;
+    } else if ((this.contentItem.instructorTitle ?? '').trim()) {
+      html += `<p><strong>Instructor:</strong> ${(this.contentItem.instructorTitle ?? '').trim()}</p>`;
+    }
+    if (this.contentItem.instructorNotes?.trim()) {
+      html += `<p>${this.contentItem.instructorNotes.trim()}</p>`;
     }
     
     if (this.contentItem.nextSession) {

@@ -10,6 +10,7 @@ import {
   formatClassSessionSubtitle,
   dayNumberTo2Letter,
   formatTimeStringFull,
+  joinWithAppDot,
 } from '../shared/utils';
 import { PlatformApiService } from './platform/platform-api.service';
 import type {
@@ -43,6 +44,45 @@ type CardApiItem =
 @Injectable({ providedIn: 'root' })
 export class CardFormattingService {
   constructor(private platformApi: PlatformApiService) {}
+
+  /**
+   * Resolves start/end ISO strings for Add to Calendar on home feed event/class cards.
+   * Uses the same class session resolution as subtitles (nextSession → offerings).
+   */
+  getCalendarDateRangeForHome(
+    item: PlatformHomeFeedItem & { type: CardType },
+    event: PlatformEvent | undefined,
+    cls: PlatformClass | undefined
+  ): { startDate: string; endDate: string } | null {
+    if (item.type === 'event') {
+      if (event) {
+        return { startDate: event.startDate, endDate: event.endDate };
+      }
+      if (item.startDate && item.endDate) {
+        return { startDate: item.startDate, endDate: item.endDate };
+      }
+      return null;
+    }
+    if (item.type === 'class') {
+      if (cls?.nextSession) {
+        return {
+          startDate: cls.nextSession.startDate,
+          endDate: cls.nextSession.endDate,
+        };
+      }
+      if (cls?.offerings?.length) {
+        const derived = this.deriveNextSessionFromOfferings(cls.offerings);
+        if (derived) {
+          return { startDate: derived.startDate, endDate: derived.endDate };
+        }
+      }
+      if (item.startDate && item.endDate) {
+        return { startDate: item.startDate, endDate: item.endDate };
+      }
+      return null;
+    }
+    return null;
+  }
 
   formatForCard(item: CardApiItem, contentType: CardType): FormattedCard {
     const resolveUrl = (path: string | undefined) =>
@@ -152,7 +192,7 @@ export class CardFormattingService {
       rule?.daysOfWeek?.length
         ? rule.daysOfWeek.map((n) => dayNumberTo2Letter(n)).join(', ')
         : '';
-    const rawTime = [rule?.startTime, rule?.endTime].filter(Boolean).join(' – ') || '';
+    const rawTime = joinWithAppDot(rule?.startTime, rule?.endTime) || '';
     const time = formatTimeStringFull(rawTime) || rawTime;
     return { startDate, endDate, dayOfWeek, time };
   }

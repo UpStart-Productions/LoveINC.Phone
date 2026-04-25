@@ -92,6 +92,15 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
     refresher?.complete?.();
   }
 
+  /** Unread and created in the last 7 days (rolling window). */
+  isNewNotification(n: AppNotification): boolean {
+    if (n.read) return false;
+    const created = new Date(n.createdAt).getTime();
+    if (Number.isNaN(created)) return false;
+    const weekMs = 7 * 24 * 60 * 60 * 1000;
+    return created >= Date.now() - weekMs;
+  }
+
   formatDate(dateStr: string): string {
     const d = new Date(dateStr);
     const now = new Date();

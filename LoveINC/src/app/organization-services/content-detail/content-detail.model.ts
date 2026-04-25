@@ -21,6 +21,10 @@ export interface ContentDetail {
   
   // Class-specific fields
   teacher?: string;
+  /** Job or role title (People record); shown after name as "Name: Title" when set */
+  instructorTitle?: string;
+  /** Instructor bio/notes; when set, a BIO pill opens the detail sheet */
+  instructorNotes?: string;
   /** When set, shown in the Instructor row instead of the person icon */
   instructorPhotoUrl?: string;
   registrationLink?: string;

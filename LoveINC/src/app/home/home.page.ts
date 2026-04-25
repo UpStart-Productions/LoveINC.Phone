@@ -29,6 +29,7 @@ import type { PlatformCta, PlatformClass, PlatformEvent, PlatformHomeFeedItem } 
 import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.component';
 import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-widget/verse-of-the-day-widget.component';
 import { SimpleBudgetHomeWidgetComponent } from '../components/simple-budget-home-widget/simple-budget-home-widget.component';
+import { GoalTrackerHomeWidgetComponent } from '../components/goal-tracker-home-widget/goal-tracker-home-widget.component';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
@@ -36,6 +37,8 @@ import { DeviceIdService } from '../services/device-id.service';
 import { UserProfileService } from '../services/user-profile.service';
 import { AppUserDataService } from '../services/app-user-data.service';
 import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
+import { ServiceUnlockService } from '@upstart-productions/service-unlock';
+import { CalendarService } from '../services/calendar/calendar.service';
 
 const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
 const BROWSE_SERVICES_MAX_DISPLAYS = 3;
@@ -67,12 +70,16 @@ export type ClientSupportCardState =
     HomeCtaRowComponent,
     VerseOfTheDayWidgetComponent,
     SimpleBudgetHomeWidgetComponent,
+    GoalTrackerHomeWidgetComponent,
     NotificationsButtonComponent,
   ],
 })
 export class HomePage implements OnInit {
   @ViewChild(SimpleBudgetHomeWidgetComponent)
   private budgetHomeWidget?: SimpleBudgetHomeWidgetComponent;
+
+  @ViewChild(GoalTrackerHomeWidgetComponent)
+  private goalTrackerHomeWidget?: GoalTrackerHomeWidgetComponent;
 
   @ViewChild(VerseOfTheDayWidgetComponent)
   private verseHomeWidget?: VerseOfTheDayWidgetComponent;
@@ -101,11 +108,17 @@ export class HomePage implements OnInit {
     private deviceIdService: DeviceIdService,
     private userProfileService: UserProfileService,
     private appUserDataService: AppUserDataService,
-    private dismissedVouchersService: DismissedVouchersService
+    private dismissedVouchersService: DismissedVouchersService,
+    private serviceUnlock: ServiceUnlockService,
+    private calendarService: CalendarService
   ) {}
 
   ionViewDidEnter() {
     this.budgetHomeWidget?.refresh();
+    this.goalTrackerHomeWidget?.refresh();
+    if (this.selectedUserTypes.includes('get-help')) {
+      void this.reloadClientContext(false);
+    }
   }
 
   ngOnInit() {
@@ -137,6 +150,7 @@ export class HomePage implements OnInit {
       this.welcomeTitle = firstName ? `Welcome, ${firstName}!` : 'Welcome to Love INC';
       this.loadUserTypes();
       this.budgetHomeWidget?.refresh();
+      this.goalTrackerHomeWidget?.refresh();
       this.verseHomeWidget?.refresh();
 
       const tasks: Promise<unknown>[] = [
@@ -196,6 +210,7 @@ export class HomePage implements OnInit {
 
   /** @param fromRefresh When true, skip local "browse services" display counter bumps and no-identify early exit. */
   private async reloadClientContext(fromRefresh: boolean): Promise<void> {
+    await this.serviceUnlock.ensureInitialized();
     const deviceId = this.deviceIdService.getDeviceId();
     const profile = this.userProfileService.getProfile();
     const onboarding = this.onboardingService.getOnboardingData();
@@ -227,7 +242,9 @@ export class HomePage implements OnInit {
       const intakeRequired = clientAccess?.intakeRequired ?? true;
       const profileIntakeCompleted = appUserProfile?.profile?.intakeCompleted ?? false;
       const apiIntakeCompleted =
-        profileIntakeCompleted || this.appUserDataService.hasIntakeCompleted();
+        profileIntakeCompleted ||
+        this.appUserDataService.hasIntakeCompleted() ||
+        this.serviceUnlock.isUnlocked;
 
       const voucherRequests = appUserProfile?.profile?.voucherRequests ?? [];
       const dismissedIds = this.dismissedVouchersService.getDismissed();
@@ -320,8 +337,8 @@ export class HomePage implements OnInit {
   get selectedUserTypesForUserCards(): UserType[] {
     const hasGetHelp = this.selectedUserTypes.includes('get-help');
     if (!hasGetHelp) return [];
-    if (this.clientSupportCardState === 'browse_services_hidden') return [];
-    if (this.clientSupportCardState === null) return [];
+    // Client CTA: only the intake nudge; hide the entire row once intake is done (no alternate copy on Home).
+    if (this.clientSupportCardState !== 'intake_required') return [];
     return ['get-help'];
   }
 
@@ -449,6 +466,12 @@ export class HomePage implements OnInit {
       address = item.address ? this.formatAddress(item.address) : null;
     }
 
+    const calendarRange = this.cardFormatting.getCalendarDateRangeForHome(
+      item,
+      item.type === 'event' ? eventMap.get(item.id) : undefined,
+      item.type === 'class' ? classMap.get(item.id) : undefined
+    );
+
     return {
       id: formatted.id,
       type: formatted.type,
@@ -461,6 +484,8 @@ export class HomePage implements OnInit {
       badge: formatted.badge,
       volunteerPositions: positions.length ? positions : undefined,
       address,
+      startDate: calendarRange?.startDate,
+      endDate: calendarRange?.endDate,
     };
   }
 
@@ -472,6 +497,8 @@ export class HomePage implements OnInit {
   getActionIcons(card: HomeCard): CardActionIcon[] {
     const showVolunteer =
       !!card.volunteerPositions?.length && this.onboardingService.canShowVolunteerRequestUi();
+    const canAddToCalendar =
+      (card.type === 'event' || card.type === 'class') && !!card.startDate && !!card.endDate;
     return [
       {
         lucideIcon: 'heart-handshake',
@@ -479,7 +506,24 @@ export class HomePage implements OnInit {
         show: showVolunteer,
         buttonClass: 'volunteer-button',
       },
+      {
+        icon: 'calendar-outline',
+        handler: () => this.onCalendarClick(card),
+        show: canAddToCalendar,
+        buttonClass: 'calendar-button',
+      },
     ];
+  }
+
+  async onCalendarClick(card: HomeCard) {
+    if (!card.startDate || !card.endDate) return;
+    await this.calendarService.addToCalendar({
+      title: card.title,
+      description: card.shortDescription,
+      location: card.address ?? undefined,
+      startDate: card.startDate,
+      endDate: card.endDate,
+    });
   }
 
   async onVolunteerClick(card: HomeCard) {

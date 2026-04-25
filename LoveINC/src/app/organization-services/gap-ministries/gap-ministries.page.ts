@@ -36,6 +36,7 @@ import { ScheduleFormattingService } from '../../services/schedule-formatting.se
 import { CalendarService } from '../../services/calendar/calendar.service';
 import { LocationMapModalService } from '../../services/location-map-modal.service';
 import { GapAccessService } from '../../services/gap-access.service';
+import { APP_DOT, joinWithAppDot } from '../../shared/utils';
 
 export interface GapServiceVoucher {
   id: string;
@@ -260,7 +261,7 @@ export class GapMinistriesPage implements OnInit {
       const time =
         this.formatSessionTime(firstSession.startDate) +
         (firstSession.endDate
-          ? ` – ${this.formatSessionTime(firstSession.endDate)}`
+          ? `${APP_DOT}${this.formatSessionTime(firstSession.endDate)}`
           : '');
       return { schedule: dayName ?? 'By Appointment', daysTimes: time };
     }
@@ -272,7 +273,7 @@ export class GapMinistriesPage implements OnInit {
       const schedule = names.length === 1 ? names[0] : names.length > 1 ? names.join(', ') : 'By Appointment';
       const start12 = rule.startTime ? this.formatTime24To12(rule.startTime) : '';
       const end12 = rule.endTime ? this.formatTime24To12(rule.endTime) : '';
-      const time = [start12, end12].filter(Boolean).join(' – ') || '';
+      const time = joinWithAppDot(start12, end12) || '';
       return { schedule, daysTimes: time || 'See schedule' };
     }
     return { schedule: 'By Appointment', daysTimes: 'By appointment' };

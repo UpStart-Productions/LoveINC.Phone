@@ -33,6 +33,9 @@ export interface HomeCard {
   badge: CardBadge;
   volunteerPositions?: Array<{ id: string; title?: string; shortDescription?: string; description?: string; schedule?: string }>;
   address?: string | null;
+  /** ISO start/end for Add to Calendar (event & class when API provides session range). */
+  startDate?: string;
+  endDate?: string;
 }
 
 export const CardTypeLabels: Record<CardType, string> = {

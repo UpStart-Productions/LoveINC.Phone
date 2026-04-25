@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ instructorName }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()" fill="clear" aria-label="Close">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <div class="instructor-bio-modal-body">
+    <div class="instructor-bio-modal-avatar" aria-hidden="true">
+      @if (photoUrl) {
+        <img [src]="photoUrl" [alt]="instructorName" />
+      } @else {
+        <ion-icon name="person-outline" color="dark"></ion-icon>
+      }
+    </div>
+    @if (jobTitle) {
+      <p class="app-body m-b-12 instructor-bio-modal-job-title">{{ jobTitle }}</p>
+    }
+    <div
+      class="app-body-secondary-sm bio-text rich-html"
+      [innerHTML]="notes | safeHtml"
+    ></div>
+  </div>
+</ion-content>

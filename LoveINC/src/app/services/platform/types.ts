@@ -89,6 +89,10 @@ export interface PlatformClass {
   shortDescription?: string;
   longDescription?: string;
   instructor?: string;
+  /** From People record (affiliate contact title) */
+  instructorTitle?: string;
+  /** Instructor bio / notes (plain text; API may send `instructor_notes`) */
+  instructorNotes?: string;
   /** Resolved upload path or absolute URL; API may also send `instructor_photo_url` */
   instructorPhotoUrl?: string;
   address?: PlatformAddress;
@@ -321,6 +325,7 @@ export interface PlatformHomeFeedItem {
   startDate?: string;
   endDate?: string;
   instructor?: string;
+  instructorTitle?: string;
   sortOrder?: number;
   goalType?: string;
   goalValue?: number;

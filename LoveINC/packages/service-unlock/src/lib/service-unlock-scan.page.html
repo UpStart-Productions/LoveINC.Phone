@@ -10,9 +10,12 @@
 <ion-content [fullscreen]="true" class="ion-padding">
   <div *ngIf="success" class="success-state">
     <ion-icon name="checkmark-circle" color="success" class="success-icon"></ion-icon>
-    <h2>Access Unlocked</h2>
-    <p>You have completed intake. You can now contact Gap Ministry providers directly from the app.</p>
-    <ion-button expand="block" (click)="goBack()">Back to Profile</ion-button>
+    <h2>Intake Completed</h2>
+    <p>
+      You have completed intake. You can now access our Gap Ministry services and register for
+      Transformational Ministry classes.
+    </p>
+    <ion-button expand="block" (click)="goBack()">Done!</ion-button>
   </div>
 
   <div *ngIf="!success && !scanning" class="scan-prompt">

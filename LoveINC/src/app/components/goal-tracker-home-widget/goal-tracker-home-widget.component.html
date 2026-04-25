@@ -1,0 +1,16 @@
+@if (showCard) {
+  <div class="m-t-12 home-widget-below-verse">
+    <app-content-card
+      [compactCategoryLabel]="true"
+      [compactDetail]="true"
+      [category]="'Goal Tracker'"
+      [categoryIcon]="'trophy-outline'"
+      [title]="cardTitle"
+      [titleSegments]="titleSegments.length ? titleSegments : undefined"
+      [detail]="cardDetail"
+      [iconName]="'trophy-outline'"
+      [iconBackgroundColor]="'#eaa535'"
+      [route]="'/tabs/goal-tracker'"
+    />
+  </div>
+}

@@ -43,6 +43,7 @@ const CATEGORY_PALETTE = [
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
 import { UserProfileService } from '../services/user-profile.service';
 import { OnboardingService } from '../services/onboarding.service';
+import { joinWithAppDot } from '../shared/utils';
 
 @Component({
   selector: 'app-simple-budget-export',
@@ -532,7 +533,7 @@ export class SimpleBudgetExportPage implements OnInit {
       const [y, m, d] = plan.weekStartDate.split('-').map(Number);
       const start = new Date(y, m - 1, d);
       const end = addDays(start, 6);
-      const weekLabel = `Week of ${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`;
+      const weekLabel = `Week of ${joinWithAppDot(format(start, 'MMM d'), format(end, 'MMM d, yyyy'))}`;
       html += `<h3 style="margin-top: 16px; margin-bottom: 8px;">${weekLabel}</h3>${weekHtml}`;
     }
 

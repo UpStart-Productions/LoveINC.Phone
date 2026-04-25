@@ -16,8 +16,15 @@ function isScheduledForDate(habit: Habit, dateStr: string): boolean {
   return !!habit.schedule?.find((s) => s.day === weekday && s.selected);
 }
 
-function toDateStr(d: Date): string {
-  return d.toISOString().slice(0, 10);
+/**
+ * Local calendar YYYY-MM-DD (not `toISOString()` UTC) so completions align with the
+ * date scroller and never appear on a "future" local day.
+ */
+function toLocalDateString(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }
 
 const ALL_DAYS: WeekdaySchedule[] = WEEKDAYS.map((day) => ({ day, selected: true }));
@@ -26,14 +33,14 @@ const WEEKDAYS_ONLY: WeekdaySchedule[] = WEEKDAYS.map((day) => ({
   selected: day !== 'Sunday' && day !== 'Saturday',
 }));
 
-const SEED_START = '2025-09-01';
-const SEED_END = '2026-09-01';
+/** 4 weeks back from today, inclusive of today = 28 days before + today. */
+const SEED_DAYS_BACK = 28;
 const COMPLETION_RATE = 0.6;
 
 /**
- * Seeds the goal tracker database with ~1 year of dummy data (Sept 1, 2025 – Sept 1, 2026)
- * for chart development. Resets the database first, then creates 5 goals (2 completed),
- * 2–3 habits each, and habit completions.
+ * Seeds the goal tracker database with ~4 weeks of completion data ending today
+ * (for charts / stats). Resets the database first, then creates 5 goals (2 completed),
+ * 2–3 habits each, and habit completions on scheduled days in that window.
  */
 @Injectable({
   providedIn: 'root',
@@ -48,18 +55,26 @@ export class GoalTrackerSeedService {
   async seedDatabase(): Promise<void> {
     await this.db.resetDatabase();
 
-    const startDate = new Date(SEED_START + 'T12:00:00');
-    const endDate = new Date(SEED_END + 'T12:00:00');
+    const endDate = new Date();
+    endDate.setHours(12, 0, 0, 0);
+    const startDate = new Date(endDate);
+    startDate.setDate(startDate.getDate() - SEED_DAYS_BACK);
     const now = new Date().toISOString();
 
-    // Create 5 goals (2 completed)
+    const addDays = (from: Date, days: number): string => {
+      const x = new Date(from);
+      x.setDate(x.getDate() + days);
+      return toLocalDateString(x);
+    };
+
+    // Create 5 goals (2 completed) — due dates relative to seed “today”
     const goal1 = await this.goalService.createGoal({
       title: 'Exercise',
       description: 'Build a consistent fitness routine',
       progress: 0,
       target: 100,
       color: 'prussian-blue',
-      dueDate: '2026-06-01',
+      dueDate: addDays(endDate, 90),
       completed: false,
     });
 
@@ -69,7 +84,7 @@ export class GoalTrackerSeedService {
       progress: 100,
       target: 100,
       color: 'emerald',
-      dueDate: '2026-03-15',
+      dueDate: addDays(endDate, -30),
       completed: true,
     });
 
@@ -79,7 +94,7 @@ export class GoalTrackerSeedService {
       progress: 0,
       target: 24,
       color: 'blue-ribbon',
-      dueDate: '2026-09-01',
+      dueDate: addDays(endDate, 180),
       completed: false,
     });
 
@@ -89,7 +104,7 @@ export class GoalTrackerSeedService {
       progress: 2000,
       target: 2000,
       color: 'red-orange',
-      dueDate: '2026-07-01',
+      dueDate: addDays(endDate, -3),
       completed: true,
     });
 
@@ -99,7 +114,7 @@ export class GoalTrackerSeedService {
       progress: 0,
       target: undefined,
       color: 'purple-heart',
-      dueDate: '2026-12-31',
+      dueDate: addDays(endDate, 300),
       completed: false,
     });
 
@@ -202,11 +217,13 @@ export class GoalTrackerSeedService {
       habit5b,
     ];
 
-    // Bulk insert habit completions
+    // Bulk insert habit completions (local dates only, never after "today")
     const conn = await this.db.getDbConnection();
+    const todayStr = toLocalDateString(new Date());
 
     for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-      const dateStr = toDateStr(d);
+      const dateStr = toLocalDateString(d);
+      if (dateStr > todayStr) continue;
 
       for (const habit of habits) {
         if (!isScheduledForDate(habit, dateStr)) continue;

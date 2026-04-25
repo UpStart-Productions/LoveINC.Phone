@@ -8,6 +8,7 @@ import {
 import { GoalService, HabitService } from '@upstart-productions/goal-tracker';
 import type { Habit } from '@upstart-productions/goal-tracker';
 import { WeeklyBarChartComponent, WeeklyBarData } from './components/weekly-bar-chart/weekly-bar-chart.component';
+import { joinWithAppDot } from '../shared/utils';
 
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 const MONTHS_LABEL = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -143,7 +144,7 @@ export class GoalTrackerStatisticsPage {
       for (const g of goals) goalMap.set(g.id!, g.title);
 
       this.weekLabel = formatWeekLabel(startDate, endDate);
-      this.weekDateRangeLabel = `${formatShortDate(startDate)} – ${formatShortDate(endDate)}`;
+      this.weekDateRangeLabel = joinWithAppDot(formatShortDate(startDate), formatShortDate(endDate));
 
       // Weekly bar chart: one bar per day, value = % of scheduled habits completed
       const barData: WeeklyBarData[] = [];

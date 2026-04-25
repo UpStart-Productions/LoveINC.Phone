@@ -1,1 +1,10 @@
-/* Simple Budget home widget uses content-card; no extra styles needed */
+:host {
+  display: block;
+}
+
+/* Home: global .content-card has margin-bottom 1rem; with .cards-container padding-top it stacked too much gap above the home feed. */
+.home-widget-below-verse {
+  ::ng-deep .content-card {
+    margin-bottom: 0;
+  }
+}

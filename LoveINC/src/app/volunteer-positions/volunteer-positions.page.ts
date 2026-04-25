@@ -13,6 +13,7 @@ import { ContentCardComponent } from '../components/content-card/content-card.co
 import { PlatformApiService } from '../services/platform';
 import type { PlatformVolunteerPositionWithAffiliate } from '../services/platform/types';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
+import { joinWithAppDot } from '../shared/utils';
 
 @Component({
   selector: 'app-volunteer-positions',
@@ -91,6 +92,6 @@ export class VolunteerPositionsPage implements OnInit {
     const schedule = this.getSchedule(position);
     const addr = this.formatAddress(position);
     const parts = [schedule, addr].filter(Boolean);
-    return parts.length ? parts.join(' · ') : undefined;
+    return parts.length ? joinWithAppDot(...parts) : undefined;
   }
 }

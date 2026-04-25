@@ -1,5 +1,28 @@
 import { format, parse, addDays } from 'date-fns';
 
+/**
+ * U+00B7 with spaces. App-wide inline separator for date ranges, time ranges, and
+ * multi-part card lines. Change this constant only to update that presentation everywhere.
+ */
+export const APP_DOT = ' · ' as const;
+
+/**
+ * Join non-empty string parts with {@link APP_DOT} (e.g. schedule + address, or start + end time fields).
+ */
+export function joinWithAppDot(...parts: (string | null | undefined)[]): string {
+  return parts
+    .filter((p) => p != null && String(p).trim() !== '')
+    .map((p) => String(p).trim())
+    .join(APP_DOT);
+}
+
+/**
+ * "May 21 · May 30, 2026" for class/schedule list rows (month/day on left, month/day + year on right).
+ */
+export function formatClassListDateRange(start: Date, end: Date): string {
+  return `${format(start, 'MMM d')}${APP_DOT}${format(end, 'MMM d, yyyy')}`;
+}
+
 function isSameDay(a: Date, b: Date): boolean {
   return (
     a.getFullYear() === b.getFullYear() &&
@@ -11,7 +34,7 @@ function isSameDay(a: Date, b: Date): boolean {
 /**
  * Format a time range compactly for display.
  * - On the hour: "6 PM" not "6:00 PM"
- * - Both AM or both PM: "8:30-9:30 PM" not "8:30 PM - 9:30 PM"
+ * - Both AM or both PM: "8:30 · 9:30 PM" not "8:30 PM - 9:30 PM"
  */
 export function formatTimeRangeCompact(start: Date, end: Date): string {
   const sh = start.getHours();
@@ -46,16 +69,16 @@ export function formatTimeRangeCompact(start: Date, end: Date): string {
     const period = sh >= 12 ? 'pm' : 'am';
     const startPart = startOnHour ? `${sh % 12 || 12}` : `${sh % 12 || 12}:${sm.toString().padStart(2, '0')}`;
     const endPart = endOnHour ? `${eh % 12 || 12}` : `${eh % 12 || 12}:${em.toString().padStart(2, '0')}`;
-    return `${startPart}-${endPart} ${period}`;
+    return `${startPart}${APP_DOT}${endPart} ${period}`;
   }
 
-  return `${startStr}-${endStr}`;
+  return `${startStr}${APP_DOT}${endStr}`;
 }
 
 /**
  * Format event dates for compact display (e.g. CTA cards).
  * - Single day: "Thu, May 21, 6 - 8pm" (not "Thu, May 21 - May 21 6:00 PM - 8:00 PM")
- * - Multi-day: "Thu, May 21 – Fri, May 22, 6-8pm"
+ * - Multi-day: "Thu, May 21 · Fri, May 22, 6 · 8pm"
  */
 export function formatEventDatesCompact(startDate: string, endDate: string): string {
   if (!startDate && !endDate) return '';
@@ -67,7 +90,7 @@ export function formatEventDatesCompact(startDate: string, endDate: string): str
     start && end && isSameDay(start, end)
       ? format(start, 'EEE, MMM d')
       : start && end
-        ? `${format(start, 'EEE, MMM d')} – ${format(end, 'EEE, MMM d')}`
+        ? `${format(start, 'EEE, MMM d')}${APP_DOT}${format(end, 'EEE, MMM d')}`
         : start
           ? format(start, 'EEE, MMM d')
           : end
@@ -86,12 +109,12 @@ export function formatEventDatesCompact(startDate: string, endDate: string): str
 }
 
 /**
- * Format a time string from the API (e.g. "10:00 – 12:00" or "10:00 AM – 12:00 PM") to compact form.
+ * Format a time string from the API (e.g. "10:00 · 12:00" or "10:00 AM - 12:00 PM") to compact form.
  * Returns "10-12pm" or "8:30-9:30 PM" etc.
  */
 export function formatTimeStringCompact(timeStr: string): string {
   if (!timeStr?.trim()) return '';
-  const parts = timeStr.split(/\s*[-–]\s*/).map((s) => s.trim()).filter(Boolean);
+  const parts = timeStr.split(/\s*[-–·]\s*/).map((s) => s.trim()).filter(Boolean);
   if (parts.length < 2) return timeStr;
 
   const parsePart = (s: string): { h: number; m: number } | null => {
@@ -122,8 +145,8 @@ export function formatTimeStringCompact(timeStr: string): string {
 
 /**
  * Format a date range without times (e.g. for class nextSession when no time).
- * Single day: "May 21, 2026" (never "May 21 – May 21, 2026").
- * Multi-day: "May 21 – May 22, 2026".
+ * Single day: "May 21, 2026" (never "May 21 · May 21, 2026").
+ * Multi-day: "May 21 · May 22, 2026".
  */
 export function formatDateRangeCompact(startDate: string, endDate: string): string {
   if (!startDate && !endDate) return '';
@@ -134,7 +157,7 @@ export function formatDateRangeCompact(startDate: string, endDate: string): stri
     return uppercaseMonth(format(start, 'MMM d, yyyy'));
   }
   return start && end
-    ? uppercaseMonth(`${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`)
+    ? uppercaseMonth(`${format(start, 'MMM d')}${APP_DOT}${format(end, 'MMM d, yyyy')}`)
     : start
       ? uppercaseMonth(format(start, 'MMM d, yyyy'))
       : end
@@ -144,8 +167,9 @@ export function formatDateRangeCompact(startDate: string, endDate: string): stri
 
 /**
  * Format event dates for card/detail subtitle.
- * Single day: "FRIDAY, March 16, 2026 • 6:00 – 8:00 PM"
- * Multi-day: "FRIDAY, March 16 – March 17, 2026 • 6:00 – 8:00 PM"
+ * Line 1: weekday + date (or date range). Line 2: time range (when time applies).
+ * Single day: "FRIDAY, MARCH 16, 2026\n6:00 · 8:00 PM"
+ * Multi-day: "FRIDAY, MARCH 16 · MARCH 17, 2026\n6:00 · 8:00 PM"
  */
 export function formatEventSubtitle(startDate?: string, endDate?: string): string {
   if (!startDate && !endDate) return '';
@@ -158,7 +182,7 @@ export function formatEventSubtitle(startDate?: string, endDate?: string): strin
     start && end && isSameDay(start, end)
       ? format(start, 'MMMM d, yyyy')
       : start && end
-        ? `${format(start, 'MMM d')} – ${format(end, 'MMM d, yyyy')}`
+        ? `${format(start, 'MMM d')}${APP_DOT}${format(end, 'MMM d, yyyy')}`
         : start
           ? format(start, 'MMMM d, yyyy')
           : end
@@ -173,27 +197,27 @@ export function formatEventSubtitle(startDate?: string, endDate?: string): strin
       : timeStr;
 
   if (timeRange && dayStr && start) {
-    return `${dayStr}, ${dateStr} • ${timeRange}`;
+    return `${dayStr}, ${dateStr}\n${timeRange}`;
   }
   return dateStr;
 }
 
-/** Format two time strings as "6:00 – 8:00 PM" (drops redundant AM/PM when same period). */
+/** Format two time strings as "6:00 · 8:00 PM" (drops redundant AM/PM when same period). */
 export function formatTimeRangeFull(start: string, end: string): string {
   const endMatch = end.match(/\s(AM|PM)$/);
   if (endMatch && start.endsWith(` ${endMatch[1]}`)) {
-    return `${start.replace(/\s(AM|PM)$/, '')} – ${end}`;
+    return `${start.replace(/\s(AM|PM)$/, '')}${APP_DOT}${end}`;
   }
-  return `${start} – ${end}`;
+  return `${start}${APP_DOT}${end}`;
 }
 
 /**
- * Parse API time string (24hr "18:00 - 20:00" or 12hr) to full form "6:00 – 8:00 PM".
+ * Parse API time string (24hr "18:00 - 20:00" or 12hr) to full form "6:00 · 8:00 PM".
  */
 export function formatTimeStringFull(timeStr: string): string {
   if (!timeStr?.trim()) return timeStr;
   const ref = new Date(2000, 0, 1);
-  const parts = timeStr.split(/\s*[-–]\s*|\s+to\s+/i).map((s) => s.trim()).filter(Boolean);
+  const parts = timeStr.split(/\s*[-–·]\s*|\s+to\s+/i).map((s) => s.trim()).filter(Boolean);
   const formatted = parts.map((part) => {
     try {
       const d = parse(part, 'HH:mm', ref);
@@ -216,11 +240,11 @@ export function formatTimeStringFull(timeStr: string): string {
       if (allSame) {
         return formatted
           .map((f, i) => (i < formatted.length - 1 ? f.replace(/\s(AM|PM)$/, '') : f))
-          .join(' – ');
+          .join(APP_DOT);
       }
     }
   }
-  return formatted.join(' – ');
+  return formatted.join(APP_DOT);
 }
 
 /** Uppercase month names in a date string (e.g. "March" -> "MARCH"). */
@@ -248,7 +272,8 @@ export function dayNumberTo2Letter(n: number): string {
 
 /**
  * Format class session for card/detail subtitle.
- * "FR 6:00 – 8:00 PM\nMay 21, 2026" or "FR 6:00 – 8:00 PM\nMay 21 – May 22, 2026"
+ * Line 1: date range. Line 2: day + time (when time is present).
+ * "May 21, 2026\nFR 6:00 · 8:00 PM" or "May 21 · May 22, 2026\nFR 6:00 · 8:00 PM"
  */
 export function formatClassSessionSubtitle(session: {
   startDate: string;
@@ -259,5 +284,5 @@ export function formatClassSessionSubtitle(session: {
   const dateRange = formatDateRangeCompact(session.startDate, session.endDate);
   const time12hr = session.time ? formatTimeStringFull(session.time) : '';
   const dayAbbr = dayTo2Letter(session.dayOfWeek);
-  return time12hr ? `${dayAbbr} ${time12hr}\n${dateRange}` : dateRange;
+  return time12hr ? `${dateRange}\n${dayAbbr} ${time12hr}` : dateRange;
 }

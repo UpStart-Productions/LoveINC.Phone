@@ -92,6 +92,17 @@ span {
   letter-spacing: 0.05rem;
 }
 
+/** All-caps thin (Ilisarniq Light) – field labels, instructor, etc. */
+.app-uppercase-thin {
+  font-family: var(--app-font-family-ilisarniq);
+  font-size: var(--app-font-size-sm);
+  font-weight: 300;
+  color: var(--app-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  line-height: var(--app-line-height-body);
+}
+
 /** Medium font weight – compose with app-body, app-caption, etc. */
 .app-font-medium {
   font-weight: var(--app-font-weight-medium);

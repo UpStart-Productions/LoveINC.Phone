@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { joinWithAppDot } from '../shared/utils';
 import type { PlatformScheduleRule } from './platform/types';
 
 @Injectable({ providedIn: 'root' })
@@ -28,7 +29,7 @@ export class ScheduleFormattingService {
       const days = names.length ? names.join(', ') : '';
       const start12 = rule.startTime ? this.formatTime24To12(rule.startTime) : '';
       const end12 = rule.endTime ? this.formatTime24To12(rule.endTime) : '';
-      const time = [start12, end12].filter(Boolean).join(' – ') || '';
+      const time = joinWithAppDot(start12, end12) || '';
       return [days, time].filter(Boolean).join(' ') || null;
     }
     return null;

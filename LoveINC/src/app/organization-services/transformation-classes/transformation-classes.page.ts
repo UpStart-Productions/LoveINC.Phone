@@ -22,6 +22,8 @@ import { VolunteerActionSheetService } from '../../services/volunteer-action-she
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 import { CardFormattingService, type FormattedCard } from '../../services/card-formatting.service';
 import { OnboardingService } from '../../services/onboarding.service';
+import { CalendarService } from '../../services/calendar/calendar.service';
+import { formatClassListDateRange, joinWithAppDot } from '../../shared/utils';
 
 export interface ClassDocument {
   title: string;
@@ -87,7 +89,8 @@ export class TransformationClassesPage implements OnInit {
     private sharingService: SharingService,
     private volunteerActionSheetService: VolunteerActionSheetService,
     private scheduleFormatting: ScheduleFormattingService,
-    private onboarding: OnboardingService
+    private onboarding: OnboardingService,
+    private calendarService: CalendarService
   ) {}
 
   ngOnInit() {
@@ -171,7 +174,7 @@ export class TransformationClassesPage implements OnInit {
     const dayOfWeek = rule?.daysOfWeek?.length
       ? rule.daysOfWeek.map((n) => DAY_NAMES[n] ?? '').join(', ')
       : '';
-    const time = [rule?.startTime, rule?.endTime].filter(Boolean).join(' – ') || '';
+    const time = joinWithAppDot(rule?.startTime, rule?.endTime) || '';
     return { startDate, endDate, dayOfWeek, time };
   }
 
@@ -197,7 +200,7 @@ export class TransformationClassesPage implements OnInit {
       rule?.daysOfWeek?.length
         ? rule.daysOfWeek.map((n) => this.dayNumberToName(n)).join(', ')
         : '';
-    const time = [rule?.startTime, rule?.endTime].filter(Boolean).join(' – ') || '';
+    const time = joinWithAppDot(rule?.startTime, rule?.endTime) || '';
     return { startDate, endDate, dayOfWeek, time };
   }
 
@@ -215,10 +218,12 @@ export class TransformationClassesPage implements OnInit {
     if (!classItem.nextSession) return '';
     const startDate = new Date(classItem.nextSession.startDate);
     const endDate = new Date(classItem.nextSession.endDate);
-    return `${format(startDate, 'MMM d')} – ${format(endDate, 'MMM d, yyyy')}`;
+    return formatClassListDateRange(startDate, endDate);
   }
 
   getActionIcons(item: ClassCardItem): CardActionIcon[] {
+    const ns = item.class.nextSession;
+    const canCalendar = !!(ns?.startDate && ns?.endDate);
     return [
       {
         lucideIcon: 'heart-handshake',
@@ -227,7 +232,25 @@ export class TransformationClassesPage implements OnInit {
           !!item.class.volunteerPositions?.length && this.onboarding.canShowVolunteerRequestUi(),
         buttonClass: 'volunteer-button',
       },
+      {
+        icon: 'calendar-outline',
+        handler: () => this.onCalendarClick(item.class),
+        show: canCalendar,
+        buttonClass: 'calendar-button',
+      },
     ];
+  }
+
+  async onCalendarClick(classItem: TransformationClass) {
+    const ns = classItem.nextSession;
+    if (!ns?.startDate || !ns?.endDate) return;
+    await this.calendarService.addToCalendar({
+      title: classItem.title,
+      description: classItem.shortDescription || classItem.description,
+      location: classItem.address ?? undefined,
+      startDate: ns.startDate,
+      endDate: ns.endDate,
+    });
   }
 
   async onVolunteerClick(classItem: TransformationClass) {
