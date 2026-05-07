@@ -4,6 +4,7 @@ import {
   OnDestroy,
   CUSTOM_ELEMENTS_SCHEMA,
   DestroyRef,
+  NgZone,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -161,7 +162,13 @@ import {
 export class AppComponent implements OnInit, OnDestroy {
   /** Blocks router until DBs are ready; prevents empty Goal Tracker when live-reload causes WebView reload on resume */
   appReady = false;
-  private appStateListener: any;
+  private appStateListener: { remove: () => Promise<void> } | undefined;
+  /** True after we've observed at least one foreground event; avoids “resume” on cold-start inactive→active. */
+  private sawFirstForeground = false;
+  private appWasBackgrounded = false;
+  private dbInitTimeoutId: ReturnType<typeof setTimeout> | undefined;
+  /** If SQLite/native bridge hangs after a long background / WebView restart, still show the shell. */
+  private readonly dbInitTimeoutMs = 10_000;
 
   constructor(
     private onboardingService: OnboardingService,
@@ -179,7 +186,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private pushRegistration: PushRegistrationService,
     private router: Router,
     private serviceUnlock: ServiceUnlockService,
-    private destroyRef: DestroyRef
+    private destroyRef: DestroyRef,
+    private ngZone: NgZone
   ) {
     // Initialize all icons for app-wide use
     this.initializeIcons();
@@ -228,6 +236,18 @@ export class AppComponent implements OnInit, OnDestroy {
     // Fetch app user data from API (deviceId + email if available) for UI config
     this.syncAppUserFromApi();
 
+    this.dbInitTimeoutId = setTimeout(() => {
+      this.dbInitTimeoutId = undefined;
+      if (!this.appReady) {
+        console.warn(
+          'AppComponent: database init still pending after ' +
+            this.dbInitTimeoutMs +
+            'ms; showing app shell (possible WebView resume / native bridge delay).'
+        );
+        this.markAppReady();
+      }
+    }, this.dbInitTimeoutMs);
+
     // Initialize databases before router loads
     await Promise.all([
       this.grovlinkDb.getDbConnection().catch((err) => {
@@ -243,16 +263,28 @@ export class AppComponent implements OnInit, OnDestroy {
         console.warn('Journal DB init deferred:', err);
       }),
     ]).catch(() => {});
-    this.appReady = true;
+    this.markAppReady();
 
     // When app becomes active, reload Goal Tracker. With WebView reload we get a fresh app so we never
     // see isActive: false first; fire on every isActive: true so we catch resume after reload.
     try {
       this.appStateListener = await App.addListener('appStateChange', (state) => {
-        if (state.isActive) {
-          this.syncAppUserFromApi();
-          this.goalTrackerRefresh.requestRefresh();
+        if (!state.isActive) {
+          if (this.sawFirstForeground) {
+            this.appWasBackgrounded = true;
+          }
+          return;
         }
+        this.sawFirstForeground = true;
+        const resumeFromBackground = this.appWasBackgrounded;
+        this.appWasBackgrounded = false;
+
+        if (resumeFromBackground && Capacitor.isNativePlatform()) {
+          this.navigateToReliableHomeAfterResume();
+        }
+
+        this.syncAppUserFromApi();
+        this.goalTrackerRefresh.requestRefresh();
       });
     } catch (error) {
       console.log('App plugin not available');
@@ -298,6 +330,30 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  private markAppReady(): void {
+    if (this.appReady) {
+      return;
+    }
+    if (this.dbInitTimeoutId !== undefined) {
+      clearTimeout(this.dbInitTimeoutId);
+      this.dbInitTimeoutId = undefined;
+    }
+    this.appReady = true;
+  }
+
+  /**
+   * After a real background → foreground transition on native, jump to a route that always bootstraps cleanly.
+   * Skipped during onboarding so we do not yank users out of the flow.
+   */
+  private navigateToReliableHomeAfterResume(): void {
+    if (!this.onboardingService.hasCompletedOnboarding()) {
+      return;
+    }
+    this.ngZone.run(() => {
+      void this.router.navigateByUrl('/tabs/home', { replaceUrl: true });
+    });
+  }
+
   private syncAppUserFromApi(): void {
     const profile = this.userProfileService.getProfile();
     const email = this.onboardingService.getOnboardingData()?.email ?? profile.email;
@@ -335,6 +391,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   async ngOnDestroy() {
+    if (this.dbInitTimeoutId !== undefined) {
+      clearTimeout(this.dbInitTimeoutId);
+      this.dbInitTimeoutId = undefined;
+    }
     // Remove app state listener
     if (this.appStateListener) {
       try {
