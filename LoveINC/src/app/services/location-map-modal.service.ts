@@ -13,6 +13,9 @@ export interface OpenLocationMapModalOptions {
   acceptedItems?: string[];
   /** Ionic icon for optional items row in popover (default gift-outline). */
   itemsIcon?: string;
+  /** Optional contact rows in the map popover (e.g. church partners). */
+  phone?: string | null;
+  website?: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -45,6 +48,8 @@ export class LocationMapModalService {
         hours: options.hours ?? null,
         acceptedItems: options.acceptedItems ?? [],
         itemsIcon: options.itemsIcon ?? 'gift-outline',
+        phone: options.phone?.trim() || null,
+        website: options.website?.trim() || null,
       },
       cssClass: 'donation-map-modal-fullscreen',
     });

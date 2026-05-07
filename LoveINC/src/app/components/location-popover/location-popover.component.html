@@ -1,19 +1,35 @@
 <ion-card class="location-popover-card">
   <ion-card-header>
-    <ion-card-title class="app-body">{{ title }}</ion-card-title>
+    <div class="app-body-sm location-popover-heading">{{ title }}</div>
   </ion-card-header>
   <ion-card-content>
     <div *ngIf="address" class="location-row">
       <ion-icon name="location-outline" class="location-icon"></ion-icon>
-      <span class="app-body-sm">{{ address }}</span>
+      <span class="app-body-secondary-xs">{{ address }}</span>
+    </div>
+    <div *ngIf="phone?.trim()" class="location-row">
+      <ion-icon name="call-outline" class="location-icon"></ion-icon>
+      <span class="app-body-secondary-xs">
+        <a [href]="'tel:' + phone!.trim()" class="app-link">{{ phone!.trim() }}</a>
+      </span>
+    </div>
+    <div *ngIf="website?.trim()" class="location-row">
+      <ion-icon name="globe-outline" class="location-icon"></ion-icon>
+      <span class="app-body-secondary-xs">
+        <a [href]="websiteHref(website!)" target="_blank" rel="noopener" class="app-link">Visit Website</a>
+      </span>
     </div>
     <div *ngIf="hours" class="location-row">
       <ion-icon name="time-outline" class="location-icon"></ion-icon>
-      <span class="app-body-sm">{{ hours }}</span>
+      <span class="app-body-secondary-xs">{{ hours }}</span>
     </div>
     <div *ngIf="items?.length" class="location-row">
       <ion-icon [name]="itemsIcon" class="location-icon"></ion-icon>
-      <span class="app-body-sm">{{ items.join(', ') }}</span>
+      <span class="app-body-secondary-xs">{{ items.join(', ') }}</span>
+    </div>
+    <div *ngIf="detail?.trim()" class="location-row">
+      <ion-icon name="information-circle-outline" class="location-icon"></ion-icon>
+      <span class="app-body-secondary-xs">{{ detail!.trim() }}</span>
     </div>
   </ion-card-content>
 </ion-card>

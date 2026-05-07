@@ -1,4 +1,11 @@
-import { Component, OnInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  CUSTOM_ELEMENTS_SCHEMA,
+  DestroyRef,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { Capacitor } from '@capacitor/core';
@@ -142,6 +149,8 @@ import {
   lockClosedOutline,
   checkmarkCircle,
   ticketOutline,
+  megaphoneOutline,
+  ribbonOutline,
 } from 'ionicons/icons';
 @Component({
   selector: 'app-root',
@@ -169,7 +178,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private goalTrackerRefresh: GoalTrackerRefreshService,
     private pushRegistration: PushRegistrationService,
     private router: Router,
-    private serviceUnlock: ServiceUnlockService
+    private serviceUnlock: ServiceUnlockService,
+    private destroyRef: DestroyRef
   ) {
     // Initialize all icons for app-wide use
     this.initializeIcons();
@@ -248,12 +258,21 @@ export class AppComponent implements OnInit, OnDestroy {
       console.log('App plugin not available');
     }
 
-    // Request push permission 1 minute after app launch (only if onboarding complete)
-    setTimeout(() => {
-      if (this.onboardingService.hasCompletedOnboarding()) {
+    // Push: returning users get a deferred prompt so it is not the first system dialog on cold start.
+    if (this.onboardingService.hasCompletedOnboarding()) {
+      setTimeout(() => {
         this.pushRegistration.register().catch(() => {});
-      }
-    }, 60_000);
+      }, 60_000);
+    }
+
+    // Fresh install: the one-shot timer above never runs (onboarding not done yet). Request after they finish or skip.
+    this.onboardingService.onboardingJustCompleted$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        setTimeout(() => {
+          this.pushRegistration.register().catch(() => {});
+        }, 1_500);
+      });
 
     // Handle push notification taps (deep link to content)
     if (Capacitor.isNativePlatform()) {
@@ -447,6 +466,8 @@ export class AppComponent implements OnInit, OnDestroy {
       shieldOutline,
       cartOutline,
       carOutline,
+      megaphoneOutline,
+      ribbonOutline,
       // Alias for house icon
       'house-outline': homeOutline,
     });

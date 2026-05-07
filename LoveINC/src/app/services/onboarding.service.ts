@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 export interface OnboardingData {
   selectedOptions: string[];
@@ -15,6 +16,10 @@ export interface OnboardingData {
 export class OnboardingService {
   private readonly ONBOARDING_KEY = 'loveinc_onboarding_completed';
   private readonly ONBOARDING_DATA_KEY = 'loveinc_onboarding_data';
+  private readonly onboardingJustCompletedSubject = new Subject<void>();
+
+  /** Emits when onboarding is marked complete (finish flow or skip). Used to schedule push registration. */
+  readonly onboardingJustCompleted$ = this.onboardingJustCompletedSubject.asObservable();
 
   constructor() {}
 
@@ -34,6 +39,7 @@ export class OnboardingService {
       data.completedAt = new Date().toISOString();
       localStorage.setItem(this.ONBOARDING_DATA_KEY, JSON.stringify(data));
     }
+    this.onboardingJustCompletedSubject.next();
   }
 
   /**
@@ -77,6 +83,7 @@ export class OnboardingService {
       completedAt: new Date().toISOString()
     };
     localStorage.setItem(this.ONBOARDING_DATA_KEY, JSON.stringify(data));
+    this.onboardingJustCompletedSubject.next();
   }
 
   /**

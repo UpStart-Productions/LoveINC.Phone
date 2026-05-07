@@ -23,15 +23,40 @@ export class HomeCtaRowComponent {
   constructor(private router: Router) {}
 
   get iconName(): string {
-    return this.ctaContext === 'volunteer' ? 'heart-outline' : 'gift-outline';
+    if (this.ctaContext === 'volunteer') return 'heart-outline';
+    switch (this.cta?.type) {
+      case 'awareness':
+        return 'megaphone-outline';
+      case 'fundraiser':
+        return 'ribbon-outline';
+      default:
+        return 'gift-outline';
+    }
   }
 
   get pillText(): string {
-    return this.ctaContext === 'volunteer' ? 'Serve' : 'Donate';
+    if (this.ctaContext === 'volunteer') return 'Serve';
+    switch (this.cta?.type) {
+      case 'awareness':
+        return 'News';
+      case 'fundraiser':
+        return 'Fundraiser';
+      case 'donation_drive':
+      default:
+        return 'Donate';
+    }
   }
 
   get accentColor(): string {
-    return this.ctaContext === 'volunteer' ? 'var(--love-inc-teal)' : 'var(--love-inc-gold)';
+    if (this.ctaContext === 'volunteer') return 'var(--love-inc-teal)';
+    switch (this.cta?.type) {
+      case 'awareness':
+        return '#6366f1';
+      case 'fundraiser':
+        return '#e11d48';
+      default:
+        return 'var(--love-inc-gold)';
+    }
   }
 
   get progressValue(): number {

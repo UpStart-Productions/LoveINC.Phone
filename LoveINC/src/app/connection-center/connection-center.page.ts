@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -14,8 +14,6 @@ import {
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
-
-import { LOVE_INC_OFFICE_TEL } from '../shared/love-inc-contact.constants';
 
 @Component({
   selector: 'app-connection-center',
@@ -41,6 +39,7 @@ export class ConnectionCenterPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService
   ) {}
@@ -62,7 +61,7 @@ export class ConnectionCenterPage implements OnInit {
     this.donateActionSheetService.openDonateActionSheet();
   }
 
-  callLoveInc() {
-    window.open(`tel:${LOVE_INC_OFFICE_TEL}`, '_self');
+  goToGetAssistance() {
+    void this.router.navigateByUrl('/assistance/intro');
   }
 }

@@ -23,6 +23,8 @@
           [title]="partner.name"
           [underTitle]="formatAddress(partner) || undefined"
           [tapUnderTitleToOpenMap]="!!formatAddress(partner)"
+          [mapPhone]="partner.phone"
+          [mapWebsite]="partner.website"
           [detail]="partner.shortDescription?.trim() || undefined"
           [imageUrl]="getPhotoUrl(partner) || undefined"
           [iconName]="getPhotoUrl(partner) ? undefined : 'business-outline'"

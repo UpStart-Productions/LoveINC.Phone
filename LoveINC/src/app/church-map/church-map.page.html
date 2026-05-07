@@ -16,8 +16,22 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div id="map"></div>
-  <div *ngIf="mapLoadError" class="map-message">
-    <p>Map could not load. Check your connection and try again.</p>
-  </div>
+  @if (loading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (mapPins.length === 0) {
+    <div class="empty-state ion-padding">
+      <p class="app-body-secondary">
+        No church partners could be placed on the map. Check that partners have addresses in the platform admin.
+      </p>
+    </div>
+  } @else {
+    <div id="map"></div>
+  }
+  @if (mapLoadError) {
+    <div class="map-message">
+      <p>Map could not load. Check your connection and try again.</p>
+    </div>
+  }
 </ion-content>

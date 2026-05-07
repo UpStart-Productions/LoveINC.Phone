@@ -1,0 +1,79 @@
+diff --git a/node_modules/@ionic/utils-network/dist/index.js b/node_modules/@ionic/utils-network/dist/index.js
+index 09d5a3e..2e1011e 100644
+--- a/node_modules/@ionic/utils-network/dist/index.js
++++ b/node_modules/@ionic/utils-network/dist/index.js
+@@ -117,20 +117,52 @@ exports.isPortAvailableForHost = isPortAvailableForHost;
+  * @param options.timeout Optionally define a timeout, in milliseconds.
+  */
+ async function isHostConnectable(host, port, { timeout } = {}) {
++    // When Ionic binds Angular with --host=0.0.0.0, the dev server often listens on :: (IPv6) or localhost.
++    // Connecting only to 127.0.0.1 looped forever on some setups. Try loopback probes in sequence.
++    const connectionHosts =
++        host === '0.0.0.0' ? ['localhost', '127.0.0.1', '::1'] : [host];
+     const tryConnect = async () => {
+-        return new Promise((resolve, reject) => {
+-            if (host === '0.0.0.0') {
+-                host = '127.0.0.1';
++        let lastErr;
++        for (const targetHost of connectionHosts) {
++            try {
++                await new Promise((resolve, reject) => {
++                    let settled = false;
++                    const tcpTimeoutMs = 8000;
++                    const sock = net.connect({ port, host: targetHost }, () => {
++                        if (settled) {
++                            return;
++                        }
++                        settled = true;
++                        sock.setTimeout(0);
++                        sock.destroy();
++                        resolve(undefined);
++                    });
++                    sock.once('error', (err) => {
++                        if (settled) {
++                            return;
++                        }
++                        settled = true;
++                        sock.setTimeout(0);
++                        sock.destroy();
++                        reject(err);
++                    });
++                    sock.setTimeout(tcpTimeoutMs, () => {
++                        if (settled) {
++                            return;
++                        }
++                        settled = true;
++                        sock.setTimeout(0);
++                        sock.destroy();
++                        reject(new Error(`CONNECT_TIMEOUT ${targetHost}:${port}`));
++                    });
++                });
++                return;
+             }
+-            const sock = net.connect({ port, host });
+-            sock.on('connect', () => {
+-                sock.destroy();
+-                resolve(true);
+-            });
+-            sock.on('error', err => {
+-                reject(err);
+-            });
+-        });
++            catch (e) {
++                lastErr = e;
++            }
++        }
++        throw lastErr ?? new Error('ECONNREFUSED');
+     };
+     return new Promise(async (resolve) => {
+         let timer;
+@@ -153,7 +185,8 @@ async function isHostConnectable(host, port, { timeout } = {}) {
+                 resolved = true;
+             }
+             catch (e) {
+-                // try again
++                // try again when the dev server is not listening yet (avoid a hot spin loop)
++                await new Promise((r) => setTimeout(r, 150));
+             }
+         }
+     });

@@ -6,8 +6,8 @@ import { environment } from '../../environments/environment';
 
 /**
  * Registers the device for push notifications with the backend.
- * Called when the user opens the Notifications modal (bell icon) so the
- * permission request runs in a responsive context (user-initiated).
+ * Triggered from AppComponent: deferred after cold start if onboarding was already done,
+ * or shortly after onboarding completion / skip (see onboardingJustCompleted$).
  */
 @Injectable({ providedIn: 'root' })
 export class PushRegistrationService {

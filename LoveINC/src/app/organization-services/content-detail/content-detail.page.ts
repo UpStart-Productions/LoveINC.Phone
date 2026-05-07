@@ -615,7 +615,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     if (cta.service?.id) {
       return { commands: ['/tabs/content-detail', 'gap-ministry', cta.service.id], queryParams: { from: 'home' } };
     }
-    if (cta.donation?.id) {
+    // Donation location redirect applies only to drive/fundraiser CTAs, not awareness.
+    if (
+      cta.donation?.id &&
+      (cta.type === 'donation_drive' || cta.type === 'fundraiser')
+    ) {
       return { commands: ['/tabs/donate-goods'], queryParams: { donationId: cta.donation.id, from: 'home' } };
     }
     return null;
@@ -989,6 +993,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     await this.locationMapModal.present({
       title: this.contentItem.title,
       address: loc,
+      phone: this.contentItem.phone?.trim() || null,
+      website: this.contentItem.website?.trim() || null,
     });
   }
 

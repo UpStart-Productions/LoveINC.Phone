@@ -12,17 +12,29 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <div *ngIf="loading" class="ion-padding">
+<ion-content [fullscreen]="true" class="journal-list-page">
+  <div *ngIf="loading" class="p-l-18 p-r-18 p-t-18">
     <p class="app-body-secondary">Loading…</p>
   </div>
-  <div
-    *ngIf="!loading && entries.length === 0"
-    class="ion-padding empty-state"
-  >
-    <p class="app-body-secondary">No journal entries yet.</p>
-    <p class="app-caption">Tap + to add your first entry.</p>
-  </div>
+  <ng-container *ngIf="!loading && entries.length === 0">
+    <div class="journal-list-header-photo">
+      <img
+        src="assets/photos/journal-header.png"
+        alt="Open notebook and pen on a desk, ready for journaling"
+      />
+    </div>
+    <div class="empty-state p-l-18 p-r-18 p-t-18 p-b-18">
+      <p class="app-body-secondary m-b-12">
+        Your journal is a private space on this device for reflections, prayers, or notes—with rich text when you want it.
+      </p>
+      <p class="app-body-secondary m-b-24">
+        Start whenever you are ready; only you see what you write here.
+      </p>
+      <ion-button expand="block" color="primary" (click)="addEntry()">
+        Add your first entry
+      </ion-button>
+    </div>
+  </ng-container>
   <ion-card *ngIf="!loading && entries.length > 0" class="journal-list-card">
     <ion-list lines="none">
       <ion-item

@@ -63,6 +63,11 @@ export class ContentCardComponent {
   /** When true, tapping `underTitle` opens the map modal (stops card navigation). */
   @Input() tapUnderTitleToOpenMap = false;
 
+  /** Optional; shown in map popover when opening via `tapUnderTitleToOpenMap`. */
+  @Input() mapPhone?: string;
+
+  @Input() mapWebsite?: string;
+
   /**
    * Tools page: larger main title, category and detail use default shared secondary
    * typography (other screens keep the compact title line).
@@ -95,6 +100,8 @@ export class ContentCardComponent {
     await this.locationMapModal.present({
       title: this.title,
       address: this.underTitle,
+      phone: this.mapPhone?.trim() || null,
+      website: this.mapWebsite?.trim() || null,
     });
   }
 }

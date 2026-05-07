@@ -1,5 +1,17 @@
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.empty-state {
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
 #map {
   width: 100%;
+  min-height: 55vh;
   height: 100%;
 }
 
@@ -17,13 +29,4 @@
   p {
     margin: 0;
   }
-}
-
-::ng-deep .church-popover {
-  --width: auto;
-  --max-width: 20rem;
-}
-
-::ng-deep .church-popover .popover-content {
-  margin: 0.5rem;
 }
