@@ -1,0 +1,27 @@
+/* Same list + content padding pattern as prayer-request / assistance-signup forms */
+ion-content.support-request-content {
+  --padding-bottom: max(4rem, env(safe-area-inset-bottom, 0px));
+}
+
+ion-list {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.support-request-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+  width: 100%;
+}
+
+.support-request-chip-row ion-button {
+  margin: 0;
+}
+
+/* ~2× default short textarea (prayer/contact use rows="4" / similar) */
+.support-request-textarea {
+  min-height: 11rem;
+}

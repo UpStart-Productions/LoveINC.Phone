@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 /**
  * Registers the device for push notifications with the backend.
  * Triggered from AppComponent: deferred after cold start if onboarding was already done,
- * or shortly after onboarding completion / skip (see onboardingJustCompleted$).
+ * or 1 minute after onboarding completion / skip (see onboardingJustCompleted$).
  */
 @Injectable({ providedIn: 'root' })
 export class PushRegistrationService {

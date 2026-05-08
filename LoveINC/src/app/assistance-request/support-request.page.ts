@@ -1,0 +1,165 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButtons,
+  IonBackButton,
+  IonButton,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonTextarea,
+  ToastController,
+} from '@ionic/angular/standalone';
+import { PlatformApiService } from '../services/platform/platform-api.service';
+import { DeviceInfoService } from '../services/device-info.service';
+import { DeviceIdService } from '../services/device-id.service';
+import { OnboardingService } from '../services/onboarding.service';
+import { UserProfileService } from '../services/user-profile.service';
+import {
+  SUPPORT_REQUEST_CATEGORIES,
+  SupportRequestCategoryId,
+} from './support-request.constants';
+
+@Component({
+  selector: 'app-support-request',
+  templateUrl: './support-request.page.html',
+  styleUrls: ['./support-request.page.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonButtons,
+    IonBackButton,
+    IonButton,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonTextarea,
+  ],
+})
+export class SupportRequestPage implements OnInit {
+  readonly categories = SUPPORT_REQUEST_CATEGORIES;
+
+  name = '';
+  selectedCategories = new Set<SupportRequestCategoryId>();
+  details = '';
+  submitting = false;
+
+  constructor(
+    private readonly router: Router,
+    private readonly platformApi: PlatformApiService,
+    private readonly deviceInfo: DeviceInfoService,
+    private readonly deviceId: DeviceIdService,
+    private readonly onboarding: OnboardingService,
+    private readonly userProfile: UserProfileService,
+    private readonly toastController: ToastController
+  ) {}
+
+  ngOnInit(): void {
+    this.name = this.buildPrefillName();
+  }
+
+  private buildPrefillName(): string {
+    const profile = this.userProfile.getProfile();
+    const first = profile.firstName?.trim();
+    const last = profile.lastName?.trim();
+    if (first && last) return `${first} ${last}`;
+    if (first) return first;
+    const onboard = this.onboarding.getOnboardingData();
+    const of = onboard?.firstName?.trim();
+    const ol = onboard?.lastName?.trim();
+    if (of && ol) return `${of} ${ol}`;
+    if (of) return of;
+    return '';
+  }
+
+  toggleCategory(id: SupportRequestCategoryId): void {
+    const next = new Set(this.selectedCategories);
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+    this.selectedCategories = next;
+  }
+
+  isSelected(id: SupportRequestCategoryId): boolean {
+    return this.selectedCategories.has(id);
+  }
+
+  get canSubmit(): boolean {
+    return (
+      this.name.trim().length > 0 &&
+      this.selectedCategories.size > 0 &&
+      !this.submitting
+    );
+  }
+
+  async ionViewWillEnter(): Promise<void> {
+    try {
+      await Keyboard.setResizeMode({ mode: KeyboardResize.Body });
+    } catch {
+      // Keyboard plugin not available
+    }
+  }
+
+  async ionViewWillLeave(): Promise<void> {
+    try {
+      await Keyboard.setResizeMode({ mode: KeyboardResize.Native });
+    } catch {
+      // Keyboard plugin not available
+    }
+  }
+
+  async onSubmit(): Promise<void> {
+    if (!this.canSubmit) return;
+    this.submitting = true;
+    try {
+      const { platform, model } = await this.deviceInfo.getDeviceInfo();
+      await this.platformApi.postSupportRequest({
+        name: this.name.trim(),
+        categoryIds: Array.from(this.selectedCategories),
+        details: this.details.trim() || undefined,
+        deviceId: this.deviceId.getDeviceId(),
+        devicePlatform: platform,
+        deviceModel: model,
+      });
+      const toast = await this.toastController.create({
+        message: 'Thanks — we received your request.',
+        duration: 2500,
+        position: 'bottom',
+        color: 'success',
+      });
+      await toast.present();
+      void this.router.navigate(['/tabs/more']);
+    } catch (err: unknown) {
+      const status = (err as { status?: number })?.status;
+      const message =
+        status === 404
+          ? 'Support submission is not available yet. Please try again later.'
+          : 'Something went wrong. Please try again.';
+      const toast = await this.toastController.create({
+        message,
+        duration: 4000,
+        position: 'bottom',
+        color: 'danger',
+      });
+      await toast.present();
+    } finally {
+      this.submitting = false;
+    }
+  }
+}

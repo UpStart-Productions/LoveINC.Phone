@@ -4,6 +4,14 @@ Commands below are defined in `package.json` at the project root (`LoveINC/`). R
 
 This app targets **iOS/Android devices and simulators**, not the web.
 
+## App version (source of truth)
+
+- **`src/app-version.json`** holds **`version`** (marketing / CFBundleShortVersionString) and **`build`** (integer / CFBundleVersion). The **More** tab shows **`v{version}`**; tap the badge for **build**.
+- **`npm run version:patch`** / **`version:minor`** / **`version:major`** — bumps semver and **increments `build`**, writes JSON, and updates **`ios/App/App.xcodeproj/project.pbxproj`** (`MARKETING_VERSION`, `CURRENT_PROJECT_VERSION`).
+- **`npm run version:build`** — **increments `build` only** (same marketing version), syncs Xcode — use between App Store uploads when the version string stays the same.
+- **`npm run version:sync-ios`** — rewrites Xcode from current `app-version.json` (fix drift after manual edits).
+- **`npm run setup:git-hooks`** *(optional)* — installs a **post-merge** hook on **`main`** that runs **`version:patch`** and commits `src/app-version.json` + `project.pbxproj`.
+
 | Command | What it does |
 |--------|----------------|
 | **`start`** | Runs `ng serve` — Angular dev server (browser). Not the primary workflow for this app. |
@@ -14,8 +22,9 @@ This app targets **iOS/Android devices and simulators**, not the web.
 | **`cap:run:ios:live`** | `ionic cap run ios -l --external` — **live reload**: WebView loads from your Mac (LAN URL). Applies small post-install patches (`patches/*.patch`) so this flow works with **Angular esbuild/vite** (`@ionic/cli` 7.2 + **`--external`**). Injects `server` into `ios/App/App/capacitor.config.json`. **Do not ship** an archive built while `server` is present; use **`npm run ship:ios`**. |
 | **`cap:test:ios`** | Same as `cap:run:ios` (`ng build && cap sync && cap run ios`). Useful alias for a quick device/simulator run. |
 | **`cap:pod:install`** | Runs `pod install` under `ios/App` — run after native dependency changes; not a full launch by itself. |
-| **`increment-ios-build`** | Increments `CURRENT_PROJECT_VERSION` in `ios/App/App.xcodeproj/project.pbxproj` only. Used by **`ship:ios`**; rarely needed alone. |
-| **`ship:ios`** | **App Store / release pipeline:** runs `scripts/ship-ios-app-store.js` — bumps iOS build number, production `ng build`, `cap sync ios`, **strips any `server` block** from `ios/App/App/capacitor.config.json` (removes live-reload URL), opens `ios/App/App.xcworkspace` in Xcode for **Archive** and upload. |
+| **`version:patch`**, **`version:minor`**, **`version:major`**, **`version:build`**, **`version:sync-ios`** | See **App version** above. |
+| **`increment-ios-build`** | Same as **`version:build`** (updates `app-version.json` + Xcode). Used by **`ship:ios`**. |
+| **`ship:ios`** | **App Store / release pipeline:** runs `scripts/ship-ios-app-store.js` — **`version:build`** (increment build + sync Xcode), production `ng build`, `cap sync ios`, **strips any `server` block** from `ios/App/App/capacitor.config.json` (removes live-reload URL), opens `ios/App/App.xcworkspace` in Xcode for **Archive** and upload. |
 
 ## Related scripts (not app launch)
 

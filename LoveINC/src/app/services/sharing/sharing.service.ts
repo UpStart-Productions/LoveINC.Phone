@@ -66,8 +66,18 @@ export class SharingService {
       htmlContent = options.contentElement.nativeElement.innerHTML;
     }
 
+    const storeUrl = options.url?.trim();
+    if (storeUrl) {
+      const safeHref = this.escapeHtmlAttribute(storeUrl);
+      const safeText = this.escapeHtmlTextContent(storeUrl);
+      htmlContent += `<p><a href="${safeHref}">${safeText}</a></p>`;
+    }
+
     // Convert HTML to plain text while preserving line breaks
-    const textContent = this.htmlToText(htmlContent);
+    let textContent = this.htmlToText(htmlContent);
+    if (storeUrl && !textContent.includes(storeUrl)) {
+      textContent = `${textContent}\n\n${storeUrl}`;
+    }
 
     // Use provided subject or default to title
     const subject = options.subject || options.title;
@@ -77,8 +87,23 @@ export class SharingService {
       subject,
       htmlContent,
       textContent,
-      recipientEmail: options.recipientEmail
+      recipientEmail: options.recipientEmail,
+      url: storeUrl || undefined,
     };
+  }
+
+  private escapeHtmlAttribute(raw: string): string {
+    return raw
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  private escapeHtmlTextContent(raw: string): string {
+    return raw
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
 
   /**
@@ -245,6 +270,7 @@ export class SharingService {
       const shareOptions = {
         title: content.title,
         text: content.textContent,
+        url: content.url,
         dialogTitle: 'Share as Text'
       };
       
@@ -262,6 +288,7 @@ export class SharingService {
     const shareOptions = {
       title: content.subject,
       text: content.textContent,
+      url: content.url,
       dialogTitle: 'Share via Email'
     };
     

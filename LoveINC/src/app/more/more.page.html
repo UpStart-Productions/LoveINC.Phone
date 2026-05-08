@@ -12,28 +12,42 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-card class="more-list-card">
-    <ion-list lines="none">
-    <ion-item
-      button
-      [detail]="false"
-      *ngFor="let item of moreItems"
-      [class.profile-item]="item.name === 'My Profile'"
-      (click)="handleItemClick(item)">
-      <div slot="start" class="item-icon-slot">
-        <div *ngIf="item.name === 'My Profile' && userFirstInitial" class="profile-initial-avatar app-caption">{{ userFirstInitial }}</div>
-        <i-lucide *ngIf="!(item.name === 'My Profile' && userFirstInitial) && item.lucideIcon" [name]="item.lucideIcon" [size]="20" color="var(--ion-color-dark)"></i-lucide>
-        <ion-icon *ngIf="!(item.name === 'My Profile' && userFirstInitial) && !item.lucideIcon" [name]="item.icon"></ion-icon>
+<ion-content class="more-page-content" [fullscreen]="true">
+  <ng-container *ngFor="let section of moreSections">
+    <div class="more-section">
+      <p class="more-section-title app-body-secondary-sm app-font-medium app-uppercase">{{ section.title }}</p>
+      <div class="more-section-group">
+        <ion-list lines="full">
+          <ion-item
+            button
+            detail="true"
+            *ngFor="let item of section.items"
+            [class.profile-item]="item.name === 'My Profile'"
+            (click)="handleItemClick(item)">
+            <div slot="start" class="item-icon-slot">
+              <div *ngIf="item.name === 'My Profile' && userFirstInitial" class="profile-initial-avatar app-caption">{{ userFirstInitial }}</div>
+              <i-lucide *ngIf="!(item.name === 'My Profile' && userFirstInitial) && item.lucideIcon" [name]="item.lucideIcon" [size]="20" color="var(--ion-color-primary)"></i-lucide>
+              <ion-icon *ngIf="!(item.name === 'My Profile' && userFirstInitial) && !item.lucideIcon" [name]="item.icon" color="primary"></ion-icon>
+            </div>
+            <ion-label>{{ item.name }}</ion-label>
+          </ion-item>
+        </ion-list>
       </div>
-      <ion-label>{{ item.name }}</ion-label>
-      <ion-icon
-        class="list-row-chevron"
-        name="chevron-forward-outline"
-        slot="end"
-        aria-hidden="true"
-      ></ion-icon>
-    </ion-item>
-  </ion-list>
-  </ion-card>
+    </div>
+  </ng-container>
+
+  <!-- Version Badge (Fixed Position) -->
+  <div
+    slot="fixed"
+    class="more-version-badge"
+    role="button"
+    tabindex="0"
+    (click)="toggleVersionDetails()"
+    (keyup.enter)="toggleVersionDetails()"
+    (keyup.space)="$event.preventDefault(); toggleVersionDetails()">
+    <span class="app-body-secondary-xs app-font-medium">{{ appVersion.snapshot.displayVersion }}</span>
+    <div *ngIf="showVersionDetails" class="more-version-details">
+      <span class="app-body-secondary-xs">Build {{ appVersion.snapshot.build }}</span>
+    </div>
+  </div>
 </ion-content>

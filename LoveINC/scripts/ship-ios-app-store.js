@@ -1,7 +1,7 @@
 /**
  * App Store / release pipeline for iOS:
- * - bump Xcode build number
- * - production Angular build → www
+ * - bump build in src/app-version.json + sync MARKETING_VERSION / CURRENT_PROJECT_VERSION in Xcode
+ * - production Angular build → www (version badge reads app-version.json)
  * - cap sync ios
  * - remove live-reload `server` from native capacitor.config.json (Ionic -l injects LAN URL)
  * - open Xcode for Archive

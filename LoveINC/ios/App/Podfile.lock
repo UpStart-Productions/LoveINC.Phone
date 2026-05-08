@@ -9,6 +9,8 @@ PODS:
     - Capacitor
   - CapacitorCommunityFileOpener (8.0.0):
     - Capacitor
+  - CapacitorCommunityInAppReview (8.0.0):
+    - Capacitor
   - CapacitorCommunitySqlite (8.0.0):
     - Capacitor
     - SQLCipher
@@ -98,6 +100,7 @@ DEPENDENCIES:
   - "CapacitorAppLauncher (from `../../node_modules/@capacitor/app-launcher`)"
   - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
   - "CapacitorCommunityFileOpener (from `../../node_modules/@capacitor-community/file-opener`)"
+  - "CapacitorCommunityInAppReview (from `../../node_modules/@capacitor-community/in-app-review`)"
   - "CapacitorCommunitySqlite (from `../../node_modules/@capacitor-community/sqlite`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - CapacitorEmailComposer (from `../../node_modules/capacitor-email-composer`)
@@ -140,6 +143,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/camera"
   CapacitorCommunityFileOpener:
     :path: "../../node_modules/@capacitor-community/file-opener"
+  CapacitorCommunityInAppReview:
+    :path: "../../node_modules/@capacitor-community/in-app-review"
   CapacitorCommunitySqlite:
     :path: "../../node_modules/@capacitor-community/sqlite"
   CapacitorCordova:
@@ -173,6 +178,7 @@ SPEC CHECKSUMS:
   CapacitorAppLauncher: 7f2330aa2d8a72a4767ab05af9df4bf68166ebf0
   CapacitorCamera: 592acb7ab9fb748e2d8571eb03af30ec4e1ace12
   CapacitorCommunityFileOpener: 66cdeac0ff2670dbeb08bc293aba76eb6da80f7a
+  CapacitorCommunityInAppReview: 4492bdd34aad4d27ed87949376022cc93b294ea1
   CapacitorCommunitySqlite: 8a61c1d599927d4321c13b28f132de8ca94b6d95
   CapacitorCordova: 0d65b9bb74e995dcecb9463f34f1af2aba6f955c
   CapacitorEmailComposer: cf36b8e16e43ce51eeb03994645a864ded9b40b4
@@ -201,6 +207,6 @@ SPEC CHECKSUMS:
   SQLCipher: eb79c64049cb002b4e9fcb30edb7979bf4706dfc
   ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
 
-PODFILE CHECKSUM: d51df516b635589bc37c98c1adad94946ea523e0
+PODFILE CHECKSUM: 5e6fdea62c6ecb285cd7490f12ad2f4d5623f404
 
 COCOAPODS: 1.16.2

@@ -14,6 +14,16 @@ export const environment = {
   customerSlug: 'loveinc',
   /** Tenant/affiliate slug (e.g. newberg) */
   tenantSlug: 'newberg',
+  /**
+   * App Store listing URL (More → Rate / Share on iOS).
+   */
+  iosAppStoreListingUrl:
+    'https://apps.apple.com/us/app/love-inc-newberg/id6762418617',
+  /**
+   * Play Store listing URL (More → Share on Android; also used for Rate on Android).
+   */
+  androidPlayStoreListingUrl:
+    'https://play.google.com/store/apps/details?id=org.loveincnewberg.app',
 };
 
 /*

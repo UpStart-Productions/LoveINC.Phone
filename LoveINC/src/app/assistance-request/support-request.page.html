@@ -1,0 +1,59 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/more"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Support Request</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding support-request-content">
+  <ion-list>
+    <ion-item>
+      <ion-label position="stacked">Name</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="name"
+        name="supportName"
+        autocapitalize="words"
+        autocomplete="name"
+        [clearInput]="true">
+      </ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label position="stacked">Select all that apply</ion-label>
+      <div class="support-request-chip-row">
+        <ion-button
+          *ngFor="let c of categories"
+          fill="outline"
+          [color]="isSelected(c.id) ? 'primary' : 'medium'"
+          size="small"
+          (click)="toggleCategory(c.id)">
+          {{ c.label }}
+        </ion-button>
+      </div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">What else can you tell us so we can provide more assistance?</ion-label>
+      <ion-textarea
+        class="support-request-textarea"
+        [(ngModel)]="details"
+        name="supportDetails"
+        rows="8"
+        autocapitalize="sentences"
+        [autoGrow]="true">
+      </ion-textarea>
+    </ion-item>
+  </ion-list>
+
+  <ion-button
+    expand="block"
+    color="primary"
+    class="m-t-18"
+    [disabled]="!canSubmit"
+    (click)="onSubmit()">
+    {{ submitting ? 'Sending...' : 'Send Request' }}
+  </ion-button>
+</ion-content>

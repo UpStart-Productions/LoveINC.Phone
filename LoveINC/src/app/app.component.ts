@@ -297,13 +297,13 @@ export class AppComponent implements OnInit, OnDestroy {
       }, 60_000);
     }
 
-    // Fresh install: the one-shot timer above never runs (onboarding not done yet). Request after they finish or skip.
+    // Fresh install: schedule push after onboarding completes or is skipped (1 min so the prompt is not immediate).
     this.onboardingService.onboardingJustCompleted$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         setTimeout(() => {
           this.pushRegistration.register().catch(() => {});
-        }, 1_500);
+        }, 60_000);
       });
 
     // Handle push notification taps (deep link to content)

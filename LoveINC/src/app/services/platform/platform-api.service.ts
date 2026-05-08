@@ -324,6 +324,44 @@ export class PlatformApiService {
   }
 
   /**
+   * Submit in-app support request. POST /public/:customerSlug/:tenantSlug/support-request
+   * (GrovLink — endpoint may not exist until backend ships.)
+   */
+  postSupportRequest(payload: {
+    name: string;
+    categoryIds: string[];
+    details?: string;
+    deviceId?: string;
+    devicePlatform?: string;
+    deviceModel?: string;
+  }): Promise<{ id: string }> {
+    if (!environment.apiKey) {
+      return Promise.reject(new Error('API key not configured'));
+    }
+    const url = `${this.basePath}/support-request`;
+    const body: Record<string, unknown> = {
+      name: payload.name.trim(),
+      categoryIds: payload.categoryIds,
+    };
+    if (payload.details?.trim()) body['details'] = payload.details.trim();
+    if (payload.deviceId?.trim()) body['deviceId'] = payload.deviceId.trim();
+    if (payload.devicePlatform?.trim()) body['devicePlatform'] = payload.devicePlatform.trim();
+    if (payload.deviceModel?.trim()) body['deviceModel'] = payload.deviceModel.trim();
+
+    return firstValueFrom(
+      this.http.post<{ id: string }>(url, body, { headers: this.headers }).pipe(
+        tap((res) => console.debug('PlatformApiService: support-request OK', res)),
+        catchError((err) => {
+          const status = err?.status ?? err?.error?.status;
+          const message = err?.error?.message ?? err?.message ?? JSON.stringify(err?.error);
+          console.error('PlatformApiService: support-request failed', { url, status, message, err });
+          throw err;
+        })
+      )
+    );
+  }
+
+  /**
    * Submit pre-intake (I need assistance form). POST /public/:customerSlug/:tenantSlug/pre-intake
    */
   postPreIntake(payload: {

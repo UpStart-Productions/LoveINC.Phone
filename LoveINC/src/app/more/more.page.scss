@@ -1,27 +1,49 @@
-.more-list-card {
-  --background: #ffffff;
-  background: #ffffff;
-
-  ion-list {
-    --background: #ffffff;
-    background: #ffffff;
-  }
-
-  ion-item {
-    --background: #ffffff;
-  }
+/* Grey page + white grouped blocks (same tokens as ion-card in theme/cards.scss). */
+:host ion-content.more-page-content {
+  --background: var(--ion-background-color);
+  /* Match Nepho settings.page — room so scrollable list clears the version badge */
+  --padding-bottom: 80px;
 }
 
-ion-list {
-  padding-top: 0.625rem;
+:host ion-content.more-page-content::part(background) {
+  background: var(--ion-background-color);
 }
 
-ion-list ion-item {
-  margin-bottom: 0.75rem;
+.more-section {
+  padding-top: 0.5rem;
+}
 
-  &:not(.profile-item) {
-    margin-left: 0.3125rem;
-  }
+.more-section:first-of-type {
+  padding-top: 0;
+  display: flow-root;
+}
+
+.more-section:first-of-type .more-section-title {
+  margin-top: 1rem;
+}
+
+.more-section-title {
+  margin: 0 var(--app-card-margin) 0.35rem;
+}
+
+.more-section-group {
+  margin: 0 var(--app-card-margin) var(--app-card-margin);
+  border-radius: var(--app-card-radius);
+  box-shadow: var(--app-card-shadow);
+  background: var(--app-card-background);
+  overflow: hidden;
+}
+
+.more-section-group ion-list {
+  --background: transparent;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+.more-section-group ion-item {
+  --background: var(--app-card-background);
+  --border-color: rgba(var(--ion-color-dark-rgb), 0.08);
 }
 
 .item-icon-slot {
@@ -62,4 +84,25 @@ ion-item:not(.profile-item) .item-icon-slot {
 .profile-item .profile-initial-avatar {
   width: 2.125rem;
   height: 2.125rem;
+}
+
+/* Nepho settings `.version-badge` placement (16px); ion slot="fixed" adds position:absolute */
+.more-version-badge {
+  z-index: 10000;
+  right: 16px;
+  bottom: 16px;
+  max-width: min(9rem, 42vw);
+  padding: 8px 12px;
+  text-align: center;
+  border-radius: 12px;
+  background: var(--ion-color-light);
+  border: 1px solid rgba(var(--ion-color-dark-rgb), 0.06);
+  cursor: pointer;
+  outline: none;
+}
+
+.more-version-details {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(var(--ion-color-dark-rgb), 0.08);
 }

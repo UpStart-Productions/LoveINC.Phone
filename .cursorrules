@@ -6,6 +6,7 @@
 - **Full reference:** `LoveINC/docs/ONBOARDING_CLIENT_VOLUNTEER_RULE.md` — update that doc when product rules change. Other forks/projects may remove or replace this behavior.
 
 ## Reference Projects (CRITICAL – Check Before Implementing)
+- **When the user points at a reference project and says to copy something: COPY from that project’s real files. Do not reinvent** (no improvised layout math, no “better” architecture, no web-first substitutes). Open the paths they gave or the paths below; port markup/SCSS/TS behavior; if Love INC’s shell differs (e.g. tabs vs modal), use the **smallest** adaptation and note the delta. See also `LoveINC/.cursor/rules/reference-project-copy.mdc`.
 - **SuperSimpleWorkout**: `/Users/jeffdenton/Projects/MobileApps/SuperSimpleWorkout`
   - Goal Tracker UI: FAB, date scroller, color picker, weekday picker – COPY from SuperSimpleWorkout, do NOT guess
   - FAB: `add-circle` icon, color #fe4c40, see `tabGroup/tabs.component.html` and `tabGroup/tabs.component.scss`
@@ -14,6 +15,7 @@
   - SQLite, Capacitor, live reload, database init, app resume – COPY patterns from NephoPhone
   - Database: `src/app/services/database/database-base.service.ts` – checkConnectionsConsistency (no dbNames arg), no connection close on foreground
   - App component: `src/app/app.component.ts` – DB init, platform.resume handling
+  - **Version / settings footer badge (fixed placement, content padding):** `src/app/settings/settings.page.html` + `settings.page.scss` — Settings opens as a **modal**; under **tabs**, match that pattern and only adjust if the tab shell requires it (e.g. `ion-content` `slot="fixed"`).
 - Before implementing SQLite, Capacitor, live reload, or database features: READ the reference project first. Do NOT guess or search the web.
 
 ## Reuse in-app UI before inventing (CRITICAL)

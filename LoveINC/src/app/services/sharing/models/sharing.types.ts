@@ -18,6 +18,9 @@ export interface SharingOptions {
   
   /** Optional recipient email address */
   recipientEmail?: string;
+
+  /** Optional URL to append (e.g. App Store / Play Store listing for “share the app”). */
+  url?: string;
 }
 
 /**
@@ -38,4 +41,7 @@ export interface ShareContent {
   
   /** Optional recipient email */
   recipientEmail?: string;
+
+  /** Same as options.url — passed through to native share when set */
+  url?: string;
 }

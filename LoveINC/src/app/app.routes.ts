@@ -44,6 +44,10 @@ export const routes: Routes = [
     canActivate: [skipOnboardingGuard]
   },
   {
+    path: 'assistance/support-request',
+    loadComponent: () => import('./assistance-request/support-request.page').then(m => m.SupportRequestPage)
+  },
+  {
     path: 'assistance/intro',
     loadComponent: () => import('./assistance-request/assistance-intro.page').then(m => m.AssistanceIntroPage)
   },

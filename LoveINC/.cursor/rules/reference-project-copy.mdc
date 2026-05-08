@@ -1,0 +1,14 @@
+---
+description: When the user points at another repo and says to copy something—copy it; do not reinvent.
+alwaysApply: true
+---
+
+# Reference project copy (mandatory)
+
+When the user gives a **path to another project** (e.g. NephoPhone, SuperSimpleWorkout) and says we are **copying** a feature, screen, or pattern:
+
+1. **Open that project first** — read the same concrete files the reference uses (HTML/TS/SCSS/services), using the paths the user gave or the paths already listed in `.cursorrules` under **Reference Projects**.
+2. **Port the implementation from those files** — structure, styles, and behavior should match the reference. **Do not** replace that with web search, generic framework advice, or a “cleaner” architecture you invent on the spot.
+3. **Adapt only when the shell truly differs** (e.g. Nepho’s Settings is a **modal**; Love INC **More** is under **tabs**). Then make the **smallest** change needed (e.g. Ionic `ion-content` `slot="fixed"` when plain `position:fixed` breaks under tab/page transforms) and **state briefly** how it differs from the reference—**after** mirroring the reference as closely as possible.
+
+If there is no reference path and the user did not name one, normal project rules apply. If they **did** name one, copying beats improvising.
