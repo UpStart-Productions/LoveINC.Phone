@@ -28,6 +28,9 @@
     "version:sync-ios": "node scripts/sync-ios-from-app-version.js",
     "setup:git-hooks": "node scripts/setup-git-hooks.js",
     "ship:ios": "node scripts/ship-ios-app-store.js",
+    "ship:ios:build": "node scripts/ship-ios-app-store.js build",
+    "ship:ios:minor": "node scripts/ship-ios-app-store.js minor",
+    "ship:ios:major": "node scripts/ship-ios-app-store.js major",
     "postinstall": "patch-package"
   },
   "private": true,

@@ -1,7 +1,7 @@
 /**
  * Increments build in src/app-version.json and syncs CURRENT_PROJECT_VERSION in Xcode.
  * Prefer: npm run version:build
- * Kept as alias for ship:ios and older habits.
+ * Kept as alias for older habits; ship:ios uses bump-version directly (default patch).
  */
 const { execSync } = require('child_process');
 const path = require('path');

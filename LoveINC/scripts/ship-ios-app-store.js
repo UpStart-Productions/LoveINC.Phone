@@ -1,10 +1,14 @@
 /**
  * App Store / release pipeline for iOS:
- * - bump build in src/app-version.json + sync MARKETING_VERSION / CURRENT_PROJECT_VERSION in Xcode
+ * - bump src/app-version.json + sync MARKETING_VERSION / CURRENT_PROJECT_VERSION in Xcode
+ *   (default: semver patch + build; pass `build` for build-only when marketing version stays the same)
  * - production Angular build → www (version badge reads app-version.json)
  * - cap sync ios
  * - remove live-reload `server` from native capacitor.config.json (Ionic -l injects LAN URL)
  * - open Xcode for Archive
+ *
+ * Usage: node scripts/ship-ios-app-store.js [patch|minor|major|build]
+ * Default: patch
  */
 const fs = require('fs');
 const path = require('path');
@@ -12,6 +16,15 @@ const { execSync } = require('child_process');
 
 const root = path.join(__dirname, '..');
 const iosCapConfig = path.join(root, 'ios/App/App/capacitor.config.json');
+
+const bumpArg = process.argv[2] || 'patch';
+const allowedBumps = ['major', 'minor', 'patch', 'build'];
+if (!allowedBumps.includes(bumpArg)) {
+  console.error(
+    `ship-ios-app-store: bump must be one of: ${allowedBumps.join(', ')} (got ${JSON.stringify(process.argv[2])})`,
+  );
+  process.exit(1);
+}
 
 function run(cmd) {
   execSync(cmd, { cwd: root, stdio: 'inherit' });
@@ -51,7 +64,7 @@ function assertNoLiveReloadServerInNativeConfig(filePath) {
   }
 }
 
-run('node scripts/increment-ios-build.js');
+run(`node scripts/bump-version.js ${bumpArg}`);
 run('npx ng build --configuration production');
 run('npx cap sync ios');
 stripLiveReloadServerFromIosConfig();
