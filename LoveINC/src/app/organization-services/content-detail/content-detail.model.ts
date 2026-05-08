@@ -60,6 +60,8 @@ export interface ContentDetail {
   // CTA and event: raw start/end (ISO strings). Used for calendar add.
   startDate?: string;
   endDate?: string;
+  /** Set from platform CTA only; when true, detail UI shows the date range */
+  showDateRangeInApp?: boolean;
 
   // Gap ministry / service: voucher visibility and request
   voucherRequired?: boolean;

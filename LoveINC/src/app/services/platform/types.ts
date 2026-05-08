@@ -232,6 +232,8 @@ export interface PlatformCta {
   type: PlatformCtaType;
   startDate?: string;
   endDate?: string;
+  /** When true, show CTA start/end dates in the app UI; dates still apply for scheduling either way */
+  showDateRangeInApp?: boolean;
   sortOrder: number;
   goalType?: string;
   goalValue?: number;

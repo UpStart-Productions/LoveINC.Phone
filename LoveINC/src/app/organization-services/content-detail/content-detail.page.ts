@@ -699,6 +699,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       donation: c.donation,
       startDate: c.startDate,
       endDate: c.endDate,
+      showDateRangeInApp: c.showDateRangeInApp === true,
     };
   }
 
@@ -1035,12 +1036,14 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   hasCtaDateRange(): boolean {
-    return !!(this.contentItem?.startDate && this.contentItem?.endDate);
+    if (this.contentItem?.showDateRangeInApp !== true) return false;
+    return !!(this.contentItem.startDate && this.contentItem.endDate);
   }
 
   formatCtaDateRange(): string {
-    if (!this.contentItem?.startDate || !this.contentItem?.endDate) return '';
-    return formatDateRangeCompact(this.contentItem.startDate, this.contentItem.endDate);
+    if (!this.hasCtaDateRange()) return '';
+    const { startDate, endDate } = this.contentItem!;
+    return formatDateRangeCompact(startDate!, endDate!);
   }
 
   /** Date/time label to show above the title (like app-card subtitle). */
