@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import {
   IonHeader,
@@ -27,6 +28,38 @@ import {
   SUPPORT_REQUEST_CATEGORIES,
   SupportRequestCategoryId,
 } from './support-request.constants';
+
+function supportRequestSubmitErrorMessage(err: unknown): string {
+  if (err instanceof HttpErrorResponse) {
+    const status = err.status;
+    const raw = err.error as { message?: string | string[] } | null | undefined;
+    let serverMsg = '';
+    if (raw && typeof raw === 'object' && 'message' in raw) {
+      const m = raw.message;
+      serverMsg = Array.isArray(m)
+        ? m.map((x) => String(x).trim()).filter(Boolean).join(' ')
+        : typeof m === 'string'
+          ? m.trim()
+          : '';
+    }
+    if (status === 404) {
+      return 'Support submission is not available yet. Please try again later.';
+    }
+    if (status === 401 || status === 403) {
+      return 'Your app could not be verified with the server. Please try again later or contact support.';
+    }
+    if (status === 0) {
+      return 'Network error. Check your connection and try again.';
+    }
+    if (serverMsg) {
+      return serverMsg;
+    }
+  }
+  if (err instanceof Error && err.message === 'API key not configured') {
+    return 'App configuration error. Please contact support.';
+  }
+  return 'Something went wrong. Please try again.';
+}
 
 @Component({
   selector: 'app-support-request',
@@ -146,14 +179,9 @@ export class SupportRequestPage implements OnInit {
       await toast.present();
       void this.router.navigate(['/tabs/more']);
     } catch (err: unknown) {
-      const status = (err as { status?: number })?.status;
-      const message =
-        status === 404
-          ? 'Support submission is not available yet. Please try again later.'
-          : 'Something went wrong. Please try again.';
       const toast = await this.toastController.create({
-        message,
-        duration: 4000,
+        message: supportRequestSubmitErrorMessage(err),
+        duration: 5500,
         position: 'bottom',
         color: 'danger',
       });

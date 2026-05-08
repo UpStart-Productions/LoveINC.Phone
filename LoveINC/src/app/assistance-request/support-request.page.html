@@ -17,6 +17,7 @@
         name="supportName"
         autocapitalize="words"
         autocomplete="name"
+        maxlength="500"
         [clearInput]="true">
       </ion-input>
     </ion-item>
@@ -42,6 +43,7 @@
         [(ngModel)]="details"
         name="supportDetails"
         rows="8"
+        maxlength="20000"
         autocapitalize="sentences"
         [autoGrow]="true">
       </ion-textarea>

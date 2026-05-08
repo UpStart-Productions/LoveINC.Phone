@@ -339,14 +339,21 @@ export class PlatformApiService {
       return Promise.reject(new Error('API key not configured'));
     }
     const url = `${this.basePath}/support-request`;
+    const name = payload.name.trim().slice(0, 500);
     const body: Record<string, unknown> = {
-      name: payload.name.trim(),
+      name,
       categoryIds: payload.categoryIds,
     };
-    if (payload.details?.trim()) body['details'] = payload.details.trim();
-    if (payload.deviceId?.trim()) body['deviceId'] = payload.deviceId.trim();
-    if (payload.devicePlatform?.trim()) body['devicePlatform'] = payload.devicePlatform.trim();
-    if (payload.deviceModel?.trim()) body['deviceModel'] = payload.deviceModel.trim();
+    if (payload.details?.trim()) {
+      body['details'] = payload.details.trim().slice(0, 20000);
+    }
+    if (payload.deviceId?.trim()) body['deviceId'] = payload.deviceId.trim().slice(0, 128);
+    if (payload.devicePlatform?.trim()) {
+      body['devicePlatform'] = payload.devicePlatform.trim().slice(0, 120);
+    }
+    if (payload.deviceModel?.trim()) {
+      body['deviceModel'] = payload.deviceModel.trim().slice(0, 512);
+    }
 
     return firstValueFrom(
       this.http.post<{ id: string }>(url, body, { headers: this.headers }).pipe(
