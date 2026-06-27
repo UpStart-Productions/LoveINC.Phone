@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-const MAPS_API_KEY = 'AIzaSyCXCiRrX0kFHhD1eru5XMphJprgIsgKSS0';
+const MAPS_API_KEY = 'AIzaSyDj0VtmgGeaoJAuMOX94MZT5trhlbLh1Xw';
 const MAPS_SCRIPT_URL = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}`;
 
 /**
