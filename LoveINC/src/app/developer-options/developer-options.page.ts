@@ -16,7 +16,6 @@ import {
   IonIcon,
   AlertController,
 } from '@ionic/angular/standalone';
-import { OnboardingIdentitySelectComponent } from '../components/onboarding-identity-select/onboarding-identity-select.component';
 import { OnboardingService } from '../services/onboarding.service';
 import { AppUserDataService } from '../services/app-user-data.service';
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -32,7 +31,6 @@ import { SimpleBudgetStateService } from '../services/simple-budget-state.servic
   styleUrls: ['developer-options.page.scss'],
   imports: [
     CommonModule,
-    OnboardingIdentitySelectComponent,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -65,7 +63,7 @@ export class DeveloperOptionsPage {
 
   resetOnboarding() {
     this.onboardingService.clearOnboarding();
-    this.router.navigate(['/onboarding/step1']).then(() => {
+    this.router.navigate(['/onboarding/welcome']).then(() => {
       window.location.reload();
     });
   }

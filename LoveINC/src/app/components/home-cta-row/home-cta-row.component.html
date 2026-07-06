@@ -1,36 +1,54 @@
 <ion-item
-  class="cta-row-item m-b-6"
+  class="home-cta-row-item m-b-6"
   button
   detail="false"
   lines="none"
-  (click)="onCardClick()">
-  @if (cta.photoUrl) {
-    <img slot="start" [src]="cta.photoUrl" alt="" class="cta-row-photo m-r-18" />
-  } @else {
-    <ion-icon [name]="iconName" slot="start" class="cta-row-icon m-r-18" [style.color]="accentColor"></ion-icon>
+  (click)="onRowClick()">
+  @if (row.photoUrl) {
+    <img slot="start" [src]="row.photoUrl" alt="" class="home-cta-row__photo m-r-18" />
+  } @else if (row.iconName) {
+    <div slot="start" class="home-cta-row__start m-r-18">
+      <ion-icon
+        [name]="row.iconName"
+        class="home-cta-row__icon"
+        [style.color]="row.iconColor">
+      </ion-icon>
+    </div>
   }
   <ion-label>
-    <p class="app-title">{{ cta.title }}</p>
-    @if (contextSubtitle) {
-      <p class="app-body-secondary-xs m-t-4">{{ contextSubtitle }}</p>
+    @if (row.bodyMode === 'intake-connection') {
+      <p class="app-title">
+        Start your intake at<br />
+        <a
+          class="app-link"
+          routerLink="/tabs/connection-center"
+          (click)="$event.stopPropagation()"
+        >Connection Center</a><br />
+        to access services.
+      </p>
+    } @else {
+      <p class="app-title">{{ row.body }}</p>
     }
-    @if (showProgressBar && progressAmountsText) {
+    @if (row.subtitle) {
+      <p class="app-body-secondary-xs m-t-4">{{ row.subtitle }}</p>
+    }
+    @if (showProgress && progressAmountsText) {
       <p class="app-body-secondary-xs m-t-4">
         <span
-          class="cta-progress-figures"
-          [class.cta-progress-figures--low]="progressFigureLevel === 'low'"
-          [class.cta-progress-figures--mid]="progressFigureLevel === 'mid'"
-          [class.cta-progress-figures--high]="progressFigureLevel === 'high'"
+          class="home-cta-row__progress-figures"
+          [class.home-cta-row__progress-figures--low]="progressFigureLevel === 'low'"
+          [class.home-cta-row__progress-figures--mid]="progressFigureLevel === 'mid'"
+          [class.home-cta-row__progress-figures--high]="progressFigureLevel === 'high'"
         >{{ progressAmountsText }}</span>{{ progressUnitSuffix }}
       </p>
       <ion-progress-bar
         [value]="progressValue"
-        class="cta-progress-bar m-t-6"
+        class="home-cta-row__progress-bar m-t-6"
         [style.--progress-background]="progressBarFillColor">
       </ion-progress-bar>
     }
   </ion-label>
-  <div slot="end" class="action-pill m-l-12" [style.background-color]="accentColor">
-    {{ pillText }}
+  <div slot="end" class="action-pill m-l-12" [style.background-color]="row.pillColor">
+    {{ row.pillText }}
   </div>
 </ion-item>

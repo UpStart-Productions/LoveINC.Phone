@@ -60,7 +60,7 @@
     </ion-card-header>
     <ion-card-content>
       @if (profileVolunteerRequests?.length) {
-        <div class="volunteer-requests">
+        <div class="volunteer-requests m-b-12">
           @for (vr of profileVolunteerRequests; track vr.id) {
             <div class="volunteer-request-row">
               <span class="app-body">{{ vr.itemTitle ?? 'Volunteer opportunity' }}</span>
@@ -86,37 +86,28 @@
             </div>
           }
         </div>
-      } @else {
+      } @else if (!showVolunteerProviderAccessPrompt) {
         <p class="app-body-secondary">Volunteer positions you've been approved for will appear here.</p>
+      }
+
+      @if (showVolunteerProviderAccessPrompt) {
+        <p class="app-body-secondary m-b-12">
+          Scan your {{ customerName }} QR code to view provider phone numbers and email while you volunteer.
+        </p>
+        <ion-button expand="block" fill="outline" size="small" (click)="onScanRequested()">
+          <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+          Scan QR Code
+        </ion-button>
       }
     </ion-card-content>
   </ion-card>
 
-  @if (showServiceAccessSection) {
-    <!-- Service Access (clients who chose Get Help only) -->
-    <app-service-access-section
-      [scanClickHandler]="onScanRequested"
-      [apiIntakeCompleted]="apiIntakeCompleted"
-      [intakeRequired]="intakeRequired"
-      [customerName]="customerName">
-    </app-service-access-section>
-  }
-
-  <!-- Settings — commented out (placeholder for future; identity card is below) -->
-  <!--
-  <ion-card class="section-card">
-    <ion-card-header>
-      <ion-card-title>
-        <ion-icon name="settings-outline" class="section-icon"></ion-icon>
-        Settings
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-    </ion-card-content>
-  </ion-card>
-  -->
-
-  <app-onboarding-identity-select variant="profile"></app-onboarding-identity-select>
+  <app-service-access-section
+    [scanClickHandler]="onScanRequested"
+    [apiIntakeCompleted]="apiIntakeCompleted"
+    [intakeRequired]="intakeRequired"
+    [customerName]="customerName">
+  </app-service-access-section>
 
   <!-- Bottom Spacing -->
   <div style="height: 100px;"></div>

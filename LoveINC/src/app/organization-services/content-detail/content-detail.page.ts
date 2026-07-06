@@ -172,7 +172,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   async ionViewWillEnter(): Promise<void> {
     if (this.contentType === 'class' && this.contentId?.trim()) {
       await this.gapAccess.refreshState();
-      this.classIntakeGateActive = this.gapAccess.isRestrictedListActive;
+      this.classIntakeGateActive = this.gapAccess.isIntakeGateActive;
       await this.refreshClassRegistrationLocalStatus();
     }
   }
@@ -439,13 +439,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   private loadServiceFromApi() {
-    void (async () => {
-      await this.gapAccess.refreshState();
-      if (this.gapAccess.isRestrictedListActive) {
-        await this.router.navigateByUrl('/assistance/intro', { replaceUrl: true });
-        return;
-      }
-      this.platformApi.getServices().subscribe({
+    this.platformApi.getServices().subscribe({
         next: (services) => {
           const { item, service } = this.findServiceOrOfferingById(services ?? [], this.contentId);
           this.contentItem = item && service ? this.mapPlatformServiceToContentDetail(item, service) : null;
@@ -457,7 +451,6 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           console.error('Error loading gap ministry detail:', err);
         },
       });
-    })();
   }
 
   private findServiceOrOfferingById(
@@ -1000,10 +993,16 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   hasPhone(): boolean {
+    if (this.contentType === 'gap-ministry' && this.intakeRequired && !this.intakeCompleted) {
+      return false;
+    }
     return !!this.contentItem?.phone;
   }
 
   hasEmail(): boolean {
+    if (this.contentType === 'gap-ministry' && this.intakeRequired && !this.intakeCompleted) {
+      return false;
+    }
     return !!this.contentItem?.email;
   }
 
@@ -1137,9 +1136,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     return !!(this.contentItem?.volunteerPositions?.length);
   }
 
-  /** Volunteer signup buttons hidden for Get Help clients. */
   get showVolunteerRequestActions(): boolean {
-    return this.onboarding.canShowVolunteerRequestUi();
+    return this.isVolunteer() || this.isVolunteerPosition();
   }
 
   openDonateActionSheet(): void {

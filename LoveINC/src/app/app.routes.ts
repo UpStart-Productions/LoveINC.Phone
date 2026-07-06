@@ -3,23 +3,21 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { OnboardingService } from './services/onboarding.service';
 
-// Guard function to check if onboarding is completed
-const onboardingGuard = () => {
+const welcomeGuard = () => {
   const onboardingService = inject(OnboardingService);
   const router = inject(Router);
-  
+
   if (!onboardingService.hasCompletedOnboarding()) {
-    router.navigate(['/onboarding/step1']);
+    router.navigate(['/onboarding/welcome']);
     return false;
   }
   return true;
 };
 
-// Guard function to redirect to tabs if onboarding already completed
-const skipOnboardingGuard = () => {
+const skipWelcomeGuard = () => {
   const onboardingService = inject(OnboardingService);
   const router = inject(Router);
-  
+
   if (onboardingService.hasCompletedOnboarding()) {
     router.navigate(['/tabs']);
     return false;
@@ -29,19 +27,14 @@ const skipOnboardingGuard = () => {
 
 export const routes: Routes = [
   {
-    path: 'onboarding/step1',
+    path: 'onboarding/welcome',
     loadComponent: () => import('./onboarding/onboarding-step1.page').then(m => m.OnboardingStep1Page),
-    canActivate: [skipOnboardingGuard]
+    canActivate: [skipWelcomeGuard]
   },
   {
-    path: 'onboarding/step2',
-    loadComponent: () => import('./onboarding/onboarding-step2.page').then(m => m.OnboardingStep2Page),
-    canActivate: [skipOnboardingGuard]
-  },
-  {
-    path: 'onboarding/step3',
-    loadComponent: () => import('./onboarding/onboarding-step3.page').then(m => m.OnboardingStep3Page),
-    canActivate: [skipOnboardingGuard]
+    path: 'onboarding/step1',
+    redirectTo: 'onboarding/welcome',
+    pathMatch: 'full',
   },
   {
     path: 'assistance/support-request',
@@ -62,6 +55,6 @@ export const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
-    canActivate: [onboardingGuard]
+    canActivate: [welcomeGuard]
   },
 ];

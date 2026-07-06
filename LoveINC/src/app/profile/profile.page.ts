@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OnboardingService } from '../services/onboarding.service';
@@ -32,12 +32,10 @@ import { VouchersPanelComponent } from '../../../packages/service-unlock/src/lib
 import type { Voucher } from '../../../packages/service-unlock/src/lib/types/service-unlock.types';
 import { UserProfileFormModalComponent } from '../components/user-profile-form-modal/user-profile-form-modal.component';
 import { VoucherDetailModalComponent } from '../components/voucher-detail-modal/voucher-detail-modal.component';
-import { OnboardingIdentitySelectComponent } from '../components/onboarding-identity-select/onboarding-identity-select.component';
 import { VoucherModalService } from '../services/voucher-modal.service';
 import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
+import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { Subscription, firstValueFrom } from 'rxjs';
-
-type UserType = 'client' | 'donor' | 'volunteer';
 
 @Component({
   selector: 'app-profile',
@@ -47,7 +45,6 @@ type UserType = 'client' | 'donor' | 'volunteer';
     CommonModule,
     ServiceAccessSectionComponent,
     VouchersPanelComponent,
-    OnboardingIdentitySelectComponent,
     IonHeader,
     IonRefresher,
     IonRefresherContent,
@@ -66,10 +63,6 @@ type UserType = 'client' | 'donor' | 'volunteer';
   ],
 })
 export class ProfilePage implements OnInit, OnDestroy {
-  @ViewChild(OnboardingIdentitySelectComponent) identitySelect?: OnboardingIdentitySelectComponent;
-
-  selectedUserType: UserType = 'client';
-
   profileInfo = { email: '', firstName: '', lastName: '' };
   private profileSub?: Subscription;
   private dismissedSub?: Subscription;
@@ -93,36 +86,8 @@ export class ProfilePage implements OnInit, OnDestroy {
   /** Customer name for Service Access (prefer over affiliate/org name). */
   customerName = 'Love INC';
   private dismissedIds = new Set<string>();
-
-  // Client-specific data (used when My Engagement is re-enabled)
-  clientData = {
-    engagement: {
-      classesCompleted: 2,
-      servicesUsed: 5,
-      progressGoals: 1,
-      livesImpacted: 0
-    }
-  };
-
-  // Donor-specific data
-  donorData = {
-    engagement: {
-      totalDonated: 1250,
-      donationsMade: 8,
-      familiesHelped: 12,
-      livesImpacted: 12
-    }
-  };
-
-  // Volunteer-specific data
-  volunteerData = {
-    engagement: {
-      volunteerHours: 45,
-      eventsAttended: 8,
-      familiesServed: 120,
-      livesImpacted: 120
-    }
-  };
+  private unlockSub?: Subscription;
+  localIntakeUnlocked = false;
 
   constructor(
     private voucherModalService: VoucherModalService,
@@ -135,7 +100,8 @@ export class ProfilePage implements OnInit, OnDestroy {
     private deviceId: DeviceIdService,
     private deviceInfo: DeviceInfoService,
     private modalController: ModalController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private serviceUnlock: ServiceUnlockService
   ) {}
 
   ngOnInit(): void {
@@ -168,17 +134,20 @@ export class ProfilePage implements OnInit, OnDestroy {
     if (appUser?.emailVerifiedAt) {
       this.emailVerifiedAt = appUser.emailVerifiedAt;
     }
+    void this.serviceUnlock.ensureInitialized().then(() => {
+      this.localIntakeUnlocked = this.serviceUnlock.isUnlocked;
+    });
+    this.unlockSub = this.serviceUnlock.isUnlocked$.subscribe((u) => {
+      this.localIntakeUnlocked = u;
+    });
     this.loadProfile();
   }
 
   ionViewWillEnter(): void {
+    void this.serviceUnlock.ensureInitialized().then(() => {
+      this.localIntakeUnlocked = this.serviceUnlock.isUnlocked;
+    });
     this.loadProfile();
-    setTimeout(() => this.identitySelect?.refresh());
-  }
-
-  /** Service Access (QR intake) is only for users who chose Get Help in onboarding. */
-  get showServiceAccessSection(): boolean {
-    return this.onboardingService.selectedGetHelpOnboarding();
   }
 
   private loadProfile(): void {
@@ -281,6 +250,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.profileSub?.unsubscribe();
     this.dismissedSub?.unsubscribe();
+    this.unlockSub?.unsubscribe();
   }
 
   private updateDisplayProfile(): void {
@@ -348,7 +318,12 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   get apiIntakeCompleted(): boolean {
-    return this.profileIntakeCompleted || this.appUserData.hasIntakeCompleted();
+    return this.profileIntakeCompleted || this.appUserData.hasIntakeCompleted() || this.localIntakeUnlocked;
+  }
+
+  /** Prompt volunteers in My Service to scan QR for provider contact info. */
+  get showVolunteerProviderAccessPrompt(): boolean {
+    return this.intakeRequired && !this.apiIntakeCompleted;
   }
 
   async editProfile(): Promise<void> {
@@ -432,84 +407,6 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.router.navigate(['/tabs/service-unlock/scan']);
     }
   };
-
-  get currentEngagement() {
-    switch (this.selectedUserType) {
-      case 'client':
-        return this.clientData.engagement;
-      case 'donor':
-        return this.donorData.engagement;
-      case 'volunteer':
-        return this.volunteerData.engagement;
-    }
-  }
-
-  get engagementLabels() {
-    switch (this.selectedUserType) {
-      case 'client':
-        return {
-          label1: 'Classes Completed',
-          label2: 'Services Used',
-          label3: 'Progress Goals',
-          label4: 'Lives Impacted'
-        };
-      case 'donor':
-        return {
-          label1: 'Total Donated',
-          label2: 'Donations Made',
-          label3: 'Families Helped',
-          label4: 'Lives Impacted'
-        };
-      case 'volunteer':
-        return {
-          label1: 'Volunteer Hours',
-          label2: 'Events Attended',
-          label3: 'Families Served',
-          label4: 'Lives Impacted'
-        };
-    }
-  }
-
-  get engagementValue1(): number | string {
-    switch (this.selectedUserType) {
-      case 'client':
-        return this.clientData.engagement.classesCompleted;
-      case 'donor':
-        return this.donorData.engagement.totalDonated;
-      case 'volunteer':
-        return this.volunteerData.engagement.volunteerHours;
-    }
-  }
-
-  get engagementValue2(): number {
-    switch (this.selectedUserType) {
-      case 'client':
-        return this.clientData.engagement.servicesUsed;
-      case 'donor':
-        return this.donorData.engagement.donationsMade;
-      case 'volunteer':
-        return this.volunteerData.engagement.eventsAttended;
-    }
-  }
-
-  get engagementValue3(): number {
-    switch (this.selectedUserType) {
-      case 'client':
-        return this.clientData.engagement.progressGoals;
-      case 'donor':
-        return this.donorData.engagement.familiesHelped;
-      case 'volunteer':
-        return this.volunteerData.engagement.familiesServed;
-    }
-  }
-
-  get engagementValue4(): number {
-    return this.currentEngagement.livesImpacted;
-  }
-
-  get isDonorValue1(): boolean {
-    return this.selectedUserType === 'donor';
-  }
 
   get showVerifyEmail(): boolean {
     return !!(

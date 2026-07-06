@@ -43,6 +43,18 @@
       }
       <p class="app-disclaimer m-b-6">We cannot guarantee open volunteer positions but we will save your information and be in touch soon.</p>
       @if (hasUserInfo()) {
+        <ion-list class="m-b-12">
+          <ion-item button="false" detail="false" lines="full" class="newsletter-item more-space">
+            <ion-checkbox
+              slot="start"
+              [(ngModel)]="notReceivingServices"
+              name="notReceivingServices">
+            </ion-checkbox>
+            <ion-label (click)="notReceivingServices = !notReceivingServices">
+              I affirm that I am not currently receiving services from Love INC.
+            </ion-label>
+          </ion-item>
+        </ion-list>
         <ion-button expand="block" (click)="onVolunteer(pos)">Volunteer</ion-button>
       }
     </div>
@@ -78,6 +90,16 @@
         (cancel)="onCancelForm()">
         <div betweenFormAndButton>
           <ion-list>
+            <ion-item button="false" detail="false" lines="full" class="newsletter-item more-space">
+              <ion-checkbox
+                slot="start"
+                [(ngModel)]="notReceivingServices"
+                name="notReceivingServices">
+              </ion-checkbox>
+              <ion-label (click)="notReceivingServices = !notReceivingServices">
+                I affirm that I am not currently receiving services from Love INC.
+              </ion-label>
+            </ion-item>
             <ion-item button="false" detail="false" lines="full" class="newsletter-item more-space">
               <ion-checkbox
                 slot="start"

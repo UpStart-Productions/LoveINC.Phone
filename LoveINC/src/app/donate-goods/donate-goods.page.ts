@@ -22,7 +22,6 @@ import { NotificationsButtonComponent } from '../components/notifications-button
 import { PlatformApiService } from '../services/platform/platform-api.service';
 import type { PlatformAddress, PlatformDonation, PlatformVolunteerPosition } from '../services/platform/types';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
-import { OnboardingService } from '../services/onboarding.service';
 import { LocationMapModalService } from '../services/location-map-modal.service';
 import type { CardBadge } from '../components/card/card.component';
 
@@ -106,7 +105,6 @@ export class DonateGoodsPage implements OnInit {
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
     private scheduleFormatting: ScheduleFormattingService,
-    private onboarding: OnboardingService,
     private locationMapModal: LocationMapModalService
   ) {}
 
@@ -347,7 +345,7 @@ export class DonateGoodsPage implements OnInit {
       {
         lucideIcon: 'heart-handshake',
         handler: () => this.onVolunteerClick(location),
-        show: !!location.volunteerPositions?.length && this.onboarding.canShowVolunteerRequestUi(),
+        show: !!location.volunteerPositions?.length,
         buttonClass: 'volunteer-button',
       },
     ];

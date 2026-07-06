@@ -53,9 +53,6 @@
   width: 2rem;
   min-width: 2rem;
   margin-right: 1rem;
-}
-
-ion-item:not(.profile-item) .item-icon-slot {
   margin-left: -5px;
 
   ion-icon {
@@ -65,25 +62,15 @@ ion-item:not(.profile-item) .item-icon-slot {
   }
 }
 
-.profile-item .item-icon-slot {
-  width: 2.125rem;
-  min-width: 2.125rem;
-}
-
 .profile-initial-avatar {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: var(--app-icon-size-md);
+  height: var(--app-icon-size-md);
   border-radius: 50%;
   background-color: var(--ion-color-primary);
   color: white;
-}
-
-.profile-item .profile-initial-avatar {
-  width: 2.125rem;
-  height: 2.125rem;
 }
 
 /* Nepho settings `.version-badge` placement (16px); ion slot="fixed" adds position:absolute */

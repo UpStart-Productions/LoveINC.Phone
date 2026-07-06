@@ -5,6 +5,7 @@ import {
   IonButton,
   IonIcon
 } from '@ionic/angular/standalone';
+import { OnboardingService } from '../services/onboarding.service';
 
 @Component({
   selector: 'app-onboarding-step1',
@@ -19,10 +20,12 @@ import {
 })
 export class OnboardingStep1Page {
   constructor(
-    private router: Router
+    private router: Router,
+    private onboardingService: OnboardingService
   ) {}
 
   onNext() {
-    this.router.navigate(['/onboarding/step2']);
+    this.onboardingService.setOnboardingCompleted();
+    this.router.navigate(['/tabs']);
   }
 }

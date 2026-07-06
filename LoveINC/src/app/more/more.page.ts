@@ -7,7 +7,7 @@ import { LucideAngularModule } from 'lucide-angular';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
-import { OnboardingService } from '../services/onboarding.service';
+import { UserProfileService } from '../services/user-profile.service';
 import { SharingService } from '../services/sharing/sharing.service';
 import { environment } from '../../environments/environment';
 import {
@@ -77,7 +77,7 @@ export class MorePage implements OnInit {
     private router: Router,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
-    private onboardingService: OnboardingService,
+    private userProfileService: UserProfileService,
     private sharingService: SharingService,
     readonly appVersion: AppVersionService,
     private appRate: AppRateService
@@ -85,9 +85,11 @@ export class MorePage implements OnInit {
 
   ngOnInit() {
     this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
-    const firstName = this.onboardingService.getUserFirstName();
-    if (firstName && firstName.trim().length > 0) {
-      this.userFirstInitial = firstName.trim().charAt(0).toUpperCase();
+    const firstName =
+      this.userProfileService.getProfile().firstName?.trim() ||
+      '';
+    if (firstName) {
+      this.userFirstInitial = firstName.charAt(0).toUpperCase();
     }
     this.moreSections = this.buildMoreSections();
   }
@@ -104,7 +106,7 @@ export class MorePage implements OnInit {
         {
           name: 'Verse of the Day',
           icon: 'book-outline',
-          route: '/tabs/verse-of-the-day',
+          route: '/tabs/verse-of-the-day?from=more',
         },
         {
           name: 'Learning Tools',
@@ -126,12 +128,12 @@ export class MorePage implements OnInit {
     };
 
     const support: MoreSection = {
-      title: 'Support & feedback',
+      title: 'Feedback',
       items: [
         {
-          name: 'Support request',
-          icon: 'ribbon-outline',
-          route: '/assistance/support-request',
+          name: `Share ${LOVE_INC_PUBLIC_NAME}`,
+          icon: 'share-outline',
+          handler: () => this.openShareApp(),
         },
         {
           name: `Rate ${LOVE_INC_PUBLIC_NAME}`,
@@ -139,9 +141,9 @@ export class MorePage implements OnInit {
           handler: () => this.openRateApp(),
         },
         {
-          name: `Share ${LOVE_INC_PUBLIC_NAME}`,
-          icon: 'share-outline',
-          handler: () => this.openShareApp(),
+          name: 'Support request',
+          icon: 'ribbon-outline',
+          route: '/assistance/support-request',
         },
       ],
     };
@@ -152,18 +154,15 @@ export class MorePage implements OnInit {
         icon: 'person-circle-outline',
         route: '/tabs/profile',
       },
-    ];
-
-    if (this.onboardingService.canShowVolunteerRequestUi()) {
-      youItems.push({
+      {
         name: 'Open Volunteer Positions',
         icon: 'hand-right-outline',
         route: '/tabs/volunteer-positions',
-      });
-    }
+      },
+    ];
 
     const you: MoreSection = {
-      title: 'My account',
+      title: 'You',
       items: youItems,
     };
 
@@ -183,7 +182,7 @@ export class MorePage implements OnInit {
       ],
     };
 
-    return [explore, you, support, legal];
+    return [you, explore, support, legal];
   }
 
   openDonateMenu() {

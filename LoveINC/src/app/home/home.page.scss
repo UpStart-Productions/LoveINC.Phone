@@ -5,13 +5,8 @@
   margin: 0 var(--app-card-margin);
   padding: 0;
 
-  app-user-type-card,
   app-home-cta-row {
     display: block;
-    margin: 0;
-  }
-
-  ::ng-deep ion-item {
     margin: 0;
   }
 }

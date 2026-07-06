@@ -16,25 +16,29 @@ import {
   IonRefresherContent,
 } from '@ionic/angular/standalone';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
-import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { OnboardingService } from '../services/onboarding.service';
 import { HomeCard, CardType } from '../shared/models/home-card.model';
 import { CardFormattingService } from '../services/card-formatting.service';
-import { UserTypeCardComponent, UserType } from '../components/user-type-card/user-type-card.component';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { DonateButtonService } from '../services/donate-button.service';
 import { SharingService } from '../services/sharing/sharing.service';
 import { PlatformApiService } from '../services/platform/platform-api.service';
 import type { PlatformCta, PlatformClass, PlatformEvent, PlatformHomeFeedItem } from '../services/platform/types';
 import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.component';
+import {
+  buildGetHelpCtaRow,
+  buildGiveNowCtaRow,
+  mapPlatformCtaToRow,
+} from '../components/home-cta-row/home-cta-row.mapper';
+import type { HomeCtaRowModel } from '../components/home-cta-row/home-cta-row.model';
 import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-widget/verse-of-the-day-widget.component';
 import { SimpleBudgetHomeWidgetComponent } from '../components/simple-budget-home-widget/simple-budget-home-widget.component';
 import { GoalTrackerHomeWidgetComponent } from '../components/goal-tracker-home-widget/goal-tracker-home-widget.component';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
-import { DeviceIdService } from '../services/device-id.service';
 import { UserProfileService } from '../services/user-profile.service';
+import { DeviceIdService } from '../services/device-id.service';
 import { AppUserDataService } from '../services/app-user-data.service';
 import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
@@ -65,8 +69,6 @@ export type ClientSupportCardState =
     IonButtons,
     IonIcon,
     CardComponent,
-    ExploreContainerComponent,
-    UserTypeCardComponent,
     HomeCtaRowComponent,
     VerseOfTheDayWidgetComponent,
     SimpleBudgetHomeWidgetComponent,
@@ -85,13 +87,12 @@ export class HomePage implements OnInit {
   private verseHomeWidget?: VerseOfTheDayWidgetComponent;
 
   cards: HomeCard[] = [];
-  welcomeTitle: string = 'Welcome to Love INC';
-  selectedUserTypes: UserType[] = [];
+  welcomeTitle = 'Welcome to Love INC';
   giveCtas: PlatformCta[] = [];
   volunteerCtas: PlatformCta[] = [];
-  showDonateButton: boolean = false;
+  showDonateButton = false;
 
-  /** Client support card: set when get-help selected and client context loaded. */
+  /** Get Help row on Home — intake nudge, vouchers, or browse services. */
   clientSupportCardState: ClientSupportCardState | null = null;
   clientSupportVoucherCount = 0;
 
@@ -105,8 +106,8 @@ export class HomePage implements OnInit {
     private sharingService: SharingService,
     private volunteerActionSheetService: VolunteerActionSheetService,
     private scheduleFormatting: ScheduleFormattingService,
-    private deviceIdService: DeviceIdService,
     private userProfileService: UserProfileService,
+    private deviceIdService: DeviceIdService,
     private appUserDataService: AppUserDataService,
     private dismissedVouchersService: DismissedVouchersService,
     private serviceUnlock: ServiceUnlockService,
@@ -116,55 +117,43 @@ export class HomePage implements OnInit {
   ionViewDidEnter() {
     this.budgetHomeWidget?.refresh();
     this.goalTrackerHomeWidget?.refresh();
-    if (this.selectedUserTypes.includes('get-help')) {
-      void this.reloadClientContext(false);
-    }
+    void this.reloadClientContext(false);
   }
 
   ngOnInit() {
     this.loadCards();
-    this.loadUserTypes();
     this.loadCtas();
-
-    // Set welcome title based on first name
-    const firstName = this.onboardingService.getUserFirstName();
-    if (firstName) {
-      this.welcomeTitle = `Welcome, ${firstName}!`;
-    } else {
-      this.welcomeTitle = 'Welcome to Love INC';
-    }
-
-    if (this.selectedUserTypes.includes('get-help')) {
-      this.loadClientContext();
-    }
+    this.refreshWelcomeTitle();
+    this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
+    void this.reloadClientContext(false);
 
     (window as any).clearOnboarding = () => {
       this.onboardingService.clearOnboarding();
     };
   }
 
+  private refreshWelcomeTitle(): void {
+    const firstName =
+      this.userProfileService.getProfile().firstName?.trim() ||
+      this.onboardingService.getUserFirstName()?.trim();
+    this.welcomeTitle = firstName ? `Welcome, ${firstName}!` : 'Welcome to Love INC';
+  }
+
   async onRefresh(event: Event): Promise<void> {
     const refresher = (event as CustomEvent).target as HTMLIonRefresherElement;
     try {
-      const firstName = this.onboardingService.getUserFirstName();
-      this.welcomeTitle = firstName ? `Welcome, ${firstName}!` : 'Welcome to Love INC';
-      this.loadUserTypes();
+      this.refreshWelcomeTitle();
       this.budgetHomeWidget?.refresh();
       this.goalTrackerHomeWidget?.refresh();
       this.verseHomeWidget?.refresh();
 
-      const tasks: Promise<unknown>[] = [
+      await Promise.all([
         firstValueFrom(this.fetchHomeCards$()).then((cards) => {
           this.cards = cards;
         }),
         firstValueFrom(this.platformApi.getCtas()).then((ctas) => this.applyLoadedCtas(ctas)),
-      ];
-
-      if (this.selectedUserTypes.includes('get-help')) {
-        tasks.push(this.reloadClientContext(true));
-      }
-
-      await Promise.all(tasks);
+        this.reloadClientContext(true),
+      ]);
     } catch {
       // ignore
     } finally {
@@ -194,21 +183,88 @@ export class HomePage implements OnInit {
     );
   }
 
-  loadUserTypes() {
-    const selectedOptions = this.onboardingService.getSelectedOptions();
-    // Filter out 'exploring' and map to UserType
-    this.selectedUserTypes = selectedOptions
-      .filter(option => option !== 'exploring' && ['get-help', 'volunteer', 'give'].includes(option))
-      .map(option => option as UserType);
-
-    this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
+  loadCtas() {
+    this.platformApi.getCtas().subscribe({
+      next: (ctas) => this.applyLoadedCtas(ctas),
+      error: (err) => {
+        console.error('Error loading CTAs:', err);
+      },
+    });
   }
 
-  private loadClientContext(): void {
-    void this.reloadClientContext(false);
+  private applyLoadedCtas(ctas: PlatformCta[]): void {
+    const today = startOfDay(new Date()).getTime();
+    const active = (c: PlatformCta) => this.isActiveCta(c, today);
+    this.giveCtas = ctas
+      .filter((c) => this.isGiveCtaType(c.type))
+      .filter(active)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+    this.volunteerCtas = ctas
+      .filter((c) => c.type === 'volunteer_call')
+      .filter(active)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
-  /** @param fromRefresh When true, skip local "browse services" display counter bumps and no-identify early exit. */
+  private isGiveCtaType(type: string): boolean {
+    return type === 'donation_drive' || type === 'fundraiser' || type === 'awareness';
+  }
+
+  private isActiveCta(cta: PlatformCta, todayMs: number): boolean {
+    if (cta.startDate && new Date(cta.startDate).getTime() > todayMs) return false;
+    if (cta.endDate && new Date(cta.endDate).getTime() < todayMs) return false;
+    return true;
+  }
+
+  get showGetHelpCta(): boolean {
+    return (
+      this.clientSupportCardState === 'intake_required' ||
+      this.clientSupportCardState === 'has_vouchers' ||
+      this.clientSupportCardState === 'browse_services'
+    );
+  }
+
+  get clientSupportCardDescription(): string {
+    switch (this.clientSupportCardState) {
+      case 'has_vouchers':
+        return `You have ${this.clientSupportVoucherCount} active voucher${this.clientSupportVoucherCount === 1 ? '' : 's'}.`;
+      case 'browse_services':
+        return 'Browse Gap Ministries and classes.';
+      default:
+        return '';
+    }
+  }
+
+  get clientSupportCardAction(): 'profile' | 'gap-ministries' | 'assistance-intro' {
+    if (this.clientSupportCardState === 'intake_required') return 'assistance-intro';
+    if (this.clientSupportCardState === 'has_vouchers') return 'profile';
+    return 'gap-ministries';
+  }
+
+  get homeCtaRows(): HomeCtaRowModel[] {
+    const rows: HomeCtaRowModel[] = [];
+
+    if (this.showGetHelpCta && this.clientSupportCardState) {
+      rows.push(
+        buildGetHelpCtaRow(
+          this.clientSupportCardDescription,
+          this.clientSupportCardState === 'intake_required',
+          this.clientSupportCardAction
+        )
+      );
+    }
+
+    for (const cta of this.volunteerCtas) {
+      rows.push(mapPlatformCtaToRow(cta, 'volunteer'));
+    }
+
+    for (const cta of this.giveCtas) {
+      rows.push(mapPlatformCtaToRow(cta, 'give'));
+    }
+
+    rows.push(buildGiveNowCtaRow());
+    return rows;
+  }
+
   private async reloadClientContext(fromRefresh: boolean): Promise<void> {
     await this.serviceUnlock.ensureInitialized();
     const deviceId = this.deviceIdService.getDeviceId();
@@ -302,73 +358,6 @@ export class HomePage implements OnInit {
     }
   }
 
-  loadCtas() {
-    this.platformApi.getCtas().subscribe({
-      next: (ctas) => this.applyLoadedCtas(ctas),
-      error: (err) => {
-        console.error('Error loading CTAs:', err);
-      },
-    });
-  }
-
-  private applyLoadedCtas(ctas: PlatformCta[]): void {
-    const today = startOfDay(new Date()).getTime();
-    const active = (c: PlatformCta) => this.isActiveCta(c, today);
-    this.giveCtas = ctas
-      .filter((c) => this.isGiveCtaType(c.type))
-      .filter(active)
-      .sort((a, b) => a.sortOrder - b.sortOrder);
-    this.volunteerCtas = ctas
-      .filter((c) => c.type === 'volunteer_call')
-      .filter(active)
-      .sort((a, b) => a.sortOrder - b.sortOrder);
-  }
-
-  private isGiveCtaType(type: string): boolean {
-    return type === 'donation_drive' || type === 'fundraiser' || type === 'awareness';
-  }
-
-  private isActiveCta(cta: PlatformCta, todayMs: number): boolean {
-    if (cta.startDate && new Date(cta.startDate).getTime() > todayMs) return false;
-    if (cta.endDate && new Date(cta.endDate).getTime() < todayMs) return false;
-    return true;
-  }
-
-  get selectedUserTypesForUserCards(): UserType[] {
-    const hasGetHelp = this.selectedUserTypes.includes('get-help');
-    if (!hasGetHelp) return [];
-    // Client CTA: only the intake nudge; hide the entire row once intake is done (no alternate copy on Home).
-    if (this.clientSupportCardState !== 'intake_required') return [];
-    return ['get-help'];
-  }
-
-  get clientSupportCardDescription(): string {
-    switch (this.clientSupportCardState) {
-      case 'intake_required':
-        return '';
-      case 'has_vouchers':
-        return `You have ${this.clientSupportVoucherCount} active voucher${this.clientSupportVoucherCount === 1 ? '' : 's'}.`;
-      case 'browse_services':
-        return 'Browse Gap Ministries and classes.';
-      default:
-        return 'Browse Gap Ministries and classes.';
-    }
-  }
-
-  get clientSupportCardAction(): 'profile' | 'gap-ministries' | 'assistance-intro' {
-    if (this.clientSupportCardState === 'intake_required') return 'assistance-intro';
-    if (this.clientSupportCardState === 'has_vouchers') return 'profile';
-    return 'gap-ministries';
-  }
-
-  get showGiveCtas(): boolean {
-    return this.selectedUserTypes.includes('give') && this.giveCtas.length > 0;
-  }
-
-  get showVolunteerCtas(): boolean {
-    return this.selectedUserTypes.includes('volunteer') && this.volunteerCtas.length > 0;
-  }
-
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
   }
@@ -391,7 +380,6 @@ export class HomePage implements OnInit {
     return supported.includes(type as CardType);
   }
 
-  /** Limit impact stories to a maximum count (keeps first by priority). */
   private limitImpactStories(cards: HomeCard[], maxImpact: number): HomeCard[] {
     let impactCount = 0;
     return cards.filter((card) => {
@@ -403,13 +391,11 @@ export class HomePage implements OnInit {
     });
   }
 
-  /** Exclude CTA types from full cards; they are shown as small cards at the top. */
   private isCtaCardType(type: CardType): boolean {
     const ctaTypes: CardType[] = ['donation-drive', 'volunteer', 'fundraiser', 'awareness'];
     return ctaTypes.includes(type);
   }
 
-  /** Exclude events and classes that are in the past (before today). Other types are kept. */
   private isNotPastEventOrClass(item: PlatformHomeFeedItem & { type: CardType }, todayMs: number): boolean {
     if (item.type !== 'event' && item.type !== 'class') return true;
     const startDate = item.startDate;
@@ -495,8 +481,7 @@ export class HomePage implements OnInit {
   }
 
   getActionIcons(card: HomeCard): CardActionIcon[] {
-    const showVolunteer =
-      !!card.volunteerPositions?.length && this.onboardingService.canShowVolunteerRequestUi();
+    const showVolunteer = !!card.volunteerPositions?.length;
     const canAddToCalendar =
       (card.type === 'event' || card.type === 'class') && !!card.startDate && !!card.endDate;
     return [
@@ -562,7 +547,7 @@ export class HomePage implements OnInit {
       ${card.subtitle ? `<p><strong>${card.subtitle}</strong></p>` : ''}
       ${card.shortDescription ? `<p>${card.shortDescription}</p>` : ''}
     `;
-    
+
     await this.sharingService.shareContent({
       title: card.title,
       subject: `Love INC: ${card.title}`,
@@ -572,6 +557,6 @@ export class HomePage implements OnInit {
 
   resetOnboarding() {
     this.onboardingService.clearOnboarding();
-    this.router.navigate(['/onboarding/step1']);
+    this.router.navigate(['/onboarding/welcome']);
   }
 }

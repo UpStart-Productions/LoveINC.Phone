@@ -10,19 +10,17 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <app-onboarding-identity-select variant="developer"></app-onboarding-identity-select>
-
-  <!-- Onboarding Reset -->
+  <!-- Welcome splash reset -->
   <ion-card class="section-card">
     <ion-card-header>
       <ion-card-title>
         <ion-icon name="refresh-outline" class="section-icon"></ion-icon>
-        Onboarding
+        Welcome splash
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <p class="m-b-18" style="color: var(--ion-color-medium);">
-        Reset the onboarding flow to test the initial setup process.
+        Reset the welcome splash so it appears again on next launch.
       </p>
       <ion-button expand="block" fill="outline" (click)="resetOnboarding()">
         <ion-icon slot="start" name="refresh-outline"></ion-icon>

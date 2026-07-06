@@ -16,45 +16,18 @@
   <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <!-- User Type Cards and CTA rows - full width, no extra margin/padding -->
   <div class="home-top-items">
-    <app-user-type-card
-      *ngFor="let userType of selectedUserTypesForUserCards"
-      [userType]="userType"
-      [getHelpDescription]="clientSupportCardDescription"
-      [getHelpIntakeWithConnectionLink]="clientSupportCardState === 'intake_required'"
-      [getHelpAction]="clientSupportCardAction">
-    </app-user-type-card>
-
-    <!-- Volunteer CTAs from API (only when user selected volunteer and there are active CTAs) -->
-    @if (showVolunteerCtas) {
-      <app-home-cta-row
-        *ngFor="let cta of volunteerCtas"
-        [cta]="cta"
-        ctaContext="volunteer">
-      </app-home-cta-row>
-    }
-
-    <!-- Give CTAs from API (only when user selected give and there are active CTAs) -->
-    @if (showGiveCtas) {
-      <app-home-cta-row
-        *ngFor="let cta of giveCtas"
-        [cta]="cta"
-        ctaContext="give">
-      </app-home-cta-row>
+    @for (row of homeCtaRows; track row.id) {
+      <app-home-cta-row [row]="row"></app-home-cta-row>
     }
   </div>
 
-  <!-- Verse of the Day widget -->
   <app-verse-of-the-day-widget></app-verse-of-the-day-widget>
 
-  <!-- Simple Budget widget (when user has current week data) -->
   <app-simple-budget-home-widget></app-simple-budget-home-widget>
 
-  <!-- Goal Tracker (only when user has at least one goal) -->
   <app-goal-tracker-home-widget></app-goal-tracker-home-widget>
 
-  <!-- Home Cards - With Padding -->
   <div class="cards-container">
     <app-card
       *ngFor="let card of cards"

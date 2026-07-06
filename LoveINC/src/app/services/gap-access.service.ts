@@ -1,108 +1,69 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { OnboardingService } from './onboarding.service';
 import { PlatformApiService } from './platform/platform-api.service';
 import { AppUserDataService } from './app-user-data.service';
 import { UserProfileService } from './user-profile.service';
 import { DeviceIdService } from './device-id.service';
+import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 
 /**
- * Drives the reduced Gap list (photo + title only) and **class** detail primary CTA
- * (Register vs "Complete Intake to Register") for client/exploring users who have not completed intake.
- * Volunteer- or give-only users (not also Get Help or exploring) get the full experience — 1a.
- * Client + donor still uses intake gating. API errors default to not restricting (2b).
+ * Provider contact access (QR / intake unlock) for all users — no onboarding role checks.
+ * Drives class registration intake gate and provider phone/email visibility.
  */
 @Injectable({ providedIn: 'root' })
 export class GapAccessService {
   private intakeRequired = true;
-  private intakeComplete = true;
+  private providerContactAccessGranted = false;
   private stateLoaded = false;
 
-  /** Org rule (after refreshState) — for voucher / card gating on Gap page. */
   get orgIntakeRequired(): boolean {
     return this.intakeRequired;
   }
 
-  constructor(
-    private onboarding: OnboardingService,
-    private platformApi: PlatformApiService,
-    private appUserData: AppUserDataService,
-    private userProfile: UserProfileService,
-    private deviceId: DeviceIdService
-  ) {}
+  /** True after QR scan or API intake completion. */
+  get hasProviderContactAccess(): boolean {
+    return this.providerContactAccessGranted;
+  }
 
   /**
-   * After refreshState(), true when client/exploring intake is required and not complete
-   * (reduced Gap list, or class "Complete Intake to Register" on content-detail).
+   * @deprecated Always false — Gap list uses full cards; contact fields hidden until unlock.
    */
   get isRestrictedListActive(): boolean {
-    return this.computeRestricted();
+    return false;
+  }
+
+  /** Intake required by org and user has not unlocked provider contact yet. */
+  get isIntakeGateActive(): boolean {
+    if (!this.stateLoaded) {
+      return false;
+    }
+    if (!this.intakeRequired) {
+      return false;
+    }
+    return !this.providerContactAccessGranted;
   }
 
   get hasStateLoaded(): boolean {
     return this.stateLoaded;
   }
 
-  /** Get Help or exploring — intake and Gap list gating can apply. */
-  private isClientOrExploringPath(): boolean {
-    return this.onboarding.isExploring() || this.onboarding.hasSelectedOption('get-help');
-  }
+  constructor(
+    private platformApi: PlatformApiService,
+    private appUserData: AppUserDataService,
+    private userProfile: UserProfileService,
+    private deviceId: DeviceIdService,
+    private serviceUnlock: ServiceUnlockService
+  ) {}
 
-  /** Full Gap (not reduced list) for donate/volunteer-only users, not for client + donor. */
-  private isVolunteerOrGiveOnlyPath(): boolean {
-    if (this.isClientOrExploringPath()) {
-      return false;
-    }
-    return (
-      this.onboarding.hasSelectedOption('volunteer') || this.onboarding.hasSelectedOption('give')
-    );
-  }
-
-  private computeRestricted(): boolean {
-    if (!this.stateLoaded) {
-      return false;
-    }
-    if (this.isVolunteerOrGiveOnlyPath()) {
-      return false;
-    }
-    const clientOrExploring = this.isClientOrExploringPath();
-    if (!clientOrExploring) {
-      return false;
-    }
-    if (!this.intakeRequired) {
-      return false;
-    }
-    if (this.intakeComplete) {
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * Loads client-access + app user profile. On failure, does not restrict (2b):
-   * intake not required, intake considered complete.
-   */
   async refreshState(): Promise<void> {
     this.stateLoaded = false;
-    if (this.isVolunteerOrGiveOnlyPath()) {
-      this.stateLoaded = true;
-      this.intakeRequired = true;
-      this.intakeComplete = true;
-      return;
-    }
-    const clientOrExploring = this.isClientOrExploringPath();
-    if (!clientOrExploring) {
-      this.stateLoaded = true;
-      this.intakeRequired = false;
-      this.intakeComplete = true;
-      return;
-    }
+    await this.serviceUnlock.ensureInitialized();
 
+    const localUnlocked = this.serviceUnlock.isUnlocked || this.appUserData.hasIntakeCompleted();
     const deviceId = this.deviceId.getDeviceId() || undefined;
-    const email =
-      (this.userProfile.getProfile().email || this.onboarding.getOnboardingData()?.email || '').trim() ||
-      undefined;
+    const email = (this.userProfile.getProfile().email || '').trim() || undefined;
+
     try {
       const [clientRes, profRes] = await Promise.all([
         firstValueFrom(this.platformApi.getClientAccess().pipe(take(1))),
@@ -114,10 +75,10 @@ export class GapAccessService {
       ]);
       this.intakeRequired = clientRes?.intakeRequired ?? true;
       const profileIntake = profRes?.profile?.intakeCompleted ?? false;
-      this.intakeComplete = profileIntake || this.appUserData.hasIntakeCompleted();
+      this.providerContactAccessGranted = localUnlocked || profileIntake;
     } catch {
       this.intakeRequired = false;
-      this.intakeComplete = true;
+      this.providerContactAccessGranted = localUnlocked;
     } finally {
       this.stateLoaded = true;
     }

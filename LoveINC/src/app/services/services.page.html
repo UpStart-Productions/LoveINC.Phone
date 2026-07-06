@@ -19,12 +19,18 @@
   <ion-list>
     <ion-item 
       button 
-      detail="true"
+      detail="false"
       *ngFor="let service of services"
       (click)="handleServiceClick(service)">
       <i-lucide *ngIf="service.lucideIcon" [name]="service.lucideIcon" [size]="24" color="var(--ion-color-primary)" slot="start"></i-lucide>
       <ion-icon *ngIf="!service.lucideIcon" [name]="service.icon" slot="start"></ion-icon>
       <ion-label>{{ service.name }}</ion-label>
+      <ion-icon
+        class="list-row-chevron"
+        name="chevron-forward-outline"
+        slot="end"
+        aria-hidden="true"
+      ></ion-icon>
     </ion-item>
   </ion-list>
 </ion-content>

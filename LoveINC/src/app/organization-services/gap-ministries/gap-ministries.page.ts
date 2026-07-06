@@ -27,7 +27,6 @@ import type { PlatformService, PlatformOffering, PlatformAddress } from '../../s
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { AppUserDataService } from '../../services/app-user-data.service';
 import { UserProfileService } from '../../services/user-profile.service';
-import { OnboardingService } from '../../services/onboarding.service';
 import { DeviceIdService } from '../../services/device-id.service';
 import { ToastController } from '@ionic/angular/standalone';
 import { ActionSheetController } from '@ionic/angular/standalone';
@@ -77,16 +76,16 @@ export interface GapService {
     IonToolbar, 
     IonTitle, 
     IonContent,
-    IonButtons,
-    IonButton,
-    IonBackButton,
-    IonIcon,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonCard,
-    IonThumbnail,
-    CardComponent,
+  IonButtons,
+  IonButton,
+  IonBackButton,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonCard,
+  IonThumbnail,
+  CardComponent,
     NotificationsButtonComponent,
   ],
   providers: [AlertController, ActionSheetController, ToastController]
@@ -102,11 +101,17 @@ export class GapMinistriesPage implements OnInit {
   ];
   fromServices: boolean = false;
   showDonateButton: boolean = false;
-  /** Photo + title list only; tap rows go to I Need Assistance. */
-  restrictGapList = false;
 
-  /** Alphabetical list for the reduced Gap view. */
-  get restrictedListServices(): GapService[] {
+  /** Full cards (address, map pin, actions) after intake QR unlock; org with no intake requirement gets full cards. */
+  get showFullGapCards(): boolean {
+    if (!this.intakeRequired) {
+      return true;
+    }
+    return this.gapAccess.hasProviderContactAccess;
+  }
+
+  /** Alphabetical list for the compact Gap view (photo + title only). */
+  get compactListServices(): GapService[] {
     return [...this.services].sort((a, b) =>
       a.service.localeCompare(b.service, undefined, { sensitivity: 'base' })
     );
@@ -123,7 +128,6 @@ export class GapMinistriesPage implements OnInit {
     private serviceUnlock: ServiceUnlockService,
     private appUserData: AppUserDataService,
     private userProfile: UserProfileService,
-    private onboarding: OnboardingService,
     private deviceId: DeviceIdService,
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
@@ -137,7 +141,6 @@ export class GapMinistriesPage implements OnInit {
   async ngOnInit() {
     await this.serviceUnlock.ensureInitialized();
     await this.gapAccess.refreshState();
-    this.restrictGapList = this.gapAccess.isRestrictedListActive;
     this.intakeRequired = this.gapAccess.orgIntakeRequired;
     this.loadServices();
     const fromParam = this.route.snapshot.queryParamMap.get('from');
@@ -150,7 +153,6 @@ export class GapMinistriesPage implements OnInit {
 
   async ionViewWillEnter(): Promise<void> {
     await this.gapAccess.refreshState();
-    this.restrictGapList = this.gapAccess.isRestrictedListActive;
     this.intakeRequired = this.gapAccess.orgIntakeRequired;
   }
 
@@ -331,6 +333,9 @@ export class GapMinistriesPage implements OnInit {
 
 
   getServiceDescription(service: GapService): string {
+    if (!this.showFullGapCards) {
+      return '';
+    }
     const esc = (s: string | null | undefined) =>
       (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     return `<p class="app-body">${esc(service.church)}</p>` +
@@ -367,14 +372,15 @@ export class GapMinistriesPage implements OnInit {
   getActionIcons(service: GapService): CardActionIcon[] {
     const showVoucher =
       !!service.voucherRequired && this.showVoucherIcon;
+    const canContact = this.gapAccess.hasProviderContactAccess;
     const icons: CardActionIcon[] = [
-      { icon: 'location-outline', handler: () => this.onMapPinClick(service), show: !!service.address, buttonClass: 'map-button' },
-      { icon: 'call-outline', handler: () => this.onPhoneClick(service), show: true, buttonClass: 'phone-button' },
+      { icon: 'location-outline', handler: () => this.onMapPinClick(service), show: !!service.address && this.showFullGapCards, buttonClass: 'map-button' },
+      { icon: 'call-outline', handler: () => this.onPhoneClick(service), show: !!service.phone && canContact, buttonClass: 'phone-button' },
       { icon: 'ticket-outline', handler: () => this.onVoucherClick(service), show: showVoucher, buttonClass: 'voucher-button' },
       {
         lucideIcon: 'heart-handshake',
         handler: () => this.onVolunteerClick(service),
-        show: !!service.volunteerPositions?.length && this.onboarding.canShowVolunteerRequestUi(),
+        show: !!service.volunteerPositions?.length,
         buttonClass: 'volunteer-button',
       },
       { icon: 'calendar-outline', handler: () => this.onCalendarClick(service), show: true, buttonClass: 'calendar-button' },
@@ -417,12 +423,11 @@ export class GapMinistriesPage implements OnInit {
           handler: async () => {
             try {
               const profile = this.userProfile.getProfile();
-              const onboardingData = this.onboarding.getOnboardingData();
               await this.platformApi.postVoucherRequest({
                 voucherId: voucher.id,
-                email: profile.email || onboardingData?.email || undefined,
-                firstName: profile.firstName || onboardingData?.firstName || undefined,
-                lastName: profile.lastName || onboardingData?.lastName || undefined,
+                email: profile.email || undefined,
+                firstName: profile.firstName || undefined,
+                lastName: profile.lastName || undefined,
                 deviceId: this.deviceId.getDeviceId(),
               });
               const toast = await this.toastController.create({
@@ -451,9 +456,7 @@ export class GapMinistriesPage implements OnInit {
   }
 
   async onPhoneClick(service: GapService) {
-    const clientPath = this.onboarding.selectedGetHelpOnboarding();
-    const canContact =
-      !clientPath || this.serviceUnlock.canContactProvider();
+    const canContact = this.gapAccess.hasProviderContactAccess;
     if (service.phone && canContact) {
       window.open(`tel:${service.phone}`, '_self');
     } else if (service.phone && !canContact) {
@@ -517,10 +520,6 @@ export class GapMinistriesPage implements OnInit {
     });
   }
 
-  onRestrictedGapItemClick(): void {
-    this.router.navigate(['/assistance/intro']);
-  }
-
   async onShareService(service: GapService) {
     const htmlContent = `
       <h2>${service.service}</h2>
@@ -528,7 +527,7 @@ export class GapMinistriesPage implements OnInit {
       ${service.daysTimes ? `<p><strong>Days/Times:</strong> ${service.daysTimes}</p>` : ''}
       ${service.church ? `<p><strong>Church:</strong> ${service.church}</p>` : ''}
       ${service.address ? `<p><strong>Address:</strong> ${service.address}</p>` : ''}
-      ${service.contact ? `<p><strong>Contact:</strong> ${service.contact}</p>` : ''}
+      ${service.contact && this.gapAccess.hasProviderContactAccess ? `<p><strong>Contact:</strong> ${service.contact}</p>` : ''}
       ${service.notes ? `<p>${service.notes}</p>` : ''}
     `;
     

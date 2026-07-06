@@ -22,7 +22,6 @@ import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 import { CalendarService } from '../services/calendar/calendar.service';
 import { CardFormattingService } from '../services/card-formatting.service';
-import { OnboardingService } from '../services/onboarding.service';
 import { formatEventSubtitle, joinWithAppDot } from '../shared/utils';
 import {
   PlatformApiService,
@@ -79,8 +78,7 @@ export class UpdatesPage implements OnInit {
     private volunteerActionSheetService: VolunteerActionSheetService,
     private scheduleFormatting: ScheduleFormattingService,
     private calendarService: CalendarService,
-    private cardFormatting: CardFormattingService,
-    private onboarding: OnboardingService
+    private cardFormatting: CardFormattingService
   ) {}
 
   ngOnInit() {
@@ -227,7 +225,7 @@ export class UpdatesPage implements OnInit {
       {
         lucideIcon: 'heart-handshake',
         handler: () => this.onVolunteerClick(item),
-        show: !!item.volunteerPositions?.length && this.onboarding.canShowVolunteerRequestUi(),
+        show: !!item.volunteerPositions?.length,
         buttonClass: 'volunteer-button',
       },
       {

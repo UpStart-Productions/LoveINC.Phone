@@ -124,54 +124,19 @@ ion-header ion-back-button::part(native) {
   color: var(--ion-color-dark);
 }
 
-/* List item detail icon (chevron) */
-ion-item[detail="true"] {
-  --detail-icon-font-size: var(--app-font-size-body);
-  --detail-icon-opacity: 1;
-  --detail-icon-color: var(--app-text-secondary);
-}
-
-ion-item[detail="true"]::part(native) {
-  --detail-icon-font-size: var(--app-font-size-body);
-  --detail-icon-color: var(--app-text-secondary);
-}
-
-ion-item[detail="true"] .item-detail-icon,
-ion-item[detail="true"] ion-icon[slot="end"] {
-  font-size: var(--app-icon-size-sm) !important;
-  width: var(--app-icon-size-sm) !important;
-  height: var(--app-icon-size-sm) !important;
-  color: var(--app-text-secondary) !important;
-}
-
-/* Journal: explicit end-slot chevrons (built-in detail= chevron is in shadow; CSS
-   was not reliably overridable). */
-ion-card.journal-list-card ion-icon.list-row-chevron {
+/* List row chevron — global pattern for every tappable ion-item list row.
+   Template: detail="false" + <ion-icon class="list-row-chevron" name="chevron-forward-outline" slot="end">.
+   Do NOT use detail="true"; Ionic's built-in chevron is shadow-DOM and sizes/colors inconsistently. */
+ion-icon.list-row-chevron {
   font-size: var(--app-icon-size-sm);
   width: var(--app-icon-size-sm);
   height: var(--app-icon-size-sm);
   min-width: var(--app-icon-size-sm);
-  color: var(--ion-color-dark);
+  color: var(--app-text-secondary);
   opacity: 1;
   margin: 0;
   align-self: center;
   flex-shrink: 0;
-}
-
-/* User type card icons */
-.user-type-icon {
-  font-size: var(--app-icon-size-md);
-  margin-right: 1rem;
-  flex-shrink: 0;
-}
-
-/* Support card (get-help) – icon 1 size larger, text shifted right */
-.user-type-item--support .user-type-icon {
-  font-size: var(--app-icon-size-xl);
-}
-
-.user-type-item--support ion-label {
-  padding-inline-start: 5px;
 }
 
 /* -----------------------------------------------------------------------------

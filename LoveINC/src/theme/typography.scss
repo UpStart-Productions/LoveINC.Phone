@@ -173,26 +173,6 @@ span {
   }
 }
 
-/* List item detail icon (chevron) */
-ion-item[detail="true"] {
-  --detail-icon-font-size: var(--app-font-size-body);
-  --detail-icon-opacity: 1;
-  --detail-icon-color: var(--app-text-secondary);
-}
-
-ion-item[detail="true"]::part(native) {
-  --detail-icon-font-size: var(--app-font-size-body);
-  --detail-icon-color: var(--app-text-secondary);
-}
-
-ion-item[detail="true"] .item-detail-icon,
-ion-item[detail="true"] ion-icon[slot="end"] {
-  font-size: var(--app-icon-size-sm) !important;
-  width: var(--app-icon-size-sm) !important;
-  height: var(--app-icon-size-sm) !important;
-  color: var(--app-text-secondary) !important;
-}
-
 /* Accordion toggle icon */
 ion-accordion .ion-accordion-toggle-icon {
   font-size: var(--app-icon-size-sm) !important;
@@ -236,9 +216,8 @@ ion-item ion-label p.app-body-secondary-xs {
   font-size: var(--app-font-size-xs) !important;
 }
 
-/* CTA row and user-type card titles: title size, normal weight, dark color */
-.cta-row-item ion-label p.app-title,
-.user-type-item ion-label p.app-title {
+/* Home CTA row titles: title size, normal weight, dark color */
+.home-cta-row-item ion-label p.app-title {
   font-weight: 400;
   color: var(--ion-color-dark);
 }

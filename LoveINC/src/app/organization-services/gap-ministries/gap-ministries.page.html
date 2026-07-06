@@ -16,22 +16,21 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div *ngIf="restrictGapList" class="content-wrapper content-wrapper--simple">
+  <div *ngIf="!showFullGapCards" class="content-wrapper content-wrapper--simple">
     <p class="app-body content-wrapper--simple__intro ion-padding">
       Love INC connects you to real help through local churches, matching your needs with trusted community resources.
     </p>
     <ion-card class="more-list-card">
       <ion-list lines="none">
         <ion-item
-          *ngFor="let service of restrictedListServices"
+          *ngFor="let service of compactListServices"
           button
           detail="false"
-          (click)="onRestrictedGapItemClick()">
+          (click)="onCardClick(service)">
           <ion-thumbnail slot="start" aria-hidden="true">
             <img *ngIf="service.photoUrl" [src]="service.photoUrl" [alt]="" />
             <ion-icon *ngIf="!service.photoUrl" name="people-outline"></ion-icon>
           </ion-thumbnail>
-          <!-- Same as More list: no ion-text-wrap — Ionic's .ion-text-wrap on labels forces smaller font (iOS). -->
           <ion-label class="gap-more-list__label">{{ service.service }}</ion-label>
           <ion-icon
             class="list-row-chevron"
@@ -44,7 +43,7 @@
     </ion-card>
   </div>
 
-  <div *ngIf="!restrictGapList" class="content-wrapper">
+  <div *ngIf="showFullGapCards" class="content-wrapper">
     <div *ngFor="let schedule of scheduleOrder">
       <div *ngIf="groupedServices[schedule]?.length" class="schedule-section">
         <h2 class="schedule-header app-caption app-uppercase">{{ schedule }}</h2>

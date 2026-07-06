@@ -1,10 +1,41 @@
-.cta-row-item {
+:host {
+  display: block;
+}
+
+:host:first-child .home-cta-row-item {
+  margin-top: 1rem;
+}
+
+.home-cta-row-item {
   --padding-start: 0;
   --padding-end: 0;
   --inner-padding-end: 0;
   --min-height: 4.5rem;
+  --home-cta-row-icon-size: calc(var(--app-icon-size-xl) * 1.2);
   border-radius: 0;
+}
 
+.home-cta-row__photo {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.home-cta-row__start {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-cta-row__icon {
+  font-size: var(--home-cta-row-icon-size) !important;
+  width: var(--home-cta-row-icon-size) !important;
+  height: var(--home-cta-row-icon-size) !important;
 }
 
 :host .action-pill {
@@ -12,40 +43,25 @@
   font-weight: var(--app-font-weight-normal) !important;
 }
 
-.cta-row-icon {
-  flex-shrink: 0;
-}
-
-.cta-row-photo {
-  width: 3rem;
-  height: 3rem;
-  object-fit: cover;
-  border-radius: 0.5rem;
-  flex-shrink: 0;
-}
-
-.cta-progress-bar {
+.home-cta-row__progress-bar {
   height: 0.375rem;
   border-radius: 0.1875rem;
-  /* Visible track on grey home background; fill set inline (tier colors) */
   --background: var(--app-card-background);
 }
 
-/* Bold + fixed xs size; tier colors on the ratio only (suffix stays secondary) */
-.cta-row-item ion-label p.app-body-secondary-xs .cta-progress-figures {
+.home-cta-row-item ion-label p.app-body-secondary-xs .home-cta-row__progress-figures {
   font-size: var(--app-font-size-xs);
   font-weight: var(--app-font-weight-bold);
 }
 
-.cta-progress-figures--low {
+.home-cta-row__progress-figures--low {
   color: var(--ion-color-danger);
 }
 
-.cta-progress-figures--mid {
+.home-cta-row__progress-figures--mid {
   color: var(--love-inc-gold);
 }
 
-.cta-progress-figures--high {
+.home-cta-row__progress-figures--high {
   color: var(--ion-color-success);
 }
-

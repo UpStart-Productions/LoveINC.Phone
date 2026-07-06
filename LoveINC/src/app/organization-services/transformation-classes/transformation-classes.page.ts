@@ -21,7 +21,6 @@ import { PlatformApiService, type PlatformClass, type PlatformOffering } from '.
 import { VolunteerActionSheetService } from '../../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 import { CardFormattingService, type FormattedCard } from '../../services/card-formatting.service';
-import { OnboardingService } from '../../services/onboarding.service';
 import { CalendarService } from '../../services/calendar/calendar.service';
 import { formatClassListDateRange, joinWithAppDot } from '../../shared/utils';
 
@@ -89,7 +88,6 @@ export class TransformationClassesPage implements OnInit {
     private sharingService: SharingService,
     private volunteerActionSheetService: VolunteerActionSheetService,
     private scheduleFormatting: ScheduleFormattingService,
-    private onboarding: OnboardingService,
     private calendarService: CalendarService
   ) {}
 
@@ -228,8 +226,7 @@ export class TransformationClassesPage implements OnInit {
       {
         lucideIcon: 'heart-handshake',
         handler: () => this.onVolunteerClick(item.class),
-        show:
-          !!item.class.volunteerPositions?.length && this.onboarding.canShowVolunteerRequestUi(),
+        show: !!item.class.volunteerPositions?.length,
         buttonClass: 'volunteer-button',
       },
       {

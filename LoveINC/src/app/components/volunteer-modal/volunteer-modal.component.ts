@@ -72,6 +72,7 @@ export class VolunteerModalComponent implements OnInit {
   lastName = '';
   email = '';
   wantsNewsletter = false;
+  notReceivingServices = false;
   submitting = false;
 
   constructor(
@@ -121,11 +122,19 @@ export class VolunteerModalComponent implements OnInit {
   }
 
   async onVolunteer(position: VolunteerPosition) {
+    if (!this.notReceivingServices) {
+      await this.showToast('Please affirm that you are not currently receiving services from Love INC.', 'danger');
+      return;
+    }
     await this.submitAndDismiss(position);
   }
 
   async onSubmitForm(value: UserProfileFormValue) {
     if (!this.selectedPosition || this.submitting) return;
+    if (!this.notReceivingServices) {
+      await this.showToast('Please affirm that you are not currently receiving services from Love INC.', 'danger');
+      return;
+    }
     this.submitting = true;
     this.firstName = value.firstName;
     this.lastName = value.lastName;

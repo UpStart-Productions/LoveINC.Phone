@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -46,6 +47,7 @@ export class VerseOfTheDayPage implements OnInit {
 
   constructor(
     private readonly verseOfTheDayService: VerseOfTheDayService,
+    private readonly route: ActivatedRoute,
     @Optional() @Inject(VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL) private readonly youtubeEmbedBaseUrl?: string,
     @Optional() @Inject(VERSE_OF_THE_DAY_SHARE) readonly shareHandler?: (verse: VerseOfTheDay) => Promise<void>,
     @Optional() @Inject(VERSE_OF_THE_DAY_BACK_DEFAULT_HREF) backDefaultHref?: string
@@ -54,6 +56,14 @@ export class VerseOfTheDayPage implements OnInit {
   }
 
   backDefaultHref: string;
+
+  ngOnInit() {
+    const from = this.route.snapshot.queryParamMap.get('from');
+    if (from) {
+      this.backDefaultHref = `/tabs/${from}`;
+    }
+    this.loadVerse();
+  }
 
   get sermonVideoId(): string | null {
     if (!this.verse?.sermonUrl) return null;
@@ -68,10 +78,6 @@ export class VerseOfTheDayPage implements OnInit {
     if (!videoId || !this.youtubeEmbedBaseUrl?.trim()) return null;
     const base = this.youtubeEmbedBaseUrl.replace(/\/$/, '');
     return `${base}/youtube.html?v=${encodeURIComponent(videoId)}`;
-  }
-
-  ngOnInit() {
-    this.loadVerse();
   }
 
   loadVerse() {
