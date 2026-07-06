@@ -1,5 +1,9 @@
 # Ionic Framework Rules
 
+## Communication (default)
+- **Short answers by default.** Terse, one-line or few-line responses unless the user says they want a conversation, brainstorming, or a deep dive.
+- Do not write long explanations, tables, or multi-section essays for simple factual questions.
+
 ## Love INC–specific: client / volunteer onboarding (READ BEFORE DEBUGGING)
 - **Not a universal nonprofit rule.** This app intentionally treats **Get Help** (`get-help`) and **Volunteer** (`volunteer`) as **mutually exclusive** in onboarding and gates volunteer **signup** UI (card icons, action sheet, some detail buttons) for users on the **client** path.
 - If volunteer actions “don’t appear” or the volunteer sheet “does nothing” for a **Get Help** user, that is often **by design**, not a broken build.
