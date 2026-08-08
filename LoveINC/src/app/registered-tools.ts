@@ -119,6 +119,15 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
  */
 export const REGISTERED_TOOL_CARDS: ToolCard[] = [
   {
+    category: 'Personal Growth',
+    categoryIcon: 'compass-outline',
+    title: 'Tools for Transformation',
+    detail: 'Guided devotionals to help you grow',
+    iconName: 'compass-outline',
+    iconBackgroundColor: '#349394',
+    route: '/tabs/transformation-tools',
+  },
+  {
     category: 'Money Management',
     categoryIcon: 'wallet-outline',
     title: 'Budget Planner',

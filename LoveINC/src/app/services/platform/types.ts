@@ -274,6 +274,38 @@ export interface PlatformCta {
   address?: PlatformAddress;
 }
 
+export type PlatformTransformationToolInputType = 'text' | 'radio' | 'checkbox';
+
+export interface PlatformTransformationToolStepInput {
+  type: PlatformTransformationToolInputType;
+  label: string;
+  placeholder?: string;
+  options?: string[];
+}
+
+export interface PlatformTransformationToolStep {
+  id: string;
+  order: number;
+  title: string;
+  subtitle?: string;
+  /** Quill-authored HTML */
+  content: string;
+  inputs: PlatformTransformationToolStepInput[];
+}
+
+export interface PlatformTransformationTool {
+  id: string;
+  slug: string;
+  title: string;
+  scriptureRefs: string[];
+  /** Quill-authored HTML for the cover screen */
+  introContent: string;
+  /** Quill-authored HTML for the closing screen */
+  closingContent: string;
+  sortOrder: number;
+  steps: PlatformTransformationToolStep[];
+}
+
 export interface PlatformImpactStory {
   id: string;
   slug: string;

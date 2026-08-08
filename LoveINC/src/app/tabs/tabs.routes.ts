@@ -72,6 +72,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('../tools/tools.page').then((m) => m.ToolsPage),
       },
+      {
+        path: 'transformation-tools',
+        loadComponent: () =>
+          import('../transformation-tools/transformation-tools.page').then(
+            (m) => m.TransformationToolsPage
+          ),
+      },
+      {
+        path: 'transformation-tools/:id',
+        loadComponent: () =>
+          import('../transformation-tools/transformation-tool.page').then(
+            (m) => m.TransformationToolPage
+          ),
+      },
       ...REGISTERED_TOOL_ROUTES,
       {
         path: 'saved-items',

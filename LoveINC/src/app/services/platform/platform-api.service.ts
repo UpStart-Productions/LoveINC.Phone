@@ -16,6 +16,7 @@ import type {
   PlatformPartner,
   PlatformService,
   PlatformTeamMember,
+  PlatformTransformationTool,
   PlatformVolunteerPositionWithAffiliate,
 } from './types';
 
@@ -33,6 +34,10 @@ export type {
   PlatformPartner,
   PlatformService,
   PlatformTeamMember,
+  PlatformTransformationTool,
+  PlatformTransformationToolInputType,
+  PlatformTransformationToolStep,
+  PlatformTransformationToolStepInput,
   PlatformVoucher,
   PlatformVolunteerPositionWithAffiliate,
 } from './types';
@@ -160,6 +165,12 @@ export class PlatformApiService {
   getImpactStories(): Observable<PlatformImpactStory[]> {
     return this.get<{ impactStories: PlatformImpactStory[] }>('/impact-stories').pipe(
       map((res) => res?.impactStories ?? [])
+    );
+  }
+
+  getTransformationTools(): Observable<PlatformTransformationTool[]> {
+    return this.get<{ transformationTools: PlatformTransformationTool[] }>('/transformation-tools').pipe(
+      map((res) => res?.transformationTools ?? [])
     );
   }
 

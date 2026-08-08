@@ -13,6 +13,10 @@ export type {
   PlatformOffering,
   PlatformScheduleRule,
   PlatformTeamMember,
+  PlatformTransformationTool,
+  PlatformTransformationToolInputType,
+  PlatformTransformationToolStep,
+  PlatformTransformationToolStepInput,
   PlatformVolunteerPositionWithAffiliate,
   HomeFeedItemType,
 } from './types';

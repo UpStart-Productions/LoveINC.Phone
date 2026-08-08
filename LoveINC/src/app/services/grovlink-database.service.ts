@@ -153,6 +153,15 @@ export class GrovLinkDatabaseService {
       CREATE INDEX IF NOT EXISTS idx_class_registrations_class_id
       ON class_registrations (class_id);
     `);
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS transformation_tool_responses (
+        tool_id TEXT NOT NULL,
+        input_key TEXT NOT NULL,
+        value_json TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY (tool_id, input_key)
+      );
+    `);
   }
 
   async getDbConnection(): Promise<SQLiteDBConnection> {
@@ -243,5 +252,55 @@ export class GrovLinkDatabaseService {
     } catch {
       return false;
     }
+  }
+
+  /**
+   * Save a single Transformation Tool response input's value for this device.
+   * `inputKey` should uniquely identify the input within the tool (e.g. `${stepOrder}:${inputIndex}`).
+   */
+  async saveTransformationToolResponse(
+    toolId: string,
+    inputKey: string,
+    value: string | string[]
+  ): Promise<void> {
+    const db = await this.getDbConnection();
+    await db.run(
+      `INSERT OR REPLACE INTO transformation_tool_responses (tool_id, input_key, value_json, updated_at)
+       VALUES (?, ?, ?, ?)`,
+      [toolId, inputKey, JSON.stringify(value), new Date().toISOString()]
+    );
+  }
+
+  /** Get all saved response values for a tool, keyed by inputKey. */
+  async getTransformationToolResponses(
+    toolId: string
+  ): Promise<Record<string, string | string[]>> {
+    try {
+      const db = await this.getDbConnection();
+      const result = await db.query(
+        'SELECT input_key, value_json FROM transformation_tool_responses WHERE tool_id = ?',
+        [toolId]
+      );
+      const responses: Record<string, string | string[]> = {};
+      for (const row of result?.values ?? []) {
+        const inputKey = (row as Record<string, unknown>)['input_key'];
+        const valueJson = (row as Record<string, unknown>)['value_json'];
+        if (typeof inputKey !== 'string' || typeof valueJson !== 'string') continue;
+        try {
+          responses[inputKey] = JSON.parse(valueJson);
+        } catch {
+          // Skip malformed rows
+        }
+      }
+      return responses;
+    } catch {
+      return {};
+    }
+  }
+
+  /** Clear all saved responses for a tool (e.g. "Start over"). */
+  async clearTransformationToolResponses(toolId: string): Promise<void> {
+    const db = await this.getDbConnection();
+    await db.run('DELETE FROM transformation_tool_responses WHERE tool_id = ?', [toolId]);
   }
 }

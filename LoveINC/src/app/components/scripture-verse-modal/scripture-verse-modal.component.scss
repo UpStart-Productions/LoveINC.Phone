@@ -1,0 +1,15 @@
+.scripture-verse-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.scripture-verse-text {
+  line-height: var(--app-line-height-loose);
+  margin-bottom: 1rem;
+}
+
+.scripture-verse-reference {
+  text-align: center;
+}
