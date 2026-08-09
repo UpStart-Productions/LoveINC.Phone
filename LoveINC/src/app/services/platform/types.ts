@@ -274,6 +274,11 @@ export interface PlatformCta {
   address?: PlatformAddress;
 }
 
+export interface PlatformTransformationToolAuthor {
+  name: string;
+  avatarUrl?: string;
+}
+
 export type PlatformTransformationToolInputType = 'text' | 'radio' | 'checkbox';
 
 export interface PlatformTransformationToolStepInput {
@@ -297,6 +302,7 @@ export interface PlatformTransformationTool {
   id: string;
   slug: string;
   title: string;
+  author: PlatformTransformationToolAuthor;
   scriptureRefs: string[];
   /** Quill-authored HTML for the cover screen */
   introContent: string;

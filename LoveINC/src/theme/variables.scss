@@ -3,7 +3,7 @@
 
 /** Love INC Brand Colors **/
 :root {
-  --ion-background-color: #f5f5f5;
+  --ion-background-color: #ffffff;
 
   /** Love INC Brand Color Palette **/
   --love-inc-header-dark: #13214d;
@@ -124,6 +124,9 @@
   /** Font family – Ilisarniq (Love INC brand) **/
   --app-font-family-ilisarniq: 'Ilisarniq', sans-serif;
 
+  /** Font family – Crimson Pro (Journal, Transformation tools body text) **/
+  --app-font-family-crimson: 'CrimsonPro', serif;
+
   /** Text on dark overlays (photo headers, etc.) **/
   --app-text-overlay: white;
 
@@ -138,7 +141,7 @@
   --app-line-height-relaxed: 1.5;
   --app-line-height-loose: 1.6;
 
-  --app-text-primary: var(--ion-text-color);
+  --app-text-primary: var(--ion-color-dark);
   --app-text-secondary: var(--ion-color-medium);
   --app-text-accent: var(--ion-color-primary);
 

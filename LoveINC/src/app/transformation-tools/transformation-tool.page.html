@@ -1,16 +1,28 @@
-<ion-header [translucent]="true">
+<ion-header class="tft-header">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/transformation-tools"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ tool?.title ?? 'Tools for Transformation' }}</ion-title>
   </ion-toolbar>
-  @if (screenPosition === 'step') {
-    <ion-progress-bar [value]="progressValue" color="primary"></ion-progress-bar>
+  @if (tool && !loading) {
+    <div class="tft-tab-bar-wrapper">
+      <div class="tft-tab-bar" #tabBar>
+        @for (section of sections; track section.id) {
+          <button
+            type="button"
+            class="tft-tab"
+            [class.tft-tab--active]="activeSectionId === section.id"
+            (click)="scrollToSection(section.id)">
+            {{ section.label }}
+          </button>
+        }
+        <div class="tft-tab-indicator" #tabIndicator aria-hidden="true"></div>
+      </div>
+    </div>
   }
 </ion-header>
 
-<ion-content [fullscreen]="true" class="transformation-tool-content">
+<ion-content [fullscreen]="true" [scrollEvents]="true" class="tft-content" (ionScroll)="onContentScroll()">
   @if (loading) {
     <div class="loading-container">
       <ion-spinner name="crescent"></ion-spinner>
@@ -20,15 +32,17 @@
       <p class="app-body-secondary-sm">This tool couldn't be found.</p>
     </div>
   } @else {
-    <!-- Cover screen -->
-    @if (screenPosition === 'cover') {
-      <div class="tft-screen p-l-18 p-r-18 p-t-18 p-b-36">
-        <h1 class="app-display m-b-18">{{ tool.title }}</h1>
+    <div class="tft-page app-font-crimson p-l-18 p-r-18 p-b-36">
+      <!-- Intro -->
+      <section id="tft-intro" class="tft-section">
+        <div class="m-t-18 m-b-18">
+          <p class="app-title">{{ tool.title }}</p>
+        </div>
 
         @if (tool.scriptureRefs?.length) {
-          <div class="scripture-pill-row m-b-24">
+          <div class="accepted-items m-b-18">
             @for (ref of tool.scriptureRefs; track ref) {
-              <button type="button" class="scripture-pill item-pill" (click)="openVerseModal(ref)">
+              <button type="button" class="action-pill action-pill--scripture" (click)="openVerseModal(ref)">
                 <ion-icon name="book-outline"></ion-icon>
                 {{ ref }}
               </button>
@@ -36,97 +50,87 @@
           </div>
         }
 
-        <div class="rich-html app-body-secondary" [innerHTML]="tool.introContent | safeHtml"></div>
-      </div>
+        <ion-card class="tft-panel-card">
+          <div class="ion-padding app-body">
+            <div class="rich-html" [innerHTML]="tool.introContent | safeHtml"></div>
+          </div>
+        </ion-card>
+      </section>
 
-      <div class="tft-footer">
-        <ion-button expand="block" color="primary" (click)="goNext()">
-          Begin
-          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
-        </ion-button>
-      </div>
-    }
-
-    <!-- Step screens -->
-    @if (screenPosition === 'step' && currentStep) {
-      <div class="tft-screen p-l-18 p-r-18 p-t-18 p-b-36">
-        <p class="app-caption app-uppercase m-b-12">Step {{ screenIndex }} of {{ steps.length }}</p>
-        <h2 class="app-display m-b-6">{{ currentStep.title }}</h2>
-        @if (currentStep.subtitle) {
-          <p class="app-title content-subtitle m-b-18">{{ currentStep.subtitle }}</p>
-        }
-
-        <div class="rich-html app-body-secondary m-b-24" [innerHTML]="currentStep.content | safeHtml"></div>
-
-        @for (input of currentStep.inputs; track $index; let ii = $index) {
-          <div class="response-input m-b-24">
-            @if (input.type === 'text') {
-              <ion-item>
-                <ion-label position="stacked">{{ input.label }}</ion-label>
-                <ion-textarea
-                  [ngModel]="getTextResponse(currentStep, ii)"
-                  (ngModelChange)="setTextResponse(currentStep, ii, $event)"
-                  [placeholder]="input.placeholder || ''"
-                  [autoGrow]="true"
-                  rows="3">
-                </ion-textarea>
-              </ion-item>
-            } @else if (input.type === 'radio') {
-              <p class="app-caption response-input-label m-b-6">{{ input.label }}</p>
-              <ion-radio-group
-                [value]="getTextResponse(currentStep, ii)"
-                (ionChange)="setTextResponse(currentStep, ii, $event.detail.value)">
-                <ion-list lines="none">
-                  @for (opt of input.options; track opt) {
-                    <ion-item>
-                      <ion-radio slot="start" [value]="opt"></ion-radio>
-                      <ion-label>{{ opt }}</ion-label>
-                    </ion-item>
-                  }
-                </ion-list>
-              </ion-radio-group>
-            } @else {
-              <p class="app-caption response-input-label m-b-6">{{ input.label }}</p>
-              <ion-list lines="none">
-                @for (opt of input.options; track opt) {
-                  <ion-item>
-                    <ion-checkbox
-                      slot="start"
-                      [checked]="isChecked(currentStep, ii, opt)"
-                      (ionChange)="toggleCheckboxResponse(currentStep, ii, opt, $event.detail.checked)">
-                    </ion-checkbox>
-                    <ion-label>{{ opt }}</ion-label>
-                  </ion-item>
-                }
-              </ion-list>
+      <!-- Steps -->
+      @for (step of steps; track step.id) {
+        <section [id]="stepSectionId(step)" class="tft-section">
+          <div class="m-t-18 m-b-18">
+            <p class="app-title app-uppercase">{{ step.title }}</p>
+            @if (step.subtitle) {
+              <p class="app-body content-subtitle">{{ step.subtitle }}</p>
             }
           </div>
-        }
-      </div>
 
-      <div class="tft-footer tft-footer-split">
-        <ion-button fill="outline" color="primary" (click)="goBack()">
-          <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
-          Back
-        </ion-button>
-        <ion-button color="primary" (click)="goNext()">
-          Next
-          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
-        </ion-button>
-      </div>
-    }
+          <ion-card class="tft-panel-card">
+            <div class="ion-padding app-body">
+              <div class="rich-html" [innerHTML]="step.content | safeHtml"></div>
 
-    <!-- Closing screen -->
-    @if (screenPosition === 'closing') {
-      <div class="tft-screen p-l-18 p-r-18 p-t-18 p-b-36">
-        <div class="rich-html app-body-secondary" [innerHTML]="tool.closingContent | safeHtml"></div>
-      </div>
+              @for (input of step.inputs; track $index; let ii = $index) {
+                <div class="m-b-24 m-t-18">
+                  @if (input.type === 'text') {
+                    <ion-item>
+                      <ion-label position="stacked">{{ input.label }}</ion-label>
+                      <ion-textarea
+                        [ngModel]="getTextResponse(step, ii)"
+                        (ngModelChange)="setTextResponse(step, ii, $event)"
+                        [placeholder]="input.placeholder || ''"
+                        [autoGrow]="true"
+                        rows="3">
+                      </ion-textarea>
+                    </ion-item>
+                  } @else if (input.type === 'radio') {
+                    <p class="app-body m-b-6">{{ input.label }}</p>
+                    <ion-radio-group
+                      [value]="getTextResponse(step, ii)"
+                      (ionChange)="setTextResponse(step, ii, $event.detail.value)">
+                      <ion-list lines="none">
+                        @for (opt of input.options; track opt) {
+                          <ion-item>
+                            <ion-radio slot="start" [value]="opt"></ion-radio>
+                            <ion-label>{{ opt }}</ion-label>
+                          </ion-item>
+                        }
+                      </ion-list>
+                    </ion-radio-group>
+                  } @else {
+                    <p class="app-body m-b-6">{{ input.label }}</p>
+                    <ion-list lines="none">
+                      @for (opt of input.options; track opt) {
+                        <ion-item>
+                          <ion-checkbox
+                            slot="start"
+                            [checked]="isChecked(step, ii, opt)"
+                            (ionChange)="toggleCheckboxResponse(step, ii, opt, $event.detail.checked)">
+                          </ion-checkbox>
+                          <ion-label>{{ opt }}</ion-label>
+                        </ion-item>
+                      }
+                    </ion-list>
+                  }
+                </div>
+              }
+            </div>
+          </ion-card>
+        </section>
+      }
 
-      <div class="tft-footer">
-        <ion-button expand="block" color="primary" (click)="goToList()">
-          Done
-        </ion-button>
-      </div>
-    }
+      <!-- Closing -->
+      <section id="tft-closing" class="tft-section">
+        <div class="m-t-18 m-b-18">
+          <p class="app-title">Closing</p>
+        </div>
+        <ion-card class="tft-panel-card">
+          <div class="ion-padding app-body">
+            <div class="rich-html" [innerHTML]="tool.closingContent | safeHtml"></div>
+          </div>
+        </ion-card>
+      </section>
+    </div>
   }
 </ion-content>

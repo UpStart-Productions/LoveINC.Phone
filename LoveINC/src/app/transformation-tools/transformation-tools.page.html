@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/tools"></ion-back-button>
     </ion-buttons>
-    <ion-title>Tools for Transformation</ion-title>
+    <ion-title>Transformation</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,17 +13,26 @@
       No tools are available right now. Check back soon.
     </p>
   }
-  <div class="cards-container">
-    @for (tool of tools; track tool.id) {
-      <app-card
-        class="app-card-compact"
-        [title]="tool.title"
-        [subtitle]="getScriptureSubtitle(tool)"
-        [description]="getExcerpt(tool)"
-        [clickable]="true"
-        [showShareIcon]="false"
-        (cardClick)="navigateToDetail(tool)">
-      </app-card>
-    }
-  </div>
+  @if (!loading && tools.length > 0) {
+    <ion-card class="transformation-tools-list-card app-font-crimson">
+      <ion-list lines="none">
+        @for (tool of tools; track tool.id) {
+          <ion-item button detail="false" (click)="navigateToDetail(tool)">
+            <ion-label>
+              <p class="app-title">{{ tool.title }}</p>
+              @if (getScriptureSubtitle(tool)) {
+                <p class="app-body-secondary">{{ getScriptureSubtitle(tool) }}</p>
+              }
+            </ion-label>
+            <ion-icon
+              class="list-row-chevron"
+              name="chevron-forward-outline"
+              slot="end"
+              aria-hidden="true"
+            ></ion-icon>
+          </ion-item>
+        }
+      </ion-list>
+    </ion-card>
+  }
 </ion-content>

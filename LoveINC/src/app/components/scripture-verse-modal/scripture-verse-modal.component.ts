@@ -1,16 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ModalController,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonContent,
-  IonSpinner,
-} from '@ionic/angular/standalone';
+import { IonSpinner } from '@ionic/angular/standalone';
 import { ScriptureVerseService } from '../../services/scripture-verse.service';
 
 @Component({
@@ -18,19 +8,9 @@ import { ScriptureVerseService } from '../../services/scripture-verse.service';
   templateUrl: './scripture-verse-modal.component.html',
   styleUrls: ['./scripture-verse-modal.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonContent,
-    IonSpinner,
-  ],
+  imports: [CommonModule, IonSpinner],
 })
-export class ScriptureVerseModalComponent implements OnInit {
+export class ScriptureVerseModalComponent implements AfterViewInit {
   @Input() reference = '';
 
   loading = true;
@@ -39,11 +19,15 @@ export class ScriptureVerseModalComponent implements OnInit {
   failed = false;
 
   constructor(
-    private modalController: ModalController,
-    private scriptureVerse: ScriptureVerseService
+    private scriptureVerse: ScriptureVerseService,
+    private cdr: ChangeDetectorRef
   ) {}
 
-  async ngOnInit(): Promise<void> {
+  ngAfterViewInit(): void {
+    setTimeout(() => void this.loadVerse(), 0);
+  }
+
+  private async loadVerse(): Promise<void> {
     this.displayReference = this.reference;
     const verse = await this.scriptureVerse.getVerse(this.reference);
     if (verse) {
@@ -53,9 +37,6 @@ export class ScriptureVerseModalComponent implements OnInit {
       this.failed = true;
     }
     this.loading = false;
-  }
-
-  dismiss(): void {
-    void this.modalController.dismiss();
+    this.cdr.markForCheck();
   }
 }

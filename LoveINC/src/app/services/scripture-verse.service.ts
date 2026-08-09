@@ -7,10 +7,16 @@ export interface ScriptureVerse {
   translationName?: string;
 }
 
+interface BibleApiVerse {
+  text?: string;
+}
+
 interface BibleApiResponse {
   reference?: string;
   text?: string;
   translation_name?: string;
+  verses?: BibleApiVerse[];
+  error?: string;
 }
 
 const BIBLE_API_BASE = 'https://bible-api.com';
@@ -26,7 +32,7 @@ export class ScriptureVerseService {
   private readonly cache = new Map<string, ScriptureVerse | null>();
 
   async getVerse(reference: string): Promise<ScriptureVerse | null> {
-    const ref = reference?.trim();
+    const ref = this.normalizeReference(reference);
     if (!ref) return null;
     if (this.cache.has(ref)) {
       return this.cache.get(ref) ?? null;
@@ -38,8 +44,12 @@ export class ScriptureVerseService {
         this.cache.set(ref, null);
         return null;
       }
-      const res = data as BibleApiResponse;
-      const text = res.text?.trim().replace(/\n+/g, ' ') ?? '';
+      const res = this.parseResponse(data);
+      if (!res || res.error) {
+        this.cache.set(ref, null);
+        return null;
+      }
+      const text = this.extractText(res);
       if (!text) {
         this.cache.set(ref, null);
         return null;
@@ -56,5 +66,37 @@ export class ScriptureVerseService {
       this.cache.set(ref, null);
       return null;
     }
+  }
+
+  /** CMS refs often use en/em dashes in ranges; bible-api.com expects ASCII hyphens. */
+  private normalizeReference(reference: string): string {
+    return reference
+      .trim()
+      .replace(/[\u2013\u2014]/g, '-')
+      .replace(/\s+/g, ' ');
+  }
+
+  private parseResponse(data: unknown): BibleApiResponse | null {
+    if (typeof data === 'string') {
+      try {
+        return JSON.parse(data) as BibleApiResponse;
+      } catch {
+        return null;
+      }
+    }
+    if (data && typeof data === 'object') {
+      return data as BibleApiResponse;
+    }
+    return null;
+  }
+
+  private extractText(res: BibleApiResponse): string {
+    const direct = res.text?.trim().replace(/\n+/g, ' ') ?? '';
+    if (direct) return direct;
+    return (res.verses ?? [])
+      .map((v) => v.text?.trim().replace(/\n+/g, ' '))
+      .filter(Boolean)
+      .join(' ')
+      .trim();
   }
 }

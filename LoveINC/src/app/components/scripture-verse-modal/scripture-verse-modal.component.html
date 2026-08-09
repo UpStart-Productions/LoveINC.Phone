@@ -1,25 +1,17 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title class="app-title">Scripture</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="dismiss()" fill="clear">
-        <ion-icon name="close" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="ion-padding">
-  @if (loading) {
-    <div class="scripture-verse-loading">
-      <ion-spinner name="crescent"></ion-spinner>
-    </div>
-  } @else if (failed) {
-    <p class="app-body-secondary-sm">
-      Couldn't load this passage right now. You can look up {{ reference }} in your own Bible or Bible app.
-    </p>
-  } @else {
-    <p class="app-title app-font-ilisarniq-center scripture-verse-text">{{ verseText }}</p>
-    <p class="app-caption scripture-verse-reference">{{ displayReference }}</p>
-  }
-</ion-content>
+<div class="scripture-verse-sheet">
+  <div class="scripture-verse-modal-content">
+    @if (loading) {
+      <div class="scripture-verse-loading">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+    } @else if (failed) {
+      <p class="app-uppercase-thin m-b-12">{{ displayReference || reference }}</p>
+      <p class="app-body-secondary-sm">
+        Couldn't load this passage right now. You can look up {{ reference }} in your own Bible or Bible app.
+      </p>
+    } @else {
+      <p class="app-uppercase-thin m-b-12">{{ displayReference }}</p>
+      <p class="app-body scripture-verse-text">{{ verseText }}</p>
+    }
+  </div>
+</div>

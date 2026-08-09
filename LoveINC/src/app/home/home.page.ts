@@ -23,7 +23,7 @@ import { DonateActionSheetService } from '../services/donate-action-sheet.servic
 import { DonateButtonService } from '../services/donate-button.service';
 import { SharingService } from '../services/sharing/sharing.service';
 import { PlatformApiService } from '../services/platform/platform-api.service';
-import type { PlatformCta, PlatformClass, PlatformEvent, PlatformHomeFeedItem } from '../services/platform/types';
+import type { PlatformCta, PlatformClass, PlatformEvent, PlatformHomeFeedItem, PlatformImpactStory } from '../services/platform/types';
 import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.component';
 import {
   buildGetHelpCtaRow,
@@ -46,6 +46,8 @@ import { CalendarService } from '../services/calendar/calendar.service';
 
 const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
 const BROWSE_SERVICES_MAX_DISPLAYS = 3;
+/** Minimum home cards that are not events/classes; backfill from evergreen impact stories if below. */
+const HOME_MIN_NON_EVENT_CLASS_CARDS = 3;
 
 export type ClientSupportCardState =
   | 'intake_required'
@@ -166,19 +168,21 @@ export class HomePage implements OnInit {
       homeFeed: this.platformApi.getHomeFeed(),
       events: this.platformApi.getEvents(),
       classes: this.platformApi.getClasses(),
+      impactStories: this.platformApi.getImpactStories(),
     }).pipe(
-      map(({ homeFeed, events, classes }) => {
-        const today = startOfDay(new Date()).getTime();
+      map(({ homeFeed, events, classes, impactStories }) => {
+        const todayMs = startOfDay(new Date()).getTime();
         const eventMap = new Map<string, PlatformEvent>((events ?? []).map((e) => [e.id, e]));
         const classMap = new Map<string, PlatformClass>((classes ?? []).map((c) => [c.id, c]));
         const cards = (homeFeed ?? [])
           .filter((item): item is typeof item & { type: CardType } =>
             this.isSupportedCardType(item.type))
           .filter((item) => !this.isCtaCardType(item.type))
-          .filter((item) => this.isNotPastEventOrClass(item, today))
+          .filter((item) =>
+            this.isActiveEventOrClassOnHome(item, todayMs, eventMap, classMap))
           .map((item) => this.mapFeedItemToHomeCard(item, eventMap, classMap))
           .sort((a, b) => a.priority - b.priority);
-        return this.limitImpactStories(cards, 1);
+        return this.backfillImpactStoriesIfNeeded(cards, impactStories ?? []);
       })
     );
   }
@@ -380,27 +384,78 @@ export class HomePage implements OnInit {
     return supported.includes(type as CardType);
   }
 
-  private limitImpactStories(cards: HomeCard[], maxImpact: number): HomeCard[] {
-    let impactCount = 0;
-    return cards.filter((card) => {
-      if (card.type === 'impact') {
-        impactCount++;
-        return impactCount <= maxImpact;
-      }
-      return true;
-    });
+  /**
+   * Curated events/classes with endDate before today never appear on Home.
+   * Resolves dates from full event/class records (nextSession, offerings, etc.).
+   */
+  private isActiveEventOrClassOnHome(
+    item: PlatformHomeFeedItem & { type: CardType },
+    todayMs: number,
+    eventMap: Map<string, PlatformEvent>,
+    classMap: Map<string, PlatformClass>
+  ): boolean {
+    if (item.type !== 'event' && item.type !== 'class') return true;
+
+    const range = this.cardFormatting.getCalendarDateRangeForHome(
+      item,
+      item.type === 'event' ? eventMap.get(item.id) : undefined,
+      item.type === 'class' ? classMap.get(item.id) : undefined
+    );
+    if (!range) return false;
+
+    if (range.endDate) {
+      const endMs = new Date(range.endDate).getTime();
+      if (Number.isFinite(endMs)) return endMs >= todayMs;
+    }
+    if (range.startDate) {
+      const startMs = new Date(range.startDate).getTime();
+      if (Number.isFinite(startMs)) return startMs >= todayMs;
+    }
+    return false;
+  }
+
+  /** When fewer than 3 non-event/class cards remain, add evergreen impact stories. */
+  private backfillImpactStoriesIfNeeded(
+    cards: HomeCard[],
+    impactStories: PlatformImpactStory[]
+  ): HomeCard[] {
+    const nonEventClassCount = cards.filter(
+      (c) => c.type !== 'event' && c.type !== 'class'
+    ).length;
+    if (nonEventClassCount >= HOME_MIN_NON_EVENT_CLASS_CARDS) {
+      return cards;
+    }
+
+    const needed = HOME_MIN_NON_EVENT_CLASS_CARDS - nonEventClassCount;
+    const existingIds = new Set(cards.map((c) => c.id));
+    const maxPriority = cards.reduce((max, c) => Math.max(max, c.priority), -1);
+    const backfill = impactStories
+      .filter((story) => !existingIds.has(story.id))
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .slice(0, needed)
+      .map((story, index) => this.mapImpactStoryToHomeCard(story, maxPriority + 1 + index));
+
+    return [...cards, ...backfill].sort((a, b) => a.priority - b.priority);
+  }
+
+  private mapImpactStoryToHomeCard(story: PlatformImpactStory, priority: number): HomeCard {
+    const formatted = this.cardFormatting.formatForCard(story, 'impact');
+    return {
+      id: formatted.id,
+      type: 'impact',
+      photoUrl: formatted.photoUrl,
+      title: formatted.title,
+      subtitle: formatted.subtitle,
+      shortDescription: formatted.description,
+      link: `/tabs/content-detail/impact-story/${formatted.id}`,
+      priority,
+      badge: formatted.badge,
+    };
   }
 
   private isCtaCardType(type: CardType): boolean {
     const ctaTypes: CardType[] = ['donation-drive', 'volunteer', 'fundraiser', 'awareness'];
     return ctaTypes.includes(type);
-  }
-
-  private isNotPastEventOrClass(item: PlatformHomeFeedItem & { type: CardType }, todayMs: number): boolean {
-    if (item.type !== 'event' && item.type !== 'class') return true;
-    const startDate = item.startDate;
-    if (!startDate) return true;
-    return new Date(startDate).getTime() >= todayMs;
   }
 
   private mapFeedItemToHomeCard(

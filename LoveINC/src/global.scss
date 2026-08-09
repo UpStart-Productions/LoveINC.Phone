@@ -100,6 +100,27 @@
   a.rich-content-cta:active {
     opacity: 0.88;
   }
+
+  blockquote {
+    margin: 0.75rem 0;
+    margin-inline: 0;
+    padding-inline-start: 1rem;
+    padding-inline-end: 0;
+    border-left: 3px solid var(--ion-color-light-gray);
+
+    p {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    p + p {
+      margin-top: 0.5em;
+    }
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
 }
 
 /* -----------------------------------------------------------------------------
@@ -486,6 +507,34 @@ ion-modal.entry-notes-modal {
   }
 }
 
+/* Scripture verse sheet (Transformation tools – ~2/3 height, swipe to dismiss) */
+ion-modal.scripture-verse-modal-sheet {
+  --width: 100%;
+  --border-radius: 1rem 1rem 0 0;
+  --box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.12);
+  --background: #ffffff;
+
+  &::part(content) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    border-radius: 1rem 1rem 0 0;
+    background: #ffffff;
+  }
+
+  &::part(handle) {
+    background: var(--ion-color-medium);
+    width: 2.5rem;
+    height: 0.25rem;
+  }
+
+  &::part(backdrop) {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
 /* Budget summary adjust link and strategies card */
 .summary-row .adjust-link {
   background: none;
@@ -660,6 +709,25 @@ ion-modal.date-picker-modal-sheet ion-header ion-toolbar ion-title {
   align-items: center;
   justify-content: center;
   color: white;
+}
+
+button.action-pill.action-pill--scripture {
+  width: auto;
+  min-width: 0;
+  gap: 0.25rem;
+  padding: calc(0.2rem + 1px) 0.5rem !important;
+  border: none;
+  background-color: var(--love-inc-teal);
+  color: #ffffff;
+  font-size: var(--app-font-size-xs) !important;
+  font-weight: var(--app-font-weight-medium);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  ion-icon {
+    font-size: 0.75rem;
+    color: #ffffff;
+  }
 }
 
 /* -----------------------------------------------------------------------------

@@ -8,8 +8,12 @@ import {
   IonContent,
   IonBackButton,
   IonButtons,
+  IonCard,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonIcon,
 } from '@ionic/angular/standalone';
-import { CardComponent } from '../components/card/card.component';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformTransformationTool } from '../services/platform/types';
 
@@ -26,7 +30,11 @@ import type { PlatformTransformationTool } from '../services/platform/types';
     IonContent,
     IonBackButton,
     IonButtons,
-    CardComponent,
+    IonCard,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonIcon,
   ],
 })
 export class TransformationToolsPage implements OnInit {
@@ -58,12 +66,6 @@ export class TransformationToolsPage implements OnInit {
 
   getScriptureSubtitle(tool: PlatformTransformationTool): string {
     return (tool.scriptureRefs ?? []).join(' • ');
-  }
-
-  getExcerpt(tool: PlatformTransformationTool): string {
-    const plain = (tool.introContent ?? '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-    if (plain.length <= 140) return plain;
-    return `${plain.slice(0, 140).trim()}…`;
   }
 
   navigateToDetail(tool: PlatformTransformationTool) {

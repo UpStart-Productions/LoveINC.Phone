@@ -1,0 +1,14 @@
+.transformation-tools-list-card {
+  ion-list {
+    padding-top: 0.625rem;
+  }
+
+  ion-item {
+    margin-bottom: 0.75rem;
+    margin-left: 0.3125rem;
+  }
+
+  ion-label p.app-title + p {
+    margin-top: 0.25rem;
+  }
+}
