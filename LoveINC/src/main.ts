@@ -42,7 +42,13 @@ import {
   HeartHandshake,
   Church,
   Minus,
-  Quote
+  Quote,
+  Sprout,
+  Compass,
+  Bookmark,
+  Wallet,
+  Calculator,
+  Trophy,
 } from 'lucide-angular';
 
 import { routes } from './app/app.routes';
@@ -146,7 +152,13 @@ bootstrapApplication(AppComponent, {
         HeartHandshake,
         Church,
         Minus,
-        Quote
+        Quote,
+        Sprout,
+        Compass,
+        Bookmark,
+        Wallet,
+        Calculator,
+        Trophy,
       })
     ),
   ],

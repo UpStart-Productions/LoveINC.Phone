@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
+import { LucideAngularModule } from 'lucide-angular';
 import { LocationMapModalService } from '../../services/location-map-modal.service';
 
 /** Optional fragments for coloring numeric parts (e.g. budget amounts). */
@@ -15,7 +16,7 @@ export type ContentCardTextSegment = {
   templateUrl: './content-card.component.html',
   styleUrls: ['./content-card.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonCard, IonCardContent, IonIcon],
+  imports: [CommonModule, IonCard, IonCardContent, IonIcon, LucideAngularModule],
 })
 export class ContentCardComponent {
   /** Small category label above title (e.g. "Guided Scripture", "Guided Prayer") */
@@ -23,6 +24,9 @@ export class ContentCardComponent {
 
   /** Optional icon name for category line (e.g. "water-outline", "checkmark-done-outline") */
   @Input() categoryIcon?: string;
+
+  /** Optional Lucide icon name for category line (e.g. "sprout") */
+  @Input() lucideCategoryIcon?: string;
 
   /** Optional extra text before category (e.g. "0", "Day 5") */
   @Input() categoryExtra?: string;
@@ -50,6 +54,9 @@ export class ContentCardComponent {
 
   /** Icon name for right-side when no image (e.g. "hand-left-outline") */
   @Input() iconName?: string;
+
+  /** Lucide icon name for right-side when no image (e.g. "sprout") */
+  @Input() lucideIcon?: string;
 
   /** Background color for icon placeholder when using iconName */
   @Input() iconBackgroundColor = '#8b7355';

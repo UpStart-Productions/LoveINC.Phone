@@ -6,6 +6,7 @@ export interface ContentCardListItem {
   title: string;
   category?: string;
   categoryIcon?: string;
+  lucideCategoryIcon?: string;
   categoryExtra?: string;
   titleSegments?: ContentCardTextSegment[];
   underTitle?: string;
@@ -13,6 +14,7 @@ export interface ContentCardListItem {
   detailSegments?: ContentCardTextSegment[];
   imageUrl?: string;
   iconName?: string;
+  lucideIcon?: string;
   iconBackgroundColor?: string;
   route?: string;
   navigationFrom?: string;

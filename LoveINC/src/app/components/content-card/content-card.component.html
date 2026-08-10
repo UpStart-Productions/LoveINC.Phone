@@ -7,11 +7,18 @@
   (click)="clickable && handleClick()"
 >
   <ion-card-content>
-    <div class="content-card-layout" [class.content-card-layout--with-aside]="!!imageUrl || !!iconName">
+    <div class="content-card-layout" [class.content-card-layout--with-aside]="!!imageUrl || !!iconName || !!lucideIcon">
       <div class="content-card-main">
         @if (category || categoryExtra) {
           <div class="category-row">
-            @if (categoryIcon) {
+            @if (lucideCategoryIcon) {
+              <i-lucide
+                [name]="lucideCategoryIcon"
+                [size]="compactCategoryLabel ? 12 : 16"
+                color="var(--ion-color-dark)"
+                class="icon"
+              ></i-lucide>
+            } @else if (categoryIcon) {
               <ion-icon [name]="categoryIcon" class="icon"></ion-icon>
             }
             @if (categoryExtra) {
@@ -63,10 +70,14 @@
           </div>
         }
       </div>
-      <div class="content-card-aside" *ngIf="imageUrl || iconName">
+      <div class="content-card-aside" *ngIf="imageUrl || iconName || lucideIcon">
         <div class="content-card-avatar">
           @if (imageUrl) {
             <img [src]="imageUrl" [alt]="title" class="content-card-image" />
+          } @else if (lucideIcon) {
+            <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
+              <i-lucide [name]="lucideIcon" [size]="24" color="#ffffff" class="content-card-icon"></i-lucide>
+            </div>
           } @else if (iconName) {
             <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
               <ion-icon [name]="iconName" class="content-card-icon"></ion-icon>

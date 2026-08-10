@@ -7,11 +7,13 @@ import type { Route } from '@angular/router';
 export interface ToolCard {
   category?: string;
   categoryIcon?: string;
+  lucideCategoryIcon?: string;
   categoryExtra?: string;
   title: string;
   detail?: string;
   imageUrl?: string;
   iconName?: string;
+  lucideIcon?: string;
   iconBackgroundColor?: string;
   /** Route to navigate to (e.g. '/tabs/goal-tracker'). Omit for placeholders. */
   route?: string;
@@ -118,29 +120,38 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
  */
 export const REGISTERED_TOOL_CARDS: ToolCard[] = [
   {
-    category: 'Personal Growth',
-    categoryIcon: 'compass-outline',
+    category: 'Spiritual Growth',
+    lucideCategoryIcon: 'compass',
     title: 'Tools for Transformation',
     detail: 'Guided devotionals to help you grow',
-    iconName: 'compass-outline',
+    lucideIcon: 'compass',
     iconBackgroundColor: '#349394',
     route: '/tabs/transformation-tools',
   },
   {
+    category: 'Daily Scripture',
+    lucideCategoryIcon: 'bookmark',
+    title: 'Verse of the Day',
+    detail: 'Daily scripture for reflection',
+    lucideIcon: 'bookmark',
+    iconBackgroundColor: '#3B82F6',
+    route: '/tabs/verse-of-the-day',
+  },
+  {
     category: 'Money Management',
-    categoryIcon: 'wallet-outline',
+    lucideCategoryIcon: 'wallet',
     title: 'Budget Planner',
     detail: 'Track income and expenses',
-    iconName: 'calculator-outline',
+    lucideIcon: 'calculator',
     iconBackgroundColor: '#214491',
     route: '/tabs/simple-budget',
   },
   {
     category: 'Life Skills',
-    categoryIcon: 'trophy-outline',
+    lucideCategoryIcon: 'trophy',
     title: 'Goal Tracker',
     detail: 'Set and track personal goals',
-    iconName: 'trophy-outline',
+    lucideIcon: 'trophy',
     iconBackgroundColor: '#eaa535',
     route: '/tabs/goal-tracker',
   },
@@ -162,10 +173,10 @@ export const REGISTERED_TOOL_CARDS: ToolCard[] = [
   // },
   {
     category: 'Personal Growth',
-    categoryIcon: 'book-outline',
+    lucideCategoryIcon: 'sprout',
     title: 'Your Journal',
     detail: 'Capture notes and personal reflection',
-    iconName: 'book-outline',
+    lucideIcon: 'sprout',
     iconBackgroundColor: '#2c5f7d',
     route: '/tabs/journal',
   },

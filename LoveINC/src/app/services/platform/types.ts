@@ -310,7 +310,9 @@ export interface PlatformTransformationTool {
   /** Quill-authored HTML for the closing screen */
   closingContent: string;
   sortOrder: number;
-  /** ISO date when the tool was published/posted */
+  /** ISO 8601 created timestamp */
+  createdAt?: string;
+  /** @deprecated Use createdAt — kept for older API responses */
   postedAt?: string;
   steps: PlatformTransformationToolStep[];
 }

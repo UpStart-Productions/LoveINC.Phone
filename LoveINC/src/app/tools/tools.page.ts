@@ -35,10 +35,12 @@ export class ToolsPage {
       title: card.title,
       category: card.category,
       categoryIcon: card.categoryIcon,
+      lucideCategoryIcon: card.lucideCategoryIcon,
       categoryExtra: card.categoryExtra,
       detail: card.detail,
       imageUrl: card.imageUrl,
       iconName: card.iconName,
+      lucideIcon: card.lucideIcon,
       iconBackgroundColor: card.iconBackgroundColor,
       route: card.route,
     }));
