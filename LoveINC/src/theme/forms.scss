@@ -12,14 +12,14 @@ ion-item:has(ion-textarea) {
   ion-input,
   ion-select,
   ion-textarea {
-    --background: #ffffff;
+    --background: var(--ion-background-color);
     --border-width: 0.0625rem;
     --border-style: solid;
-    --border-color: var(--ion-color-light-gray, #e0e0e0);
+    --border-color: var(--ion-color-light-gray);
     --border-radius: 0.625rem;
     --padding-end: 0;
-    background-color: #ffffff;
-    border: 0.0625rem solid var(--ion-color-light-gray, #e0e0e0);
+    background-color: var(--ion-background-color);
+    border: 0.0625rem solid var(--ion-color-light-gray);
     border-radius: 0.625rem;
     padding-right: 0 !important;
   }
@@ -38,9 +38,9 @@ ion-item:has(ion-textarea) {
   .select-border-wrapper {
     display: block;
     width: 100%;
-    border: 0.0625rem solid var(--ion-color-light-gray, #e0e0e0);
+    border: 0.0625rem solid var(--ion-color-light-gray);
     border-radius: 0.625rem;
-    background-color: #ffffff;
+    background-color: var(--ion-background-color);
 
     ion-select {
       --background: transparent;

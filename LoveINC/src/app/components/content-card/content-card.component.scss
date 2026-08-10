@@ -2,7 +2,7 @@
 
 .content-card {
   --content-card-aside-width: 4.5rem;
-  --content-card-list-divider-color: rgba(0, 0, 0, 0.08);
+  --content-card-list-divider-color: rgba(var(--app-scrim-rgb), 0.08);
 }
 
 .content-card ion-card-content {
@@ -112,7 +112,7 @@
   width: calc(var(--app-icon-size-sm) * 1.2);
   height: calc(var(--app-icon-size-sm) * 1.2);
   border-radius: 50%;
-  background: var(--ion-color-white, #fff);
+  background: var(--ion-color-white);
   line-height: 0;
   pointer-events: none;
 

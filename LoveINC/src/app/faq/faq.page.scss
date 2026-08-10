@@ -47,7 +47,7 @@
       overflow: hidden;
 
       ion-item {
-        --background: #E9ECF1;
+        --background: var(--love-inc-tertiary-off-white);
         --border-style: none;
       }
     }

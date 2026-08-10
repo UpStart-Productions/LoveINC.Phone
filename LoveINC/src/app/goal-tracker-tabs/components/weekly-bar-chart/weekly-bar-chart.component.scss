@@ -23,7 +23,7 @@
 .bar-track {
   width: 50%;
   height: 9rem;
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(var(--app-scrim-rgb), 0.08);
   border-radius: 0.25rem 0.25rem 0 0;
   overflow: hidden;
   display: flex;

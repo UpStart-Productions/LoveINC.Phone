@@ -1,7 +1,7 @@
 /* Solid white scroll area (same pattern as connection-center / class details) */
 ion-content.jobs-program-page {
-  --background: #ffffff;
-  --ion-background-color: #ffffff;
+  --background: var(--ion-background-color);
+  --ion-background-color: var(--ion-background-color);
 }
 
 .jobs-program-photo {

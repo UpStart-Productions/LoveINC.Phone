@@ -1,6 +1,6 @@
 ion-content.assistance-intro-page {
-  --background: #ffffff;
-  --ion-background-color: #ffffff;
+  --background: var(--ion-background-color);
+  --ion-background-color: var(--ion-background-color);
 }
 
 .assistance-intro-hero {

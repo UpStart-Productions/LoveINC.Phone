@@ -5,43 +5,67 @@
 :root {
   --ion-background-color: #ffffff;
 
-  /** Love INC Brand Color Palette **/
-  --love-inc-header-dark: #13214d;
-  --love-inc-blue: #214491;
-  --love-inc-coral: #d56132;
-  --love-inc-red: #c24039;
-  --love-inc-orange: #d97d33;
-  --love-inc-gold: #eaa535;
-  --love-inc-teal: #349394;
-  --love-inc-light-blue: #d8e1ea;
+  /** Love INC Corporate Brand Palette (official) **/
+
+  /** Primary **/
+  --love-inc-primary-light: #2293f0; /* Pantone 279 C */
+  --love-inc-primary-medium: #244d9f; /* Pantone 2133 C */
+  --love-inc-primary-dark: #122559; /* Pantone 655 C */
+
+  /** Secondary **/
+  --love-inc-secondary-gold: #edae26; /* Pantone 7409 C */
+  --love-inc-secondary-terracotta: #ca483d; /* Pantone 2033 C */
+
+  /** Tertiary **/
+  --love-inc-tertiary-blue-dark: #1b397d; /* Pantone 3597 C */
+  --love-inc-tertiary-blue-bright: #2371c8; /* Pantone 2172 C */
+  --love-inc-tertiary-teal: #399e9f; /* Pantone 2401 C */
+  --love-inc-tertiary-off-white: #dde5ed; /* Pantone 656 C */
+  --love-inc-tertiary-orange: #de882d; /* Pantone 2428 C */
+  --love-inc-tertiary-burnt-orange: #db6b30; /* Pantone 7578 C */
+
+  /** Legacy aliases (used throughout app) **/
+  --love-inc-header-dark: var(--love-inc-primary-dark);
+  --love-inc-blue: var(--love-inc-primary-medium);
+  --love-inc-coral: var(--love-inc-tertiary-burnt-orange);
+  --love-inc-red: var(--love-inc-secondary-terracotta);
+  --love-inc-orange: var(--love-inc-tertiary-orange);
+  --love-inc-gold: var(--love-inc-secondary-gold);
+  --love-inc-teal: var(--love-inc-tertiary-teal);
+  --love-inc-light-blue: var(--love-inc-tertiary-off-white);
 
   /** UI Neutral Colors **/
   --love-inc-neutral-dark: #666666;
   --love-inc-neutral-medium: #8c8c8c;
 
-  /** primary - Love INC Blue **/
-  --ion-color-primary: #3B82F6;
-  --ion-color-primary-rgb: 59, 130, 246;
+  /** Scrim & shadow neutrals (overlays, backdrops, elevation – not brand colors) **/
+  --app-scrim-rgb: 0, 0, 0;
+  --app-scrim-backdrop: rgba(var(--app-scrim-rgb), 0.4);
+  --app-scrim-strong: rgba(var(--app-scrim-rgb), 0.72);
+
+  /** primary - Love INC Primary Light Blue **/
+  --ion-color-primary: var(--love-inc-primary-light);
+  --ion-color-primary-rgb: 34, 147, 240;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #3474d8;
-  --ion-color-primary-tint: #4f8ff7;
+  --ion-color-primary-shade: #1e81d3;
+  --ion-color-primary-tint: #389ef2;
 
-  /** secondary - Love INC Dark Blue **/
-  --ion-color-secondary: #2c5f7d;
-  --ion-color-secondary-rgb: 44, 95, 125;
+  /** secondary - Love INC Primary Medium Blue **/
+  --ion-color-secondary: var(--love-inc-primary-medium);
+  --ion-color-secondary-rgb: 36, 77, 159;
   --ion-color-secondary-contrast: #ffffff;
   --ion-color-secondary-contrast-rgb: 255, 255, 255;
-  --ion-color-secondary-shade: #27546e;
-  --ion-color-secondary-tint: #416f8a;
+  --ion-color-secondary-shade: #20448c;
+  --ion-color-secondary-tint: #3a5fa9;
 
-  /** tertiary **/
-  --ion-color-tertiary: #5260ff;
-  --ion-color-tertiary-rgb: 82, 96, 255;
+  /** tertiary - Love INC Tertiary Bright Blue **/
+  --ion-color-tertiary: var(--love-inc-tertiary-blue-bright);
+  --ion-color-tertiary-rgb: 35, 113, 200;
   --ion-color-tertiary-contrast: #ffffff;
   --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-  --ion-color-tertiary-shade: #4854e0;
-  --ion-color-tertiary-tint: #6370ff;
+  --ion-color-tertiary-shade: #1f63b0;
+  --ion-color-tertiary-tint: #397fce;
 
   /** success **/
   --ion-color-success: #2dd36f;
@@ -186,26 +210,26 @@
    */
 
   body {
-    --ion-color-primary: #4f8ff7;
-    --ion-color-primary-rgb: 79, 143, 247;
+    --ion-color-primary: #389ef2;
+    --ion-color-primary-rgb: 56, 158, 242;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255, 255, 255;
-    --ion-color-primary-shade: #4680d9;
-    --ion-color-primary-tint: #619af8;
+    --ion-color-primary-shade: #318bd5;
+    --ion-color-primary-tint: #4ca8f3;
 
-    --ion-color-secondary: #416f8a;
-    --ion-color-secondary-rgb: 65, 111, 138;
+    --ion-color-secondary: #3a5fa9;
+    --ion-color-secondary-rgb: 58, 95, 169;
     --ion-color-secondary-contrast: #ffffff;
     --ion-color-secondary-contrast-rgb: 255, 255, 255;
-    --ion-color-secondary-shade: #396279;
-    --ion-color-secondary-tint: #547d96;
+    --ion-color-secondary-shade: #335495;
+    --ion-color-secondary-tint: #4e6fb2;
 
-    --ion-color-tertiary: #6a64ff;
-    --ion-color-tertiary-rgb: 106, 100, 255;
+    --ion-color-tertiary: #397fce;
+    --ion-color-tertiary-rgb: 57, 127, 206;
     --ion-color-tertiary-contrast: #ffffff;
     --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-    --ion-color-tertiary-shade: #5d58e0;
-    --ion-color-tertiary-tint: #7974ff;
+    --ion-color-tertiary-shade: #3270b5;
+    --ion-color-tertiary-tint: #4d8cd3;
 
     --ion-color-success: #2fdf75;
     --ion-color-success-rgb: 47, 223, 117;

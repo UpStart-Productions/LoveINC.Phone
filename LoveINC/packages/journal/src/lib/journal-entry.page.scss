@@ -1,9 +1,9 @@
 ion-header {
-  --background: #ffffff;
+  --background: var(--ion-background-color);
 }
 
 ion-content.journal-entry-content {
-  --background: #ffffff;
+  --background: var(--ion-background-color);
   --padding-start: 0;
   --padding-end: 0;
 }
@@ -25,7 +25,7 @@ ion-content.journal-entry-content {
 
 .title-field ion-input {
   --background: transparent;
-  --color: var(--ion-text-color, #222428);
+  --color: var(--ion-text-color);
   font-family: 'CrimsonPro', serif;
   font-weight: 500;
   /* Body scale + 0.5rem (was +1rem) */

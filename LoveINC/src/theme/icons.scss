@@ -102,7 +102,7 @@ ion-header ion-back-button::part(native) {
 /* Content card icons */
 .content-card-icon {
   font-size: var(--app-icon-size-lg);
-  color: #fff;
+  color: var(--ion-color-white);
 }
 
 .category-icon,

@@ -239,36 +239,36 @@ ion-button[fill="clear"][color="primary"] {
   --padding-bottom: 1rem;
   
   &:not([disabled]) {
-    --box-shadow: 0 0.25rem 0.75rem rgba(59, 130, 246, 0.3);
+    --box-shadow: 0 0.25rem 0.75rem rgba(var(--ion-color-primary-rgb), 0.3);
   }
 }
 
 /* Header Styling - Global */
 ion-header ion-toolbar {
   --background: var(--love-inc-header-dark);
-  --color: #ffffff;
+  --color: var(--ion-color-primary-contrast);
   --opacity: 1;
   background: var(--love-inc-header-dark);
   opacity: 1;
 }
 
 ion-header ion-title {
-  --color: #ffffff;
-  color: #ffffff;
+  --color: var(--ion-color-primary-contrast);
+  color: var(--ion-color-primary-contrast);
 }
 
 ion-header ion-buttons ion-button {
-  --color: #ffffff;
-  color: #ffffff;
+  --color: var(--ion-color-primary-contrast);
+  color: var(--ion-color-primary-contrast);
 }
 
 ion-header ion-buttons ion-button ion-icon {
-  color: #ffffff;
+  color: var(--ion-color-primary-contrast);
 }
 
 ion-header ion-back-button {
-  --color: #ffffff;
-  color: #ffffff;
+  --color: var(--ion-color-primary-contrast);
+  color: var(--ion-color-primary-contrast);
 }
 
 /* Simple Budget / Goal Tracker: white toolbar needs a dark back chevron */
@@ -309,7 +309,7 @@ ion-toolbar.custom-toolbar ion-buttons app-back-button ion-button ion-icon {
     right: 0.3125rem;
     width: 0.75rem;
     height: 0.75rem;
-    background-color: #ff0000;
+    background-color: var(--love-inc-secondary-terracotta);
     border-radius: 50%;
     border: 0.0625rem solid var(--love-inc-header-dark);
   }
@@ -331,8 +331,8 @@ ion-modal.donation-map-modal-fullscreen {
 
 /* Chart bar popover (statistics) – pointer-events: none so taps pass through to bars */
 ion-popover.chart-bar-popover {
-  --background: rgba(34, 36, 40, 0.95);
-  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --background: rgba(var(--ion-color-dark-rgb), 0.95);
+  --box-shadow: 0 2px 8px rgba(var(--app-scrim-rgb), 0.3);
   --width: fit-content;
   --max-width: 6.625rem;
   pointer-events: none;
@@ -340,8 +340,8 @@ ion-popover.chart-bar-popover {
 
 /* Chart pie popover (Simple Budget reports) – dark popover on slice tap, backdrop dismiss, auto-fade */
 ion-popover.chart-pie-popover {
-  --background: rgba(34, 36, 40, 0.95);
-  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --background: rgba(var(--ion-color-dark-rgb), 0.95);
+  --box-shadow: 0 2px 8px rgba(var(--app-scrim-rgb), 0.3);
   --width: fit-content;
   --max-width: 10rem;
   --backdrop-opacity: 0.01;
@@ -441,7 +441,7 @@ ion-modal.voucher-detail-modal-sheet {
   }
 
   &::part(backdrop) {
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--app-scrim-backdrop);
   }
 }
 
@@ -449,7 +449,7 @@ ion-modal.voucher-detail-modal-sheet {
 ion-modal.date-picker-modal-sheet {
   --width: 100%;
   --border-radius: 0;
-  --box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.1);
+  --box-shadow: 0 -0.25rem 1rem rgba(var(--app-scrim-rgb), 0.1);
   /* Purple for Goal Tracker buttons */
   --ion-color-secondary: #5433c6;
   --ion-color-secondary-rgb: 84, 51, 198;
@@ -464,7 +464,7 @@ ion-modal.date-picker-modal-sheet {
   }
 
   &::part(backdrop) {
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--app-scrim-backdrop);
   }
 }
 
@@ -472,7 +472,7 @@ ion-modal.date-picker-modal-sheet {
 ion-modal.entry-notes-modal {
   --width: 100%;
   --border-radius: 0;
-  --box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.1);
+  --box-shadow: 0 -0.25rem 1rem rgba(var(--app-scrim-rgb), 0.1);
   --background: #ffffff;
 
   &::part(content) {
@@ -486,7 +486,7 @@ ion-modal.entry-notes-modal {
   }
 
   &::part(backdrop) {
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--app-scrim-backdrop);
   }
 
   ion-header,
@@ -519,8 +519,8 @@ ion-modal.entry-notes-modal {
 ion-modal.scripture-verse-modal-sheet {
   --width: 100%;
   --border-radius: 1rem 1rem 0 0;
-  --box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.12);
-  --background: #ffffff;
+  --box-shadow: 0 -0.25rem 1rem rgba(var(--app-scrim-rgb), 0.12);
+  --background: var(--ion-background-color);
 
   &::part(content) {
     position: absolute;
@@ -529,7 +529,7 @@ ion-modal.scripture-verse-modal-sheet {
     right: 0;
     margin: 0 auto;
     border-radius: 1rem 1rem 0 0;
-    background: #ffffff;
+    background: var(--ion-background-color);
   }
 
   &::part(handle) {
@@ -539,11 +539,11 @@ ion-modal.scripture-verse-modal-sheet {
   }
 
   &::part(backdrop) {
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--app-scrim-backdrop);
   }
 
   ion-content {
-    --background: #ffffff !important;
+    --background: var(--ion-background-color) !important;
   }
 
   .scripture-verse-header .app-uppercase-thin {
@@ -608,7 +608,7 @@ ion-modal.scripture-verse-modal-sheet {
 ion-modal.budget-add-category-sheet {
   --width: 100%;
   --border-radius: 0;
-  --box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.1);
+  --box-shadow: 0 -0.25rem 1rem rgba(var(--app-scrim-rgb), 0.1);
   --background: #ffffff;
 
   &::part(content) {
@@ -622,7 +622,7 @@ ion-modal.budget-add-category-sheet {
   }
 
   &::part(backdrop) {
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--app-scrim-backdrop);
   }
 
   ion-header,
@@ -654,7 +654,7 @@ ion-modal.alerts-modal-sheet {
   --max-width: calc(100% - 1rem);
   --max-height: 85vh;
   --border-radius: 1.5rem 1.5rem 0 0;
-  --box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.1);
+  --box-shadow: 0 -0.25rem 1rem rgba(var(--app-scrim-rgb), 0.1);
   
   &::part(content) {
     position: absolute;
@@ -665,7 +665,7 @@ ion-modal.alerts-modal-sheet {
   }
   
   &::part(backdrop) {
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--app-scrim-backdrop);
   }
 }
 
@@ -724,7 +724,7 @@ ion-modal.date-picker-modal-sheet ion-header ion-toolbar ion-title {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--ion-color-primary-contrast);
 }
 
 button.action-pill.action-pill--scripture {
@@ -779,7 +779,7 @@ button.action-pill.action-pill--scripture {
 
   .action-sheet-button.donate-button {
     background-color: var(--love-inc-coral) !important;
-    color: #ffffff !important;
+    color: var(--ion-color-primary-contrast) !important;
     margin: 0.5rem 0.75rem 0.5rem 0.75rem !important;
     border-radius: 0.5rem !important;
     width: calc(100% - 1.5rem) !important;

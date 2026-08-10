@@ -1,6 +1,6 @@
 ion-content.assistance-thank-you-page {
-  --background: #ffffff;
-  --ion-background-color: #ffffff;
+  --background: var(--ion-background-color);
+  --ion-background-color: var(--ion-background-color);
 }
 
 .assistance-thank-you-hero {

@@ -1,7 +1,7 @@
 :host ion-content.impact-stories-page {
-  --background: #f5f5f5;
+  --background: var(--ion-color-light);
 }
 
 :host ion-content.impact-stories-page::part(background) {
-  background: #f5f5f5;
+  background: var(--ion-color-light);
 }
