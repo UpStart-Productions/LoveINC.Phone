@@ -106,7 +106,7 @@ export class MorePage implements OnInit {
         {
           name: 'Verse of the Day',
           icon: 'book-outline',
-          route: '/tabs/verse-of-the-day?from=more',
+          route: '/tabs/verse-of-the-day',
         },
         {
           name: 'Learning Tools',

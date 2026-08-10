@@ -1,6 +1,10 @@
 export type { JournalEntry } from './lib/types/journal-entry.model';
 export type { JournalEntryShareOptions } from './lib/journal-entry-share.token';
 export { JOURNAL_ENTRY_SHARE } from './lib/journal-entry-share.token';
+export {
+  JOURNAL_NAVIGATION_RETURN,
+  type JournalNavigationReturnHandler,
+} from './lib/journal-navigation-return.token';
 export { JournalDatabaseService } from './lib/services/journal-database.service';
 export { JournalService } from './lib/services/journal.service';
 export { QuillToolbarService } from './lib/rich-text/quill-toolbar.service';

@@ -1,7 +1,6 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Input, inject } from '@angular/core';
 import { IonBackButton } from '@ionic/angular/standalone';
-import { readNavigationOriginHref } from '../../shared/utils/route-utils';
+import { NavigationReturnService } from '../../services/navigation-return.service';
 
 @Component({
   selector: 'app-origin-back-button',
@@ -10,31 +9,22 @@ import { readNavigationOriginHref } from '../../shared/utils/route-utils';
   template: `
     <ion-back-button
       [defaultHref]="resolvedHref"
-      (click)="onBackClick($event)"
+      (click.capture)="onBackClick($event)"
     ></ion-back-button>
   `,
 })
-export class OriginBackButtonComponent implements OnInit {
+export class OriginBackButtonComponent {
   @Input({ required: true }) defaultHref!: string;
 
-  resolvedHref = '';
+  private readonly navigationReturn = inject(NavigationReturnService);
 
-  private forcedOrigin: string | null = null;
-
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-
-  ngOnInit(): void {
-    this.forcedOrigin = readNavigationOriginHref(this.route);
-    this.resolvedHref = this.forcedOrigin ?? this.defaultHref;
+  get resolvedHref(): string {
+    return this.navigationReturn.resolveBackHref(this.defaultHref);
   }
 
   onBackClick(event: Event): void {
-    if (!this.forcedOrigin) {
-      return;
-    }
     event.preventDefault();
     event.stopImmediatePropagation();
-    void this.router.navigateByUrl(this.forcedOrigin);
+    this.navigationReturn.goBack(this.defaultHref);
   }
 }

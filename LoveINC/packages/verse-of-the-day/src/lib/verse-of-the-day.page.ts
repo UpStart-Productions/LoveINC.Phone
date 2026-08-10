@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -12,13 +12,14 @@ import {
   IonButton,
   IonIcon,
 } from '@ionic/angular/standalone';
-import { readNavigationOriginHref } from './navigation-origin';
 import {
   VerseOfTheDayService,
   VerseOfTheDay,
   VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL,
   VERSE_OF_THE_DAY_SHARE,
   VERSE_OF_THE_DAY_BACK_DEFAULT_HREF,
+  APP_NAVIGATION_RETURN,
+  type AppNavigationReturnHandler,
 } from './verse-of-the-day.service';
 import { SafeResourceUrlPipe } from './safe-resource-url.pipe';
 
@@ -47,37 +48,31 @@ export class VerseOfTheDayPage implements OnInit {
   error = false;
 
   backDefaultHref: string;
-  originBackHref: string | null = null;
 
   constructor(
     private readonly verseOfTheDayService: VerseOfTheDayService,
-    private readonly route: ActivatedRoute,
     private readonly router: Router,
     @Optional() @Inject(VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL) private readonly youtubeEmbedBaseUrl?: string,
     @Optional() @Inject(VERSE_OF_THE_DAY_SHARE) readonly shareHandler?: (verse: VerseOfTheDay) => Promise<void>,
-    @Optional() @Inject(VERSE_OF_THE_DAY_BACK_DEFAULT_HREF) backDefaultHref?: string
+    @Optional() @Inject(VERSE_OF_THE_DAY_BACK_DEFAULT_HREF) backDefaultHref?: string,
+    @Optional() @Inject(APP_NAVIGATION_RETURN)
+    private readonly navigationReturn?: AppNavigationReturnHandler
   ) {
     this.backDefaultHref = backDefaultHref ?? '/tabs/more';
   }
 
   ngOnInit() {
-    this.originBackHref = readNavigationOriginHref(this.route);
     this.loadVerse();
   }
 
-  goBack(): void {
-    if (this.originBackHref) {
-      void this.router.navigateByUrl(this.originBackHref);
-    }
-  }
-
   onBackClick(event: Event): void {
-    if (!this.originBackHref) {
-      return;
-    }
     event.preventDefault();
     event.stopImmediatePropagation();
-    this.goBack();
+    if (this.navigationReturn) {
+      this.navigationReturn.goBack(this.backDefaultHref);
+      return;
+    }
+    void this.router.navigateByUrl(this.backDefaultHref);
   }
 
   get sermonVideoId(): string | null {

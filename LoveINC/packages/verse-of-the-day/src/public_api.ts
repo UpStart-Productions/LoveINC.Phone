@@ -7,6 +7,8 @@ export {
   VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL,
   VERSE_OF_THE_DAY_SHARE,
   VERSE_OF_THE_DAY_BACK_DEFAULT_HREF,
+  APP_NAVIGATION_RETURN,
+  type AppNavigationReturnHandler,
 } from './lib/verse-of-the-day.service';
 
 export { VerseOfTheDayPage } from './lib/verse-of-the-day.page';

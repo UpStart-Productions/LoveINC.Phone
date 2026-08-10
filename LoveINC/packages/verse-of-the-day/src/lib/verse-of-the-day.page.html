@@ -2,8 +2,8 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button
-        [defaultHref]="originBackHref ?? backDefaultHref"
-        (click)="onBackClick($event)"
+        [defaultHref]="backDefaultHref"
+        (click.capture)="onBackClick($event)"
       ></ion-back-button>
     </ion-buttons>
     <ion-title>Verse of the Day</ion-title>

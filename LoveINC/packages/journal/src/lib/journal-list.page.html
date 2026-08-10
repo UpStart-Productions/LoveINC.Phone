@@ -2,8 +2,8 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button
-        [defaultHref]="originBackHref ?? '/tabs/tools'"
-        (click)="onBackClick($event)"
+        [defaultHref]="defaultBackHref"
+        (click.capture)="onBackClick($event)"
       ></ion-back-button>
     </ion-buttons>
     <ion-title>Journal</ion-title>

@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -19,7 +18,10 @@ import {
 } from '@ionic/angular/standalone';
 import { JournalService } from './services/journal.service';
 import { JournalEntry } from './types/journal-entry.model';
-import { readNavigationOriginHref } from './navigation-origin';
+import {
+  JOURNAL_NAVIGATION_RETURN,
+  type JournalNavigationReturnHandler,
+} from './journal-navigation-return.token';
 
 @Component({
   selector: 'app-journal-list',
@@ -44,34 +46,27 @@ import { readNavigationOriginHref } from './navigation-origin';
     IonBadge,
   ],
 })
-export class JournalListPage implements OnInit {
+export class JournalListPage {
   entries: JournalEntry[] = [];
   loading = true;
-  originBackHref: string | null = null;
+
+  readonly defaultBackHref = '/tabs/tools';
 
   constructor(
     private journalService: JournalService,
     private router: Router,
-    private route: ActivatedRoute
+    @Optional() @Inject(JOURNAL_NAVIGATION_RETURN)
+    private readonly navigationReturn?: JournalNavigationReturnHandler
   ) {}
 
-  ngOnInit(): void {
-    this.originBackHref = readNavigationOriginHref(this.route);
-  }
-
-  goBack(): void {
-    if (this.originBackHref) {
-      void this.router.navigateByUrl(this.originBackHref);
-    }
-  }
-
   onBackClick(event: Event): void {
-    if (!this.originBackHref) {
-      return;
-    }
     event.preventDefault();
     event.stopImmediatePropagation();
-    this.goBack();
+    if (this.navigationReturn) {
+      this.navigationReturn.goBack(this.defaultBackHref);
+      return;
+    }
+    void this.router.navigateByUrl(this.defaultBackHref);
   }
 
   async ionViewWillEnter(): Promise<void> {
