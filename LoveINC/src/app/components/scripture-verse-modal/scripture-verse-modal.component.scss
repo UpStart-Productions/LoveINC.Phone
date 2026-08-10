@@ -5,14 +5,25 @@
   min-height: 12rem;
 }
 
+.scripture-verse-header {
+  flex-shrink: 0;
+  padding: 0.5rem 1.125rem 0.75rem;
+  font-family: var(--app-font-family-crimson);
+}
+
 .scripture-verse-modal-content {
-  padding: 0.5rem 1.125rem 1.5rem;
+  flex: 1;
+  min-height: 0;
+  --padding-top: 0;
+  --padding-start: 1.125rem;
+  --padding-end: 1.125rem;
+  --padding-bottom: 1.5rem;
   font-family: var(--app-font-family-crimson);
 }
 
 .scripture-verse-text {
   line-height: var(--app-line-height-loose);
-  margin-bottom: 1rem;
+  margin: 0;
   font-weight: 300;
 }
 

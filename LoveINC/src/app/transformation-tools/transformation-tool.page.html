@@ -3,6 +3,13 @@
     <ion-buttons slot="start">
       <app-back-button></app-back-button>
     </ion-buttons>
+    @if (tool && !loading) {
+      <ion-buttons slot="end">
+        <ion-button (click)="onShareClick()" aria-label="Share">
+          <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    }
   </ion-toolbar>
   @if (tool && !loading) {
     <div class="tft-tab-bar-wrapper">
@@ -48,11 +55,28 @@
           </div>
         }
 
+        @if (hasToolAuthor) {
+          <div class="tft-author">
+            <div class="tft-author-main">
+              @if (toolAuthorAvatarUrl) {
+                <img class="tft-author-avatar" [src]="toolAuthorAvatarUrl" [alt]="toolAuthorName" />
+              } @else {
+                <div class="tft-author-avatar tft-author-avatar--placeholder" aria-hidden="true">
+                  <ion-icon name="person-outline"></ion-icon>
+                </div>
+              }
+              <p class="app-body-secondary-xs m-b-0">By {{ toolAuthorName }}</p>
+            </div>
+            @if (toolPostedDateLabel) {
+              <span class="app-body-secondary-xs tft-author-date">{{ toolPostedDateLabel }}</span>
+            }
+          </div>
+        }
+
         @if (tool.scriptureRefs?.length) {
-          <div class="accepted-items m-b-18" [class.m-t-18]="toolPhotoUrl">
+          <div class="accepted-items m-b-18" [class.m-t-18]="!hasToolAuthor && toolPhotoUrl">
             @for (ref of tool.scriptureRefs; track ref) {
-              <button type="button" class="action-pill action-pill--scripture" (click)="openVerseModal(ref)">
-                <ion-icon name="book-outline"></ion-icon>
+              <button type="button" class="action-pill action-pill--scripture app-uppercase" (click)="openVerseModal(ref)">
                 {{ ref }}
               </button>
             }
@@ -72,7 +96,7 @@
       @for (step of steps; track step.id) {
         <section [id]="stepSectionId(step)" class="tft-section">
           <div class="app-font-crimson">
-            <div class="m-t-18 m-b-18">
+            <div class="tft-step-header m-t-18 m-b-18">
               <p class="app-title app-uppercase">{{ step.title }}</p>
               @if (step.subtitle) {
                 <p class="app-body content-subtitle">{{ step.subtitle }}</p>

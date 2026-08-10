@@ -15,6 +15,7 @@ import {
   IonHeader,
   IonToolbar,
   IonButtons,
+  IonButton,
   IonIcon,
   IonContent,
   IonSpinner,
@@ -35,6 +36,8 @@ import type {
 } from '../services/platform/types';
 import { GrovLinkDatabaseService } from '../services/grovlink-database.service';
 import { ScriptureVerseModalComponent } from '../components/scripture-verse-modal/scripture-verse-modal.component';
+import { SharingService } from '../services/sharing/sharing.service';
+import { formatDateRangeCompact } from '../shared/utils';
 
 export interface TftSection {
   id: string;
@@ -52,6 +55,7 @@ export interface TftSection {
     IonHeader,
     IonToolbar,
     IonButtons,
+    IonButton,
     IonIcon,
     IonContent,
     IonSpinner,
@@ -88,6 +92,7 @@ export class TransformationToolPage implements OnInit, OnDestroy {
     private platformApi: PlatformApiService,
     private db: GrovLinkDatabaseService,
     private modalController: ModalController,
+    private sharingService: SharingService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -134,6 +139,26 @@ export class TransformationToolPage implements OnInit, OnDestroy {
     return this.platformApi.resolveUploadUrl(raw) || raw;
   }
 
+  get toolAuthorName(): string {
+    return this.tool?.author?.name?.trim() ?? '';
+  }
+
+  get hasToolAuthor(): boolean {
+    return !!this.toolAuthorName;
+  }
+
+  get toolAuthorAvatarUrl(): string {
+    const raw = this.tool?.author?.avatarUrl?.trim();
+    if (!raw) return '';
+    return this.platformApi.resolveUploadUrl(raw) || raw;
+  }
+
+  get toolPostedDateLabel(): string {
+    const raw = this.tool?.createdAt?.trim() || this.tool?.postedAt?.trim();
+    if (!raw) return '';
+    return formatDateRangeCompact(raw, raw);
+  }
+
   get sections(): TftSection[] {
     if (!this.tool) return [];
     const list: TftSection[] = [{ id: 'tft-intro', label: 'Intro' }];
@@ -169,6 +194,46 @@ export class TransformationToolPage implements OnInit, OnDestroy {
     }, 450);
   }
 
+  async onShareClick(): Promise<void> {
+    if (!this.tool) return;
+
+    await this.sharingService.shareContent({
+      title: this.tool.title,
+      subject: `Love INC Transformation Tool: ${this.tool.title}`,
+      htmlContent: this.buildShareContent(),
+    });
+  }
+
+  private buildShareContent(): string {
+    const tool = this.tool!;
+    const author = tool.author?.name?.trim();
+    let html = `<h2>${tool.title}</h2>`;
+
+    if (author) {
+      html += `<p><strong>By</strong> ${author}</p>`;
+    }
+    if (tool.scriptureRefs?.length) {
+      html += `<p><strong>Scripture:</strong> ${tool.scriptureRefs.join(', ')}</p>`;
+    }
+    if (tool.introContent) {
+      html += tool.introContent;
+    }
+    for (const step of this.steps) {
+      html += `<h3>${step.title}</h3>`;
+      if (step.subtitle) {
+        html += `<p>${step.subtitle}</p>`;
+      }
+      if (step.content) {
+        html += step.content;
+      }
+    }
+    if (tool.closingContent) {
+      html += `<h3>Closing</h3>${tool.closingContent}`;
+    }
+
+    return html;
+  }
+
   async openVerseModal(reference: string): Promise<void> {
     try {
       const modal = await this.modalController.create({
@@ -179,6 +244,7 @@ export class TransformationToolPage implements OnInit, OnDestroy {
         backdropDismiss: true,
         breakpoints: [0, 0.67],
         initialBreakpoint: 0.67,
+        expandToScroll: false,
         handle: true});
       await modal.present();
     } catch (err) {

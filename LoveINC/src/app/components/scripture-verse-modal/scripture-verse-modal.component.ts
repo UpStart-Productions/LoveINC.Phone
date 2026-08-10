@@ -1,6 +1,6 @@
 import { Component, Input, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonSpinner } from '@ionic/angular/standalone';
+import { IonSpinner, IonContent } from '@ionic/angular/standalone';
 import { ScriptureVerseService } from '../../services/scripture-verse.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { ScriptureVerseService } from '../../services/scripture-verse.service';
   templateUrl: './scripture-verse-modal.component.html',
   styleUrls: ['./scripture-verse-modal.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonSpinner],
+  imports: [CommonModule, IonSpinner, IonContent],
 })
 export class ScriptureVerseModalComponent implements AfterViewInit {
   @Input() reference = '';

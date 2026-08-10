@@ -105,6 +105,54 @@
   color: #ffffff;
 }
 
+.tft-step-header {
+  padding-left: 0.75rem;
+}
+
+.tft-author {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tft-author-main {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.tft-author-date {
+  flex-shrink: 0;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.tft-author-avatar {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.tft-author-avatar--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ion-color-light);
+  color: var(--ion-color-dark);
+
+  ion-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+}
+
 .tft-section {
   scroll-margin-top: 7.5rem;
 }

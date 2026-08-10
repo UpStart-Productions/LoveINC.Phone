@@ -1,17 +1,19 @@
 <div class="scripture-verse-sheet">
-  <div class="scripture-verse-modal-content">
+  <div class="scripture-verse-header">
+    <p class="app-uppercase-thin m-b-0">{{ displayReference || reference }}</p>
+  </div>
+
+  <ion-content class="scripture-verse-modal-content">
     @if (loading) {
       <div class="scripture-verse-loading">
         <ion-spinner name="crescent"></ion-spinner>
       </div>
     } @else if (failed) {
-      <p class="app-uppercase-thin m-b-12">{{ displayReference || reference }}</p>
       <p class="app-body-secondary-sm">
         Couldn't load this passage right now. You can look up {{ reference }} in your own Bible or Bible app.
       </p>
     } @else {
-      <p class="app-uppercase-thin m-b-12">{{ displayReference }}</p>
       <p class="app-body scripture-verse-text">{{ verseText }}</p>
     }
-  </div>
+  </ion-content>
 </div>
