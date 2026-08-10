@@ -61,6 +61,22 @@ span {
   line-height: var(--app-line-height-relaxed);
 }
 
+/** List row main title – matches app-card-compact / Events / Impact Stories card titles */
+.app-list-row-title {
+  font-size: var(--app-font-size-body);
+  font-weight: var(--app-font-weight-medium);
+  color: var(--ion-color-dark);
+  line-height: var(--app-line-height-body);
+  margin: 0;
+}
+
+ion-item ion-label p.app-list-row-title {
+  color: var(--ion-color-dark);
+  font-size: var(--app-font-size-body);
+  font-weight: var(--app-font-weight-medium);
+  line-height: var(--app-line-height-body);
+}
+
 .app-body-secondary {
   font-size: var(--app-font-size-body);
   color: var(--app-text-secondary);

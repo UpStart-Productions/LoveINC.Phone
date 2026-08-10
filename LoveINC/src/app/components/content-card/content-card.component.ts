@@ -69,14 +69,8 @@ export class ContentCardComponent {
   @Input() mapWebsite?: string;
 
   /**
-   * Tools page: larger main title, category and detail use default shared secondary
-   * typography (other screens keep the compact title line).
-   */
-  @Input() forToolsPage = false;
-
-  /**
-   * Smaller top category line (one step on the type scale). Used with forToolsPage
-   * and for home promos (e.g. Verse of the Day, Simple Budget) that share the same look.
+   * Smaller top category line (one step on the type scale). Used on Tools and home promos
+   * (e.g. Verse of the Day, Simple Budget) that share the same look.
    */
   @Input() compactCategoryLabel = false;
 

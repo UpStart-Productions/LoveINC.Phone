@@ -1,7 +1,6 @@
 <ion-card
   class="content-card"
-  [class.content-card--for-tools-page]="forToolsPage"
-  [class.content-card--compact-category-label]="forToolsPage || compactCategoryLabel"
+  [class.content-card--compact-category-label]="compactCategoryLabel"
   [class.clickable]="clickable"
   (click)="route && handleClick()"
 >

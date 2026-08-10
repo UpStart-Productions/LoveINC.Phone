@@ -1,7 +1,10 @@
 <ion-header [translucent]="true" class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/tools"></ion-back-button>
+      <ion-back-button
+        [defaultHref]="originBackHref ?? '/tabs/tools'"
+        (click)="onBackClick($event)"
+      ></ion-back-button>
     </ion-buttons>
     <ion-title>Journal</ion-title>
     <ion-buttons slot="end">
@@ -40,11 +43,12 @@
       <ion-item
         *ngFor="let e of entries"
         [routerLink]="['/tabs/journal', e.id]"
+        queryParamsHandling="preserve"
         [detail]="false"
         [button]="true"
       >
         <ion-label class="ion-text-wrap">
-          <p class="app-body-sm">{{ e.title || 'Untitled' }}</p>
+          <p class="app-list-row-title">{{ e.title || 'Untitled' }}</p>
         </ion-label>
         <ion-badge
           *ngIf="e.updatedAt"

@@ -271,6 +271,12 @@ ion-header ion-back-button {
   color: #ffffff;
 }
 
+/* Simple Budget / Goal Tracker: white toolbar needs a dark back chevron */
+ion-toolbar.custom-toolbar ion-back-button {
+  --color: var(--ion-color-dark);
+  color: var(--ion-color-dark);
+}
+
 /* Global Donate Header Button Styling */
 .donate-header-button {
   --background: transparent;

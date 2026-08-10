@@ -7,7 +7,6 @@ import {
   IonToolbar,
   IonTitle,
   IonButtons,
-  IonBackButton,
   IonContent,
   IonCard,
   IonCardHeader,
@@ -29,6 +28,7 @@ import {
 } from '@upstart-productions/simple-budget';
 import type { WeekPlan, WeekSummary } from '@upstart-productions/simple-budget';
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
+import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 import { PieChartComponent, type PieSlice } from './components/pie-chart/pie-chart.component';
 
 const CATEGORY_PALETTE = [
@@ -58,7 +58,6 @@ const CATEGORY_PALETTE = [
     IonToolbar,
     IonTitle,
     IonButtons,
-    IonBackButton,
     IonContent,
     IonCard,
     IonCardHeader,
@@ -72,6 +71,7 @@ const CATEGORY_PALETTE = [
     IonSelectOption,
     IonToggle,
     PieChartComponent,
+    OriginBackButtonComponent,
   ],
 })
 export class SimpleBudgetReportsPage implements OnInit {

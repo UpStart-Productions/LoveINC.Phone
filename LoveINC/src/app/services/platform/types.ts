@@ -304,6 +304,7 @@ export interface PlatformTransformationTool {
   title: string;
   author: PlatformTransformationToolAuthor;
   scriptureRefs: string[];
+  photoUrl?: string;
   /** Quill-authored HTML for the cover screen */
   introContent: string;
   /** Quill-authored HTML for the closing screen */

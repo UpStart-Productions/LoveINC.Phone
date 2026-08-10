@@ -4,7 +4,6 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonBackButton,
   IonButtons,
   IonTabs,
   IonTabBar,
@@ -12,9 +11,10 @@ import {
   IonLabel,
   IonIcon,
 } from '@ionic/angular/standalone';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, RouterLink } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 
 @Component({
   selector: 'app-simple-budget-tabs',
@@ -26,13 +26,14 @@ import { Subscription } from 'rxjs';
     IonHeader,
     IonToolbar,
     IonTitle,
-    IonBackButton,
     IonButtons,
     IonTabs,
     IonTabBar,
     IonTabButton,
     IonLabel,
     IonIcon,
+    RouterLink,
+    OriginBackButtonComponent,
   ],
 })
 export class SimpleBudgetTabsPage implements OnInit, OnDestroy {

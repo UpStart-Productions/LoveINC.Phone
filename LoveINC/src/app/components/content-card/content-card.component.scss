@@ -37,10 +37,10 @@
   justify-content: center;
   gap: 0.25rem;
 
-  /* Match Verse of the Day reference line (global .content-card h2); enforce here for segmented titles */
+  /* List row titles – match app-card-compact (Events, Impact Stories) */
   h2 {
     margin: 0;
-    font-size: var(--app-font-size-sm);
+    font-size: var(--app-font-size-body);
     font-weight: var(--app-font-weight-medium);
     line-height: var(--app-line-height-body);
     color: var(--ion-color-dark);
@@ -117,14 +117,7 @@
 .content-card-icon {
 }
 
-/* Tools page (forToolsPage): larger main title. Compact category: content-card--compact-category-label. */
-.content-card--for-tools-page.content-card .content-card-left h2,
-.content-card--for-tools-page.content-card .content-card-left h2 span {
-  font-size: var(--app-font-size-title);
-  line-height: var(--app-line-height-tight);
-  font-weight: var(--app-font-weight-medium);
-}
-
+/* Compact category: content-card--compact-category-label. */
 .content-card--compact-category-label.content-card .category-row .app-body-secondary {
   font-size: var(--app-font-size-sm);
   line-height: var(--app-line-height-body);

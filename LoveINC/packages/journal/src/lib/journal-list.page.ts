@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -18,6 +19,7 @@ import {
 } from '@ionic/angular/standalone';
 import { JournalService } from './services/journal.service';
 import { JournalEntry } from './types/journal-entry.model';
+import { readNavigationOriginHref } from './navigation-origin';
 
 @Component({
   selector: 'app-journal-list',
@@ -42,14 +44,35 @@ import { JournalEntry } from './types/journal-entry.model';
     IonBadge,
   ],
 })
-export class JournalListPage {
+export class JournalListPage implements OnInit {
   entries: JournalEntry[] = [];
   loading = true;
+  originBackHref: string | null = null;
 
   constructor(
     private journalService: JournalService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
+
+  ngOnInit(): void {
+    this.originBackHref = readNavigationOriginHref(this.route);
+  }
+
+  goBack(): void {
+    if (this.originBackHref) {
+      void this.router.navigateByUrl(this.originBackHref);
+    }
+  }
+
+  onBackClick(event: Event): void {
+    if (!this.originBackHref) {
+      return;
+    }
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.goBack();
+  }
 
   async ionViewWillEnter(): Promise<void> {
     this.loading = true;
@@ -61,7 +84,9 @@ export class JournalListPage {
   }
 
   addEntry(): void {
-    void this.router.navigate(['/tabs/journal', 'new']);
+    void this.router.navigate(['/tabs/journal', 'new'], {
+      queryParamsHandling: 'preserve',
+    });
   }
 
   private readonly monthAbbrev = [

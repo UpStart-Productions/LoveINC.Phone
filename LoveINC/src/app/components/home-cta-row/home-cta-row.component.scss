@@ -15,6 +15,12 @@
   border-radius: 0;
 }
 
+.home-cta-row-item--flat {
+  --background: transparent;
+  --ion-item-background: transparent;
+  background: transparent;
+}
+
 .home-cta-row__photo {
   flex-shrink: 0;
   width: 3rem;

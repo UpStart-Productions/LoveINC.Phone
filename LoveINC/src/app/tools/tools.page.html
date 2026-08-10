@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/more"></ion-back-button>
+      <app-origin-back-button defaultHref="/tabs/more"></app-origin-back-button>
     </ion-buttons>
     <ion-title>Tools</ion-title>
   </ion-toolbar>
@@ -11,7 +11,7 @@
   <div class="tools-list">
     @for (card of toolCards; track card.title) {
       <app-content-card
-        [forToolsPage]="true"
+        [compactCategoryLabel]="true"
         [category]="card.category"
         [categoryIcon]="card.categoryIcon"
         [categoryExtra]="card.categoryExtra"
@@ -20,7 +20,7 @@
         [imageUrl]="card.imageUrl"
         [iconName]="card.iconName"
         [iconBackgroundColor]="card.iconBackgroundColor ?? '#8b7355'"
-        [route]="card.route"
+        [route]="toolRoute(card)"
       />
     }
   </div>

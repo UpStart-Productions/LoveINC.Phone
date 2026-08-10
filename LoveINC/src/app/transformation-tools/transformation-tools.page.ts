@@ -6,7 +6,6 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonBackButton,
   IonButtons,
   IonCard,
   IonList,
@@ -16,6 +15,7 @@ import {
 } from '@ionic/angular/standalone';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformTransformationTool } from '../services/platform/types';
+import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 
 @Component({
   selector: 'app-transformation-tools',
@@ -28,13 +28,13 @@ import type { PlatformTransformationTool } from '../services/platform/types';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonBackButton,
     IonButtons,
     IonCard,
     IonList,
     IonItem,
     IonLabel,
     IonIcon,
+    OriginBackButtonComponent,
   ],
 })
 export class TransformationToolsPage implements OnInit {
@@ -69,6 +69,8 @@ export class TransformationToolsPage implements OnInit {
   }
 
   navigateToDetail(tool: PlatformTransformationTool) {
-    this.router.navigate(['/tabs/transformation-tools', tool.id]);
+    this.router.navigate(['/tabs/transformation-tools', tool.id], {
+      queryParamsHandling: 'preserve',
+    });
   }
 }

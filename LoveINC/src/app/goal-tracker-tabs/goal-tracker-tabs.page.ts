@@ -4,7 +4,6 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonBackButton,
   IonButtons,
   IonButton,
   IonIcon,
@@ -13,12 +12,13 @@ import {
   IonTabButton,
   IonLabel,
 } from '@ionic/angular/standalone';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, RouterLink } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { GoalTrackerModalService } from './services/goal-tracker-modal.service';
 import { GoalTrackerDateService } from './services/goal-tracker-date.service';
 import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.service';
+import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 
 @Component({
   selector: 'app-goal-tracker-tabs',
@@ -30,7 +30,6 @@ import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.servi
     IonHeader,
     IonToolbar,
     IonTitle,
-    IonBackButton,
     IonButtons,
     IonButton,
     IonIcon,
@@ -38,6 +37,8 @@ import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.servi
     IonTabBar,
     IonTabButton,
     IonLabel,
+    RouterLink,
+    OriginBackButtonComponent,
   ],
 })
 export class GoalTrackerTabsPage implements OnInit, OnDestroy {

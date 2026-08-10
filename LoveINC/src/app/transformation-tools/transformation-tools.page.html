@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/tools"></ion-back-button>
+      <app-origin-back-button defaultHref="/tabs/tools"></app-origin-back-button>
     </ion-buttons>
     <ion-title>Transformation</ion-title>
   </ion-toolbar>
@@ -14,12 +14,12 @@
     </p>
   }
   @if (!loading && tools.length > 0) {
-    <ion-card class="transformation-tools-list-card app-font-crimson">
+    <ion-card class="transformation-tools-list-card">
       <ion-list lines="none">
         @for (tool of tools; track tool.id) {
           <ion-item button detail="false" (click)="navigateToDetail(tool)">
             <ion-label>
-              <p class="app-title">{{ tool.title }}</p>
+          <p class="app-list-row-title">{{ tool.title }}</p>
               @if (getScriptureSubtitle(tool)) {
                 <p class="app-body-secondary">{{ getScriptureSubtitle(tool) }}</p>
               }

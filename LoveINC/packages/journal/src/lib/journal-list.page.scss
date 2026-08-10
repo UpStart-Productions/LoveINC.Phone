@@ -36,10 +36,9 @@ ion-content.journal-list-page {
     margin-left: 0.3125rem;
   }
 
-  /* Global ion-item ion-label p uses app-text-secondary; use primary title color.
-     End chevrons: explicit `ion-icon.list-row-chevron` in template + `icons.scss` (Ionic
+  /* End chevrons: explicit `ion-icon.list-row-chevron` in template + `icons.scss` (Ionic
      `detail` chevron is not styleable from our CSS). */
-  ion-item ion-label p {
+  ion-item ion-label p.app-list-row-title {
     color: var(--ion-color-dark);
   }
 

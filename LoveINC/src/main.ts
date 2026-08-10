@@ -60,7 +60,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideQuillConfig({ theme: 'snow' }),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular({ mode: 'ios' }),
+    provideIonicAngular({ mode: 'ios', backButtonText: '' }),
     provideRouter(routes),
     provideHttpClient(),
     { provide: VERSE_OF_THE_DAY_CACHE, useClass: VerseOfTheDayCacheService },

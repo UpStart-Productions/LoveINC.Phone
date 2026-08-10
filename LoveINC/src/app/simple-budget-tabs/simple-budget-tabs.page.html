@@ -1,7 +1,7 @@
 <ion-header *ngIf="!isWeeklyTab" [translucent]="false">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/tools"></ion-back-button>
+      <app-origin-back-button defaultHref="/tabs/tools"></app-origin-back-button>
     </ion-buttons>
     <ion-title>{{ headerTitle }}</ion-title>
   </ion-toolbar>
@@ -9,24 +9,24 @@
 
 <ion-tabs>
   <ion-tab-bar slot="bottom" class="simple-budget-tab-bar">
-    <ion-tab-button tab="weekly" href="/tabs/simple-budget/weekly">
+    <ion-tab-button tab="weekly" [routerLink]="['/tabs/simple-budget/weekly']" queryParamsHandling="preserve">
       <ion-icon aria-hidden="true" name="wallet-outline" class="outline-icon"></ion-icon>
       <ion-icon aria-hidden="true" name="wallet" class="solid-icon"></ion-icon>
       <ion-label>Budget</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="review" href="/tabs/simple-budget/review">
+    <ion-tab-button tab="review" [routerLink]="['/tabs/simple-budget/review']" queryParamsHandling="preserve">
       <ion-icon aria-hidden="true" name="document-text-outline" class="outline-icon"></ion-icon>
       <ion-icon aria-hidden="true" name="document-text" class="solid-icon"></ion-icon>
       <ion-label>Review</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="reports" href="/tabs/simple-budget/reports">
+    <ion-tab-button tab="reports" [routerLink]="['/tabs/simple-budget/reports']" queryParamsHandling="preserve">
       <ion-icon aria-hidden="true" name="stats-chart-outline" class="outline-icon"></ion-icon>
       <ion-icon aria-hidden="true" name="stats-chart" class="solid-icon"></ion-icon>
       <ion-label>Reports</ion-label>
     </ion-tab-button>
-    <ion-tab-button tab="export" href="/tabs/simple-budget/export">
+    <ion-tab-button tab="export" [routerLink]="['/tabs/simple-budget/export']" queryParamsHandling="preserve">
       <ion-icon aria-hidden="true" name="share-outline" class="outline-icon"></ion-icon>
       <ion-icon aria-hidden="true" name="share" class="solid-icon"></ion-icon>
       <ion-label>Export</ion-label>

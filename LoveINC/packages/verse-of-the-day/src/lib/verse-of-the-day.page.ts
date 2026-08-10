@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -12,6 +12,7 @@ import {
   IonButton,
   IonIcon,
 } from '@ionic/angular/standalone';
+import { readNavigationOriginHref } from './navigation-origin';
 import {
   VerseOfTheDayService,
   VerseOfTheDay,
@@ -45,9 +46,13 @@ export class VerseOfTheDayPage implements OnInit {
   loading = true;
   error = false;
 
+  backDefaultHref: string;
+  originBackHref: string | null = null;
+
   constructor(
     private readonly verseOfTheDayService: VerseOfTheDayService,
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     @Optional() @Inject(VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL) private readonly youtubeEmbedBaseUrl?: string,
     @Optional() @Inject(VERSE_OF_THE_DAY_SHARE) readonly shareHandler?: (verse: VerseOfTheDay) => Promise<void>,
     @Optional() @Inject(VERSE_OF_THE_DAY_BACK_DEFAULT_HREF) backDefaultHref?: string
@@ -55,14 +60,24 @@ export class VerseOfTheDayPage implements OnInit {
     this.backDefaultHref = backDefaultHref ?? '/tabs/more';
   }
 
-  backDefaultHref: string;
-
   ngOnInit() {
-    const from = this.route.snapshot.queryParamMap.get('from');
-    if (from) {
-      this.backDefaultHref = `/tabs/${from}`;
-    }
+    this.originBackHref = readNavigationOriginHref(this.route);
     this.loadVerse();
+  }
+
+  goBack(): void {
+    if (this.originBackHref) {
+      void this.router.navigateByUrl(this.originBackHref);
+    }
+  }
+
+  onBackClick(event: Event): void {
+    if (!this.originBackHref) {
+      return;
+    }
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.goBack();
   }
 
   get sermonVideoId(): string | null {

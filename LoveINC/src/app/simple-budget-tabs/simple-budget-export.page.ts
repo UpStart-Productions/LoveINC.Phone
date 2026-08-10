@@ -7,7 +7,6 @@ import {
   IonToolbar,
   IonTitle,
   IonButtons,
-  IonBackButton,
   IonContent,
   IonCard,
   IonCardHeader,
@@ -44,6 +43,7 @@ import { SimpleBudgetStateService } from '../services/simple-budget-state.servic
 import { UserProfileService } from '../services/user-profile.service';
 import { OnboardingService } from '../services/onboarding.service';
 import { joinWithAppDot } from '../shared/utils';
+import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 
 @Component({
   selector: 'app-simple-budget-export',
@@ -57,7 +57,6 @@ import { joinWithAppDot } from '../shared/utils';
     IonToolbar,
     IonTitle,
     IonButtons,
-    IonBackButton,
     IonContent,
     IonCard,
     IonCardHeader,
@@ -74,6 +73,7 @@ import { joinWithAppDot } from '../shared/utils';
     IonSegmentButton,
     IonSelect,
     IonSelectOption,
+    OriginBackButtonComponent,
   ],
 })
 export class SimpleBudgetExportPage implements OnInit {

@@ -6,7 +6,6 @@ import {
   IonToolbar,
   IonTitle,
   IonButtons,
-  IonBackButton,
   IonContent,
   IonItem,
   IonLabel,
@@ -30,6 +29,7 @@ import { EntryNotesModalComponent } from './components/entry-notes-modal/entry-n
 import { AdjustStrategiesModalComponent } from './components/adjust-strategies-modal/adjust-strategies-modal.component';
 import { CurrencyInputDirective } from './directives/currency-input.directive';
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
+import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 
 const SECTION_BORDER_CLASS: Record<string, string> = {
   income: 'border-emerald',
@@ -50,7 +50,7 @@ const SECTION_BORDER_CLASS: Record<string, string> = {
     IonToolbar,
     IonTitle,
     IonButtons,
-    IonBackButton,
+    IonButtons,
     IonContent,
     IonItem,
     IonLabel,
@@ -58,6 +58,7 @@ const SECTION_BORDER_CLASS: Record<string, string> = {
     IonButton,
     IonIcon,
     WeekScrollerComponent,
+    OriginBackButtonComponent,
   ],
 })
 export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {

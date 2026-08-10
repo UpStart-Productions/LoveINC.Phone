@@ -12,7 +12,9 @@
       "@upstart-productions/service-unlock": ["packages/service-unlock"],
       "@upstart-productions/service-unlock/*": ["packages/service-unlock/*"],
       "@upstart-productions/journal": ["packages/journal/src/public_api.ts"],
-      "@upstart-productions/journal/*": ["packages/journal/src/*"]
+      "@upstart-productions/journal/*": ["packages/journal/src/*"],
+      "@upstart-productions/verse-of-the-day": ["packages/verse-of-the-day/src/public_api.ts"],
+      "@upstart-productions/verse-of-the-day/*": ["packages/verse-of-the-day/src/*"]
     },
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,

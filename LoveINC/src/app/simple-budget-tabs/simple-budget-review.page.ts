@@ -6,7 +6,6 @@ import {
   IonToolbar,
   IonTitle,
   IonButtons,
-  IonBackButton,
   IonContent,
   IonList,
   IonItem,
@@ -19,6 +18,7 @@ import {
 } from '@upstart-productions/simple-budget';
 import type { WeekPlan } from '@upstart-productions/simple-budget';
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
+import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 
 @Component({
   selector: 'app-simple-budget-review',
@@ -32,12 +32,12 @@ import { SimpleBudgetStateService } from '../services/simple-budget-state.servic
     IonToolbar,
     IonTitle,
     IonButtons,
-    IonBackButton,
     IonContent,
     IonList,
     IonItem,
     IonLabel,
     IonTextarea,
+    OriginBackButtonComponent,
   ],
 })
 export class SimpleBudgetReviewPage implements OnInit, OnDestroy {
