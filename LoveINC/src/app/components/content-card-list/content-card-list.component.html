@@ -25,6 +25,10 @@
       [mapPhone]="item.mapPhone"
       [mapWebsite]="item.mapWebsite"
       [compactDetail]="item.compactDetail ?? false"
+      [asideBadge]="item.asideBadge"
+      [asideBadgeColor]="item.asideBadgeColor ?? 'success'"
+      [avatarOverlayIcon]="item.avatarOverlayIcon"
+      [avatarOverlayIconColor]="item.avatarOverlayIconColor ?? 'success'"
       [clickable]="item.route ? true : item.clickable !== false"
       (cardClick)="onCardClick(item)"
       />

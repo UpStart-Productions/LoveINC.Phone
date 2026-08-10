@@ -25,4 +25,12 @@ export interface ContentCardListItem {
   compactCategoryLabel?: boolean;
   compactDetail?: boolean;
   clickable?: boolean;
+  /** Right-cell badge text (e.g. journal entry date). Shown with or without avatar. */
+  asideBadge?: string;
+  /** Ionic badge color for `asideBadge` (default `success`). */
+  asideBadgeColor?: string;
+  /** Ionicon overlay on photo avatar lower-left (e.g. `checkmark-circle`). */
+  avatarOverlayIcon?: string;
+  /** Ionic color for `avatarOverlayIcon` (default `success`). */
+  avatarOverlayIconColor?: string;
 }

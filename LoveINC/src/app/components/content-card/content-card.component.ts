@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
+import { IonBadge, IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
 import { LocationMapModalService } from '../../services/location-map-modal.service';
 
@@ -16,7 +16,7 @@ export type ContentCardTextSegment = {
   templateUrl: './content-card.component.html',
   styleUrls: ['./content-card.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonCard, IonCardContent, IonIcon, LucideAngularModule],
+  imports: [CommonModule, IonBadge, IonCard, IonCardContent, IonIcon, LucideAngularModule],
 })
 export class ContentCardComponent {
   /** Small category label above title (e.g. "Guided Scripture", "Guided Prayer") */
@@ -89,6 +89,26 @@ export class ContentCardComponent {
 
   /** Horizontal divider under this row when stacked in a list. */
   @Input() listDivider = false;
+
+  /** Right-cell badge text (e.g. journal entry date). Shown with or without avatar. */
+  @Input() asideBadge?: string;
+
+  /** Ionic badge color for `asideBadge` (default `success`). */
+  @Input() asideBadgeColor = 'success';
+
+  /** Ionicon overlay on photo avatar lower-left (e.g. `checkmark-circle`). */
+  @Input() avatarOverlayIcon?: string;
+
+  /** Ionic color for `avatarOverlayIcon` (default `success`). */
+  @Input() avatarOverlayIconColor = 'success';
+
+  get hasAsideAvatar(): boolean {
+    return !!(this.imageUrl || this.iconName || this.lucideIcon);
+  }
+
+  get showAside(): boolean {
+    return this.hasAsideAvatar || !!this.asideBadge?.trim();
+  }
 
   constructor(
     private router: Router,

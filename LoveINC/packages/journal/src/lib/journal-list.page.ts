@@ -68,9 +68,7 @@ export class JournalListPage {
     return this.entries.map((entry) => ({
       id: String(entry.id),
       title: entry.title || 'Untitled',
-      detail: entry.updatedAt ? this.formatUpdatedMonthDay(entry.updatedAt) : undefined,
-      iconName: 'book-outline',
-      iconBackgroundColor: '#2c5f7d',
+      asideBadge: entry.updatedAt ? this.formatUpdatedMonthDay(entry.updatedAt) : undefined,
       route: `/tabs/journal/${entry.id}`,
       preserveQueryParams: true,
     }));

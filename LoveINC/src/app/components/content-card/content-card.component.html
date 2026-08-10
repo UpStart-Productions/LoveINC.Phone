@@ -7,7 +7,7 @@
   (click)="clickable && handleClick()"
 >
   <ion-card-content>
-    <div class="content-card-layout" [class.content-card-layout--with-aside]="!!imageUrl || !!iconName || !!lucideIcon">
+    <div class="content-card-layout" [class.content-card-layout--with-aside]="showAside">
       <div class="content-card-main">
         @if (category || categoryExtra) {
           <div class="category-row">
@@ -70,20 +70,40 @@
           </div>
         }
       </div>
-      <div class="content-card-aside" *ngIf="imageUrl || iconName || lucideIcon">
-        <div class="content-card-avatar">
-          @if (imageUrl) {
-            <img [src]="imageUrl" [alt]="title" class="content-card-image" />
-          } @else if (lucideIcon) {
-            <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
-              <i-lucide [name]="lucideIcon" [size]="24" color="#ffffff" class="content-card-icon"></i-lucide>
-            </div>
-          } @else if (iconName) {
-            <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
-              <ion-icon [name]="iconName" class="content-card-icon"></ion-icon>
-            </div>
-          }
-        </div>
+      <div
+        class="content-card-aside"
+        *ngIf="showAside"
+        [class.content-card-aside--extra-only]="!hasAsideAvatar && !!asideBadge"
+      >
+        @if (hasAsideAvatar) {
+          <div
+            class="content-card-avatar"
+            [class.content-card-avatar--with-overlay]="!!imageUrl && !!avatarOverlayIcon"
+          >
+            @if (imageUrl) {
+              <img [src]="imageUrl" [alt]="title" class="content-card-image" />
+            } @else if (lucideIcon) {
+              <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
+                <i-lucide [name]="lucideIcon" [size]="24" color="#ffffff" class="content-card-icon"></i-lucide>
+              </div>
+            } @else if (iconName) {
+              <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
+                <ion-icon [name]="iconName" class="content-card-icon"></ion-icon>
+              </div>
+            }
+            @if (imageUrl && avatarOverlayIcon) {
+              <span class="content-card-avatar-overlay" aria-hidden="true">
+                <ion-icon
+                  [name]="avatarOverlayIcon"
+                  [color]="avatarOverlayIconColor"
+                ></ion-icon>
+              </span>
+            }
+          </div>
+        }
+        @if (asideBadge) {
+          <ion-badge class="content-card-aside-badge" [color]="asideBadgeColor">{{ asideBadge }}</ion-badge>
+        }
         <ng-content select="[content-card-aside-extra]"></ng-content>
       </div>
     </div>

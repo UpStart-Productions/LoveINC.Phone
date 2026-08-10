@@ -117,6 +117,7 @@
                         (ngModelChange)="setTextResponse(step, ii, $event)"
                         [placeholder]="input.placeholder || ''"
                         [autoGrow]="true"
+                        autocapitalize="sentences"
                         rows="3">
                       </ion-textarea>
                     </ion-item>
@@ -160,7 +161,7 @@
       <!-- Closing -->
       <section id="tft-closing" class="tft-section">
         <div class="app-font-crimson">
-          <div class="m-t-18 m-b-18">
+          <div class="tft-step-header m-t-18 m-b-18">
             <p class="app-title">Closing</p>
           </div>
           <ion-card class="tft-panel-card">

@@ -32,6 +32,7 @@ import {
 } from '../components/home-cta-row/home-cta-row.mapper';
 import type { HomeCtaRowModel } from '../components/home-cta-row/home-cta-row.model';
 import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-widget/verse-of-the-day-widget.component';
+import { TransformationToolHomeWidgetComponent } from '../components/transformation-tool-home-widget/transformation-tool-home-widget.component';
 import { SimpleBudgetHomeWidgetComponent } from '../components/simple-budget-home-widget/simple-budget-home-widget.component';
 import { GoalTrackerHomeWidgetComponent } from '../components/goal-tracker-home-widget/goal-tracker-home-widget.component';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
@@ -73,6 +74,7 @@ export type ClientSupportCardState =
     CardComponent,
     HomeCtaRowComponent,
     VerseOfTheDayWidgetComponent,
+    TransformationToolHomeWidgetComponent,
     SimpleBudgetHomeWidgetComponent,
     GoalTrackerHomeWidgetComponent,
     NotificationsButtonComponent,
@@ -87,6 +89,9 @@ export class HomePage implements OnInit {
 
   @ViewChild(VerseOfTheDayWidgetComponent)
   private verseHomeWidget?: VerseOfTheDayWidgetComponent;
+
+  @ViewChild(TransformationToolHomeWidgetComponent)
+  private transformationToolHomeWidget?: TransformationToolHomeWidgetComponent;
 
   cards: HomeCard[] = [];
   welcomeTitle = 'Welcome to Love INC';
@@ -119,6 +124,7 @@ export class HomePage implements OnInit {
   ionViewDidEnter() {
     this.budgetHomeWidget?.refresh();
     this.goalTrackerHomeWidget?.refresh();
+    this.transformationToolHomeWidget?.refresh();
     void this.reloadClientContext(false);
   }
 
@@ -148,6 +154,7 @@ export class HomePage implements OnInit {
       this.budgetHomeWidget?.refresh();
       this.goalTrackerHomeWidget?.refresh();
       this.verseHomeWidget?.refresh();
+      this.transformationToolHomeWidget?.refresh();
 
       await Promise.all([
         firstValueFrom(this.fetchHomeCards$()).then((cards) => {

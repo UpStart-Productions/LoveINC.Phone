@@ -10,6 +10,7 @@ import {
   IonButton,
   IonSpinner,
   IonIcon,
+  IonCard,
 } from '@ionic/angular/standalone';
 import {
   VerseOfTheDayService,
@@ -35,6 +36,7 @@ import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
     IonButton,
     IonSpinner,
     IonIcon,
+    IonCard,
     SafeResourceUrlPipe,
   ],
 })
