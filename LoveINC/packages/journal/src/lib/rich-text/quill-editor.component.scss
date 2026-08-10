@@ -21,14 +21,14 @@
   ::ng-deep .ql-container {
     font-family: 'CrimsonPro', serif;
     font-weight: 300;
-    font-size: var(--app-font-size-body, 1rem);
+    font-size: var(--app-font-size-crimson-body, 1rem);
   }
 
   /* UpStart quill-editor: overflow-y scroll on .ql-editor, ql-container overflow hidden, flex column */
   ::ng-deep .ql-editor {
     font-family: 'CrimsonPro', serif;
     font-weight: 300;
-    font-size: var(--app-font-size-body, 1rem);
+    font-size: var(--app-font-size-crimson-body, 1rem);
     padding: 16px 0;
     min-height: 100%;
     max-height: none;

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
@@ -42,18 +42,11 @@ import {
   ],
 })
 export class AboutPage implements OnInit {
-  impactStats = [
-    { number: '500+', label: 'Families Helped' },
-    { number: '1,000+', label: 'Needs Met' },
-    { number: '40+', label: 'Church Partners' },
-    { number: '100+', label: 'Active Volunteers' }
-  ];
   showDonateButton: boolean = false;
   /** Shown when GET /team returns at least one member. */
   showMeetStaffButton = false;
 
   constructor(
-    private router: Router,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
     private platformApi: PlatformApiService
@@ -73,17 +66,5 @@ export class AboutPage implements OnInit {
 
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
-  }
-
-  navigateToChurchMap() {
-    console.log('Navigating to church map...');
-    this.router.navigate(['/tabs/church-map'], { queryParams: { from: 'about' } }).then(
-      (success) => {
-        console.log('Navigation successful:', success);
-      },
-      (error) => {
-        console.error('Navigation error:', error);
-      }
-    );
   }
 }

@@ -118,7 +118,7 @@
   /** Typography – 5-size text scale **/
   --app-font-size-xs: 0.75rem;
   --app-font-size-sm: 0.875rem;
-  --app-font-size-body: 1rem;
+  --app-font-size-body: 0.9rem;
   --app-font-size-title: 1.25rem;
   --app-font-size-display: 1.5rem;
 
@@ -147,9 +147,11 @@
 
   /** Font family – Ilisarniq (Love INC brand) **/
   --app-font-family-ilisarniq: 'Ilisarniq', sans-serif;
+  --ion-font-family: var(--app-font-family-ilisarniq);
 
   /** Font family – Crimson Pro (Journal, Transformation tools body text) **/
   --app-font-family-crimson: 'CrimsonPro', serif;
+  --app-font-size-crimson-body: 1rem;
 
   /** Text on dark overlays (photo headers, etc.) **/
   --app-text-overlay: white;

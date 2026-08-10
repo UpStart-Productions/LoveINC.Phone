@@ -14,7 +14,7 @@ export const JOURNAL_TOOL_CARD = {
   category: 'Personal Growth',
   categoryIcon: 'book-outline',
   title: 'Journal',
-  detail: 'Capture notes and personal reflection',
+  detail: 'Capture personal reflections',
   iconName: 'book-outline',
   iconBackgroundColor: '#2c5f7d',
   route: '/tabs/journal',

@@ -43,7 +43,7 @@
     <!-- Content Info -->
     <div class="p-l-18 p-r-18 p-t-18 p-b-36">
       <p *ngIf="getHeaderDateLabel()" class="app-body-secondary-sm content-subtitle m-b-12">{{ getHeaderDateLabel() }}</p>
-      <h2 class="app-body m-b-18">{{ contentItem.title }}</h2>
+      <h2 class="m-b-18">{{ contentItem.title }}</h2>
 
       <p *ngIf="contentItem.subtitle && contentType !== 'event' && contentType !== 'class' && !getHeaderDateLabel()" class="app-title m-b-24 content-subtitle">{{ contentItem.subtitle }}</p>
 

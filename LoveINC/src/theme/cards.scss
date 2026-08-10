@@ -32,8 +32,8 @@ ion-card-header {
 ion-card-header ion-card-title {
   --font-size: var(--app-font-size-title) !important;
   font-size: var(--app-font-size-title) !important;
-  --font-weight: var(--app-font-weight-medium) !important;
-  font-weight: var(--app-font-weight-medium) !important;
+  --font-weight: var(--app-font-weight-normal) !important;
+  font-weight: var(--app-font-weight-normal) !important;
   --line-height: var(--app-line-height-body) !important;
   line-height: var(--app-line-height-body) !important;
   --color: var(--ion-color-dark) !important;
@@ -52,7 +52,7 @@ ion-card-header ion-card-title {
 /* Target shadow DOM native element to ensure styles apply */
 ion-card-header ion-card-title::part(native) {
   font-size: var(--app-font-size-title) !important;
-  font-weight: var(--app-font-weight-medium) !important;
+  font-weight: var(--app-font-weight-normal) !important;
   line-height: var(--app-line-height-body) !important;
   font-family: inherit !important;
   letter-spacing: normal !important;
@@ -82,6 +82,7 @@ ion-card-content {
   --padding-right: 1rem !important;
 
   color: var(--app-text-secondary);
+  font-size: var(--app-font-size-body) !important;
   line-height: var(--app-line-height-loose);
 }
 
@@ -101,6 +102,28 @@ ion-card-content span {
   text-indent: 0 !important;
 }
 
+/* Ionic card-content shadow styles force 1rem / 0.875rem — match app body scale */
+ion-card-content p,
+ion-card-content .app-body,
+ion-card-content .app-body-secondary,
+ion-card-content .rich-html,
+ion-card-content .rich-html p,
+ion-card-content .rich-html li,
+ion-card-content .rich-html span,
+ion-card-content .rich-html div {
+  font-size: var(--app-font-size-body) !important;
+  line-height: var(--app-line-height-loose) !important;
+}
+
+ion-card-content .app-body-secondary {
+  color: var(--app-text-secondary);
+}
+
+ion-card-content .app-title {
+  font-size: var(--app-font-size-title) !important;
+  line-height: var(--app-line-height-body) !important;
+}
+
 /* Voucher cards: override reset above so photos have left spacing */
 ion-card-content .voucher-card {
   padding-left: 0.75rem !important;
@@ -112,15 +135,16 @@ ion-card-content .voucher-card-exp .exp-day {
 }
 
 /* -----------------------------------------------------------------------------
- * app-card-compact – title 1 size smaller, subtitle 1 weight lighter (home, updates)
+ * app-card-compact – subtitle 1 weight lighter (home, updates)
  * ----------------------------------------------------------------------------- */
-.app-card-compact ion-card-header ion-card-title,
-.app-card-compact ion-card-header ion-card-title::part(native) {
-  font-size: var(--app-font-size-body) !important;
-}
-
 .app-card-compact ion-card-header ion-card-subtitle {
   font-weight: var(--app-font-weight-normal) !important;
+}
+
+/* Right-thumbnail list cards (Gap Ministries, etc.) – title stays body size */
+.card-with-right-thumbnail ion-card-header ion-card-title,
+.card-with-right-thumbnail ion-card-header ion-card-title::part(native) {
+  font-size: var(--app-font-size-body) !important;
 }
 
 /* Transformation Classes: date line not semibold (matches class-card on app-card only) */

@@ -40,7 +40,7 @@
   justify-content: flex-start;
   gap: 0.25rem;
 
-  /* List row titles – match app-card-compact (Events, Impact Stories) */
+  /* List row titles – body size (right-hand avatar / compact list cards) */
   h2 {
     margin: 0;
     font-size: var(--app-font-size-body);
@@ -161,6 +161,25 @@
 
   .app-body-secondary {
     margin-bottom: 0;
+  }
+}
+
+/* Eyebrow label (Money management, Spiritual growth, etc.) on avatar cards */
+.content-card-layout--with-aside .category-row {
+  .app-body-secondary {
+    font-size: var(--app-font-size-xs) !important;
+    line-height: var(--app-line-height-body);
+  }
+
+  ion-icon.icon {
+    font-size: var(--app-font-size-xs);
+    width: var(--app-font-size-xs);
+    height: var(--app-font-size-xs);
+  }
+
+  i-lucide.icon {
+    width: var(--app-font-size-xs);
+    height: var(--app-font-size-xs);
   }
 }
 

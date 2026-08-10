@@ -1,4 +1,4 @@
-<ion-header [translucent]="false">
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>About Love INC</ion-title>
     <ion-buttons slot="end">
@@ -10,104 +10,82 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <!-- Photo - 30vh, just below blue header -->
+<ion-content [fullscreen]="true" class="about-page">
   <div class="about-photo">
     <img src="assets/photos/love-inc-2.webp" alt="Love INC Newberg" />
   </div>
 
-  <!-- Mission & Vision -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>
-        Our Mission & Vision
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p class="app-body-secondary">We mobilize local churches to transform lives and communities In the Name of Christ.</p>
-      <p class="app-body-secondary">We envision a world where Christian churches are united in purpose and fully engaged in actively living out their faith by lovingly serving people in need in their communities.</p>
-    </ion-card-content>
-  </ion-card>
+  <div class="cards-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Our Mission &amp; Vision</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="app-body-secondary m-b-12">We mobilize local churches to transform lives and communities In the Name of Christ.</p>
+        <p class="app-body-secondary m-b-0">We envision a world where Christian churches are united in purpose and fully engaged in actively living out their faith by lovingly serving people in need in their communities.</p>
+      </ion-card-content>
+    </ion-card>
 
-  <!-- How We Serve -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>
-        How We Serve
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p class="app-body-secondary m-b-12">We help churches help people by developing a network of local churches and connecting them with opportunities to serve their neighbors in need.</p>
-      
-      <div class="service-list">
-        <div class="service-item">
-          <div class="service-item-icon">
-            <ion-icon name="heart-outline" class="m-t-3"></ion-icon>
-          </div>
-          <div class="service-item-body">
-            <h4 class="app-title app-font-bold m-b-3">Holistic Care</h4>
-            <p class="app-body-secondary">Addressing spiritual, mental, emotional, and physical needs</p>
-          </div>
-        </div>
-        
-        <div class="service-item">
-          <div class="service-item-icon">
-            <i-lucide name="church" [size]="24" color="var(--app-text-accent)" class="m-t-3"></i-lucide>
-          </div>
-          <div class="service-item-body">
-            <h4 class="app-title app-font-bold m-b-3">Church Collaboration</h4>
-            <p class="app-body-secondary">Each church leans into its strengths, working together</p>
-          </div>
-        </div>
-        
-        <div class="service-item">
-          <div class="service-item-icon">
-            <i-lucide name="hand-helping" [size]="28" color="var(--ion-color-primary)" class="m-t-3"></i-lucide>
-          </div>
-          <div class="service-item-body">
-            <h4 class="app-title app-font-bold m-b-3">Gap Ministries</h4>
-            <p class="app-body-secondary">Filling unmet needs in the community through partner churches</p>
-          </div>
-        </div>
-        
-        <div class="service-item">
-          <div class="service-item-icon">
-            <ion-icon name="book-outline" class="m-t-3"></ion-icon>
-          </div>
-          <div class="service-item-body">
-            <h4 class="app-title app-font-bold m-b-3">Transformational Ministry</h4>
-            <p class="app-body-secondary">Educational classes, mentorship, and community events</p>
-          </div>
-        </div>
-      </div>
-    </ion-card-content>
-  </ion-card>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>How We Serve</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="app-body-secondary m-b-18">We help churches help people by developing a network of local churches and connecting them with opportunities to serve their neighbors in need.</p>
 
-  <!-- Impact Stats (hidden for now)
-  <ion-card class="stats-card">
-    <ion-card-content>
-      <div class="stats-grid m-t-18">
-        <div class="stat-item" *ngFor="let stat of impactStats">
-          <div class="stat-number app-display-lg m-b-3">{{ stat.number }}</div>
-          <div class="stat-label app-body-secondary-sm">{{ stat.label }}</div>
-        </div>
-      </div>
-    </ion-card-content>
-  </ion-card>
-  -->
+        <div class="service-list">
+          <div class="service-item">
+            <div class="service-item-icon">
+              <ion-icon name="heart-outline"></ion-icon>
+            </div>
+            <div class="service-item-body">
+              <h4 class="m-b-3">Holistic Care</h4>
+              <p class="app-body-secondary m-b-0">Addressing spiritual, mental, emotional, and physical needs</p>
+            </div>
+          </div>
 
-  <!-- The Love INC Model -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>
-        Better Together
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p class="app-body-secondary">In every community, people possess gifts and talents that can be used for ministry, but they often don't know how to connect with neighbors in need who are seeking those exact skills at that exact time.</p>
-      <p class="app-body-secondary">Love INC helps churches mobilize their members to reach out to their neighbors in need, by creating specific, manageable opportunities that utilize the unique skills and talents of their congregation to fill unmet needs in the community.</p>
-      <div *ngIf="showMeetStaffButton" class="m-t-18">
+          <div class="service-item">
+            <div class="service-item-icon">
+              <i-lucide name="church" [size]="24" color="var(--app-text-accent)"></i-lucide>
+            </div>
+            <div class="service-item-body">
+              <h4 class="m-b-3">Church Collaboration</h4>
+              <p class="app-body-secondary m-b-0">Each church leans into its strengths, working together</p>
+            </div>
+          </div>
+
+          <div class="service-item">
+            <div class="service-item-icon">
+              <i-lucide name="hand-helping" [size]="24" color="var(--ion-color-primary)"></i-lucide>
+            </div>
+            <div class="service-item-body">
+              <h4 class="m-b-3">Gap Ministries</h4>
+              <p class="app-body-secondary m-b-0">Filling unmet needs in the community through partner churches</p>
+            </div>
+          </div>
+
+          <div class="service-item">
+            <div class="service-item-icon">
+              <ion-icon name="book-outline"></ion-icon>
+            </div>
+            <div class="service-item-body">
+              <h4 class="m-b-3">Transformational Ministry</h4>
+              <p class="app-body-secondary m-b-0">Educational classes, mentorship, and community events</p>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Better Together</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="app-body-secondary m-b-12">In every community, people possess gifts and talents that can be used for ministry, but they often don't know how to connect with neighbors in need who are seeking those exact skills at that exact time.</p>
+        <p class="app-body-secondary" [class.m-b-18]="showMeetStaffButton" [class.m-b-0]="!showMeetStaffButton">Love INC helps churches mobilize their members to reach out to their neighbors in need, by creating specific, manageable opportunities that utilize the unique skills and talents of their congregation to fill unmet needs in the community.</p>
         <ion-button
+          *ngIf="showMeetStaffButton"
           expand="block"
           color="primary"
           shape="round"
@@ -115,46 +93,43 @@
         >
           Meet our Staff
         </ion-button>
-      </div>
-    </ion-card-content>
-  </ion-card>
+      </ion-card-content>
+    </ion-card>
 
-  <!-- Statement of Faith -->
-  <ion-card class="m-18">
-    <ion-card-header>
-      <ion-card-title>Statement of Faith</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <h3>The Apostles' Creed</h3>
-      <p class="m-b-18">
-        I believe in God, the Father almighty, creator of heaven and earth.
-        <br><br>
-        I believe in Jesus Christ, God's only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died, and was buried; he descended to the dead. On the third day he rose again; he ascended into heaven, he is seated at the right hand of the Father, and he will come to judge the living and the dead.
-        <br><br>
-        I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and the life everlasting. Amen.
-      </p>
-      <p class="app-body-secondary m-t-18 p-t-18">
-        We hold Scripture as divinely inspired and the ultimate authority for faith and life.
-      </p>
-    </ion-card-content>
-  </ion-card>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Statement of Faith</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <h2 class="app-title m-b-12">The Apostles' Creed</h2>
+        <p class="app-body-secondary m-b-18">
+          I believe in God, the Father almighty, creator of heaven and earth.
+          <br><br>
+          I believe in Jesus Christ, God's only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died, and was buried; he descended to the dead. On the third day he rose again; he ascended into heaven, he is seated at the right hand of the Father, and he will come to judge the living and the dead.
+          <br><br>
+          I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and the life everlasting. Amen.
+        </p>
+        <p class="app-body-secondary m-b-0">We hold Scripture as divinely inspired and the ultimate authority for faith and life.</p>
+      </ion-card-content>
+    </ion-card>
 
-  <!-- Call to Action -->
-  <div class="cta-section p-30 p-l-24 p-r-24 m-18 m-t-0 m-l-18 m-r-18">
-    <h2 class="app-display-lg m-b-6">Join Us</h2>
-    <p class="app-body-secondary m-b-24">Be part of transforming lives in our community</p>
-    <div class="cta-buttons">
-      <ion-button expand="block" color="primary" routerLink="/tabs/church-map">
-        <ion-icon slot="start" name="map-outline"></ion-icon>
-        Find Partner Churches
-      </ion-button>
-      <ion-button expand="block" color="secondary" fill="outline" routerLink="/tabs/contact">
-        <ion-icon slot="start" name="mail-outline"></ion-icon>
-        Contact Us
-      </ion-button>
-    </div>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Join Us</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="app-body-secondary m-b-18">Be part of transforming lives in our community</p>
+        <div class="about-cta-buttons">
+          <ion-button expand="block" color="primary" routerLink="/tabs/church-map">
+            <ion-icon slot="start" name="map-outline"></ion-icon>
+            Find Partner Churches
+          </ion-button>
+          <ion-button expand="block" color="secondary" fill="outline" routerLink="/tabs/contact">
+            <ion-icon slot="start" name="mail-outline"></ion-icon>
+            Contact Us
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
   </div>
-
-  <!-- Bottom Spacing -->
-  <div style="height: 100px;"></div>
 </ion-content>

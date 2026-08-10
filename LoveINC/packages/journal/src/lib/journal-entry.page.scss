@@ -29,7 +29,7 @@ ion-content.journal-entry-content {
   font-family: 'CrimsonPro', serif;
   font-weight: 500;
   /* Body scale + 0.5rem (was +1rem) */
-  font-size: calc(var(--app-font-size-body, 1rem) + 0.5rem);
+  font-size: calc(var(--app-font-size-crimson-body, 1rem) + 0.5rem);
   --border-width: 0;
   --padding-start: 0;
   --padding-end: 0;
