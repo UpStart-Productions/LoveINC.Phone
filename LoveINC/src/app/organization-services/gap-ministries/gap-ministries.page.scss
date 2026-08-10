@@ -30,48 +30,6 @@
   --app-card-margin-bottom: 0;
 }
 
-/* Reduced Gap list: match `more` page list — same card, list, item, label, spacing, chevron. */
-.content-wrapper--simple {
-  .more-list-card {
-    --background: #ffffff;
-    background: #ffffff;
-
-    ion-list {
-      --background: #ffffff;
-      background: #ffffff;
-    }
-
-    ion-item {
-      --background: #ffffff;
-    }
-  }
-
-  ion-list {
-    padding-top: 0.625rem;
-  }
-
-  ion-list ion-item {
-    margin-bottom: 0.75rem;
-    margin-left: 0.3125rem;
-  }
-
-  ion-thumbnail {
-    --size: 3rem;
-    --border-radius: 0.5rem;
-
-    ion-icon {
-      width: 1.5rem;
-      height: 1.5rem;
-      color: var(--ion-color-medium);
-    }
-  }
-
-  /* Long titles: wrap without using Ionic’s ion-text-wrap (that class shrinks label font on iOS). */
-  .gap-more-list__label {
-    white-space: normal;
-  }
-}
-
 .content-wrapper--simple__intro {
   margin: 0 0 1rem;
   display: block;

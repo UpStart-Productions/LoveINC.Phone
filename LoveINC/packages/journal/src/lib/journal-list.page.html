@@ -37,33 +37,9 @@
       </ion-button>
     </div>
   </ng-container>
-  <ion-card *ngIf="!loading && entries.length > 0" class="journal-list-card">
-    <ion-list lines="none">
-      <ion-item
-        *ngFor="let e of entries"
-        [routerLink]="['/tabs/journal', e.id]"
-        queryParamsHandling="preserve"
-        [detail]="false"
-        [button]="true"
-      >
-        <ion-label class="ion-text-wrap">
-          <p class="app-list-row-title">{{ e.title || 'Untitled' }}</p>
-        </ion-label>
-        <ion-badge
-          *ngIf="e.updatedAt"
-          class="journal-entry-updated-badge"
-          slot="end"
-          color="success"
-        >
-          {{ formatUpdatedMonthDay(e.updatedAt) }}
-        </ion-badge>
-        <ion-icon
-          class="list-row-chevron"
-          name="chevron-forward-outline"
-          slot="end"
-          aria-hidden="true"
-        ></ion-icon>
-      </ion-item>
-    </ion-list>
-  </ion-card>
+  <app-content-card-list
+    *ngIf="!loading && entries.length > 0"
+    [items]="journalListItems"
+    [defaultIconBackgroundColor]="'#2c5f7d'"
+  />
 </ion-content>

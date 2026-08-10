@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { format, addDays } from 'date-fns';
-import { Router, ActivatedRoute } from '@angular/router';
+import { format, addDays, startOfDay } from 'date-fns';
+import { Router } from '@angular/router';
 import { 
   IonHeader, 
   IonToolbar, 
@@ -11,13 +11,12 @@ import {
   IonButton,
   IonIcon,
 } from '@ionic/angular/standalone';
-import { AppBackButtonComponent } from '../../components/app-back-button/app-back-button.component';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { SharingService } from '../../services/sharing/sharing.service';
 import { NotificationsButtonComponent } from '../../components/notifications-button/notifications-button.component';
-import { PlatformApiService, type PlatformClass, type PlatformOffering } from '../../services/platform';
+import { PlatformApiService, type PlatformClass, type PlatformHomeFeedItem, type PlatformOffering } from '../../services/platform';
 import { VolunteerActionSheetService } from '../../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 import { CardFormattingService, type FormattedCard } from '../../services/card-formatting.service';
@@ -70,17 +69,16 @@ export interface ClassCardItem {
     IonIcon,
     CardComponent,
     NotificationsButtonComponent,
-    AppBackButtonComponent]})
+  ],
+})
 export class TransformationClassesPage implements OnInit {
-  classCards: ClassCardItem[] = [];
-  fromServices: boolean = false;
+  activeClassCards: ClassCardItem[] = [];
   showDonateButton: boolean = false;
 
   constructor(
     private platformApi: PlatformApiService,
     private cardFormatting: CardFormattingService,
     private router: Router,
-    private route: ActivatedRoute,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
@@ -91,13 +89,6 @@ export class TransformationClassesPage implements OnInit {
 
   ngOnInit() {
     this.loadClasses();
-    // Check if navigated from Services page
-    this.route.queryParamMap.subscribe(params => {
-      this.fromServices = params.get('from') === 'services';
-    });
-    // Also check snapshot for immediate value
-    this.fromServices = this.route.snapshot.queryParamMap.get('from') === 'services';
-    
     this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
   }
 
@@ -108,15 +99,49 @@ export class TransformationClassesPage implements OnInit {
   loadClasses() {
     this.platformApi.getClasses().subscribe({
       next: (data) => {
-        this.classCards = (data ?? []).map((c) => {
+        const todayMs = startOfDay(new Date()).getTime();
+        const toCard = (c: PlatformClass): ClassCardItem => {
           const cls = this.mapPlatformClassToTransformationClass(c);
           const formatted = this.cardFormatting.formatForCard(c, 'class');
           return { formatted, class: cls };
-        });
+        };
+        const list = data ?? [];
+        this.activeClassCards = list
+          .filter((c) => this.isActiveClass(c, todayMs))
+          .map(toCard);
       },
       error: (err) => {
         console.error('Error loading transformation classes:', err);
       }});
+  }
+
+  get showEmptyNotice(): boolean {
+    return this.activeClassCards.length === 0;
+  }
+
+  /** Class is active when its resolved end date (or start date) is today or later. */
+  private isActiveClass(platformClass: PlatformClass, todayMs: number): boolean {
+    const range = this.cardFormatting.getCalendarDateRangeForHome(
+      { type: 'class', id: platformClass.id } as PlatformHomeFeedItem & { type: 'class' },
+      undefined,
+      platformClass
+    );
+    if (!range) {
+      return false;
+    }
+    if (range.endDate) {
+      const endMs = new Date(range.endDate).getTime();
+      if (Number.isFinite(endMs)) {
+        return endMs >= todayMs;
+      }
+    }
+    if (range.startDate) {
+      const startMs = new Date(range.startDate).getTime();
+      if (Number.isFinite(startMs)) {
+        return startMs >= todayMs;
+      }
+    }
+    return false;
   }
 
   private mapPlatformClassToTransformationClass(c: PlatformClass): TransformationClass {
@@ -203,8 +228,9 @@ export class TransformationClassesPage implements OnInit {
   }
 
   navigateToClassDetail(classItem: TransformationClass) {
-    const queryParams = this.fromServices ? { from: 'services' } : {};
-    this.router.navigate(['/tabs/content-detail', 'class', classItem.id], { queryParams });
+    this.router.navigate(['/tabs/content-detail', 'class', classItem.id], {
+      queryParams: { from: 'transformation-classes' },
+    });
   }
 
   formatSessionDates(classItem: TransformationClass): string {

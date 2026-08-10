@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -9,15 +9,11 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonCard,
-  IonThumbnail,
 } from '@ionic/angular/standalone';
-import { AppBackButtonComponent } from '../../components/app-back-button/app-back-button.component';
 import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
+import { ContentCardListComponent } from '../../components/content-card-list/content-card-list.component';
+import type { ContentCardListItem } from '../../components/content-card-list/content-card-list.model';
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { SharingService } from '../../services/sharing/sharing.service';
@@ -77,16 +73,12 @@ export interface GapService {
     IonTitle, 
     IonContent,
   IonButtons,
-  IonButton,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonCard,
-  IonThumbnail,
+    IonButton,
+    IonIcon,
   CardComponent,
+    ContentCardListComponent,
     NotificationsButtonComponent,
-    AppBackButtonComponent],
+  ],
   providers: [AlertController, ActionSheetController, ToastController]
 })
 export class GapMinistriesPage implements OnInit {
@@ -97,7 +89,6 @@ export class GapMinistriesPage implements OnInit {
   scheduleOrder = [
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
     'By Appointment'];
-  fromServices: boolean = false;
   showDonateButton: boolean = false;
 
   /** Full cards (address, map pin, actions) after intake QR unlock; org with no intake requirement gets full cards. */
@@ -115,10 +106,20 @@ export class GapMinistriesPage implements OnInit {
     );
   }
 
+  get compactListItems(): ContentCardListItem[] {
+    return this.compactListServices.map((service) => ({
+      id: service.id,
+      title: service.service,
+      imageUrl: service.photoUrl,
+      iconName: service.photoUrl ? undefined : 'people-outline',
+      route: `/tabs/content-detail/gap-ministry/${service.id}`,
+      navigationFrom: 'gap-ministries',
+    }));
+  }
+
   constructor(
     private platformApi: PlatformApiService,
     private router: Router,
-    private route: ActivatedRoute,
     private alertController: AlertController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
@@ -141,11 +142,6 @@ export class GapMinistriesPage implements OnInit {
     await this.gapAccess.refreshState();
     this.intakeRequired = this.gapAccess.orgIntakeRequired;
     this.loadServices();
-    const fromParam = this.route.snapshot.queryParamMap.get('from');
-    this.fromServices = fromParam === 'services';
-    this.route.queryParamMap.subscribe((params) => {
-      this.fromServices = params.get('from') === 'services';
-    });
     this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
   }
 

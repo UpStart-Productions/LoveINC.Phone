@@ -8,21 +8,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="tools-list">
-    @for (card of toolCards; track card.title) {
-      <app-content-card
-        [compactCategoryLabel]="true"
-        [category]="card.category"
-        [categoryIcon]="card.categoryIcon"
-        [categoryExtra]="card.categoryExtra"
-        [title]="card.title"
-        [detail]="card.detail"
-        [imageUrl]="card.imageUrl"
-        [iconName]="card.iconName"
-        [iconBackgroundColor]="card.iconBackgroundColor ?? '#8b7355'"
-        [route]="card.route"
-        [navigationFrom]="'tools'"
-      />
-    }
-  </div>
+  <app-content-card-list
+    [items]="toolListItems"
+    [compactCategoryLabel]="true"
+    defaultNavigationFrom="tools"
+  />
 </ion-content>

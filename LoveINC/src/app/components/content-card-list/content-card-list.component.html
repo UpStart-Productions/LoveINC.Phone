@@ -1,0 +1,31 @@
+<div class="content-card-list">
+  <div class="content-card-list-shell">
+    @for (item of items; track trackItem($index, item); let last = $last) {
+      <app-content-card
+        [listRow]="true"
+        [listDivider]="!last"
+      [compactCategoryLabel]="item.compactCategoryLabel ?? compactCategoryLabel"
+      [category]="item.category"
+      [categoryIcon]="item.categoryIcon"
+      [categoryExtra]="item.categoryExtra"
+      [title]="item.title"
+      [titleSegments]="item.titleSegments"
+      [underTitle]="item.underTitle"
+      [detail]="item.detail"
+      [detailSegments]="item.detailSegments"
+      [imageUrl]="item.imageUrl"
+      [iconName]="item.iconName"
+      [iconBackgroundColor]="item.iconBackgroundColor ?? defaultIconBackgroundColor"
+      [route]="item.route"
+      [navigationFrom]="item.navigationFrom ?? defaultNavigationFrom"
+      [preserveQueryParams]="item.preserveQueryParams ?? false"
+      [tapUnderTitleToOpenMap]="item.tapUnderTitleToOpenMap ?? false"
+      [mapPhone]="item.mapPhone"
+      [mapWebsite]="item.mapWebsite"
+      [compactDetail]="item.compactDetail ?? false"
+      [clickable]="item.route ? true : item.clickable !== false"
+      (cardClick)="onCardClick(item)"
+      />
+    }
+  </div>
+</div>

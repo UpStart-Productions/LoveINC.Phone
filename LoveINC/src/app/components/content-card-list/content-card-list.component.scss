@@ -1,0 +1,12 @@
+.content-card-list {
+  padding-inline: 0;
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+}
+
+.content-card-list-shell {
+  border-radius: var(--app-card-radius);
+  overflow: hidden;
+  background: var(--app-card-background);
+  box-shadow: var(--app-card-shadow);
+}

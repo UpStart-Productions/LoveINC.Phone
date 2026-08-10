@@ -1,8 +1,5 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="start" *ngIf="fromServices">
-      <app-back-button></app-back-button>
-    </ion-buttons>
     <ion-title>
       Gap Ministries
     </ion-title>
@@ -20,27 +17,7 @@
     <p class="app-body content-wrapper--simple__intro ion-padding">
       Love INC connects you to real help through local churches, matching your needs with trusted community resources.
     </p>
-    <ion-card class="more-list-card">
-      <ion-list lines="none">
-        <ion-item
-          *ngFor="let service of compactListServices"
-          button
-          detail="false"
-          (click)="onCardClick(service)">
-          <ion-thumbnail slot="start" aria-hidden="true">
-            <img *ngIf="service.photoUrl" [src]="service.photoUrl" [alt]="" />
-            <ion-icon *ngIf="!service.photoUrl" name="people-outline"></ion-icon>
-          </ion-thumbnail>
-          <ion-label class="gap-more-list__label">{{ service.service }}</ion-label>
-          <ion-icon
-            class="list-row-chevron"
-            name="chevron-forward-outline"
-            slot="end"
-            aria-hidden="true"
-          ></ion-icon>
-        </ion-item>
-      </ion-list>
-    </ion-card>
+    <app-content-card-list [items]="compactListItems" />
   </div>
 
   <div *ngIf="showFullGapCards" class="content-wrapper">

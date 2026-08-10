@@ -1,49 +1,70 @@
 <ion-card
   class="content-card"
   [class.content-card--compact-category-label]="compactCategoryLabel"
+  [class.content-card--list-row]="listRow"
+  [class.content-card--list-divider]="listDivider"
   [class.clickable]="clickable"
-  (click)="route && handleClick()"
+  (click)="clickable && handleClick()"
 >
   <ion-card-content>
-    <div class="content-card-inner">
-      <div class="content-card-top-row">
-        <div class="content-card-left">
-          @if (category || categoryExtra) {
-            <div class="category-row">
-              @if (categoryIcon) {
-                <ion-icon [name]="categoryIcon" class="icon"></ion-icon>
-              }
-              @if (categoryExtra) {
-                <span class="app-body-secondary">{{ categoryExtra }}</span>
-              }
-              @if (category) {
-                <span class="app-body-secondary">{{ category }}</span>
-              }
-            </div>
-          }
-          <h2>
-            @if (titleSegments?.length) {
-              @for (seg of titleSegments; track $index) {
-                <span
-                  [class.content-card-tone-positive]="seg.tone === 'positive'"
-                  [class.content-card-tone-negative]="seg.tone === 'negative'"
-                >{{ seg.text }}</span>
-              }
-            } @else {
-              {{ title }}
+    <div class="content-card-layout" [class.content-card-layout--with-aside]="!!imageUrl || !!iconName">
+      <div class="content-card-main">
+        @if (category || categoryExtra) {
+          <div class="category-row">
+            @if (categoryIcon) {
+              <ion-icon [name]="categoryIcon" class="icon"></ion-icon>
             }
-          </h2>
-          @if (underTitle) {
-            @if (tapUnderTitleToOpenMap) {
-              <button type="button" class="content-card-under-title-map" (click)="onUnderTitleMapTap($event)">
-                <span class="app-body-secondary">{{ underTitle }}</span>
-              </button>
-            } @else {
-              <p class="app-body-secondary">{{ underTitle }}</p>
+            @if (categoryExtra) {
+              <span class="app-body-secondary">{{ categoryExtra }}</span>
             }
+            @if (category) {
+              <span class="app-body-secondary">{{ category }}</span>
+            }
+          </div>
+        }
+        <h2>
+          @if (titleSegments?.length) {
+            @for (seg of titleSegments; track $index) {
+              <span
+                [class.content-card-tone-positive]="seg.tone === 'positive'"
+                [class.content-card-tone-negative]="seg.tone === 'negative'"
+              >{{ seg.text }}</span>
+            }
+          } @else {
+            {{ title }}
           }
-        </div>
-        <div class="content-card-right">
+        </h2>
+        @if (underTitle) {
+          @if (tapUnderTitleToOpenMap) {
+            <button type="button" class="content-card-under-title-map" (click)="onUnderTitleMapTap($event)">
+              <span class="app-body-secondary">{{ underTitle }}</span>
+            </button>
+          } @else {
+            <p class="app-body-secondary">{{ underTitle }}</p>
+          }
+        }
+        @if (detailSegments?.length || detail) {
+          <div class="content-card-detail">
+            <p
+              [class.app-body-secondary]="!compactDetail"
+              [class.app-body-secondary-sm]="compactDetail"
+            >
+              @if (detailSegments?.length) {
+                @for (seg of detailSegments; track $index) {
+                  <span
+                    [class.content-card-tone-positive]="seg.tone === 'positive'"
+                    [class.content-card-tone-negative]="seg.tone === 'negative'"
+                  >{{ seg.text }}</span>
+                }
+              } @else {
+                {{ detail }}
+              }
+            </p>
+          </div>
+        }
+      </div>
+      <div class="content-card-aside" *ngIf="imageUrl || iconName">
+        <div class="content-card-avatar">
           @if (imageUrl) {
             <img [src]="imageUrl" [alt]="title" class="content-card-image" />
           } @else if (iconName) {
@@ -52,26 +73,8 @@
             </div>
           }
         </div>
+        <ng-content select="[content-card-aside-extra]"></ng-content>
       </div>
-      @if (detailSegments?.length || detail) {
-        <div class="content-card-detail">
-          <p
-            [class.app-body-secondary]="!compactDetail"
-            [class.app-body-secondary-sm]="compactDetail"
-          >
-            @if (detailSegments?.length) {
-              @for (seg of detailSegments; track $index) {
-                <span
-                  [class.content-card-tone-positive]="seg.tone === 'positive'"
-                  [class.content-card-tone-negative]="seg.tone === 'negative'"
-                >{{ seg.text }}</span>
-              }
-            } @else {
-              {{ detail }}
-            }
-          </p>
-        </div>
-      }
     </div>
   </ion-card-content>
 </ion-card>

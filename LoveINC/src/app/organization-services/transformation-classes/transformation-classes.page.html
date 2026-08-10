@@ -1,10 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="start" *ngIf="fromServices">
-      <app-back-button></app-back-button>
-    </ion-buttons>
     <ion-title>
-      Transformation Classes
+      Classes
     </ion-title>
     <ion-buttons slot="end">
       <app-notifications-button></app-notifications-button>
@@ -16,18 +13,24 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div>
-    <app-card
-      *ngFor="let item of classCards"
-      class="class-card"
-      [imageUrl]="item.formatted.photoUrl"
-      [title]="item.formatted.title"
-      [subtitle]="item.formatted.subtitle"
-      [description]="item.formatted.description"
-      [actionIcons]="getActionIcons(item)"
-      [clickable]="true"
-      (cardClick)="navigateToClassDetail(item.class)"
-      (shareClick)="onShareClass(item.class)">
-    </app-card>
-  </div>
+  @if (showEmptyNotice) {
+    <div class="empty-state">
+      <p class="app-body-secondary">There are no classes at this time.</p>
+    </div>
+  } @else {
+    <div>
+      <app-card
+        *ngFor="let item of activeClassCards"
+        class="class-card app-card-compact"
+        [imageUrl]="item.formatted.photoUrl"
+        [title]="item.formatted.title"
+        [subtitle]="item.formatted.subtitle"
+        [description]="item.formatted.description"
+        [actionIcons]="getActionIcons(item)"
+        [clickable]="true"
+        (cardClick)="navigateToClassDetail(item.class)"
+        (shareClick)="onShareClass(item.class)">
+      </app-card>
+    </div>
+  }
 </ion-content>

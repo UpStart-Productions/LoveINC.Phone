@@ -19,42 +19,6 @@ ion-content.journal-list-page {
   }
 }
 
-/* Match More list: white inset card, rounded corners (global ion-card), list with gaps */
-.journal-list-card {
-  --background: #ffffff;
-  background: #ffffff;
-
-  ion-list {
-    --background: #ffffff;
-    background: #ffffff;
-    padding-top: 0.625rem;
-  }
-
-  ion-item {
-    --background: #ffffff;
-    margin-bottom: 0.75rem;
-    margin-left: 0.3125rem;
-  }
-
-  /* End chevrons: explicit `ion-icon.list-row-chevron` in template + `icons.scss` (Ionic
-     `detail` chevron is not styleable from our CSS). */
-  ion-item ion-label p.app-list-row-title {
-    color: var(--ion-color-dark);
-  }
-
-  .journal-entry-updated-badge {
-    margin-right: 0.375rem;
-    flex-shrink: 0;
-    font-weight: 400;
-    /* Host + part so the label shrinks inside the badge shadow. */
-    font-size: var(--app-font-size-xs, 0.75rem) !important;
-  }
-
-  .journal-entry-updated-badge::part(native) {
-    font-size: var(--app-font-size-xs, 0.75rem) !important;
-  }
-}
-
 .empty-state {
   p {
     text-align: left;

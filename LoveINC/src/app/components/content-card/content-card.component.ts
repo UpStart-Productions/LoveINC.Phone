@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
@@ -77,6 +77,12 @@ export class ContentCardComponent {
   /** One step smaller than default detail line (e.g. Simple Budget home card subtext). */
   @Input() compactDetail = false;
 
+  /** Flush stacked row inside `app-content-card-list` (divider lines, no card shadow). */
+  @Input() listRow = false;
+
+  /** Horizontal divider under this row when stacked in a list. */
+  @Input() listDivider = false;
+
   constructor(
     private router: Router,
     private locationMapModal: LocationMapModalService
@@ -85,8 +91,17 @@ export class ContentCardComponent {
   /** When set, appended as `?from=` unless the route already includes one. */
   @Input() navigationFrom?: string;
 
+  /** Keep current URL query params when navigating (e.g. journal `?from=tools`). */
+  @Input() preserveQueryParams = false;
+
+  /** Fired when the card is tapped and no `route` is set. */
+  @Output() cardClick = new EventEmitter<void>();
+
   handleClick() {
-    if (this.route && this.clickable) {
+    if (!this.clickable) {
+      return;
+    }
+    if (this.route) {
       const tree = this.router.parseUrl(this.route);
       if (this.navigationFrom && !tree.queryParams['from']) {
         tree.queryParams = { ...tree.queryParams, from: this.navigationFrom };
@@ -94,8 +109,14 @@ export class ContentCardComponent {
       if (!tree.queryParams['returnUrl']) {
         tree.queryParams = { ...tree.queryParams, returnUrl: this.router.url };
       }
+      if (this.preserveQueryParams) {
+        const current = this.router.parseUrl(this.router.url);
+        tree.queryParams = { ...current.queryParams, ...tree.queryParams };
+      }
       void this.router.navigateByUrl(tree);
+      return;
     }
+    this.cardClick.emit();
   }
 
   async onUnderTitleMapTap(event: Event): Promise<void> {

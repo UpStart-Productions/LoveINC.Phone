@@ -7,6 +7,7 @@ const FROM_TO_RETURN_URL: Readonly<Record<string, string>> = {
   updates: '/tabs/updates',
   more: '/tabs/more',
   tools: '/tabs/tools',
+  'transformation-tools': '/tabs/transformation-tools',
   services: '/tabs/services',
   'impact-stories': '/tabs/impact-stories',
   'volunteer-positions': '/tabs/volunteer-positions',

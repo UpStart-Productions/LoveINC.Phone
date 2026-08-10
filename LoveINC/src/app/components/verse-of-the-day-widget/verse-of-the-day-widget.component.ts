@@ -46,7 +46,15 @@ export class VerseOfTheDayWidgetComponent implements OnInit {
 
   get cardDetail(): string {
     if (this.loading) return 'Loading…';
-    if (this.verse) return this.verse.content;
+    if (this.verse) return this.truncateWords(this.verse.content, 12);
     return 'Tap to read today\'s verse';
+  }
+
+  private truncateWords(text: string, maxWords: number): string {
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    if (words.length <= maxWords) {
+      return text.trim();
+    }
+    return `${words.slice(0, maxWords).join(' ')}…`;
   }
 }

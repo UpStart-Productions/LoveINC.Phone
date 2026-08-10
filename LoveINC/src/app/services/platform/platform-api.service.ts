@@ -65,6 +65,7 @@ export class PlatformApiService {
   }
 
   private get<T>(path: string): Observable<T> {
+    // API paths only — never prefix with /tabs/ (that is for in-app routing).
     if (!environment.apiKey) {
       console.warn(
         'PlatformApiService: apiKey not configured. Set it in environment.ts'
@@ -163,7 +164,7 @@ export class PlatformApiService {
   }
 
   getImpactStories(): Observable<PlatformImpactStory[]> {
-    return this.get<{ impactStories: PlatformImpactStory[] }>('/tabs/impact-stories').pipe(
+    return this.get<{ impactStories: PlatformImpactStory[] }>('/impact-stories').pipe(
       map((res) => res?.impactStories ?? [])
     );
   }
@@ -201,7 +202,7 @@ export class PlatformApiService {
 
   getVolunteerPositions(): Observable<PlatformVolunteerPositionWithAffiliate[]> {
     return this.get<{ volunteerPositions: PlatformVolunteerPositionWithAffiliate[] }>(
-      '/tabs/volunteer-positions'
+      '/volunteer-positions'
     ).pipe(map((res) => res?.volunteerPositions ?? []));
   }
 
@@ -441,7 +442,7 @@ export class PlatformApiService {
     if (!environment.apiKey) {
       return Promise.reject(new Error('API key not configured'));
     }
-    const url = `${this.basePath}/tabs/class-registration`;
+    const url = `${this.basePath}/class-registration`;
     const body: Record<string, unknown> = {
       classId: payload.classId.trim(),
       firstName: payload.firstName.trim(),

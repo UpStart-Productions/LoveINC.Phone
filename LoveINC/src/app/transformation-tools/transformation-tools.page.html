@@ -14,25 +14,10 @@
     </p>
   }
   @if (!loading && tools.length > 0) {
-    <ion-card class="transformation-tools-list-card">
-      <ion-list lines="none">
-        @for (tool of tools; track tool.id) {
-          <ion-item button detail="false" (click)="navigateToDetail(tool)">
-            <ion-label>
-          <p class="app-list-row-title">{{ tool.title }}</p>
-              @if (getScriptureSubtitle(tool)) {
-                <p class="app-body-secondary">{{ getScriptureSubtitle(tool) }}</p>
-              }
-            </ion-label>
-            <ion-icon
-              class="list-row-chevron"
-              name="chevron-forward-outline"
-              slot="end"
-              aria-hidden="true"
-            ></ion-icon>
-          </ion-item>
-        }
-      </ion-list>
-    </ion-card>
+    <app-content-card-list
+      [items]="transformationToolListItems"
+      defaultNavigationFrom="transformation-tools"
+      [defaultIconBackgroundColor]="'#349394'"
+    />
   }
 </ion-content>

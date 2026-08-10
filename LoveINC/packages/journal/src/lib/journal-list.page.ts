@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -9,12 +9,9 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonCard,
-  IonBadge,
 } from '@ionic/angular/standalone';
+import { ContentCardListComponent } from '@app/components/content-card-list/content-card-list.component';
+import type { ContentCardListItem } from '@app/components/content-card-list/content-card-list.model';
 import { JournalService } from './services/journal.service';
 import { JournalEntry } from './types/journal-entry.model';
 import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
@@ -26,7 +23,6 @@ import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -34,11 +30,7 @@ import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
     IonButtons,
     IonButton,
     IonIcon,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonCard,
-    IonBadge,
+    ContentCardListComponent,
   ],
 })
 export class JournalListPage {
@@ -72,13 +64,25 @@ export class JournalListPage {
     });
   }
 
+  get journalListItems(): ContentCardListItem[] {
+    return this.entries.map((entry) => ({
+      id: String(entry.id),
+      title: entry.title || 'Untitled',
+      detail: entry.updatedAt ? this.formatUpdatedMonthDay(entry.updatedAt) : undefined,
+      iconName: 'book-outline',
+      iconBackgroundColor: '#2c5f7d',
+      route: `/tabs/journal/${entry.id}`,
+      preserveQueryParams: true,
+    }));
+  }
+
   private readonly monthAbbrev = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
   ] as const;
 
   /** e.g. "Apr 7" (3-letter month, day with no leading zero) in local time. */
-  formatUpdatedMonthDay(iso: string): string {
+  private formatUpdatedMonthDay(iso: string): string {
     if (!iso) {
       return '';
     }
