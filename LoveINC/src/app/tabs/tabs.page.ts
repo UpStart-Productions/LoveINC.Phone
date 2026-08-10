@@ -84,7 +84,7 @@ export class TabsPage implements OnInit, OnDestroy {
         },
         {
           text: 'Gap Ministries',
-          icon: 'assets/icons/hand-helping.svg',
+          icon: 'assets/custom-icons/hand-helping.svg',
           handler: () => {
             this.router.navigate(['/tabs/gap-ministries'], { queryParams: { from: 'services' } });
           }
