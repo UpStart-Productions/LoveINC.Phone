@@ -9,7 +9,15 @@ alwaysApply: false
 
 # Mobile App Typography
 
-**CRITICAL:** Do NOT hardcode font sizes. Use CSS variables or typography utility classes.
+**CRITICAL:** Do NOT hardcode font sizes or font families. Use CSS variables or typography utility classes.
+
+## Font family
+
+**Do not set or guess `font-family` in component/page SCSS** unless the user explicitly asks.
+
+- Match text by **copying the reference screen’s markup and typography classes** (e.g. `.app-body-secondary`, `.app-tagline-overlay`), not by picking a brand token or font name.
+- Most UI inherits the default app/Ionic font. Special families (e.g. Ilisarniq, Crimson Pro) exist only on **named utility classes** like `.app-font-crimson`, `.app-font-ilisarniq-center`, `.app-tagline-overlay` — apply those classes in HTML when the reference uses them; do not re-declare the family in SCSS.
+- **Never** infer font family from `--app-font-family-*` variables or `@font-face` definitions alone.
 
 ## Text Sizes (5 tokens – use `var(--app-font-size-*)`)
 
@@ -33,7 +41,7 @@ alwaysApply: false
 
 ## Rules
 
-1. **Never** use `font-size`, `font-weight`, `color`, or `line-height` for text in component SCSS. Use typography classes in HTML instead.
+1. **Never** use `font-size`, `font-weight`, `color`, `line-height`, or **`font-family`** for text in component SCSS. Use typography classes in HTML instead.
 2. **Never** use `font-size: Xrem` or `font-size: Xpx` in component styles. Use vars only when a class cannot apply (e.g. icon sizing).
 3. **Never** add new font-size variables without updating `docs/TYPOGRAPHY-GUIDE.md`.
 4. Use **weight and color** for hierarchy, not more size steps.

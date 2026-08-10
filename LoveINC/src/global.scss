@@ -728,12 +728,12 @@ button.action-pill.action-pill--scripture {
   background-color: var(--love-inc-teal);
   color: #ffffff;
   font-size: var(--app-font-size-xs) !important;
-  font-weight: var(--app-font-weight-medium);
+  font-weight: var(--app-font-weight-normal);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 
   ion-icon {
-    font-size: 0.75rem;
+    font-size: var(--app-font-size-xs);
     color: #ffffff;
   }
 }

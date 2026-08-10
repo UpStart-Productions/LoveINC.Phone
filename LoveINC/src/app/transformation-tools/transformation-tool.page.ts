@@ -128,6 +128,12 @@ export class TransformationToolPage implements OnInit, OnDestroy {
     return this.tool?.steps ?? [];
   }
 
+  get toolPhotoUrl(): string {
+    const raw = this.tool?.photoUrl?.trim();
+    if (!raw) return '';
+    return this.platformApi.resolveUploadUrl(raw) || raw;
+  }
+
   get sections(): TftSection[] {
     if (!this.tool) return [];
     const list: TftSection[] = [{ id: 'tft-intro', label: 'Intro' }];

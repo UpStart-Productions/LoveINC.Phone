@@ -32,15 +32,24 @@
       <p class="app-body-secondary-sm">This tool couldn't be found.</p>
     </div>
   } @else {
-    <div class="tft-page app-font-crimson p-l-18 p-r-18 p-b-36">
+    @if (toolPhotoUrl) {
+      <div class="hero-image-container">
+        <img [src]="toolPhotoUrl" [alt]="tool.title" class="hero-image" />
+        <div class="hero-image-gradient" aria-hidden="true"></div>
+        <p class="hero-image-title app-title">{{ tool.title }}</p>
+      </div>
+    }
+    <div class="tft-page p-l-18 p-r-18 p-b-36">
       <!-- Intro -->
       <section id="tft-intro" class="tft-section">
-        <div class="m-t-18 m-b-18">
-          <p class="app-title">{{ tool.title }}</p>
-        </div>
+        @if (!toolPhotoUrl) {
+          <div class="app-font-crimson m-t-18 m-b-18">
+            <p class="app-title">{{ tool.title }}</p>
+          </div>
+        }
 
         @if (tool.scriptureRefs?.length) {
-          <div class="accepted-items m-b-18">
+          <div class="accepted-items m-b-18" [class.m-t-18]="toolPhotoUrl">
             @for (ref of tool.scriptureRefs; track ref) {
               <button type="button" class="action-pill action-pill--scripture" (click)="openVerseModal(ref)">
                 <ion-icon name="book-outline"></ion-icon>
@@ -50,24 +59,27 @@
           </div>
         }
 
-        <ion-card class="tft-panel-card">
-          <div class="ion-padding app-body">
-            <div class="rich-html" [innerHTML]="tool.introContent | safeHtml"></div>
-          </div>
-        </ion-card>
+        <div class="app-font-crimson">
+          <ion-card class="tft-panel-card">
+            <div class="ion-padding app-body">
+              <div class="rich-html" [innerHTML]="tool.introContent | safeHtml"></div>
+            </div>
+          </ion-card>
+        </div>
       </section>
 
       <!-- Steps -->
       @for (step of steps; track step.id) {
         <section [id]="stepSectionId(step)" class="tft-section">
-          <div class="m-t-18 m-b-18">
-            <p class="app-title app-uppercase">{{ step.title }}</p>
-            @if (step.subtitle) {
-              <p class="app-body content-subtitle">{{ step.subtitle }}</p>
-            }
-          </div>
+          <div class="app-font-crimson">
+            <div class="m-t-18 m-b-18">
+              <p class="app-title app-uppercase">{{ step.title }}</p>
+              @if (step.subtitle) {
+                <p class="app-body content-subtitle">{{ step.subtitle }}</p>
+              }
+            </div>
 
-          <ion-card class="tft-panel-card">
+            <ion-card class="tft-panel-card">
             <div class="ion-padding app-body">
               <div class="rich-html" [innerHTML]="step.content | safeHtml"></div>
 
@@ -116,20 +128,23 @@
                 </div>
               }
             </div>
-          </ion-card>
+            </ion-card>
+          </div>
         </section>
       }
 
       <!-- Closing -->
       <section id="tft-closing" class="tft-section">
-        <div class="m-t-18 m-b-18">
-          <p class="app-title">Closing</p>
-        </div>
-        <ion-card class="tft-panel-card">
-          <div class="ion-padding app-body">
-            <div class="rich-html" [innerHTML]="tool.closingContent | safeHtml"></div>
+        <div class="app-font-crimson">
+          <div class="m-t-18 m-b-18">
+            <p class="app-title">Closing</p>
           </div>
-        </ion-card>
+          <ion-card class="tft-panel-card">
+            <div class="ion-padding app-body">
+              <div class="rich-html" [innerHTML]="tool.closingContent | safeHtml"></div>
+            </div>
+          </ion-card>
+        </div>
       </section>
     </div>
   }

@@ -53,19 +53,21 @@ export class TransformationToolsPage implements OnInit {
   }
 
   get transformationToolListItems(): ContentCardListItem[] {
-    return this.tools.map((tool) => ({
-      id: tool.id,
-      title: tool.title,
-      detail: this.getScriptureSubtitle(tool) || undefined,
-      imageUrl: tool.photoUrl,
-      iconName: tool.photoUrl ? undefined : 'compass-outline',
-      iconBackgroundColor: '#349394',
-      route: `/tabs/transformation-tools/${tool.id}`,
-      preserveQueryParams: true,
-    }));
-  }
+    return this.tools.map((tool) => {
+      const photoUrl = tool.photoUrl
+        ? this.platformApi.resolveUploadUrl(tool.photoUrl) || tool.photoUrl
+        : undefined;
 
-  private getScriptureSubtitle(tool: PlatformTransformationTool): string {
-    return (tool.scriptureRefs ?? []).join(' • ');
+      return {
+        id: tool.id,
+        title: tool.title,
+        detail: tool.author?.name?.trim() ? `By ${tool.author.name.trim()}` : undefined,
+        imageUrl: photoUrl,
+        iconName: photoUrl ? undefined : 'compass-outline',
+        iconBackgroundColor: '#349394',
+        route: `/tabs/transformation-tools/${tool.id}`,
+        preserveQueryParams: true,
+      };
+    });
   }
 }
