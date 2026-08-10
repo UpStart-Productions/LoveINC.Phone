@@ -10,7 +10,6 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonBackButton,
   IonButtons,
   IonList,
   IonItem,
@@ -18,6 +17,7 @@ import {
   IonIcon,
   IonButton,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 
 interface Service {
   name: string;
@@ -39,7 +39,6 @@ interface Service {
     IonToolbar,
     IonTitle,
     IonContent,
-    IonBackButton,
     IonButtons,
     IonList,
     IonItem,
@@ -47,42 +46,34 @@ interface Service {
     IonIcon,
     IonButton,
     NotificationsButtonComponent,
-  ],
-})
+    AppBackButtonComponent]})
 export class ServicesPage implements OnInit {
   services: Service[] = [
     {
       name: 'Connection Center',
       icon: 'people-circle-outline',
-      route: '/tabs/connection-center',
-    },
+      route: '/tabs/connection-center'},
     {
       name: 'Gap Ministries',
       icon: 'hand-right-outline',
       lucideIcon: 'hand-helping',
-      route: '/tabs/gap-ministries',
-    },
+      route: '/tabs/gap-ministries'},
     {
       name: 'Transformational Classes',
       icon: 'school-outline',
-      route: '/tabs/transformation-classes',
-    },
+      route: '/tabs/transformation-classes'},
     {
       name: 'J.O.B.S.',
       icon: 'briefcase-outline',
-      route: '/tabs/jobs-program',
-    },
+      route: '/tabs/jobs-program'},
     {
       name: 'Hesed House',
       icon: 'house-outline',
-      route: '/tabs/hesed-house',
-    },
+      route: '/tabs/hesed-house'},
     {
       name: 'Prayer Request',
       icon: 'heart-outline',
-      route: '/tabs/prayer-request',
-    },
-  ];
+      route: '/tabs/prayer-request'}];
 
   showDonateButton: boolean = false;
 

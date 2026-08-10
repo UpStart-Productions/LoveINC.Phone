@@ -10,14 +10,15 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-  IonBackButton,
   IonSegment,
   IonSegmentButton,
   IonLabel,
   IonItem,
   IonInput,
-  IonCheckbox
+  IonCheckbox,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
+
 @Component({
   selector: 'app-donate-money',
   templateUrl: 'donate-money.page.html',
@@ -33,13 +34,13 @@ import {
     IonButtons,
     IonButton,
     IonIcon,
-    IonBackButton,
     IonSegment,
     IonSegmentButton,
     IonLabel,
     IonItem,
     IonInput,
-    IonCheckbox
+    IonCheckbox,
+    AppBackButtonComponent,
   ],
 })
 export class DonateMoneyPage {

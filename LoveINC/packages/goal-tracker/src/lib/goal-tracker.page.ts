@@ -1,19 +1,19 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
+import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import {
   IonHeader,
   IonToolbar,
   IonTitle,
   IonContent,
-  IonBackButton,
   IonButtons,
+  IonButton,
   IonList,
   IonItem,
   IonLabel,
   IonProgressBar,
   IonCheckbox,
   IonIcon,
-  IonButton,
   IonFab,
   IonFabButton,
   IonSpinner,
@@ -34,21 +34,22 @@ import { Goal } from './types/goal.types';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonBackButton,
     IonButtons,
+    IonButton,
     IonList,
     IonItem,
     IonLabel,
     IonProgressBar,
     IonCheckbox,
     IonIcon,
-    IonButton,
     IonFab,
     IonFabButton,
     IonSpinner,
   ],
 })
 export class GoalTrackerPage implements OnInit {
+  private readonly location = inject(Location);
+
   goals: Goal[] = [];
   loading = true;
   error: string | null = null;
@@ -60,6 +61,10 @@ export class GoalTrackerPage implements OnInit {
 
   async ngOnInit() {
     await this.loadGoals();
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 
   async loadGoals() {

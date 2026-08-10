@@ -24,6 +24,7 @@ import {
   IonSelect,
   IonSelectOption,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import {
   WeekPlanService,
   calculateWeekSummary,
@@ -37,13 +38,11 @@ import { renderDonutToDataUrl, type PieSlice } from './utils/donut-chart-pdf';
 
 const CATEGORY_PALETTE = [
   '#003049', '#52c0f6', '#32c058', '#214491', '#349394', '#d56132',
-  '#eaa535', '#5433c6', '#eb445a', '#2c5f7d', '#1e9e5a', '#5a6c7d',
-];
+  '#eaa535', '#5433c6', '#eb445a', '#2c5f7d', '#1e9e5a', '#5a6c7d'];
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
 import { UserProfileService } from '../services/user-profile.service';
 import { OnboardingService } from '../services/onboarding.service';
 import { joinWithAppDot } from '../shared/utils';
-import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 
 @Component({
   selector: 'app-simple-budget-export',
@@ -73,7 +72,7 @@ import { OriginBackButtonComponent } from '../components/origin-back-button/orig
     IonSegmentButton,
     IonSelect,
     IonSelectOption,
-    OriginBackButtonComponent,
+    AppBackButtonComponent,
   ],
 })
 export class SimpleBudgetExportPage implements OnInit {
@@ -94,8 +93,7 @@ export class SimpleBudgetExportPage implements OnInit {
     moneyAvailable: 0,
     bills: 0,
     flexible: 0,
-    remaining: 0,
-  };
+    remaining: 0};
 
   constructor(
     private weekPlanService: WeekPlanService,
@@ -205,8 +203,7 @@ export class SimpleBudgetExportPage implements OnInit {
       { label: 'Money available', value: t.moneyAvailable },
       { label: 'Bills due', value: t.bills },
       { label: 'Flexible targets', value: t.flexible },
-      { label: 'Remaining', value: t.remaining },
-    ];
+      { label: 'Remaining', value: t.remaining }];
   }
 
   get displayRows(): { label: string; value: string | number }[] {
@@ -237,8 +234,7 @@ export class SimpleBudgetExportPage implements OnInit {
         style: 'currency',
         currency: 'USD',
         minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(v);
+        maximumFractionDigits: 2}).format(v);
     }
     return String(v);
   }
@@ -297,8 +293,7 @@ export class SimpleBudgetExportPage implements OnInit {
     return sorted.map(([label, value]) => ({
       label,
       value,
-      color: CATEGORY_PALETTE[colorIndex++ % CATEGORY_PALETTE.length],
-    }));
+      color: CATEGORY_PALETTE[colorIndex++ % CATEGORY_PALETTE.length]}));
   }
 
   private buildLegendHtml(slices: PieSlice[]): string {
@@ -399,8 +394,7 @@ export class SimpleBudgetExportPage implements OnInit {
     const categoriesByType = {
       income: plan.categoryInstances.filter((c) => c.type === 'income' && c.visible),
       bills: plan.categoryInstances.filter((c) => c.type === 'bills' && c.visible),
-      flexible: plan.categoryInstances.filter((c) => c.type === 'flexible' && c.visible),
-    };
+      flexible: plan.categoryInstances.filter((c) => c.type === 'flexible' && c.visible)};
 
     const cellStyle = 'padding: 4px 8px 4px 0;';
     const amountCellStyle = 'padding: 4px 0; text-align: right;';
@@ -501,8 +495,7 @@ export class SimpleBudgetExportPage implements OnInit {
       { label: 'Money available', value: t.moneyAvailable },
       { label: 'Bills due', value: t.bills },
       { label: 'Flexible targets', value: t.flexible },
-      { label: 'Remaining', value: t.remaining },
-    ];
+      { label: 'Remaining', value: t.remaining }];
 
     const summaryCellStyle = 'padding: 0 8px 0 0;';
     const summaryAmountStyle = 'padding: 0; text-align: right;';

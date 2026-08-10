@@ -1,6 +1,6 @@
 <ion-tabs>
   @if (showMainTabBar()) {
-  <ion-tab-bar slot="bottom" class="custom-tab-bar">
+    <ion-tab-bar slot="bottom" class="custom-tab-bar">
     <ion-tab-button tab="home" href="/tabs/home">
       <ion-icon aria-hidden="true" name="home-outline" class="outline-icon"></ion-icon>
       <ion-icon aria-hidden="true" name="home" class="solid-icon"></ion-icon>
@@ -28,13 +28,13 @@
       <ion-icon aria-hidden="true" name="menu" class="solid-icon"></ion-icon>
       <ion-label>More</ion-label>
     </ion-tab-button>
-  </ion-tab-bar>
+    </ion-tab-bar>
 
-  <!-- Floating Action Button for Services -->
-  <ion-fab class="fab-center">
-    <ion-fab-button (click)="openServicesMenu()">
-      <div class="love-inc-heart-logo" style="width: 34px; height: 34px; margin-top: 3px;"></div>
-    </ion-fab-button>
-  </ion-fab>
+    <!-- Floating Action Button for Services -->
+    <ion-fab class="fab-center">
+      <ion-fab-button (click)="openServicesMenu()">
+        <div class="love-inc-heart-logo" style="width: 34px; height: 34px; margin-top: 3px;"></div>
+      </ion-fab-button>
+    </ion-fab>
   }
 </ion-tabs>

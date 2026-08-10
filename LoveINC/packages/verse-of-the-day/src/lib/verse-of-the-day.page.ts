@@ -1,15 +1,14 @@
-import { Component, OnInit, Inject, Optional } from '@angular/core';
+import { Component, OnInit, Inject, Optional, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
   IonTitle,
   IonContent,
-  IonBackButton,
   IonButtons,
-  IonSpinner,
   IonButton,
+  IonSpinner,
   IonIcon,
 } from '@ionic/angular/standalone';
 import {
@@ -17,11 +16,9 @@ import {
   VerseOfTheDay,
   VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL,
   VERSE_OF_THE_DAY_SHARE,
-  VERSE_OF_THE_DAY_BACK_DEFAULT_HREF,
-  APP_NAVIGATION_RETURN,
-  type AppNavigationReturnHandler,
 } from './verse-of-the-day.service';
 import { SafeResourceUrlPipe } from './safe-resource-url.pipe';
+import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
 
 @Component({
   selector: 'app-verse-of-the-day',
@@ -34,45 +31,35 @@ import { SafeResourceUrlPipe } from './safe-resource-url.pipe';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonBackButton,
     IonButtons,
-    IonSpinner,
     IonButton,
+    IonSpinner,
     IonIcon,
     SafeResourceUrlPipe,
   ],
 })
 export class VerseOfTheDayPage implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
   verse: VerseOfTheDay | null = null;
   loading = true;
   error = false;
 
-  backDefaultHref: string;
-
   constructor(
     private readonly verseOfTheDayService: VerseOfTheDayService,
-    private readonly router: Router,
     @Optional() @Inject(VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL) private readonly youtubeEmbedBaseUrl?: string,
-    @Optional() @Inject(VERSE_OF_THE_DAY_SHARE) readonly shareHandler?: (verse: VerseOfTheDay) => Promise<void>,
-    @Optional() @Inject(VERSE_OF_THE_DAY_BACK_DEFAULT_HREF) backDefaultHref?: string,
-    @Optional() @Inject(APP_NAVIGATION_RETURN)
-    private readonly navigationReturn?: AppNavigationReturnHandler
-  ) {
-    this.backDefaultHref = backDefaultHref ?? '/tabs/more';
-  }
+    @Optional() @Inject(VERSE_OF_THE_DAY_SHARE) readonly shareHandler?: (verse: VerseOfTheDay) => Promise<void>
+  ) {}
 
   ngOnInit() {
     this.loadVerse();
   }
 
-  onBackClick(event: Event): void {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    if (this.navigationReturn) {
-      this.navigationReturn.goBack(this.backDefaultHref);
-      return;
-    }
-    void this.router.navigateByUrl(this.backDefaultHref);
+  goBack(): void {
+    const explicit = resolveReturnUrlFromRouteTree(this.route.snapshot);
+    const target = explicit ?? '/tabs/home';
+    void this.router.navigateByUrl(target, { replaceUrl: true });
   }
 
   get sermonVideoId(): string | null {

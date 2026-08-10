@@ -152,7 +152,7 @@ export interface PlatformVolunteerPosition {
   [key: string]: unknown;
 }
 
-/** Volunteer position with affiliate context (from /volunteer-positions endpoint) */
+/** Volunteer position with affiliate context (from /tabs/volunteer-positions endpoint) */
 export interface PlatformVolunteerPositionWithAffiliate extends PlatformVolunteerPosition {
   affiliate: { name: string; phone?: string; email?: string; website?: string };
   address: PlatformAddress;

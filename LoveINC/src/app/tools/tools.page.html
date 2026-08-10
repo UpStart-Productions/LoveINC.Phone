@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <app-origin-back-button defaultHref="/tabs/more"></app-origin-back-button>
+      <app-back-button fallback="/tabs/more"></app-back-button>
     </ion-buttons>
     <ion-title>Tools</ion-title>
   </ion-toolbar>
@@ -21,6 +21,7 @@
         [iconName]="card.iconName"
         [iconBackgroundColor]="card.iconBackgroundColor ?? '#8b7355'"
         [route]="card.route"
+        [navigationFrom]="'tools'"
       />
     }
   </div>

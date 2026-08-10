@@ -8,7 +8,6 @@ import {
   IonContent,
   IonButtons,
   IonButton,
-  IonBackButton,
   IonIcon,
   IonItem,
   IonLabel,
@@ -16,6 +15,7 @@ import {
   IonCard,
   IonThumbnail,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../../components/app-back-button/app-back-button.component';
 import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
 import { DonateButtonService } from '../../services/donate-button.service';
@@ -78,7 +78,6 @@ export interface GapService {
     IonContent,
   IonButtons,
   IonButton,
-  IonBackButton,
   IonIcon,
   IonItem,
   IonLabel,
@@ -87,7 +86,7 @@ export interface GapService {
   IonThumbnail,
   CardComponent,
     NotificationsButtonComponent,
-  ],
+    AppBackButtonComponent],
   providers: [AlertController, ActionSheetController, ToastController]
 })
 export class GapMinistriesPage implements OnInit {
@@ -97,8 +96,7 @@ export class GapMinistriesPage implements OnInit {
   intakeRequired = true;
   scheduleOrder = [
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
-    'By Appointment',
-  ];
+    'By Appointment'];
   fromServices: boolean = false;
   showDonateButton: boolean = false;
 
@@ -171,8 +169,7 @@ export class GapMinistriesPage implements OnInit {
       },
       error: (err) => {
         console.error('Error loading gap services:', err);
-      },
-    });
+      }});
   }
 
   private mapPlatformServicesToGapServices(platformServices: PlatformService[]): GapService[] {
@@ -196,8 +193,7 @@ export class GapMinistriesPage implements OnInit {
                 shortDescription: (p['shortDescription'] ?? p['short_description']) as string | undefined,
                 longDescription: (p['longDescription'] ?? p['long_description']) as string | undefined,
                 description: (p['longDescription'] ?? p['long_description']) as string | undefined,
-                schedule: this.scheduleFormatting.getPositionSchedule(p),
-              }))
+                schedule: this.scheduleFormatting.getPositionSchedule(p)}))
             : undefined;
           result.push({
             id: off.id,
@@ -215,8 +211,7 @@ export class GapMinistriesPage implements OnInit {
             voucherRequired: off.voucherRequired ?? false,
             serviceId: svc.id,
             vouchers: (off.vouchers ?? []).map((v) => ({ id: v.id, title: v.title })),
-            volunteerPositions,
-          });
+            volunteerPositions});
         }
       } else {
         const rawPositions = (svc.volunteerPositions ?? (svc as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
@@ -227,8 +222,7 @@ export class GapMinistriesPage implements OnInit {
               shortDescription: (p['shortDescription'] ?? p['short_description']) as string | undefined,
               longDescription: (p['longDescription'] ?? p['long_description']) as string | undefined,
               description: (p['longDescription'] ?? p['long_description']) as string | undefined,
-              schedule: this.scheduleFormatting.getPositionSchedule(p),
-            }))
+              schedule: this.scheduleFormatting.getPositionSchedule(p)}))
           : undefined;
         result.push({
           id: svc.id,
@@ -243,8 +237,7 @@ export class GapMinistriesPage implements OnInit {
           voucherRequired: svc.voucherRequired ?? false,
           serviceId: svc.id,
           vouchers: (svc.vouchers ?? []).map((v) => ({ id: v.id, title: v.title })),
-          volunteerPositions,
-        });
+          volunteerPositions});
       }
     }
     return result;
@@ -358,8 +351,7 @@ export class GapMinistriesPage implements OnInit {
       address: service.address,
       hours: service.daysTimes ?? null,
       acceptedItems: service.church ? [service.church] : [],
-      itemsIcon: 'business-outline',
-    });
+      itemsIcon: 'business-outline'});
   }
 
   /** Show voucher icon when: (org requires intake AND user completed) OR (org doesn't require intake). */
@@ -381,10 +373,8 @@ export class GapMinistriesPage implements OnInit {
         lucideIcon: 'heart-handshake',
         handler: () => this.onVolunteerClick(service),
         show: !!service.volunteerPositions?.length,
-        buttonClass: 'volunteer-button',
-      },
-      { icon: 'calendar-outline', handler: () => this.onCalendarClick(service), show: true, buttonClass: 'calendar-button' },
-    ];
+        buttonClass: 'volunteer-button'},
+      { icon: 'calendar-outline', handler: () => this.onCalendarClick(service), show: true, buttonClass: 'calendar-button' }];
     return icons;
   }
 
@@ -398,8 +388,7 @@ export class GapMinistriesPage implements OnInit {
       const chosen = await new Promise<GapServiceVoucher | null>((resolve) => {
         const buttons: Array<{ text: string; role?: string; handler?: () => void }> = vouchers.map((v) => ({
           text: v.title,
-          handler: () => resolve(v),
-        }));
+          handler: () => resolve(v)}));
         buttons.push({ text: 'Cancel', role: 'cancel', handler: () => resolve(null) });
         this.actionSheetController
           .create({ header: 'Select voucher', buttons })
@@ -428,26 +417,20 @@ export class GapMinistriesPage implements OnInit {
                 email: profile.email || undefined,
                 firstName: profile.firstName || undefined,
                 lastName: profile.lastName || undefined,
-                deviceId: this.deviceId.getDeviceId(),
-              });
+                deviceId: this.deviceId.getDeviceId()});
               const toast = await this.toastController.create({
                 message: 'Voucher has been requested',
                 duration: 3000,
-                color: 'success',
-              });
+                color: 'success'});
               await toast.present();
             } catch (err) {
               const toast = await this.toastController.create({
                 message: (err as Error)?.message ?? 'Failed to request voucher',
                 duration: 3000,
-                color: 'danger',
-              });
+                color: 'danger'});
               await toast.present();
             }
-          },
-        },
-      ],
-    });
+          }}]});
     await alert.present();
   }
 
@@ -465,16 +448,13 @@ export class GapMinistriesPage implements OnInit {
         message: 'Complete intake to contact providers directly. Go to Profile to scan your intake QR code.',
         buttons: [
           { text: 'Contact Love INC', handler: () => { window.open('tel:5035373999', '_self'); } },
-          { text: 'OK' },
-        ],
-      });
+          { text: 'OK' }]});
       await alert.present();
     } else {
       const alert = await this.alertController.create({
         header: 'Phone',
         message: `Call ${service.church || service.service}`,
-        buttons: ['OK'],
-      });
+        buttons: ['OK']});
       await alert.present();
     }
   }
@@ -484,8 +464,7 @@ export class GapMinistriesPage implements OnInit {
       const toast = await this.toastController.create({
         message: `No volunteer opportunities for ${service.service}`,
         duration: 3000,
-        color: 'secondary',
-      });
+        color: 'secondary'});
       await toast.present();
       return;
     }
@@ -493,8 +472,7 @@ export class GapMinistriesPage implements OnInit {
       organizationName: service.service,
       address: service.address,
       positions: service.volunteerPositions,
-      scheduleFallback: service.daysTimes ?? undefined,
-    });
+      scheduleFallback: service.daysTimes ?? undefined});
   }
 
   async onCalendarClick(service: GapService) {
@@ -510,14 +488,12 @@ export class GapMinistriesPage implements OnInit {
       description,
       location: service.address ?? undefined,
       startDate: Date.now(),
-      withPrompt: true,
-    });
+      withPrompt: true});
   }
 
   onCardClick(service: GapService) {
     this.router.navigate(['/tabs/content-detail', 'gap-ministry', service.id], {
-      queryParams: { from: 'gap-ministries' },
-    });
+      queryParams: { from: 'gap-ministries' }});
   }
 
   async onShareService(service: GapService) {

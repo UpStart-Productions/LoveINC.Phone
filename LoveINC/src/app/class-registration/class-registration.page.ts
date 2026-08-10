@@ -7,9 +7,9 @@ import {
   IonTitle,
   IonContent,
   IonButtons,
-  IonBackButton,
   IonSpinner,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { ToastController } from '@ionic/angular/standalone';
 import { ClassRegistrationFormComponent } from '../components/class-registration-form/class-registration-form.component';
 import { PlatformApiService } from '../services/platform/platform-api.service';
@@ -27,11 +27,9 @@ import { CardFormattingService } from '../services/card-formatting.service';
     IonTitle,
     IonContent,
     IonButtons,
-    IonBackButton,
     IonSpinner,
     ClassRegistrationFormComponent,
-  ],
-})
+    AppBackButtonComponent]})
 export class ClassRegistrationPage implements OnInit {
   classId = '';
   classTitle = '';
@@ -91,8 +89,7 @@ export class ClassRegistrationPage implements OnInit {
         if (!this.classTitle) {
           this.classNotFound = true;
         }
-      },
-    });
+      }});
   }
 
   private mergeHistoryState(): void {
@@ -122,8 +119,7 @@ export class ClassRegistrationPage implements OnInit {
       duration: 3500,
       position: 'bottom',
       color: 'success',
-      icon: 'checkmark-circle',
-    });
+      icon: 'checkmark-circle'});
     await toast.present();
     void this.router.navigateByUrl(this.backHref);
   }

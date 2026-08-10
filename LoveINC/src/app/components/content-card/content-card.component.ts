@@ -82,9 +82,19 @@ export class ContentCardComponent {
     private locationMapModal: LocationMapModalService
   ) {}
 
+  /** When set, appended as `?from=` unless the route already includes one. */
+  @Input() navigationFrom?: string;
+
   handleClick() {
     if (this.route && this.clickable) {
-      this.router.navigateByUrl(this.route);
+      const tree = this.router.parseUrl(this.route);
+      if (this.navigationFrom && !tree.queryParams['from']) {
+        tree.queryParams = { ...tree.queryParams, from: this.navigationFrom };
+      }
+      if (!tree.queryParams['returnUrl']) {
+        tree.queryParams = { ...tree.queryParams, returnUrl: this.router.url };
+      }
+      void this.router.navigateByUrl(tree);
     }
   }
 

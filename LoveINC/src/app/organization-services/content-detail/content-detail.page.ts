@@ -23,7 +23,6 @@ import {
   IonContent,
   IonButtons,
   IonButton,
-  IonBackButton,
   IonIcon,
   IonItem,
   IonLabel,
@@ -60,6 +59,7 @@ import {
   type PlatformVolunteerPositionWithAffiliate,
 } from '../../services/platform';
 import { GrovLinkDatabaseService } from '../../services/grovlink-database.service';
+import { AppBackButtonComponent } from '../../components/app-back-button/app-back-button.component';
 
 @Component({
   selector: 'app-content-detail',
@@ -74,21 +74,19 @@ import { GrovLinkDatabaseService } from '../../services/grovlink-database.servic
     IonContent,
     IonButtons,
     IonButton,
-    IonBackButton,
     IonIcon,
   IonItem,
   IonLabel,
   IonList,
   IonSpinner,
   SafeHtmlPipe,
-],
+    AppBackButtonComponent],
   providers: [AlertController, ActionSheetController, ToastController]
 })
 export class ContentDetailPage implements OnInit, OnDestroy {
   contentItem: ContentDetail | null = null;
   contentType: ContentType = 'class';
   contentId: string = '';
-  backRoute: string = '/tabs/home';
   pageTitle: string = 'Details';
   loading = false;
   error: string | null = null;
@@ -152,17 +150,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         next: (res) => {
           this.intakeRequired = res?.intakeRequired ?? false;
         },
-        error: () => {},
-      });
+        error: () => {}});
     }
-    // Determine back route based on content type or query param
-    const fromParam = this.route.snapshot.queryParamMap.get('from');
-    if (fromParam) {
-      this.backRoute = `/tabs/${fromParam}`;
-    } else {
-      this.backRoute = this.getDefaultBackRoute();
-    }
-    
     // Set page title based on content type
     this.pageTitle = this.getPageTitle();
     
@@ -186,31 +175,6 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       this.isRegisteredForThisClass = await this.grovlinkDb.isRegisteredForClass(this.contentId);
     } catch {
       this.isRegisteredForThisClass = false;
-    }
-  }
-
-  private getDefaultBackRoute(): string {
-    switch (this.contentType) {
-      case 'event':
-        return '/tabs/home';
-      case 'class':
-        return '/tabs/transformation-classes';
-      case 'impact-story':
-        return '/tabs/impact-stories';
-      case 'gap-ministry':
-        return '/tabs/gap-ministries';
-      case 'volunteer-position':
-        return '/tabs/volunteer-positions';
-      case 'partner':
-      case 'church-partner':
-        return '/tabs/church-partnerships';
-      case 'volunteer':
-      case 'donation-drive':
-      case 'fundraiser':
-      case 'awareness':
-      case 'donation-opportunity':
-      default:
-        return '/tabs/home';
     }
   }
 
@@ -255,8 +219,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       'fundraiser',
       'awareness',
       'volunteer-position',
-      'partner',
-    ];
+      'partner'];
     if (apiTypes.includes(this.contentType)) {
       this.loadFromPlatformApi();
       return;
@@ -278,8 +241,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           'church-partner': 'church-partner',
           'gap-ministry': 'gap-ministry',
           'class': 'class',
-          'event': 'event',
-        };
+          'event': 'event'};
         const homeCardType = cardTypeMap[this.contentType] || this.contentType;
         const filteredData = data.filter((item) => item.type === homeCardType);
         this.contentItem = filteredData.find((item) => item.id === this.contentId) || null;
@@ -292,8 +254,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error loading content detail:', err);
-      },
-    });
+      }});
   }
 
   private loadFromPlatformApi() {
@@ -343,8 +304,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         console.error('Error loading volunteer position:', err);
         this.error = 'Failed to load position';
         this.loading = false;
-      },
-    });
+      }});
   }
 
   private loadPartnerFromApi() {
@@ -363,8 +323,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         console.error('Error loading partner:', err);
         this.error = 'Failed to load partner';
         this.loading = false;
-      },
-    });
+      }});
   }
 
   private mapPlatformVolunteerPositionToContentDetail(p: PlatformVolunteerPositionWithAffiliate): ContentDetail {
@@ -386,8 +345,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       subtitle: p.affiliate?.name,
       affiliateName: p.affiliate?.name,
       location,
-      volunteerSchedule: schedule,
-    };
+      volunteerSchedule: schedule};
   }
 
   private mapPlatformPartnerToContentDetail(p: PlatformPartner): ContentDetail {
@@ -404,8 +362,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       location,
       phone: p.phone,
       email: p.email,
-      website: p.website,
-    };
+      website: p.website};
   }
 
   private loadEventFromApi() {
@@ -419,8 +376,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error loading event detail:', err);
-      },
-    });
+      }});
   }
 
   private loadImpactStoryFromApi() {
@@ -434,8 +390,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error loading impact story:', err);
-      },
-    });
+      }});
   }
 
   private loadServiceFromApi() {
@@ -449,8 +404,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Error loading gap ministry detail:', err);
-        },
-      });
+        }});
   }
 
   private findServiceOrOfferingById(
@@ -500,8 +454,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           startDate: firstSession.startDate,
           endDate: firstSession.endDate ?? firstSession.startDate,
           dayOfWeek: dayName ?? '',
-          time: time,
-        };
+          time: time};
       } else if (rule?.ruleType === 'by_appointment') {
         subtitle = off.provider?.name ?? 'By Appointment';
       } else if (rule?.daysOfWeek?.length) {
@@ -515,8 +468,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
               startDate: rule.startDate,
               endDate: rule.endDate,
               dayOfWeek: names.join(', '),
-              time: time || 'See schedule',
-            }
+              time: time || 'See schedule'}
           : undefined;
       } else {
         subtitle = off.provider?.name ?? '';
@@ -550,8 +502,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           shortDescription: (p['shortDescription'] ?? p['short_description']) as string | undefined,
           longDescription: (p['longDescription'] ?? p['long_description']) as string | undefined,
           description: (p['longDescription'] ?? p['long_description']) as string | undefined,
-          schedule: this.scheduleFormatting.getPositionSchedule(p),
-        }))
+          schedule: this.scheduleFormatting.getPositionSchedule(p)}))
       : undefined;
     return {
       id: isOffering ? (item as PlatformOffering).id : (item as PlatformService).id,
@@ -564,8 +515,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       voucherRequired,
       serviceId: service.id,
       vouchers: vouchers.length ? vouchers : undefined,
-      volunteerPositions,
-    };
+      volunteerPositions};
   }
 
   private loadCtaFromApi() {
@@ -585,8 +535,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error loading CTA detail:', err);
-      },
-    });
+      }});
   }
 
   private getCtaRelatedRedirect(cta: PlatformCta): { commands: unknown[]; queryParams?: Record<string, string> } | null {
@@ -624,8 +573,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       const parts = [
         e.address.locationName,
         e.address.address,
-        `${e.address.city}, ${e.address.state} ${e.address.zip}`,
-      ].filter(Boolean);
+        `${e.address.city}, ${e.address.state} ${e.address.zip}`].filter(Boolean);
       location = parts.join('\n');
     }
     const start = new Date(e.startDate);
@@ -646,8 +594,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       eventTime,
       startDate: e.startDate,
       endDate: e.endDate,
-      location,
-    };
+      location};
   }
 
   private mapPlatformImpactStoryToContentDetail(s: PlatformImpactStory): ContentDetail {
@@ -671,8 +618,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           shortDescription: (p['shortDescription'] ?? p['short_description']) as string | undefined,
           longDescription: (p['longDescription'] ?? p['long_description']) as string | undefined,
           description: (p['longDescription'] ?? p['long_description']) as string | undefined,
-          schedule: this.scheduleFormatting.getPositionSchedule(p),
-        }))
+          schedule: this.scheduleFormatting.getPositionSchedule(p)}))
       : c.type === 'volunteer_call'
         ? [{ id: c.id, title: c.title, shortDescription: c.shortDescription, longDescription: c.longDescription, description: c.longDescription }]
         : undefined;
@@ -692,8 +638,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       donation: c.donation,
       startDate: c.startDate,
       endDate: c.endDate,
-      showDateRangeInApp: c.showDateRangeInApp === true,
-    };
+      showDateRangeInApp: c.showDateRangeInApp === true};
   }
 
   private loadClassFromApi() {
@@ -723,21 +668,18 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       nextSession = {
         ...nextSession,
         dayOfWeek: dayTo2Letter(nextSession.dayOfWeek),
-        time: nextSession.time ? formatTimeStringFull(nextSession.time) : nextSession.time,
-      };
+        time: nextSession.time ? formatTimeStringFull(nextSession.time) : nextSession.time};
     }
     const subtitle = nextSession ? formatClassSessionSubtitle(nextSession) : undefined;
 
     // Map API attachments to classDocuments for display
     const fromAttachments = (c.attachments ?? []).map((a) => ({
       title: a.label?.trim() || this.filenameFromUrl(a.url) || 'Document',
-      url: this.platformApi.resolveUploadUrl(a.url) || a.url,
-    }));
+      url: this.platformApi.resolveUploadUrl(a.url) || a.url}));
     const legacy = c as { classDocuments?: Array<{ title?: string; url?: string }>; documents?: Array<{ title?: string; url?: string }> };
     const fromLegacy = (legacy.classDocuments ?? legacy.documents ?? []).map((d) => ({
       title: d.title ?? 'Document',
-      url: d.url ? this.platformApi.resolveUploadUrl(d.url) || d.url : undefined,
-    }));
+      url: d.url ? this.platformApi.resolveUploadUrl(d.url) || d.url : undefined}));
     const classDocuments = [...fromAttachments, ...fromLegacy]
       .filter((d) => d.url)
       .map((d) => ({ title: d.title, url: d.url!, type: undefined as 'handout' | 'worksheet' | 'resource' | undefined }));
@@ -771,8 +713,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       durationMinutes: c.durationMinutes,
       cost: c.cost,
       nextSession,
-      classDocuments: classDocuments.length ? classDocuments : undefined,
-    };
+      classDocuments: classDocuments.length ? classDocuments : undefined};
   }
 
   private filenameFromUrl(url: string): string {
@@ -867,8 +808,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         description: this.contentItem.description,
         location: this.contentItem.location,
         startDate: Date.now(),
-        withPrompt: true,
-      });
+        withPrompt: true});
       return;
     }
 
@@ -877,8 +817,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       description: this.contentItem.description,
       location: this.contentItem.location,
       startDate,
-      endDate,
-    });
+      endDate});
   }
 
   async onActionButtonClick() {
@@ -957,15 +896,13 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         photoUrl:
           this.contentType === 'class' && item.instructorPhotoUrl
             ? item.instructorPhotoUrl
-            : undefined,
-      },
+            : undefined},
       cssClass: 'entry-notes-modal',
       presentingElement: await this.modalController.getTop(),
       showBackdrop: true,
       backdropDismiss: true,
       breakpoints: [0, 0.5, 1],
-      initialBreakpoint: 0.55,
-    });
+      initialBreakpoint: 0.55});
     await modal.present();
   }
 
@@ -988,8 +925,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       title: this.contentItem.title,
       address: loc,
       phone: this.contentItem.phone?.trim() || null,
-      website: this.contentItem.website?.trim() || null,
-    });
+      website: this.contentItem.website?.trim() || null});
   }
 
   hasPhone(): boolean {
@@ -1024,10 +960,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           id: this.contentItem.id,
           title: this.contentItem.title,
           description: this.contentItem.description || undefined,
-          schedule: this.contentItem.volunteerSchedule,
-        },
-      ],
-    });
+          schedule: this.contentItem.volunteerSchedule}]});
   }
 
   hasEventDateTime(): boolean {
@@ -1119,9 +1052,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       state: {
         classTitle: this.contentItem.title,
         classPhotoUrl: this.contentItem.photoUrl?.trim() || '',
-        classScheduleLabel: scheduleLabel?.trim() ?? '',
-      },
-    });
+        classScheduleLabel: scheduleLabel?.trim() ?? ''}});
   }
 
   navigateToAssistanceIntro(): void {
@@ -1143,8 +1074,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   openDonateActionSheet(): void {
     if (this.isDonationDrive() && this.contentItem?.donation?.id) {
       this.router.navigate(['/tabs/donate-goods'], {
-        queryParams: { donationId: this.contentItem.donation.id },
-      });
+        queryParams: { donationId: this.contentItem.donation.id }});
     } else if (this.isDonationDrive()) {
       this.router.navigate(['/tabs/donate-goods']);
     } else {
@@ -1158,8 +1088,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       organizationName: this.contentItem.title,
       address: this.contentItem.location ?? null,
       positions: this.contentItem.volunteerPositions,
-      scheduleFallback: this.contentItem.subtitle ?? undefined,
-    });
+      scheduleFallback: this.contentItem.subtitle ?? undefined});
   }
 
   hasClassDocuments(): boolean {
@@ -1193,8 +1122,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       const chosen = await new Promise<V | null>((resolve) => {
         const buttons: Array<{ text: string; role?: string; handler?: () => void }> = vouchers.map((v) => ({
           text: v.title,
-          handler: () => resolve(v),
-        }));
+          handler: () => resolve(v)}));
         buttons.push({ text: 'Cancel', role: 'cancel', handler: () => resolve(null) });
         this.actionSheetController
           .create({ header: 'Select voucher', buttons })
@@ -1224,26 +1152,20 @@ export class ContentDetailPage implements OnInit, OnDestroy {
                 email: profile.email || onboardingData?.email || undefined,
                 firstName: profile.firstName || onboardingData?.firstName || undefined,
                 lastName: profile.lastName || onboardingData?.lastName || undefined,
-                deviceId: this.deviceId.getDeviceId(),
-              });
+                deviceId: this.deviceId.getDeviceId()});
               const toast = await this.toastController.create({
                 message: 'Voucher has been requested',
                 duration: 3000,
-                color: 'success',
-              });
+                color: 'success'});
               await toast.present();
             } catch (err) {
               const toast = await this.toastController.create({
                 message: (err as Error)?.message ?? 'Failed to request voucher',
                 duration: 3000,
-                color: 'danger',
-              });
+                color: 'danger'});
               await toast.present();
             }
-          },
-        },
-      ],
-    });
+          }}]});
     await alert.present();
   }
 

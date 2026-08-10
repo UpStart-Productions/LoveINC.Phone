@@ -26,7 +26,7 @@
     "title": "Winter Coat Drive",
     "subtitle": "Now through February 28th",
     "description": "Collecting gently used winter coats for children and adults. Drop-off locations available throughout the city.",
-    "link": "/tabs/contact",
+    "link": "/contact",
     "priority": 3
   },
   {
@@ -66,7 +66,7 @@
     "title": "Community Meal - Friday",
     "subtitle": "Every Friday • 5:30 PM",
     "description": "Free hot meal for anyone in need. All are welcome! No registration required.",
-    "link": "/tabs/contact",
+    "link": "/contact",
     "priority": 7
   },
   {
@@ -76,7 +76,7 @@
     "title": "Bicycle Donations Needed",
     "subtitle": "Drop-off: Main Office",
     "description": "We're collecting bicycles for families who need reliable transportation for work. Adult bikes especially needed.",
-    "link": "/tabs/contact",
+    "link": "/contact",
     "priority": 8
   }
 ]

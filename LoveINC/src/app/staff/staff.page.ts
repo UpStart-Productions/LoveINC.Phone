@@ -5,13 +5,13 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonBackButton,
   IonButtons,
   IonCard,
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformTeamMember } from '../services/platform/types';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
@@ -27,15 +27,13 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonBackButton,
     IonButtons,
     IonCard,
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
     SafeHtmlPipe,
-  ],
-})
+    AppBackButtonComponent]})
 export class StaffPage implements OnInit {
   members: PlatformTeamMember[] = [];
   loading = true;
@@ -53,8 +51,7 @@ export class StaffPage implements OnInit {
       error: () => {
         this.members = [];
         this.loading = false;
-      },
-    });
+      }});
   }
 
   getPhotoUrl(m: PlatformTeamMember): string {

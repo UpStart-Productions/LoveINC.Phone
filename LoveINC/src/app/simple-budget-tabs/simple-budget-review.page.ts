@@ -12,13 +12,13 @@ import {
   IonLabel,
   IonTextarea,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import {
   WeekPlanService,
   DEFAULT_CONFIG,
 } from '@upstart-productions/simple-budget';
 import type { WeekPlan } from '@upstart-productions/simple-budget';
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
-import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 
 @Component({
   selector: 'app-simple-budget-review',
@@ -37,7 +37,7 @@ import { OriginBackButtonComponent } from '../components/origin-back-button/orig
     IonItem,
     IonLabel,
     IonTextarea,
-    OriginBackButtonComponent,
+    AppBackButtonComponent,
   ],
 })
 export class SimpleBudgetReviewPage implements OnInit, OnDestroy {

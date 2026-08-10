@@ -17,21 +17,6 @@ export const VERSE_OF_THE_DAY_SHARE = new InjectionToken<(verse: VerseOfTheDay) 
   'VERSE_OF_THE_DAY_SHARE'
 );
 
-/** Injection token for back button default href. Default: '/tabs/more' */
-export const VERSE_OF_THE_DAY_BACK_DEFAULT_HREF = new InjectionToken<string>(
-  'VERSE_OF_THE_DAY_BACK_DEFAULT_HREF'
-);
-
-/** Host app provides this so Back returns to the screen the user came from (e.g. Home). */
-export interface AppNavigationReturnHandler {
-  resolveBackHref(fallback: string): string;
-  goBack(fallback: string): void;
-}
-
-export const APP_NAVIGATION_RETURN = new InjectionToken<AppNavigationReturnHandler>(
-  'APP_NAVIGATION_RETURN'
-);
-
 /** Cache adapter for verse-of-the-day. Host implements using SQLite or other storage. */
 export interface VerseOfTheDayCache {
   get(dateKey: string): Promise<VerseOfTheDay | null>;

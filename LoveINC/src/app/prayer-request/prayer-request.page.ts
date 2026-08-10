@@ -9,7 +9,6 @@ import {
   IonContent,
   IonButtons,
   IonButton,
-  IonBackButton,
   IonIcon,
   IonList,
   IonItem,
@@ -17,6 +16,7 @@ import {
   IonInput,
   IonTextarea,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { ToastController } from '@ionic/angular/standalone';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
@@ -38,7 +38,6 @@ import { OnboardingService } from '../services/onboarding.service';
     IonContent,
     IonButtons,
     IonButton,
-    IonBackButton,
     IonIcon,
     IonList,
     IonItem,
@@ -46,8 +45,7 @@ import { OnboardingService } from '../services/onboarding.service';
     IonInput,
     IonTextarea,
     NotificationsButtonComponent,
-  ],
-})
+    AppBackButtonComponent]})
 export class PrayerRequestPage implements OnInit {
   fromServices = false;
   showDonateButton = false;
@@ -56,8 +54,7 @@ export class PrayerRequestPage implements OnInit {
     firstName: '',
     lastName: '',
     email: '',
-    prayerRequest: '',
-  };
+    prayerRequest: ''};
 
   constructor(
     private route: ActivatedRoute,
@@ -101,8 +98,7 @@ export class PrayerRequestPage implements OnInit {
     }
     const toast = await this.toastController.create({
       message: 'Online submission is not available yet. Thank you for your patience.',
-      duration: 3500,
-    });
+      duration: 3500});
     await toast.present();
   }
 }

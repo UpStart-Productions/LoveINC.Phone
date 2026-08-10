@@ -10,7 +10,6 @@ import {
   IonTitle,
   IonContent,
   IonButtons,
-  IonBackButton,
   IonButton,
   IonList,
   IonItem,
@@ -19,6 +18,7 @@ import {
   IonTextarea,
   ToastController,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { PlatformApiService } from '../services/platform/platform-api.service';
 import { DeviceInfoService } from '../services/device-info.service';
 import { DeviceIdService } from '../services/device-id.service';
@@ -74,15 +74,13 @@ function supportRequestSubmitErrorMessage(err: unknown): string {
     IonTitle,
     IonContent,
     IonButtons,
-    IonBackButton,
     IonButton,
     IonList,
     IonItem,
     IonLabel,
     IonInput,
     IonTextarea,
-  ],
-})
+    AppBackButtonComponent]})
 export class SupportRequestPage implements OnInit {
   readonly categories = SUPPORT_REQUEST_CATEGORIES;
 
@@ -168,14 +166,12 @@ export class SupportRequestPage implements OnInit {
         details: this.details.trim() || undefined,
         deviceId: this.deviceId.getDeviceId(),
         devicePlatform: platform,
-        deviceModel: model,
-      });
+        deviceModel: model});
       const toast = await this.toastController.create({
         message: 'Thanks — we received your request.',
         duration: 2500,
         position: 'bottom',
-        color: 'success',
-      });
+        color: 'success'});
       await toast.present();
       void this.router.navigate(['/tabs/more']);
     } catch (err: unknown) {
@@ -183,8 +179,7 @@ export class SupportRequestPage implements OnInit {
         message: supportRequestSubmitErrorMessage(err),
         duration: 5500,
         position: 'bottom',
-        color: 'danger',
-      });
+        color: 'danger'});
       await toast.present();
     } finally {
       this.submitting = false;

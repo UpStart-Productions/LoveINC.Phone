@@ -5,7 +5,6 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonBackButton,
   IonButtons,
   IonAccordionGroup,
   IonAccordion,
@@ -14,6 +13,7 @@ import {
   IonSpinner,
   IonIcon,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { FaqService, FAQ } from '../services/faq.service';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 
@@ -28,7 +28,6 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonBackButton,
     IonButtons,
     IonAccordionGroup,
     IonAccordion,
@@ -37,8 +36,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
     IonSpinner,
     IonIcon,
     SafeHtmlPipe,
-  ],
-})
+    AppBackButtonComponent]})
 export class FaqPage implements OnInit {
   faqs: FAQ[] = [];
   loading = true;
@@ -70,7 +68,6 @@ export class FaqPage implements OnInit {
       },
       complete: () => {
         this.loading = false;
-      },
-    });
+      }});
   }
 }

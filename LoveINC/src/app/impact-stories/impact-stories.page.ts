@@ -6,9 +6,9 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonBackButton,
   IonButtons,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { CardComponent } from '../components/card/card.component';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformImpactStory } from '../services/platform/types';
@@ -25,11 +25,9 @@ import { SharingService } from '../services/sharing/sharing.service';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonBackButton,
     IonButtons,
     CardComponent,
-  ],
-})
+    AppBackButtonComponent]})
 export class ImpactStoriesPage implements OnInit {
   stories: PlatformImpactStory[] = [];
 
@@ -50,8 +48,7 @@ export class ImpactStoriesPage implements OnInit {
       },
       error: (err) => {
         console.error('Error loading impact stories:', err);
-      },
-    });
+      }});
   }
 
   getPhotoUrl(story: PlatformImpactStory): string {
@@ -60,8 +57,7 @@ export class ImpactStoriesPage implements OnInit {
 
   navigateToDetail(story: PlatformImpactStory) {
     this.router.navigate(['/tabs/content-detail', 'impact-story', story.id], {
-      queryParams: { from: 'impact-stories' },
-    });
+      queryParams: { from: 'impact-stories' }});
   }
 
   async onShareStory(story: PlatformImpactStory) {
@@ -73,7 +69,6 @@ export class ImpactStoriesPage implements OnInit {
     await this.sharingService.shareContent({
       title: story.title,
       subject: `Love INC Impact: ${story.title}`,
-      htmlContent,
-    });
+      htmlContent});
   }
 }

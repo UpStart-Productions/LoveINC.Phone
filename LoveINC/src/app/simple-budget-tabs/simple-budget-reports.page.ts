@@ -21,6 +21,7 @@ import {
   IonToggle,
   PopoverController,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import {
   WeekPlanService,
   calculateWeekSummary,
@@ -28,7 +29,6 @@ import {
 } from '@upstart-productions/simple-budget';
 import type { WeekPlan, WeekSummary } from '@upstart-productions/simple-budget';
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
-import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 import { PieChartComponent, type PieSlice } from './components/pie-chart/pie-chart.component';
 
 const CATEGORY_PALETTE = [
@@ -43,8 +43,7 @@ const CATEGORY_PALETTE = [
   '#eb445a',
   '#2c5f7d',
   '#1e9e5a',
-  '#5a6c7d',
-];
+  '#5a6c7d'];
 
 @Component({
   selector: 'app-simple-budget-reports',
@@ -71,7 +70,7 @@ const CATEGORY_PALETTE = [
     IonSelectOption,
     IonToggle,
     PieChartComponent,
-    OriginBackButtonComponent,
+    AppBackButtonComponent,
   ],
 })
 export class SimpleBudgetReportsPage implements OnInit {
@@ -229,8 +228,7 @@ export class SimpleBudgetReportsPage implements OnInit {
     return sorted.map(([label, value]) => ({
       label,
       value,
-      color: CATEGORY_PALETTE[colorIndex++ % CATEGORY_PALETTE.length],
-    }));
+      color: CATEGORY_PALETTE[colorIndex++ % CATEGORY_PALETTE.length]}));
   }
 
   get weekDateRange(): string {
@@ -265,7 +263,6 @@ export class SimpleBudgetReportsPage implements OnInit {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(n);
+      maximumFractionDigits: 2}).format(n);
   }
 }

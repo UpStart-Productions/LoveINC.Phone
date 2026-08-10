@@ -7,9 +7,9 @@ import {
   IonContent,
   IonButton,
   IonButtons,
-  IonBackButton,
   IonIcon,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { LOVE_INC_OFFICE_TEL } from '../shared/love-inc-contact.constants';
 
 @Component({
@@ -24,10 +24,8 @@ import { LOVE_INC_OFFICE_TEL } from '../shared/love-inc-contact.constants';
     IonContent,
     IonButton,
     IonButtons,
-    IonBackButton,
     IonIcon,
-  ],
-})
+    AppBackButtonComponent]})
 export class AssistanceIntroPage {
   constructor(private router: Router) {}
 

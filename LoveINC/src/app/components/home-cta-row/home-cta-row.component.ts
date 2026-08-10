@@ -80,11 +80,11 @@ export class HomeCtaRowComponent {
         if (action.target === 'assistance-intro') {
           void this.router.navigate(['/assistance/intro']);
         } else if (action.target === 'profile') {
-          void this.router.navigate(['/tabs/profile']);
+          void this.router.navigate(['/tabs/profile'], { queryParams: { from: 'home' } });
         } else if (action.target === 'gap-ministries') {
-          void this.router.navigate(['/tabs/gap-ministries']);
+          void this.router.navigate(['/tabs/gap-ministries'], { queryParams: { from: 'home' } });
         } else {
-          void this.router.navigate(['/tabs/services']);
+          void this.router.navigate(['/tabs/services'], { queryParams: { from: 'home' } });
         }
         break;
     }

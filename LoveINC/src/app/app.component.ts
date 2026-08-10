@@ -27,7 +27,6 @@ import {
 import { SimpleBudgetDatabaseService, WeekPlanService } from '@upstart-productions/simple-budget';
 import { GoalTrackerRefreshService } from './goal-tracker-tabs/services/goal-tracker-refresh.service';
 import { PushRegistrationService } from './services/push-registration.service';
-import { NavigationReturnService } from './services/navigation-return.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { mapNotificationMetaToContentType } from './shared/utils/notification-deeplink';
 import { addIcons } from 'ionicons';
@@ -57,6 +56,7 @@ import {
   // Onboarding Icons
   giftOutline,
   arrowForwardOutline,
+  arrowBackOutline,
   checkmark,
   checkmarkOutline,
   cardOutline,
@@ -187,7 +187,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private goalTrackerRefresh: GoalTrackerRefreshService,
     private pushRegistration: PushRegistrationService,
     private router: Router,
-    private navigationReturn: NavigationReturnService,
     private serviceUnlock: ServiceUnlockService,
     private destroyRef: DestroyRef,
     private ngZone: NgZone
@@ -435,6 +434,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // Onboarding Icons
       giftOutline,
       arrowForwardOutline,
+      arrowBackOutline,
       checkmark,
       checkmarkOutline,
       cardOutline,

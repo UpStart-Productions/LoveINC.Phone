@@ -5,10 +5,10 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonBackButton,
   IonButtons,
   IonSpinner,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { ContentCardComponent } from '../components/content-card/content-card.component';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformPartner } from '../services/platform/types';
@@ -24,12 +24,10 @@ import type { PlatformPartner } from '../services/platform/types';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonBackButton,
     IonButtons,
     IonSpinner,
     ContentCardComponent,
-  ],
-})
+    AppBackButtonComponent]})
 export class ChurchPartnershipsPage implements OnInit {
   partners: PlatformPartner[] = [];
   loading = true;
@@ -50,8 +48,7 @@ export class ChurchPartnershipsPage implements OnInit {
       error: (err) => {
         console.error('Error loading partners:', err);
         this.loading = false;
-      },
-    });
+      }});
   }
 
   getPhotoUrl(partner: PlatformPartner): string {

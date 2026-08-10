@@ -15,6 +15,7 @@ import {
   ModalController,
   AlertController,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import {
   WeekPlanService,
   calculateWeekSummary,
@@ -29,13 +30,11 @@ import { EntryNotesModalComponent } from './components/entry-notes-modal/entry-n
 import { AdjustStrategiesModalComponent } from './components/adjust-strategies-modal/adjust-strategies-modal.component';
 import { CurrencyInputDirective } from './directives/currency-input.directive';
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
-import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 
 const SECTION_BORDER_CLASS: Record<string, string> = {
   income: 'border-emerald',
   bills: 'border-prussian-blue',
-  flexible: 'border-picton-blue',
-};
+  flexible: 'border-picton-blue'};
 
 @Component({
   selector: 'app-simple-budget-weekly',
@@ -58,7 +57,7 @@ const SECTION_BORDER_CLASS: Record<string, string> = {
     IonButton,
     IonIcon,
     WeekScrollerComponent,
-    OriginBackButtonComponent,
+    AppBackButtonComponent,
   ],
 })
 export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
@@ -197,8 +196,7 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
       showBackdrop: true,
       backdropDismiss: true,
       breakpoints: [0, 0.5, 1],
-      initialBreakpoint: 0.5,
-    });
+      initialBreakpoint: 0.5});
     await modal.present();
     const { data } = await modal.onWillDismiss<string>();
     if (data !== undefined && this.plan) {
@@ -212,14 +210,12 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
       cssClass: 'entry-notes-modal',
       componentProps: {
         entryName: c.name,
-        notes: c.notes ?? '',
-      },
+        notes: c.notes ?? ''},
       presentingElement: await this.modalCtrl.getTop(),
       showBackdrop: true,
       backdropDismiss: true,
       breakpoints: [0, 0.5, 1],
-      initialBreakpoint: 0.5,
-    });
+      initialBreakpoint: 0.5});
     await modal.present();
     const { data, role } = await modal.onWillDismiss<string>();
     if (role === 'save' && this.plan) {
@@ -239,8 +235,7 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
       showBackdrop: true,
       backdropDismiss: true,
       breakpoints: [0, 0.55, 1],
-      initialBreakpoint: 0.55,
-    });
+      initialBreakpoint: 0.55});
     await modal.present();
     const { data } = await modal.onWillDismiss<{ name?: string; isCustom?: boolean }>();
     if (data?.name) {
@@ -265,8 +260,7 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
       amount: 0,
       visible: true,
       isCustom,
-      sortOrder: maxOrder + 1,
-    });
+      sortOrder: maxOrder + 1});
     this.updateSummary();
     this.scheduleSave();
   }
@@ -278,9 +272,7 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
       message: `Remove "${c.name}" from this week?`,
       buttons: [
         { text: 'Cancel', role: 'cancel' },
-        { text: 'Remove', role: 'destructive', handler: () => this.doRemoveCategory(c) },
-      ],
-    });
+        { text: 'Remove', role: 'destructive', handler: () => this.doRemoveCategory(c) }]});
     await alert.present();
   }
 
@@ -388,8 +380,7 @@ export class SimpleBudgetWeeklyPage implements OnInit, OnDestroy {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(n);
+      maximumFractionDigits: 2}).format(n);
   }
 
   formatBadgeAmount(remaining: number): string {

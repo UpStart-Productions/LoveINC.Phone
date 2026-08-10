@@ -195,7 +195,9 @@ export class MorePage implements OnInit {
 
   handleItemClick(item: MoreItem) {
     if (item.route) {
-      void this.router.navigateByUrl(item.route);
+      const tree = this.router.parseUrl(item.route);
+      tree.queryParams = { ...tree.queryParams, from: 'more' };
+      void this.router.navigateByUrl(tree);
     } else if (item.externalUrl) {
       void this.openExternalUrl(item.externalUrl);
     } else if (item.handler) {

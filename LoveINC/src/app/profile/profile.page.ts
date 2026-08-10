@@ -19,13 +19,13 @@ import {
   IonIcon,
   IonButton,
   IonButtons,
-  IonBackButton,
   IonList,
   IonItem,
   IonLabel,
   IonRefresher,
   IonRefresherContent,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { ModalController, AlertController } from '@ionic/angular/standalone';
 import { ServiceAccessSectionComponent } from '../../../packages/service-unlock/src/lib/components/service-access-section.component';
 import { VouchersPanelComponent } from '../../../packages/service-unlock/src/lib/components/vouchers-panel.component';
@@ -58,10 +58,8 @@ import { Subscription, firstValueFrom } from 'rxjs';
     IonIcon,
     IonButton,
     IonButtons,
-    IonBackButton,
     IonLabel,
-  ],
-})
+    AppBackButtonComponent]})
 export class ProfilePage implements OnInit, OnDestroy {
   profileInfo = { email: '', firstName: '', lastName: '' };
   private profileSub?: Subscription;
@@ -69,8 +67,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   userProfile = {
     name: '',
-    email: '',
-  };
+    email: ''};
 
   emailVerifiedAt: string | null = null;
   profileVouchers: Voucher[] | null = null;
@@ -115,14 +112,12 @@ export class ProfilePage implements OnInit, OnDestroy {
         const customerFromOrg = org?.customerName ?? org?.customer?.name;
         if (customerFromOrg) this.customerName = customerFromOrg;
       },
-      error: () => {},
-    });
+      error: () => {}});
     this.platformApi.getCustomer().subscribe({
       next: (customer) => {
         if (customer?.name) this.customerName = customer.name;
       },
-      error: () => {},
-    });
+      error: () => {}});
     const p = this.userProfileService.getProfile();
     this.profileInfo = { email: p.email ?? '', firstName: p.firstName ?? '', lastName: p.lastName ?? '' };
     this.profileSub = this.userProfileService.getProfile$().subscribe((prof) => {
@@ -159,8 +154,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       next: (res) => {
         this.intakeRequired = res?.intakeRequired ?? true;
       },
-      error: () => {},
-    });
+      error: () => {}});
     if (!deviceId && !email) return;
     this.platformApi.getAppUserProfile({ deviceId: deviceId || undefined, email: email || undefined }).subscribe({
       next: (res) => {
@@ -180,16 +174,13 @@ export class ProfilePage implements OnInit, OnDestroy {
             shortDescription: vr.shortDescription ?? undefined,
             photoUrl: vr.photoUrl ? this.platformApi.resolveUploadUrl(vr.photoUrl) : undefined,
             providerOffering: vr.providerOffering ?? undefined,
-            location: vr.location ?? undefined,
-          }));
+            location: vr.location ?? undefined}));
           this.profileVolunteerRequests = (res.profile.volunteerRequests ?? []).map((vr) => ({
             id: vr.id,
             itemTitle: vr.itemTitle,
-            completedAt: vr.completedAt,
-          }));
+            completedAt: vr.completedAt}));
         }
-      },
-    });
+      }});
   }
 
   async onRefresh(event: Event): Promise<void> {
@@ -219,13 +210,11 @@ export class ProfilePage implements OnInit, OnDestroy {
             shortDescription: vr.shortDescription ?? undefined,
             photoUrl: vr.photoUrl ? this.platformApi.resolveUploadUrl(vr.photoUrl) : undefined,
             providerOffering: vr.providerOffering ?? undefined,
-            location: vr.location ?? undefined,
-          }));
+            location: vr.location ?? undefined}));
           this.profileVolunteerRequests = (res.profile.volunteerRequests ?? []).map((vr) => ({
             id: vr.id,
             itemTitle: vr.itemTitle,
-            completedAt: vr.completedAt,
-          }));
+            completedAt: vr.completedAt}));
         }
       } catch {
         // Ignore
@@ -259,8 +248,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.userProfile = {
       ...this.userProfile,
       name,
-      email: p.email,
-    };
+      email: p.email};
   }
 
   get displayName(): string {
@@ -334,17 +322,14 @@ export class ProfilePage implements OnInit, OnDestroy {
         message: 'Email is required for intake validation.',
         firstName: this.profileInfo.firstName,
         lastName: this.profileInfo.lastName,
-        email: this.profileInfo.email,
-      },
-    });
+        email: this.profileInfo.email}});
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (data) {
       this.userProfileService.setProfile({
         firstName: data.firstName,
         lastName: data.lastName,
-        email: data.email,
-      });
+        email: data.email});
       await this.saveProfileToApi(data.firstName ?? '', data.lastName ?? '', data.email ?? '');
     }
   }
@@ -360,20 +345,17 @@ export class ProfilePage implements OnInit, OnDestroy {
         deviceId: this.deviceId.getDeviceId(),
         devicePlatform: platform,
         deviceModel: model,
-        newsletterOptIn: wantsNewsletter,
-      });
+        newsletterOptIn: wantsNewsletter});
       this.platformApi
         .getAppUser({
           deviceId: this.deviceId.getDeviceId(),
-          email: email.trim() || undefined,
-        })
+          email: email.trim() || undefined})
         .subscribe({
           next: (res) => {
             if (res?.user) {
               this.appUserData.setData(res.user);
             }
-          },
-        });
+          }});
       this.loadProfile();
     } catch (err) {
       console.warn('Profile: save to API failed', err);
@@ -392,17 +374,14 @@ export class ProfilePage implements OnInit, OnDestroy {
         message: 'Please enter your first name, last name, and email to scan the QR code.',
         firstName: this.profileInfo.firstName,
         lastName: this.profileInfo.lastName,
-        email: this.profileInfo.email,
-      },
-    });
+        email: this.profileInfo.email}});
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (data) {
       this.userProfileService.setProfile({
         firstName: data.firstName,
         lastName: data.lastName,
-        email: data.email,
-      });
+        email: data.email});
       await this.saveProfileToApi(data.firstName ?? '', data.lastName ?? '', data.email ?? '');
       this.router.navigate(['/tabs/service-unlock/scan']);
     }
@@ -425,21 +404,18 @@ export class ProfilePage implements OnInit, OnDestroy {
       const res = await this.platformApi.sendMagicLink({
         purpose: 'verify',
         email,
-        deviceId: this.deviceId.getDeviceId(),
-      });
+        deviceId: this.deviceId.getDeviceId()});
       if (res.sent) {
         const alert = await this.alertController.create({
           header: 'Check your email',
           message: 'We sent a verification link to ' + email + '. Click the link to verify your email.',
-          buttons: ['OK'],
-        });
+          buttons: ['OK']});
         await alert.present();
       } else {
         const alert = await this.alertController.create({
           header: 'Could not send email',
           message: res.error ?? 'Please try again later.',
-          buttons: ['OK'],
-        });
+          buttons: ['OK']});
         await alert.present();
       }
     } catch (err) {
@@ -447,8 +423,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       const alert = await this.alertController.create({
         header: 'Could not send email',
         message: msg,
-        buttons: ['OK'],
-      });
+        buttons: ['OK']});
       await alert.present();
     } finally {
       this.verifyingEmail = false;
@@ -465,15 +440,13 @@ export class ProfilePage implements OnInit, OnDestroy {
       componentProps: {
         voucher,
         deviceId: this.deviceId.getDeviceId(),
-        email: email || undefined,
-      },
+        email: email || undefined},
       cssClass: 'voucher-detail-modal-sheet',
       presentingElement: await this.modalController.getTop(),
       showBackdrop: true,
       backdropDismiss: true,
       breakpoints: [0, 1],
-      initialBreakpoint: 1,
-    });
+      initialBreakpoint: 1});
     await modal.present();
     modal.onDidDismiss().then((result) => {
       this.voucherModalService.clear();

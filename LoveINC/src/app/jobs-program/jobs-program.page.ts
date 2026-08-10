@@ -9,9 +9,9 @@ import {
   IonContent,
   IonButtons,
   IonButton,
-  IonBackButton,
   IonIcon,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
@@ -31,11 +31,9 @@ const JOBS_APPLICATION_URL = 'https://loveincnewberg.org/jobs-application-form/'
     IonContent,
     IonButtons,
     IonButton,
-    IonBackButton,
     IonIcon,
     NotificationsButtonComponent,
-  ],
-})
+    AppBackButtonComponent]})
 export class JobsProgramPage implements OnInit {
   fromServices = false;
   showDonateButton = false;

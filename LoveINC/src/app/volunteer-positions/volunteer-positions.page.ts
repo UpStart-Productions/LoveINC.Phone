@@ -5,10 +5,10 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonBackButton,
   IonButtons,
   IonSpinner,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { ContentCardComponent } from '../components/content-card/content-card.component';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformVolunteerPositionWithAffiliate } from '../services/platform/types';
@@ -26,12 +26,10 @@ import { joinWithAppDot } from '../shared/utils';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonBackButton,
     IonButtons,
     IonSpinner,
     ContentCardComponent,
-  ],
-})
+    AppBackButtonComponent]})
 export class VolunteerPositionsPage implements OnInit {
   positions: PlatformVolunteerPositionWithAffiliate[] = [];
   loading = true;
@@ -55,8 +53,7 @@ export class VolunteerPositionsPage implements OnInit {
       error: (err) => {
         console.error('Error loading volunteer positions:', err);
         this.loading = false;
-      },
-    });
+      }});
   }
 
   getPhotoUrl(position: PlatformVolunteerPositionWithAffiliate): string {

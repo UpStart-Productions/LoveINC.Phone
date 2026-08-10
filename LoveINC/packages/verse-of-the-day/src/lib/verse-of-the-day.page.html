@@ -1,10 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button
-        [defaultHref]="backDefaultHref"
-        (click.capture)="onBackClick($event)"
-      ></ion-back-button>
+            <ion-button (click)="goBack()" fill="clear" aria-label="Back">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>Verse of the Day</ion-title>
     @if (shareHandler) {

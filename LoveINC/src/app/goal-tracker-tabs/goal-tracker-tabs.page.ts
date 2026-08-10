@@ -12,13 +12,13 @@ import {
   IonTabButton,
   IonLabel,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { Router, NavigationEnd, RouterLink } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { GoalTrackerModalService } from './services/goal-tracker-modal.service';
 import { GoalTrackerDateService } from './services/goal-tracker-date.service';
 import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.service';
-import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 
 @Component({
   selector: 'app-goal-tracker-tabs',
@@ -38,7 +38,7 @@ import { OriginBackButtonComponent } from '../components/origin-back-button/orig
     IonTabButton,
     IonLabel,
     RouterLink,
-    OriginBackButtonComponent,
+    AppBackButtonComponent,
   ],
 })
 export class GoalTrackerTabsPage implements OnInit, OnDestroy {
@@ -66,7 +66,7 @@ export class GoalTrackerTabsPage implements OnInit, OnDestroy {
   private updateGoalsTab() {
     const url = this.router.url;
     this.isGoalsTab =
-      url.includes('/goal-tracker/goals') || url === '/tabs/goal-tracker';
+      url.includes('/tabs/goal-tracker/goals') || url === '/tabs/goal-tracker';
   }
 
   get isStatisticsTab(): boolean {

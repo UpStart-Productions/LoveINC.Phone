@@ -13,9 +13,9 @@ import {
   IonLabel,
   IonIcon,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformTransformationTool } from '../services/platform/types';
-import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 
 @Component({
   selector: 'app-transformation-tools',
@@ -34,7 +34,7 @@ import { OriginBackButtonComponent } from '../components/origin-back-button/orig
     IonItem,
     IonLabel,
     IonIcon,
-    OriginBackButtonComponent,
+    AppBackButtonComponent,
   ],
 })
 export class TransformationToolsPage implements OnInit {
@@ -60,8 +60,7 @@ export class TransformationToolsPage implements OnInit {
       error: (err) => {
         console.error('Error loading transformation tools:', err);
         this.loading = false;
-      },
-    });
+      }});
   }
 
   getScriptureSubtitle(tool: PlatformTransformationTool): string {
@@ -70,7 +69,8 @@ export class TransformationToolsPage implements OnInit {
 
   navigateToDetail(tool: PlatformTransformationTool) {
     this.router.navigate(['/tabs/transformation-tools', tool.id], {
-      queryParamsHandling: 'preserve',
+      queryParams: { returnUrl: this.router.url },
+      queryParamsHandling: 'merge',
     });
   }
 }

@@ -7,10 +7,10 @@ import {
   IonContent,
   IonButtons,
   IonButton,
-  IonBackButton,
   IonIcon,
   IonSpinner,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { PopoverController } from '@ionic/angular';
 import { LocationPopoverComponent } from '../components/location-popover/location-popover.component';
 import { DonateButtonService } from '../services/donate-button.service';
@@ -43,13 +43,11 @@ export interface ChurchMapPin {
     IonContent,
     IonButtons,
     IonButton,
-    IonBackButton,
     IonIcon,
     IonSpinner,
     NotificationsButtonComponent,
-  ],
-  providers: [PopoverController],
-})
+    AppBackButtonComponent],
+  providers: [PopoverController]})
 export class ChurchMapPage implements OnInit, OnDestroy {
   map: any;
   markers: any[] = [];
@@ -112,8 +110,7 @@ export class ChurchMapPage implements OnInit, OnDestroy {
         console.error('ChurchMap: failed to load organization partners', err);
         this.loading = false;
         this.mapPins = [];
-      },
-    });
+      }});
   }
 
   /** Build pins using API coordinates or the same geocoding pipeline as tapping an address on Church Partnerships. */
@@ -199,10 +196,7 @@ export class ChurchMapPage implements OnInit, OnDestroy {
           {
             featureType: 'poi',
             elementType: 'labels',
-            stylers: [{ visibility: 'off' }],
-          },
-        ],
-      });
+            stylers: [{ visibility: 'off' }]}]});
     }
 
     this.markers.forEach((m) => m.setMap(null));
@@ -214,8 +208,7 @@ export class ChurchMapPage implements OnInit, OnDestroy {
         position,
         map: this.map,
         title: pin.partner.name,
-        animation: google.maps.Animation.DROP,
-      });
+        animation: google.maps.Animation.DROP});
       marker.addListener('click', () => {
         this.ngZone.run(() => {
           void this.showChurchPopover(marker, pin.partner);
@@ -274,8 +267,7 @@ export class ChurchMapPage implements OnInit, OnDestroy {
         cancelable: true,
         clientX,
         clientY,
-        view: window,
-      });
+        view: window});
       Object.defineProperty(event, 'target', { value: triggerEl, enumerable: true });
 
       const addr = this.formatAddress(partner);
@@ -291,13 +283,11 @@ export class ChurchMapPage implements OnInit, OnDestroy {
               website: partner.website?.trim() || null,
               detail: partner.shortDescription?.trim() || null,
               hours: null,
-              items: [],
-            },
+              items: []},
             event,
             showBackdrop: false,
             cssClass: 'location-popover',
-            arrow: false,
-          })
+            arrow: false})
           .then(async (p) => {
             this.popover = p;
             p.onDidDismiss().then(() => {

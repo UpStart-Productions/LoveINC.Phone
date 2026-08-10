@@ -7,13 +7,13 @@ import {
   IonTitle,
   IonButtons,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { App } from '@capacitor/app';
 import { GoalService, HabitService } from '@upstart-productions/goal-tracker';
 import type { Goal, Habit } from '@upstart-productions/goal-tracker';
 import { HabitCardComponent } from './components/habit-card/habit-card.component';
 import { DateScrollerComponent, DateScrollerDate } from './components/date-scroller/date-scroller.component';
 import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.service';
-import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 import { GoalTrackerModalService } from './services/goal-tracker-modal.service';
 import { GoalTrackerDateService } from './services/goal-tracker-date.service';
 import { Subscription } from 'rxjs';
@@ -38,7 +38,7 @@ export interface GoalWithHabits {
     IonContent,
     HabitCardComponent,
     DateScrollerComponent,
-    OriginBackButtonComponent,
+    AppBackButtonComponent,
   ],
 })
 export class GoalTrackerGoalsPage implements OnInit, OnDestroy {

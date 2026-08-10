@@ -77,7 +77,7 @@ export class AboutPage implements OnInit {
 
   navigateToChurchMap() {
     console.log('Navigating to church map...');
-    this.router.navigate(['/tabs/church-map']).then(
+    this.router.navigate(['/tabs/church-map'], { queryParams: { from: 'about' } }).then(
       (success) => {
         console.log('Navigation successful:', success);
       },

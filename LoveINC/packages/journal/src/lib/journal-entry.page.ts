@@ -10,7 +10,6 @@ import {
   IonContent,
   IonButtons,
   IonButton,
-  IonBackButton,
   IonInput,
   IonIcon,
 } from '@ionic/angular/standalone';
@@ -21,6 +20,7 @@ import {
   type JournalQuillEditorConfig,
 } from './rich-text/quill-editor.component';
 import { JournalEntry } from './types/journal-entry.model';
+import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
 
 @Component({
   selector: 'app-journal-entry',
@@ -36,7 +36,6 @@ import { JournalEntry } from './types/journal-entry.model';
     IonContent,
     IonButtons,
     IonButton,
-    IonBackButton,
     IonInput,
     IonIcon,
     JournalQuillEditorComponent,
@@ -47,7 +46,7 @@ export class JournalEntryPage implements OnInit, OnDestroy {
 
   title = '';
   content = '';
-  /** True when the route is `/journal/new` (only list → `:id` is "edit" in the URL). */
+  /** True when the route is `/tabs/journal/new` (only list → `:id` is "edit" in the URL). */
   routeIsNew = false;
   entryId: number | null = null;
   private saving = false;
@@ -71,6 +70,12 @@ export class JournalEntryPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.clearAutoSaveTimer();
+  }
+
+  goBack(): void {
+    const explicit = resolveReturnUrlFromRouteTree(this.route.snapshot);
+    const target = explicit ?? '/tabs/tools';
+    void this.router.navigateByUrl(target, { replaceUrl: true });
   }
 
   async ngOnInit(): Promise<void> {
@@ -105,10 +110,6 @@ export class JournalEntryPage implements OnInit, OnDestroy {
     this.content = e.content;
     this.lastSavedTitle = e.title.trim();
     this.lastSavedContent = e.content;
-  }
-
-  backHref(): string {
-    return '/tabs/journal';
   }
 
   /** True when there is a title or non-empty body (plain text), so Share is useful. */

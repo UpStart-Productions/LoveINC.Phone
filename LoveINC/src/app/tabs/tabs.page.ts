@@ -35,9 +35,9 @@ export class TabsPage implements OnInit, OnDestroy {
   public environmentInjector = inject(EnvironmentInjector);
   private router = inject(Router);
 
-  /** Hide main app tab bar when viewing a tool with its own tab bar (route data: hideMainTabBar) */
+  /** Hide main app tab bar when a tool provides its own tab bar (route data: hideMainTabBar). */
   showMainTabBar = signal(true);
-  private routerEventsSub: any;
+  private routerEventsSub: ReturnType<typeof this.router.events.subscribe> | undefined;
 
   constructor(
     private actionSheetController: ActionSheetController,
@@ -46,27 +46,23 @@ export class TabsPage implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    // Prevent keyboard from resizing viewport, which causes FAB to move
     try {
       await Keyboard.setResizeMode({ mode: KeyboardResize.None });
     } catch (error) {
-      // Keyboard plugin not available in browser
       console.log('Keyboard plugin not available');
     }
-    // Update tab bar visibility when route changes (e.g. swap to Goal Tracker tabs)
     this.updateTabBarVisibility();
     this.routerEventsSub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(() => this.updateTabBarVisibility());
   }
 
-  private updateTabBarVisibility() {
+  private updateTabBarVisibility(): void {
     this.showMainTabBar.set(!shouldHideMainTabBar(this.router));
   }
 
   async ngOnDestroy() {
     this.routerEventsSub?.unsubscribe();
-    // Restore default keyboard behavior when leaving tabs
     try {
       await Keyboard.setResizeMode({ mode: KeyboardResize.Native });
     } catch (error) {
@@ -83,42 +79,42 @@ export class TabsPage implements OnInit, OnDestroy {
           text: 'Connection Center',
           icon: 'people-circle-outline',
           handler: () => {
-            this.router.navigate(['/tabs/connection-center']);
+            this.router.navigate(['/tabs/connection-center'], { queryParams: { from: 'services' } });
           }
         },
         {
           text: 'Gap Ministries',
           icon: 'assets/icons/hand-helping.svg',
           handler: () => {
-            this.router.navigate(['/tabs/gap-ministries']);
+            this.router.navigate(['/tabs/gap-ministries'], { queryParams: { from: 'services' } });
           }
         },
         {
           text: 'Transformational Classes',
           icon: 'school-outline',
           handler: () => {
-            this.router.navigate(['/tabs/transformation-classes']);
+            this.router.navigate(['/tabs/transformation-classes'], { queryParams: { from: 'services' } });
           }
         },
         {
           text: 'J.O.B.S.',
           icon: 'briefcase-outline',
           handler: () => {
-            this.router.navigate(['/tabs/jobs-program']);
+            this.router.navigate(['/tabs/jobs-program'], { queryParams: { from: 'services' } });
           }
         },
         {
           text: 'Hesed House',
           icon: 'house-outline',
           handler: () => {
-            this.router.navigate(['/tabs/hesed-house']);
+            this.router.navigate(['/tabs/hesed-house'], { queryParams: { from: 'services' } });
           }
         },
         {
           text: 'Prayer Request',
           icon: 'heart-outline',
           handler: () => {
-            this.router.navigate(['/tabs/prayer-request']);
+            this.router.navigate(['/tabs/prayer-request'], { queryParams: { from: 'services' } });
           }
         },
         {
@@ -141,7 +137,6 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   async showServiceDetail(service: string) {
-    // TODO: Navigate to service detail page with service parameter
     const alert = await this.alertController.create({
       header: service,
       message: `You selected: ${service}\n\nService detail page will be implemented soon.`,

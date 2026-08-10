@@ -5,9 +5,9 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonBackButton,
   IonButtons,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 
 @Component({
   selector: 'app-settings',
@@ -20,8 +20,6 @@ import {
     IonToolbar,
     IonTitle,
     IonContent,
-    IonBackButton,
     IonButtons,
-  ],
-})
+    AppBackButtonComponent]})
 export class SettingsPage {}

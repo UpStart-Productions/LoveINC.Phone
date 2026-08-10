@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -7,7 +8,6 @@ import {
   IonTitle,
   IonContent,
   IonButtons,
-  IonBackButton,
   IonButton,
   IonIcon,
   IonSpinner,
@@ -28,13 +28,14 @@ import { Capacitor } from '@capacitor/core';
     IonTitle,
     IonContent,
     IonButtons,
-    IonBackButton,
     IonButton,
     IonIcon,
     IonSpinner,
   ],
 })
 export class ServiceUnlockScanPage implements OnInit, OnDestroy {
+  private readonly location = inject(Location);
+
   scanning = false;
   error: string | null = null;
   success = false;
@@ -131,6 +132,6 @@ export class ServiceUnlockScanPage implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['/tabs/profile']);
+    this.location.back();
   }
 }

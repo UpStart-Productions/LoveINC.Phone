@@ -7,8 +7,8 @@ import {
   IonContent,
   IonButtons,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { ContentCardComponent } from '../components/content-card/content-card.component';
-import { OriginBackButtonComponent } from '../components/origin-back-button/origin-back-button.component';
 import { REGISTERED_TOOL_CARDS, type ToolCard } from '../registered-tools';
 
 @Component({
@@ -24,7 +24,7 @@ import { REGISTERED_TOOL_CARDS, type ToolCard } from '../registered-tools';
     IonContent,
     IonButtons,
     ContentCardComponent,
-    OriginBackButtonComponent,
+    AppBackButtonComponent,
   ],
 })
 export class ToolsPage {

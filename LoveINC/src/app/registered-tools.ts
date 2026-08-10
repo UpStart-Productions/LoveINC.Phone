@@ -18,9 +18,8 @@ export interface ToolCard {
 }
 
 /**
- * Route configs for registered tools. Tools with custom tab bars include
- * data: { hideMainTabBar: true } so the main app tab bar is swapped.
- * Add new package routes here when integrating npm packages.
+ * Route configs for registered tools under the tab shell.
+ * Tools with custom tab bars set hideMainTabBar so the main app tab bar is swapped.
  */
 export const REGISTERED_TOOL_ROUTES: Route[] = [
   {

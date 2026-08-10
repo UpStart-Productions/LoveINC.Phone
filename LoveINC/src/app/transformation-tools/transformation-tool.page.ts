@@ -6,6 +6,7 @@ import {
   ElementRef,
   ChangeDetectorRef,
 } from '@angular/core';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -14,7 +15,6 @@ import {
   IonHeader,
   IonToolbar,
   IonButtons,
-  IonBackButton,
   IonIcon,
   IonContent,
   IonSpinner,
@@ -52,7 +52,6 @@ export interface TftSection {
     IonHeader,
     IonToolbar,
     IonButtons,
-    IonBackButton,
     IonIcon,
     IonContent,
     IonSpinner,
@@ -65,8 +64,7 @@ export interface TftSection {
     IonCheckbox,
     IonCard,
     SafeHtmlPipe,
-  ],
-})
+    AppBackButtonComponent]})
 export class TransformationToolPage implements OnInit, OnDestroy {
   @ViewChild(IonContent) private content?: IonContent;
   @ViewChild('tabBar') private tabBar?: ElementRef<HTMLElement>;
@@ -115,8 +113,7 @@ export class TransformationToolPage implements OnInit, OnDestroy {
         console.error('TransformationToolPage: failed to load tool', err);
         this.loading = false;
         this.notFound = true;
-      },
-    });
+      }});
   }
 
   ngOnDestroy(): void {
@@ -176,8 +173,7 @@ export class TransformationToolPage implements OnInit, OnDestroy {
         backdropDismiss: true,
         breakpoints: [0, 0.67],
         initialBreakpoint: 0.67,
-        handle: true,
-      });
+        handle: true});
       await modal.present();
     } catch (err) {
       console.error('TransformationToolPage: openVerseModal failed', err);

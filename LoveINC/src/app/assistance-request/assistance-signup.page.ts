@@ -8,8 +8,8 @@ import {
   IonTitle,
   IonContent,
   IonButtons,
-  IonBackButton,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { ContactAssistanceFormComponent } from '../components/contact-assistance-form/contact-assistance-form.component';
 
 @Component({
@@ -24,10 +24,8 @@ import { ContactAssistanceFormComponent } from '../components/contact-assistance
     IonTitle,
     IonContent,
     IonButtons,
-    IonBackButton,
     ContactAssistanceFormComponent,
-  ],
-})
+    AppBackButtonComponent]})
 export class AssistanceSignupPage {
   constructor(private router: Router) {}
 

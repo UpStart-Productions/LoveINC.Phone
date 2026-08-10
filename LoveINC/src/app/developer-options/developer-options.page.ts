@@ -10,12 +10,12 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-  IonBackButton,
   IonButtons,
   IonButton,
   IonIcon,
   AlertController,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { OnboardingService } from '../services/onboarding.service';
 import { AppUserDataService } from '../services/app-user-data.service';
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -39,12 +39,10 @@ import { SimpleBudgetStateService } from '../services/simple-budget-state.servic
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonBackButton,
     IonButtons,
     IonButton,
     IonIcon,
-  ],
-})
+    AppBackButtonComponent]})
 export class DeveloperOptionsPage {
   seeding = false;
   seedingBudget = false;
@@ -103,8 +101,7 @@ export class DeveloperOptionsPage {
     const alert = await this.alertController.create({
       header: 'Access Cleared',
       message: 'Intake state has been reset (local unlock + cached app user data). You should now see "Intake required" and no voucher icons. If you refresh the app, it will re-fetch from the API—if you completed intake before, you may see access again.',
-      buttons: ['OK'],
-    });
+      buttons: ['OK']});
     await alert.present();
   }
 
@@ -117,15 +114,13 @@ export class DeveloperOptionsPage {
       const alert = await this.alertController.create({
         header: 'Simple Budget Seeded',
         message: 'Seeded 6 weeks (Mar 1 – Apr 5, 2026). Navigating to Simple Budget on the current week.',
-        buttons: ['OK'],
-      });
+        buttons: ['OK']});
       await alert.present();
     } catch (err) {
       const alert = await this.alertController.create({
         header: 'Seed Failed',
         message: (err as Error)?.message ?? 'Unknown error',
-        buttons: ['OK'],
-      });
+        buttons: ['OK']});
       await alert.present();
     } finally {
       this.seedingBudget = false;
@@ -138,15 +133,13 @@ export class DeveloperOptionsPage {
       const alert = await this.alertController.create({
         header: 'Simple Budget Cleared',
         message: 'All week plans and category data have been deleted.',
-        buttons: ['OK'],
-      });
+        buttons: ['OK']});
       await alert.present();
     } catch (err) {
       const alert = await this.alertController.create({
         header: 'Clear Failed',
         message: (err as Error)?.message ?? 'Unknown error',
-        buttons: ['OK'],
-      });
+        buttons: ['OK']});
       await alert.present();
     }
   }
@@ -159,15 +152,13 @@ export class DeveloperOptionsPage {
         header: 'Goal Tracker Seeded',
         message:
           'Database has been reset and seeded with 5 goals (2 completed), 11 habits, and ~1 year of completion data (Sept 2025 – Sept 2026).',
-        buttons: ['OK'],
-      });
+        buttons: ['OK']});
       await alert.present();
     } catch (err) {
       const alert = await this.alertController.create({
         header: 'Seed Failed',
         message: (err as Error)?.message ?? 'Unknown error',
-        buttons: ['OK'],
-      });
+        buttons: ['OK']});
       await alert.present();
     } finally {
       this.seeding = false;
@@ -179,8 +170,7 @@ export class DeveloperOptionsPage {
     const alert = await this.alertController.create({
       header: 'Vouchers Cleared',
       message: 'Vouchers have been cleared. (Mock data will reappear on next app load.)',
-      buttons: ['OK'],
-    });
+      buttons: ['OK']});
     await alert.present();
   }
 

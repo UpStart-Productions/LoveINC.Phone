@@ -3,6 +3,10 @@
  * @see src/app/shared/README.md
  */
 export { shouldHideMainTabBar } from './route-utils';
+export {
+  resolveReturnUrl,
+  resolveReturnUrlFromRouteTree,
+} from './navigation-origin.util';
 export { mapNotificationMetaToContentType, type NotificationMeta } from './notification-deeplink';
 export { markQuillParagraphGaps } from './quill-rich-html';
 export {

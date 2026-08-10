@@ -9,9 +9,9 @@ import {
   IonContent,
   IonButtons,
   IonButton,
-  IonBackButton,
   IonIcon,
 } from '@ionic/angular/standalone';
+import { AppBackButtonComponent } from '../../components/app-back-button/app-back-button.component';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
@@ -67,12 +67,10 @@ export interface ClassCardItem {
     IonContent,
     IonButtons,
     IonButton,
-    IonBackButton,
     IonIcon,
     CardComponent,
     NotificationsButtonComponent,
-  ],
-})
+    AppBackButtonComponent]})
 export class TransformationClassesPage implements OnInit {
   classCards: ClassCardItem[] = [];
   fromServices: boolean = false;
@@ -118,8 +116,7 @@ export class TransformationClassesPage implements OnInit {
       },
       error: (err) => {
         console.error('Error loading transformation classes:', err);
-      },
-    });
+      }});
   }
 
   private mapPlatformClassToTransformationClass(c: PlatformClass): TransformationClass {
@@ -135,8 +132,7 @@ export class TransformationClassesPage implements OnInit {
           shortDescription: (p['shortDescription'] ?? p['short_description']) as string | undefined,
           longDescription: (p['longDescription'] ?? p['long_description']) as string | undefined,
           description: (p['longDescription'] ?? p['long_description']) as string | undefined,
-          schedule: this.scheduleFormatting.getPositionSchedule(p),
-        }))
+          schedule: this.scheduleFormatting.getPositionSchedule(p)}))
       : undefined;
     const address = c.address ? this.formatAddress(c.address) : null;
     return {
@@ -148,8 +144,7 @@ export class TransformationClassesPage implements OnInit {
       photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',
       nextSession,
       volunteerPositions,
-      address,
-    };
+      address};
   }
 
   private formatAddress(addr: { address?: string; city?: string; state?: string; zip?: string }): string {
@@ -227,15 +222,12 @@ export class TransformationClassesPage implements OnInit {
         lucideIcon: 'heart-handshake',
         handler: () => this.onVolunteerClick(item.class),
         show: !!item.class.volunteerPositions?.length,
-        buttonClass: 'volunteer-button',
-      },
+        buttonClass: 'volunteer-button'},
       {
         icon: 'calendar-outline',
         handler: () => this.onCalendarClick(item.class),
         show: canCalendar,
-        buttonClass: 'calendar-button',
-      },
-    ];
+        buttonClass: 'calendar-button'}];
   }
 
   async onCalendarClick(classItem: TransformationClass) {
@@ -246,8 +238,7 @@ export class TransformationClassesPage implements OnInit {
       description: classItem.shortDescription || classItem.description,
       location: classItem.address ?? undefined,
       startDate: ns.startDate,
-      endDate: ns.endDate,
-    });
+      endDate: ns.endDate});
   }
 
   async onVolunteerClick(classItem: TransformationClass) {
@@ -259,8 +250,7 @@ export class TransformationClassesPage implements OnInit {
       organizationName: classItem.title,
       address: classItem.address ?? null,
       positions: classItem.volunteerPositions,
-      scheduleFallback,
-    });
+      scheduleFallback});
   }
 
   async onShareClass(classItem: TransformationClass) {

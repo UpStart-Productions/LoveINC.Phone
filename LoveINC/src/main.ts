@@ -10,12 +10,8 @@ import {
   VERSE_OF_THE_DAY_CACHE,
   VERSE_OF_THE_DAY_YOUTUBE_EMBED_BASE_URL,
   VERSE_OF_THE_DAY_SHARE,
-  VERSE_OF_THE_DAY_BACK_DEFAULT_HREF,
-  APP_NAVIGATION_RETURN,
 } from '@upstart-productions/verse-of-the-day';
-import { JOURNAL_NAVIGATION_RETURN } from '@upstart-productions/journal';
 import { VerseOfTheDayCacheService } from './app/services/verse-of-the-day-cache.service';
-import { NavigationReturnService } from './app/services/navigation-return.service';
 import { SharingService } from './app/services/sharing/sharing.service';
 import { environment } from './environments/environment';
 import { PlatformApiService } from './app/services/platform/platform-api.service';
@@ -89,9 +85,6 @@ bootstrapApplication(AppComponent, {
       },
       deps: [SharingService],
     },
-    { provide: VERSE_OF_THE_DAY_BACK_DEFAULT_HREF, useValue: '/tabs/more' },
-    { provide: APP_NAVIGATION_RETURN, useExisting: NavigationReturnService },
-    { provide: JOURNAL_NAVIGATION_RETURN, useExisting: NavigationReturnService },
     {
       provide: JOURNAL_ENTRY_SHARE,
       useFactory: (sharing: SharingService) => {
