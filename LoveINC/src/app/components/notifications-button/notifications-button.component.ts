@@ -12,14 +12,18 @@ import { NotificationsService } from '../../services/notifications.service';
   selector: 'app-notifications-button',
   standalone: true,
   imports: [CommonModule, AsyncPipe, IonButton, IonIcon],
+  styles: [`:host { display: inline-flex; }`],
   template: `
     <ion-button class="notifications-button" (click)="openAlertsModal()">
       <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
-      <span *ngIf="hasUnread$ | async" class="notification-badge"></span>
+      <span *ngIf="showBadgePreview || (hasUnread$ | async)" class="notification-badge"></span>
     </ion-button>
   `,
 })
 export class NotificationsButtonComponent {
+  /** TEMP: preview unread badge — set to false when done reviewing. */
+  readonly showBadgePreview = true;
+
   readonly hasUnread$ = this.notificationsService.hasUnread$;
 
   constructor(

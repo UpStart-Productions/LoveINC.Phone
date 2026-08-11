@@ -266,6 +266,10 @@ ion-header ion-buttons ion-button ion-icon {
   color: var(--ion-color-primary-contrast);
 }
 
+ion-header ion-toolbar ion-buttons[slot='end'] app-notifications-button {
+  display: inline-flex;
+}
+
 ion-header ion-back-button {
   --color: var(--ion-color-primary-contrast);
   color: var(--ion-color-primary-contrast);
@@ -283,17 +287,19 @@ ion-toolbar.custom-toolbar ion-buttons app-back-button ion-button ion-icon {
 .donate-header-button {
   --background: transparent;
   --color: white;
-  --padding-start: 0;
-  --padding-end: 0;
+  --padding-start: 0.25rem;
+  --padding-end: 0.25rem;
   --padding-top: 0;
   --padding-bottom: 0;
-  margin: 0 0.5rem;
+  min-width: 0 !important;
+  margin: 0 !important;
   padding: 0 !important;
-  
+
   &::part(native) {
-    padding: 0 !important;
+    min-width: 0;
+    padding: 0 0.25rem !important;
   }
-  
+
   ion-icon {
     color: white;
   }
@@ -301,15 +307,27 @@ ion-toolbar.custom-toolbar ion-buttons app-back-button ion-button ion-icon {
 
 /* Global Notification Badge Styling */
 .notifications-button {
+  --padding-start: 0.25rem;
+  --padding-end: 0.25rem;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   position: relative;
+
+  &::part(native) {
+    min-width: 0;
+    padding: 0 0.25rem !important;
+  }
   
   .notification-badge {
     position: absolute;
     top: 0.0625rem;
-    right: 0.3125rem;
-    width: 0.75rem;
-    height: 0.75rem;
-    background-color: var(--love-inc-secondary-terracotta);
+    right: calc(0.3125rem - 7px);
+    width: calc(0.75rem - 1px);
+    height: calc(0.75rem - 1px);
+    background-color: var(--love-inc-notification-dot);
     border-radius: 50%;
     border: 0.0625rem solid var(--love-inc-header-dark);
   }
