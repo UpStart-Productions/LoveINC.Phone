@@ -23,7 +23,7 @@
 }
 
 .more-section-title {
-  margin: 0 var(--app-card-margin) 0.35rem;
+  margin: 0 var(--app-card-margin) 0.35rem 1rem;
 }
 
 .more-section-group {
@@ -69,27 +69,46 @@
   width: var(--app-icon-size-md);
   height: var(--app-icon-size-md);
   border-radius: 50%;
-  background-color: var(--ion-color-primary);
-  color: white;
+  color: var(--ion-color-primary-contrast);
 }
 
-/* Nepho settings `.version-badge` placement (16px); ion slot="fixed" adds position:absolute */
+/* Version pill — fixed bottom-right */
 .more-version-badge {
   z-index: 10000;
   right: 16px;
   bottom: 16px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   max-width: min(9rem, 42vw);
-  padding: 8px 12px;
+  padding: 7px 14px;
   text-align: center;
-  border-radius: 12px;
-  background: var(--ion-color-light);
-  border: 1px solid rgba(var(--ion-color-dark-rgb), 0.06);
+  border-radius: 999px;
+  background: var(--love-inc-teal);
+  border: none;
+  color: #ffffff;
+  line-height: 1;
   cursor: pointer;
   outline: none;
+
+  .app-body-secondary-xs {
+    display: block;
+    margin: 0;
+    line-height: 1;
+    color: inherit;
+  }
 }
 
 .more-version-details {
   margin-top: 6px;
   padding-top: 6px;
-  border-top: 1px solid rgba(var(--ion-color-dark-rgb), 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  line-height: 1;
+
+  .app-body-secondary-xs {
+    display: block;
+    margin: 0;
+    line-height: 1;
+  }
 }

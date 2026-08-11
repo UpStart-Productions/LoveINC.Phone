@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { startOfDay } from 'date-fns';
 import {
@@ -54,6 +54,7 @@ export interface UpdateItem {
   styleUrls: ['updates.page.scss'],
   imports: [
     CommonModule,
+    RouterLink,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -67,6 +68,7 @@ export interface UpdateItem {
 })
 export class UpdatesPage implements OnInit {
   items: UpdateItem[] = [];
+  loaded = false;
   showDonateButton: boolean = false;
 
   constructor(
@@ -113,9 +115,11 @@ export class UpdatesPage implements OnInit {
       .subscribe({
         next: (data) => {
           this.items = data;
+          this.loaded = true;
         },
         error: (err) => {
           console.error('Error loading updates:', err);
+          this.loaded = true;
         },
       });
   }

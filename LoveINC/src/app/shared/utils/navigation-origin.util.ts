@@ -15,7 +15,6 @@ const FROM_TO_RETURN_URL: Readonly<Record<string, string>> = {
   'gap-ministries': '/tabs/gap-ministries',
   'transformation-classes': '/tabs/transformation-classes',
   profile: '/tabs/profile',
-  settings: '/tabs/settings',
 };
 
 /**

@@ -44,6 +44,7 @@ import {
   heartOutline,
   peopleCircleOutline,
   constructOutline,
+  school,
   schoolOutline,
   briefcaseOutline,
   handRightOutline,
@@ -295,7 +296,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // Push: returning users get a deferred prompt so it is not the first system dialog on cold start.
     if (this.onboardingService.hasCompletedOnboarding()) {
       setTimeout(() => {
-        this.pushRegistration.register().catch(() => {});
+        this.pushRegistration.registerIfEnabled().catch(() => {});
       }, 60_000);
     }
 
@@ -304,7 +305,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         setTimeout(() => {
-          this.pushRegistration.register().catch(() => {});
+          this.pushRegistration.registerIfEnabled().catch(() => {});
         }, 60_000);
       });
 
@@ -422,6 +423,7 @@ export class AppComponent implements OnInit, OnDestroy {
       heartOutline,
       peopleCircleOutline,
       constructOutline,
+      school,
       schoolOutline,
       briefcaseOutline,
       handRightOutline,

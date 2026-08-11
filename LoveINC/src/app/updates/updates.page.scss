@@ -1,5 +1,27 @@
-/* .cards-container in theme/cards.scss; override padding-top for this page */
+ion-content.updates-page {
+  --background: var(--ion-background-color);
+  --ion-background-color: var(--ion-background-color);
+}
 
+/* .cards-container in theme/cards.scss; override padding-top for this page */
 .cards-container {
   padding-top: 1rem;
+}
+
+.updates-empty-photo {
+  width: 100%;
+  height: 30vh;
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+.updates-empty-copy {
+  text-align: center;
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { format, addDays, startOfDay } from 'date-fns';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { 
   IonHeader, 
   IonToolbar, 
@@ -60,6 +60,7 @@ export interface ClassCardItem {
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     IonHeader, 
     IonToolbar, 
     IonTitle, 
@@ -73,6 +74,7 @@ export interface ClassCardItem {
 })
 export class TransformationClassesPage implements OnInit {
   activeClassCards: ClassCardItem[] = [];
+  loaded = false;
   showDonateButton: boolean = false;
 
   constructor(
@@ -109,9 +111,11 @@ export class TransformationClassesPage implements OnInit {
         this.activeClassCards = list
           .filter((c) => this.isActiveClass(c, todayMs))
           .map(toCard);
+        this.loaded = true;
       },
       error: (err) => {
         console.error('Error loading transformation classes:', err);
+        this.loaded = true;
       }});
   }
 

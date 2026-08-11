@@ -260,6 +260,14 @@ ion-item ion-label p.app-list-row-title {
   font-size: var(--app-font-size-body);
 }
 
+.app-link.app-body-secondary-sm {
+  font-size: var(--app-font-size-sm);
+}
+
+.app-link.app-body-secondary-xs {
+  font-size: var(--app-font-size-xs);
+}
+
 /* Pill button – typography */
 .pill-button {
   font-size: var(--app-font-size-title);

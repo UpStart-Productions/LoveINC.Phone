@@ -19,11 +19,11 @@ import {
   IonIcon,
   IonButton,
   IonButtons,
-  IonList,
   IonItem,
   IonLabel,
   IonRefresher,
   IonRefresherContent,
+  IonToggle,
 } from '@ionic/angular/standalone';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { ModalController, AlertController } from '@ionic/angular/standalone';
@@ -35,6 +35,7 @@ import { VoucherDetailModalComponent } from '../components/voucher-detail-modal/
 import { VoucherModalService } from '../services/voucher-modal.service';
 import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
+import { PushRegistrationService } from '../services/push-registration.service';
 import { Subscription, firstValueFrom } from 'rxjs';
 
 @Component({
@@ -59,11 +60,17 @@ import { Subscription, firstValueFrom } from 'rxjs';
     IonButton,
     IonButtons,
     IonLabel,
+    IonItem,
+    IonToggle,
     AppBackButtonComponent]})
 export class ProfilePage implements OnInit, OnDestroy {
   profileInfo = { email: '', firstName: '', lastName: '' };
   private profileSub?: Subscription;
   private dismissedSub?: Subscription;
+
+  pushNotificationsEnabled = true;
+  pushOsDenied = false;
+  pushSettingsBusy = false;
 
   userProfile = {
     name: '',
@@ -98,7 +105,8 @@ export class ProfilePage implements OnInit, OnDestroy {
     private deviceInfo: DeviceInfoService,
     private modalController: ModalController,
     private alertController: AlertController,
-    private serviceUnlock: ServiceUnlockService
+    private serviceUnlock: ServiceUnlockService,
+    private pushRegistration: PushRegistrationService
   ) {}
 
   ngOnInit(): void {
@@ -136,6 +144,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.localIntakeUnlocked = u;
     });
     this.loadProfile();
+    void this.loadPushSettings();
   }
 
   ionViewWillEnter(): void {
@@ -143,6 +152,56 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.localIntakeUnlocked = this.serviceUnlock.isUnlocked;
     });
     this.loadProfile();
+    void this.loadPushSettings();
+  }
+
+  private async loadPushSettings(): Promise<void> {
+    const optIn = await this.pushRegistration.isUserOptIn();
+    const osGranted = await this.pushRegistration.isOsPermissionGranted();
+    const osDenied = await this.pushRegistration.isOsPermissionDenied();
+    this.pushNotificationsEnabled = optIn && osGranted;
+    this.pushOsDenied = optIn && osDenied;
+  }
+
+  async onPushToggleChange(event: CustomEvent): Promise<void> {
+    const enabled = event.detail.checked;
+    if (this.pushSettingsBusy) return;
+
+    this.pushSettingsBusy = true;
+    const previous = this.pushNotificationsEnabled;
+    this.pushNotificationsEnabled = enabled;
+    this.pushOsDenied = false;
+
+    try {
+      if (enabled) {
+        const result = await this.pushRegistration.enablePush();
+        if (!result.ok) {
+          this.pushNotificationsEnabled = false;
+          this.pushOsDenied = result.osDenied;
+          if (result.osDenied) {
+            const alert = await this.alertController.create({
+              header: 'Notifications disabled',
+              message:
+                'Push notifications are turned off in your device settings. Open Settings → Love INC → Notifications to enable them.',
+              buttons: ['OK'],
+            });
+            await alert.present();
+          }
+        } else {
+          this.pushNotificationsEnabled = true;
+          this.pushOsDenied = false;
+        }
+      } else {
+        await this.pushRegistration.disablePush();
+        this.pushNotificationsEnabled = false;
+        this.pushOsDenied = false;
+      }
+    } catch {
+      this.pushNotificationsEnabled = previous;
+      await this.loadPushSettings();
+    } finally {
+      this.pushSettingsBusy = false;
+    }
   }
 
   private loadProfile(): void {

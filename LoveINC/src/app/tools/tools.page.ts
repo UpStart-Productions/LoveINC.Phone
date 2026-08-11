@@ -5,9 +5,7 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonButtons,
 } from '@ionic/angular/standalone';
-import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { ContentCardListComponent } from '../components/content-card-list/content-card-list.component';
 import type { ContentCardListItem } from '../components/content-card-list/content-card-list.model';
 import { REGISTERED_TOOL_CARDS, type ToolCard } from '../registered-tools';
@@ -22,9 +20,7 @@ import { REGISTERED_TOOL_CARDS, type ToolCard } from '../registered-tools';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonButtons,
     ContentCardListComponent,
-    AppBackButtonComponent,
   ],
 })
 export class ToolsPage {

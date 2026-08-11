@@ -41,7 +41,6 @@ const ROOT_DRILL_IN_REDIRECTS: Routes = [
     redirectTo: '/tabs/content-detail/partner/:id',
     pathMatch: 'full',
   },
-  { path: 'settings', redirectTo: '/tabs/settings', pathMatch: 'full' },
   { path: 'profile', redirectTo: '/tabs/profile', pathMatch: 'full' },
   { path: 'service-unlock/scan', redirectTo: '/tabs/service-unlock/scan', pathMatch: 'full' },
   { path: 'church-map', redirectTo: '/tabs/church-map', pathMatch: 'full' },
@@ -142,10 +141,6 @@ const TAB_DRILL_IN_ROUTES: Routes = [
     path: 'partner/:id',
     redirectTo: 'content-detail/partner/:id',
     pathMatch: 'full',
-  },
-  {
-    path: 'settings',
-    loadComponent: () => import('../settings/settings.page').then((m) => m.SettingsPage),
   },
   {
     path: 'profile',

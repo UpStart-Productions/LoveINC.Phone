@@ -14,6 +14,7 @@ import {
   IonIcon,
   IonRefresher,
   IonRefresherContent,
+  IonCard,
 } from '@ionic/angular/standalone';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { OnboardingService } from '../services/onboarding.service';
@@ -68,6 +69,7 @@ export type ClientSupportCardState =
     IonContent,
     IonRefresher,
     IonRefresherContent,
+    IonCard,
     IonButton,
     IonButtons,
     IonIcon,

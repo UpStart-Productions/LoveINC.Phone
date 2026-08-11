@@ -12,13 +12,25 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  @if (showEmptyNotice) {
-    <div class="empty-state">
-      <p class="app-body-secondary">There are no classes at this time.</p>
+<ion-content [fullscreen]="true" class="classes-page">
+  @if (loaded && showEmptyNotice) {
+    <div class="classes-empty-photo">
+      <img
+        src="assets/photos/classes-empty-header.png"
+        alt="Empty classroom with desks and a chalkboard"
+      />
     </div>
-  } @else {
-    <div>
+
+    <div class="classes-empty-copy p-l-18 p-r-18 p-t-18 p-b-36">
+      <p class="app-body m-b-12">Love INC Newberg has no classes right now.</p>
+      <p class="app-body-secondary-sm">
+        Please check back later and make sure
+        <a routerLink="/tabs/profile" [queryParams]="{ from: 'transformation-classes' }" class="app-link">you're receiving notifications</a>
+        from the Love INC Newberg app.
+      </p>
+    </div>
+  } @else if (loaded) {
+    <div class="cards-container">
       <app-card
         *ngFor="let item of activeClassCards"
         class="class-card app-card-compact"

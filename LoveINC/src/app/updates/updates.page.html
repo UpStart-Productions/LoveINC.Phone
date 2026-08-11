@@ -12,20 +12,38 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <div class="cards-container">
-    <app-card
-      *ngFor="let item of items"
-      class="app-card-compact"
-      [imageUrl]="item.photoUrl"
-      [badge]="item.badge"
-      [title]="item.title"
-      [subtitle]="item.subtitle"
-      [description]="item.shortDescription || item.description"
-      [clickable]="true"
-      [actionIcons]="getActionIcons(item)"
-      (cardClick)="navigateToDetail(item)"
-      (shareClick)="onShareItem(item)">
-    </app-card>
-  </div>
+<ion-content [fullscreen]="true" class="updates-page">
+  @if (loaded && items.length === 0) {
+    <div class="updates-empty-photo">
+      <img
+        src="assets/photos/updates-empty-header.png"
+        alt="Open hand-drawn monthly planner with an encouraging message"
+      />
+    </div>
+
+    <div class="updates-empty-copy p-l-18 p-r-18 p-t-18 p-b-36">
+      <p class="app-body m-b-12">Love INC Newberg has no events right now.</p>
+      <p class="app-body-secondary-sm">
+        Please check back later and make sure
+        <a routerLink="/tabs/profile" [queryParams]="{ from: 'updates' }" class="app-link">you're receiving notifications</a>
+        from the Love INC Newberg app.
+      </p>
+    </div>
+  } @else {
+    <div class="cards-container">
+      <app-card
+        *ngFor="let item of items"
+        class="app-card-compact"
+        [imageUrl]="item.photoUrl"
+        [badge]="item.badge"
+        [title]="item.title"
+        [subtitle]="item.subtitle"
+        [description]="item.shortDescription || item.description"
+        [clickable]="true"
+        [actionIcons]="getActionIcons(item)"
+        (cardClick)="navigateToDetail(item)"
+        (shareClick)="onShareItem(item)">
+      </app-card>
+    </div>
+  }
 </ion-content>

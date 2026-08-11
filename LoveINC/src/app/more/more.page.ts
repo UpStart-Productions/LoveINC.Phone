@@ -34,6 +34,8 @@ interface MoreItem {
   name: string;
   icon: string;
   lucideIcon?: string;
+  /** CSS color (prefer `var(--love-inc-*)` or `var(--ion-color-*)` tokens). */
+  iconColor?: string;
   route?: string;
   /** Opens in system browser (e.g. legal pages). */
   externalUrl?: string;
@@ -99,24 +101,28 @@ export class MorePage implements OnInit {
       title: 'Explore',
       items: [
         {
-          name: 'Impact Stories',
-          icon: 'heart-outline',
-          route: '/tabs/impact-stories',
+          name: 'About Love INC Newberg',
+          icon: 'information-circle-outline',
+          iconColor: 'var(--ion-color-secondary)',
+          route: '/tabs/about',
         },
         {
-          name: 'Learning Tools',
-          icon: 'construct-outline',
-          route: '/tabs/tools',
+          name: 'Impact Stories',
+          icon: 'heart-outline',
+          iconColor: 'var(--love-inc-red)',
+          route: '/tabs/impact-stories',
         },
         {
           name: 'FAQ',
           icon: 'help-circle-outline',
+          iconColor: 'var(--love-inc-teal)',
           route: '/tabs/faq',
         },
         {
           name: 'Church Partnerships',
           icon: 'people-circle-outline',
           lucideIcon: 'church',
+          iconColor: 'var(--love-inc-tertiary-blue-dark)',
           route: '/tabs/church-partnerships',
         },
       ],
@@ -128,16 +134,19 @@ export class MorePage implements OnInit {
         {
           name: `Share ${LOVE_INC_PUBLIC_NAME}`,
           icon: 'share-outline',
+          iconColor: 'var(--ion-color-primary)',
           handler: () => this.openShareApp(),
         },
         {
           name: `Rate ${LOVE_INC_PUBLIC_NAME}`,
           icon: 'star-outline',
+          iconColor: 'var(--love-inc-gold)',
           handler: () => this.openRateApp(),
         },
         {
           name: 'Support request',
           icon: 'ribbon-outline',
+          iconColor: 'var(--love-inc-coral)',
           route: '/assistance/support-request',
         },
       ],
@@ -147,11 +156,13 @@ export class MorePage implements OnInit {
       {
         name: 'My Profile',
         icon: 'person-circle-outline',
+        iconColor: 'var(--ion-color-tertiary)',
         route: '/tabs/profile',
       },
       {
         name: 'Open Volunteer Positions',
         icon: 'hand-right-outline',
+        iconColor: 'var(--love-inc-orange)',
         route: '/tabs/volunteer-positions',
       },
     ];
@@ -167,11 +178,13 @@ export class MorePage implements OnInit {
         {
           name: 'Privacy Policy',
           icon: 'shield-outline',
+          iconColor: 'var(--love-inc-primary-medium)',
           externalUrl: LOVE_INC_PRIVACY_POLICY_URL,
         },
         {
           name: 'Terms of Use',
           icon: 'document-text-outline',
+          iconColor: 'var(--love-inc-neutral-dark)',
           externalUrl: LOVE_INC_TERMS_OF_USE_URL,
         },
       ],

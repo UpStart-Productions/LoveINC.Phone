@@ -162,6 +162,12 @@ export class GrovLinkDatabaseService {
         PRIMARY KEY (tool_id, input_key)
       );
     `);
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS app_preferences (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      );
+    `);
   }
 
   async getDbConnection(): Promise<SQLiteDBConnection> {
@@ -302,5 +308,26 @@ export class GrovLinkDatabaseService {
   async clearTransformationToolResponses(toolId: string): Promise<void> {
     const db = await this.getDbConnection();
     await db.run('DELETE FROM transformation_tool_responses WHERE tool_id = ?', [toolId]);
+  }
+
+  async getAppPreference(key: string): Promise<string | null> {
+    const db = await this.getDbConnection();
+    const result = await db.query('SELECT value FROM app_preferences WHERE key = ?', [key]);
+    const row = result?.values?.[0];
+    if (!row) return null;
+    if (Array.isArray(row)) {
+      const raw = row[0];
+      return raw !== null && raw !== undefined ? String(raw) : null;
+    }
+    if (typeof row === 'object' && row !== null && 'value' in row) {
+      const raw = (row as Record<string, unknown>)['value'];
+      return raw !== null && raw !== undefined ? String(raw) : null;
+    }
+    return null;
+  }
+
+  async setAppPreference(key: string, value: string): Promise<void> {
+    const db = await this.getDbConnection();
+    await db.run('INSERT OR REPLACE INTO app_preferences (key, value) VALUES (?, ?)', [key, value]);
   }
 }

@@ -1,31 +1,22 @@
 <ion-item
-  class="home-cta-row-item m-b-6"
+  class="home-cta-row-item"
   [class.home-cta-row-item--flat]="row.id === 'get-help' || row.id === 'give-now'"
   button
   detail="false"
   lines="none"
   (click)="onRowClick()">
   @if (row.photoUrl) {
-    <img slot="start" [src]="row.photoUrl" alt="" class="home-cta-row__photo m-r-18" />
-  } @else if (row.iconName) {
-    <div slot="start" class="home-cta-row__start m-r-18">
-      <ion-icon
-        [name]="row.iconName"
-        class="home-cta-row__icon"
-        [style.color]="row.iconColor">
-      </ion-icon>
-    </div>
+    <img slot="start" [src]="row.photoUrl" alt="" class="home-cta-row__photo" />
   }
   <ion-label>
     @if (row.bodyMode === 'intake-connection') {
       <p class="app-title">
-        Start your intake at<br />
+        Access services through our
         <a
           class="app-link"
           routerLink="/tabs/connection-center"
           (click)="$event.stopPropagation()"
-        >Connection Center</a><br />
-        to access services.
+        >Connection Center</a>
       </p>
     } @else {
       <p class="app-title">{{ row.body }}</p>
@@ -49,7 +40,20 @@
       </ion-progress-bar>
     }
   </ion-label>
-  <div slot="end" class="action-pill m-l-12" [style.background-color]="row.pillColor">
-    {{ row.pillText }}
+  <div
+    slot="end"
+    class="action-pill home-cta-row__pill"
+    [class.home-cta-row__pill--with-icon]="row.iconName && !row.photoUrl"
+    [style.background-color]="row.pillColor">
+    @if (row.iconName && !row.photoUrl) {
+      <span class="home-cta-row__pill-icon-wrap">
+        <ion-icon
+          [name]="row.iconName"
+          class="home-cta-row__pill-icon"
+          [style.color]="row.iconColor">
+        </ion-icon>
+      </span>
+    }
+    <span class="home-cta-row__pill-text">{{ row.pillText }}</span>
   </div>
 </ion-item>

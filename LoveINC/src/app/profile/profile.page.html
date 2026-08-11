@@ -3,11 +3,11 @@
     <ion-buttons slot="start">
       <app-back-button></app-back-button>
     </ion-buttons>
-    <ion-title>Profile</ion-title>
+    <ion-title>My Profile</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="profile-page">
   <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -92,7 +92,7 @@
 
       @if (showVolunteerProviderAccessPrompt) {
         <p class="app-body-secondary m-b-12">
-          Scan your {{ customerName }} QR code to view provider phone numbers and email while you volunteer.
+          Scan your Love INC QR code to access your volunteer connection features within the app.
         </p>
         <ion-button expand="block" fill="outline" size="small" (click)="onScanRequested()">
           <ion-icon slot="start" name="qr-code-outline"></ion-icon>
@@ -109,6 +109,35 @@
     [customerName]="customerName">
   </app-service-access-section>
 
+  <ion-card class="section-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="settings-outline" class="section-icon"></ion-icon>
+        Settings
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none" class="settings-toggle-row">
+        <ion-icon name="notifications-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>
+          Push Notifications
+          <p class="app-body-secondary-sm">Get alerts about events, classes, and updates.</p>
+        </ion-label>
+        <ion-toggle
+          slot="end"
+          [checked]="pushNotificationsEnabled"
+          [disabled]="pushSettingsBusy"
+          (ionChange)="onPushToggleChange($event)">
+        </ion-toggle>
+      </ion-item>
+      @if (pushOsDenied) {
+        <p class="app-body-secondary-sm m-t-12">
+          Notifications are turned off in your device settings. Open Settings → Love INC → Notifications to enable them.
+        </p>
+      }
+    </ion-card-content>
+  </ion-card>
+
   <!-- Bottom Spacing -->
-  <div style="height: 100px;"></div>
+  <div class="profile-bottom-spacer"></div>
 </ion-content>

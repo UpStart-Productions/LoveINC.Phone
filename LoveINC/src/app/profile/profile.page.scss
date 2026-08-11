@@ -1,3 +1,11 @@
+:host ion-content.profile-page {
+  --background: var(--ion-color-light);
+}
+
+:host ion-content.profile-page::part(background) {
+  background: var(--ion-color-light);
+}
+
 :host {
   ion-card.section-card,
   app-service-access-section ::ng-deep ion-card.section-card,
@@ -88,3 +96,11 @@ ion-item {
   border-radius: 0.75rem;
 }
 
+.profile-bottom-spacer {
+  height: 6.25rem;
+}
+
+.settings-toggle-row {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}

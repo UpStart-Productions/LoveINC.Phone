@@ -43,6 +43,40 @@
   object-fit: cover;
 }
 
+.hero-image-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--app-scrim-strong) 0%, transparent 52%);
+  pointer-events: none;
+}
+
+.hero-image-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 1.125rem 1.125rem 1.25rem;
+  color: var(--app-text-overlay);
+  z-index: 1;
+}
+
+.impact-stories-list-link {
+  background: var(--ion-background-color);
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  ion-icon {
+    font-size: var(--app-icon-size-sm);
+    width: var(--app-icon-size-sm);
+    height: var(--app-icon-size-sm);
+  }
+}
+
 /* Solid white scroll area (app default is #f5f5f5) */
 ion-content.content-detail-page {
   --background: var(--ion-background-color);

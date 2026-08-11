@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { format } from 'date-fns';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   formatEventSubtitle,
   formatClassSessionSubtitle,
@@ -68,6 +68,7 @@ import { AppBackButtonComponent } from '../../components/app-back-button/app-bac
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     IonHeader, 
     IonToolbar, 
     IonTitle, 
@@ -850,6 +851,17 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   isEvent(): boolean {
     return this.contentType === 'event';
+  }
+
+  isImpactStory(): boolean {
+    return this.contentType === 'impact-story';
+  }
+
+  get showToolbarTitle(): boolean {
+    if (this.isImpactStory() && this.contentItem?.photoUrl) {
+      return false;
+    }
+    return true;
   }
 
   hasInstructor(): boolean {

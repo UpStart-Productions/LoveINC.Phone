@@ -16,11 +16,13 @@
   <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <div class="home-top-items">
-    @for (row of homeCtaRows; track row.id) {
-      <app-home-cta-row [row]="row"></app-home-cta-row>
-    }
-  </div>
+  @if (homeCtaRows.length) {
+    <ion-card class="home-cta-card">
+      @for (row of homeCtaRows; track row.id) {
+        <app-home-cta-row [row]="row"></app-home-cta-row>
+      }
+    </ion-card>
+  }
 
   <app-verse-of-the-day-widget></app-verse-of-the-day-widget>
 
