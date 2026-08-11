@@ -119,6 +119,20 @@ ion-card-content .app-body-secondary {
   color: var(--app-text-secondary);
 }
 
+ion-card-content p.app-body-secondary-sm,
+ion-card-content .app-body-secondary-sm {
+  font-size: var(--app-font-size-sm) !important;
+  line-height: var(--app-line-height-relaxed) !important;
+  color: var(--app-text-secondary);
+}
+
+ion-card-content p.app-body-secondary-xs,
+ion-card-content .app-body-secondary-xs {
+  font-size: var(--app-font-size-xs) !important;
+  line-height: var(--app-line-height-relaxed) !important;
+  color: var(--app-text-secondary);
+}
+
 ion-card-content .app-title {
   font-size: var(--app-font-size-title) !important;
   line-height: var(--app-line-height-body) !important;

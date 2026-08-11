@@ -553,6 +553,7 @@ export class HomePage implements OnInit {
       address: card.address ?? null,
       positions: card.volunteerPositions,
       scheduleFallback: card.subtitle ?? undefined,
+      fromGapMinistry: card.type === 'gap-ministry',
     });
   }
 

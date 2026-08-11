@@ -23,7 +23,6 @@ export interface ContentCardListItem {
   mapPhone?: string;
   mapWebsite?: string;
   compactCategoryLabel?: boolean;
-  compactDetail?: boolean;
   clickable?: boolean;
   /** Right-cell badge text (e.g. journal entry date). Shown with or without avatar. */
   asideBadge?: string;

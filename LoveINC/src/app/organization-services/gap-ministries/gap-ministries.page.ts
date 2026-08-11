@@ -48,6 +48,7 @@ export interface GapService {
   contact: string;
   contactMethod: string;
   notes: string | null;
+  shortDescription?: string | null;
   phone?: string;
   email?: string;
   photoUrl?: string;
@@ -99,7 +100,7 @@ export class GapMinistriesPage implements OnInit {
     return this.gapAccess.hasProviderContactAccess;
   }
 
-  /** Alphabetical list for the compact Gap view (photo + title only). */
+  /** Alphabetical list for the compact Gap view (photo, title, short description). */
   get compactListServices(): GapService[] {
     return [...this.services].sort((a, b) =>
       a.service.localeCompare(b.service, undefined, { sensitivity: 'base' })
@@ -110,6 +111,7 @@ export class GapMinistriesPage implements OnInit {
     return this.compactListServices.map((service) => ({
       id: service.id,
       title: service.service,
+      detail: service.shortDescription?.trim() || undefined,
       imageUrl: service.photoUrl,
       iconName: service.photoUrl ? undefined : 'people-outline',
       route: `/tabs/content-detail/gap-ministry/${service.id}`,
@@ -201,6 +203,7 @@ export class GapMinistriesPage implements OnInit {
             contact,
             contactMethod,
             notes: off.shortDescription ?? off.longDescription ?? svc.shortDescription ?? null,
+            shortDescription: off.shortDescription ?? svc.shortDescription ?? null,
             phone: off.provider?.phone,
             email: off.provider?.email,
             photoUrl,
@@ -230,6 +233,7 @@ export class GapMinistriesPage implements OnInit {
           contact: 'Contact Love INC',
           contactMethod: 'call_loveinc',
           notes: svc.shortDescription ?? null,
+          shortDescription: svc.shortDescription ?? null,
           voucherRequired: svc.voucherRequired ?? false,
           serviceId: svc.id,
           vouchers: (svc.vouchers ?? []).map((v) => ({ id: v.id, title: v.title })),
@@ -468,7 +472,8 @@ export class GapMinistriesPage implements OnInit {
       organizationName: service.service,
       address: service.address,
       positions: service.volunteerPositions,
-      scheduleFallback: service.daysTimes ?? undefined});
+      scheduleFallback: service.daysTimes ?? undefined,
+      fromGapMinistry: true});
   }
 
   async onCalendarClick(service: GapService) {

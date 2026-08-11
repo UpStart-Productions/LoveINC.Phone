@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ModalController } from '@ionic/angular/standalone';
 import { VolunteerModalComponent } from '../components/volunteer-modal/volunteer-modal.component';
+import { GapAccessService } from './gap-access.service';
 
 /** Minimal volunteer position – usable from donations, services, content, etc. */
 export interface VolunteerPositionInfo {
@@ -19,6 +20,8 @@ export interface OpenVolunteerModalOptions {
   positions: VolunteerPositionInfo[];
   /** Fallback schedule when a position has none (e.g. location hours) */
   scheduleFallback?: string;
+  /** When true, address is hidden until client intake QR unlock (Gap Ministry). */
+  fromGapMinistry?: boolean;
 }
 
 @Injectable({
@@ -26,18 +29,27 @@ export interface OpenVolunteerModalOptions {
 })
 export class VolunteerActionSheetService {
   constructor(
-    private modalController: ModalController
+    private modalController: ModalController,
+    private gapAccess: GapAccessService
   ) {}
 
   async openVolunteerActionSheet(options: OpenVolunteerModalOptions): Promise<void> {
-    const { organizationName, address, positions, scheduleFallback } = options;
+    const { organizationName, positions, scheduleFallback, fromGapMinistry } = options;
+    let address = options.address ?? null;
     if (!positions?.length) return;
+
+    if (fromGapMinistry) {
+      await this.gapAccess.refreshState();
+      if (this.gapAccess.orgIntakeRequired && !this.gapAccess.hasProviderContactAccess) {
+        address = null;
+      }
+    }
 
     const modal = await this.modalController.create({
       component: VolunteerModalComponent,
       componentProps: {
         organizationName,
-        address: address ?? null,
+        address,
         locationHours: scheduleFallback ?? null,
         positions,
       },

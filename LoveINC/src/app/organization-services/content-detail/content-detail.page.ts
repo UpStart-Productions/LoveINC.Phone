@@ -165,6 +165,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       this.classIntakeGateActive = this.gapAccess.isIntakeGateActive;
       await this.refreshClassRegistrationLocalStatus();
     }
+    if (this.contentType === 'gap-ministry') {
+      await this.gapAccess.refreshState();
+      this.intakeRequired = this.gapAccess.orgIntakeRequired;
+      this.intakeCompleted = this.gapAccess.hasProviderContactAccess;
+    }
   }
 
   private async refreshClassRegistrationLocalStatus(): Promise<void> {
@@ -926,7 +931,21 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     return !!this.contentItem?.volunteerSchedule;
   }
 
+  /** Gap ministry: location visible only after intake QR unlock when org requires intake. */
+  private canShowGapProviderContact(): boolean {
+    if (this.contentType !== 'gap-ministry') {
+      return true;
+    }
+    if (!this.intakeRequired) {
+      return true;
+    }
+    return this.intakeCompleted;
+  }
+
   hasLocation(): boolean {
+    if (!this.canShowGapProviderContact()) {
+      return false;
+    }
     return !!this.contentItem?.location;
   }
 
@@ -941,14 +960,14 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   hasPhone(): boolean {
-    if (this.contentType === 'gap-ministry' && this.intakeRequired && !this.intakeCompleted) {
+    if (!this.canShowGapProviderContact()) {
       return false;
     }
     return !!this.contentItem?.phone;
   }
 
   hasEmail(): boolean {
-    if (this.contentType === 'gap-ministry' && this.intakeRequired && !this.intakeCompleted) {
+    if (!this.canShowGapProviderContact()) {
       return false;
     }
     return !!this.contentItem?.email;
@@ -1100,7 +1119,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       organizationName: this.contentItem.title,
       address: this.contentItem.location ?? null,
       positions: this.contentItem.volunteerPositions,
-      scheduleFallback: this.contentItem.subtitle ?? undefined});
+      scheduleFallback: this.contentItem.subtitle ?? undefined,
+      fromGapMinistry: this.contentType === 'gap-ministry'});
   }
 
   hasClassDocuments(): boolean {
@@ -1120,7 +1140,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     if (this.contentType !== 'gap-ministry' || !this.contentItem?.voucherRequired) {
       return false;
     }
-    return !this.intakeRequired || this.intakeCompleted;
+    return this.canShowGapProviderContact();
   }
 
   async onVoucherClick(): Promise<void> {
@@ -1239,7 +1259,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       html += `<p><strong>Date/Time:</strong> ${this.contentItem.eventDate || ''} ${this.contentItem.eventTime || ''}</p>`;
     }
     
-    if (this.contentItem.location) {
+    if (this.hasLocation()) {
       html += `<p><strong>Location:</strong> ${this.contentItem.location}</p>`;
     }
     

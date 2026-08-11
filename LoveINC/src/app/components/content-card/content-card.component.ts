@@ -81,9 +81,6 @@ export class ContentCardComponent {
    */
   @Input() compactCategoryLabel = false;
 
-  /** One step smaller than default detail line (e.g. Simple Budget home card subtext). */
-  @Input() compactDetail = false;
-
   /** Flush stacked row inside `app-content-card-list` (divider lines, no card shadow). */
   @Input() listRow = false;
 

@@ -315,7 +315,13 @@ export class DonateGoodsPage implements OnInit {
       if (location.hours) parts.push(`<div class="donation-detail-row"><ion-icon name="time-outline"></ion-icon><span>${esc(location.hours)}</span></div>`);
       parts.push(`</div>`);
     }
-    if (location.phone) parts.push(`<div class="donation-detail-row"><span>${esc(location.phone)}</span></div>`);
+    if (location.phone) {
+      const phone = location.phone.trim();
+      const telHref = phone.replace(/"/g, '&quot;');
+      parts.push(
+        `<div class="donation-detail-row"><span><a class="app-link" href="tel:${telHref}">${esc(location.phone)}</a></span></div>`
+      );
+    }
     if (location.contact) parts.push(`<div class="donation-detail-row"><span>${esc(location.contact)}</span></div>`);
     if (location.notes) parts.push(`<div class="donation-detail-row"><span class="app-body-secondary notes-value">${esc(location.notes)}</span></div>`);
     if (location.acceptedItems?.length) {

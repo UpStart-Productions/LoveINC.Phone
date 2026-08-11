@@ -52,10 +52,7 @@
         }
         @if (detailSegments?.length || detail) {
           <div class="content-card-detail">
-            <p
-              [class.app-body-secondary]="!compactDetail"
-              [class.app-body-secondary-sm]="compactDetail"
-            >
+            <p>
               @if (detailSegments?.length) {
                 @for (seg of detailSegments; track $index) {
                   <span

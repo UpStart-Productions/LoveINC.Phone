@@ -41,7 +41,7 @@ import { IonCard, IonCardHeader, IonCardContent, IonIcon } from '@ionic/angular/
       font-size: var(--app-icon-size-sm);
       color: var(--ion-color-primary);
       flex-shrink: 0;
-      margin-top: 2px;
+      margin-top: 5px;
     }
 
     .location-popover-card .location-row a.app-link {

@@ -132,6 +132,9 @@
   --app-font-size-input: var(--app-font-size-body);
   --app-font-size-tab-label: var(--app-font-size-sm);
 
+  /** Detail line under title on app-content-card (list rows + home promo cards). */
+  --app-content-card-detail-font-size: var(--app-font-size-sm);
+
   /** Icon sizes – 4 sizes **/
   --app-icon-size-sm: 0.875rem;
   --app-icon-size-md: 1.25rem;

@@ -122,7 +122,7 @@
 .voucher-modal-location-icon {
   flex-shrink: 0;
   color: var(--ion-color-primary);
-  margin-top: 0.125rem;
+  margin-top: calc(0.125rem + 3px);
 }
 
 .voucher-modal-location-text {

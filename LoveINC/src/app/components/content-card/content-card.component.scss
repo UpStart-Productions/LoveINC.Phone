@@ -3,6 +3,7 @@
 .content-card {
   --content-card-aside-width: 4.5rem;
   --content-card-list-divider-color: rgba(var(--app-scrim-rgb), 0.08);
+  --content-card-detail-font-size: var(--app-content-card-detail-font-size);
 }
 
 .content-card ion-card-content {
@@ -133,10 +134,12 @@
 .content-card-detail {
   p {
     margin: 0;
+    font-size: var(--content-card-detail-font-size) !important;
+    line-height: var(--app-line-height-relaxed) !important;
+    color: var(--app-text-secondary);
   }
 
-  /* Global `span` sets body font size; detail segments must follow the paragraph (e.g. app-body-secondary-sm). */
-  p.app-body-secondary-sm span {
+  p span {
     font-size: inherit;
   }
 }
