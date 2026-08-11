@@ -17,8 +17,10 @@ export function mapNotificationMetaToContentType(meta: NotificationMeta | null |
 
   const { itemType, ctaType } = meta;
 
-  // Backend itemType: event, class, cta, service
+  // Backend itemType: event, class, cta, service, impact_story, transformation_tool
   if (itemType === 'service') return 'gap-ministry';
+
+  if (itemType === 'transformation_tool') return null;
 
   if (itemType === 'cta') {
     const ctaMapping: Record<string, ContentType> = {
@@ -34,6 +36,7 @@ export function mapNotificationMetaToContentType(meta: NotificationMeta | null |
   const mapping: Record<string, ContentType> = {
     event: 'event',
     class: 'class',
+    impact_story: 'impact-story',
     'impact-story': 'impact-story',
     impactStory: 'impact-story',
     'gap-ministry': 'gap-ministry',
@@ -53,4 +56,15 @@ export function mapNotificationMetaToContentType(meta: NotificationMeta | null |
   };
 
   return mapping[itemType] ?? 'event';
+}
+
+/** Router commands for notification tap (content-detail or dedicated routes). */
+export function getNotificationRoute(meta: NotificationMeta | null | undefined): string[] | null {
+  if (!meta?.itemType || !meta?.itemId) return null;
+  if (meta.itemType === 'transformation_tool') {
+    return ['/tabs/transformation-tools', meta.itemId];
+  }
+  const routeType = mapNotificationMetaToContentType(meta);
+  if (!routeType) return null;
+  return ['/tabs/content-detail', routeType, meta.itemId];
 }

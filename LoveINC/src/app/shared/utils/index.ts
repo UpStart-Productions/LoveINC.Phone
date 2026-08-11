@@ -7,7 +7,7 @@ export {
   resolveReturnUrl,
   resolveReturnUrlFromRouteTree,
 } from './navigation-origin.util';
-export { mapNotificationMetaToContentType, type NotificationMeta } from './notification-deeplink';
+export { mapNotificationMetaToContentType, getNotificationRoute, type NotificationMeta } from './notification-deeplink';
 export { markQuillParagraphGaps } from './quill-rich-html';
 export {
   APP_DOT,

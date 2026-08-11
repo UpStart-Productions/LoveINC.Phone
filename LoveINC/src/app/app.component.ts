@@ -28,7 +28,7 @@ import { SimpleBudgetDatabaseService, WeekPlanService } from '@upstart-productio
 import { GoalTrackerRefreshService } from './goal-tracker-tabs/services/goal-tracker-refresh.service';
 import { PushRegistrationService } from './services/push-registration.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
-import { mapNotificationMetaToContentType } from './shared/utils/notification-deeplink';
+import { getNotificationRoute } from './shared/utils/notification-deeplink';
 import { addIcons } from 'ionicons';
 import {
   // Tab Bar Icons
@@ -321,9 +321,9 @@ export class AppComponent implements OnInit, OnDestroy {
             tenantSlug: data['tenantSlug'],
             ctaType: data['ctaType'],
           };
-          const routeType = mapNotificationMetaToContentType(meta);
-          if (routeType) {
-            this.router.navigate(['/tabs/content-detail', routeType, meta.itemId]);
+          const route = getNotificationRoute(meta);
+          if (route) {
+            this.router.navigate(route);
           }
         }
       ).catch((err) => {

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { NotificationsService, type AppNotification } from '../../services/notifications.service';
 import {
-  mapNotificationMetaToContentType,
+  getNotificationRoute,
   type NotificationMeta,
 } from '../../shared/utils/notification-deeplink';
 import {
@@ -153,10 +153,9 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
       tenantSlug: m?.tenantSlug,
       ctaType: m?.ctaType,
     };
-    const routeType = mapNotificationMetaToContentType(effectiveMeta);
-    const itemId = metaId;
+    const route = getNotificationRoute(effectiveMeta);
 
-    if (!routeType || !itemId) {
+    if (!route) {
       return;
     }
 
@@ -164,6 +163,6 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
       await this.notificationsService.markAsRead(String(notification.id));
     }
     await this.modalController.dismiss();
-    await this.router.navigate(['/tabs/content-detail', routeType, itemId]);
+    await this.router.navigate(route);
   }
 }
