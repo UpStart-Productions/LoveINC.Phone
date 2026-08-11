@@ -22,7 +22,7 @@ import { NotificationsService } from '../../services/notifications.service';
 })
 export class NotificationsButtonComponent {
   /** TEMP: preview unread badge — set to false when done reviewing. */
-  readonly showBadgePreview = true;
+  readonly showBadgePreview = false;
 
   readonly hasUnread$ = this.notificationsService.hasUnread$;
 
