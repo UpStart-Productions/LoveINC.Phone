@@ -78,7 +78,7 @@ export class HomeCtaRowComponent {
         break;
       case 'get-help':
         if (action.target === 'assistance-intro') {
-          void this.router.navigate(['/assistance/intro']);
+          void this.router.navigate(['/tabs/assistance/intro']);
         } else if (action.target === 'profile') {
           void this.router.navigate(['/tabs/profile'], { queryParams: { from: 'home' } });
         } else if (action.target === 'gap-ministries') {

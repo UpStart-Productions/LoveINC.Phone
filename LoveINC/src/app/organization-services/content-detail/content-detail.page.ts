@@ -1087,7 +1087,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   navigateToAssistanceIntro(): void {
-    void this.router.navigateByUrl('/assistance/intro');
+    void this.router.navigateByUrl('/tabs/assistance/intro');
   }
 
   isDonationDrive(): boolean {

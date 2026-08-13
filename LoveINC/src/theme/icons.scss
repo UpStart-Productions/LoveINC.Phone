@@ -151,10 +151,7 @@ ion-accordion .ion-accordion-toggle-icon {
 /* -----------------------------------------------------------------------------
  * Action Sheet Icons
  * ----------------------------------------------------------------------------- */
-.services-action-sheet,
-.donate-action-sheet,
-.share-action-sheet,
-.budget-action-sheet {
+.app-action-sheet {
   .action-sheet-icon {
     font-size: var(--app-icon-size-sm) !important;
     color: var(--ion-color-dark);

@@ -198,7 +198,7 @@ export class JournalQuillFloatingToolbarComponent implements OnInit, OnDestroy, 
     try {
       const actionSheet = await this.actionSheetController.create({
         header: 'Add photo',
-        cssClass: 'services-action-sheet',
+        cssClass: 'app-action-sheet services-action-sheet',
         buttons: [
           {
             text: 'Take Photo',

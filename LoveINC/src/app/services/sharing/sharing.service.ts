@@ -3,6 +3,7 @@ import { ActionSheetController } from '@ionic/angular/standalone';
 import { Share } from '@capacitor/share';
 import { EmailComposerService } from './email-composer.service';
 import { SharingOptions, ShareContent } from './models/sharing.types';
+import { SHARE_ACTION_SHEET_CLASS } from '../../shared/action-sheet-classes';
 
 /**
  * Generic sharing service that provides action sheet with multiple sharing options.
@@ -28,7 +29,7 @@ export class SharingService {
       // Show action sheet with sharing options
       const actionSheet = await this.actionSheetCtrl.create({
         header: 'Share Content',
-        cssClass: 'share-action-sheet',
+        cssClass: SHARE_ACTION_SHEET_CLASS,
         buttons: [
           {
             text: 'Email as Text',

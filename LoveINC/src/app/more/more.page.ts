@@ -107,12 +107,6 @@ export class MorePage implements OnInit {
           route: '/tabs/about',
         },
         {
-          name: 'Impact Stories',
-          icon: 'heart-outline',
-          iconColor: 'var(--love-inc-red)',
-          route: '/tabs/impact-stories',
-        },
-        {
           name: 'FAQ',
           icon: 'help-circle-outline',
           iconColor: 'var(--love-inc-teal)',
@@ -147,7 +141,7 @@ export class MorePage implements OnInit {
           name: 'Support request',
           icon: 'ribbon-outline',
           iconColor: 'var(--love-inc-coral)',
-          route: '/assistance/support-request',
+          route: '/tabs/assistance/support-request',
         },
       ],
     };

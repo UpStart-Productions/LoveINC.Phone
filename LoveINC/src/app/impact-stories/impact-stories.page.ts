@@ -6,9 +6,7 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonButtons,
 } from '@ionic/angular/standalone';
-import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { CardComponent } from '../components/card/card.component';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformImpactStory } from '../services/platform/types';
@@ -25,9 +23,9 @@ import { SharingService } from '../services/sharing/sharing.service';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonButtons,
     CardComponent,
-    AppBackButtonComponent]})
+  ],
+})
 export class ImpactStoriesPage implements OnInit {
   stories: PlatformImpactStory[] = [];
 

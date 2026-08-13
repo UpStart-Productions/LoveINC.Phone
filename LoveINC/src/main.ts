@@ -49,6 +49,11 @@ import {
   Wallet,
   Calculator,
   Trophy,
+  HouseHeart,
+  Newspaper,
+  GraduationCap,
+  BookMarked,
+  Menu,
 } from 'lucide-angular';
 
 import { routes } from './app/app.routes';
@@ -159,6 +164,11 @@ bootstrapApplication(AppComponent, {
         Wallet,
         Calculator,
         Trophy,
+        HouseHeart,
+        Newspaper,
+        GraduationCap,
+        BookMarked,
+        Menu,
       })
     ),
   ],

@@ -34,7 +34,7 @@ export class AssistanceIntroPage {
   }
 
   onGetStarted() {
-    this.router.navigate(['/assistance/signup']);
+    this.router.navigate(['/tabs/assistance/signup']);
   }
 
   onHaveQRCode() {

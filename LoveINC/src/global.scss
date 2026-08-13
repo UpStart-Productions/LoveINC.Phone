@@ -767,25 +767,20 @@ button.action-pill.action-pill--scripture {
  * Global Action Sheet Styling (typography in theme/typography.scss)
  * Layout, spacing, structure only.
  * ----------------------------------------------------------------------------- */
-.services-action-sheet .action-sheet-title,
-.donate-action-sheet .action-sheet-title,
-.share-action-sheet .action-sheet-title,
-.budget-action-sheet .action-sheet-title,
-.services-action-sheet .action-sheet-header,
-.donate-action-sheet .action-sheet-header,
-.share-action-sheet .action-sheet-header,
-.budget-action-sheet .action-sheet-header,
-.services-action-sheet .action-sheet-group h1,
-.donate-action-sheet .action-sheet-group h1,
-.share-action-sheet .action-sheet-group h1,
-.budget-action-sheet .action-sheet-group h1 {
-  padding-left: 1.25rem !important;
+// Match Ionic's safe-area pattern: lift via wrapper padding-bottom so translateY(100%)
+// dismiss includes the offset (see action-sheet.ios.css in @ionic/core).
+.services-action-sheet .action-sheet-wrapper {
+  padding-bottom: calc(var(--ion-safe-area-bottom, 0px) + 8vh);
+  box-sizing: content-box;
 }
 
-.services-action-sheet,
-.donate-action-sheet,
-.share-action-sheet,
-.budget-action-sheet {
+.app-action-sheet {
+  .action-sheet-title,
+  .action-sheet-header,
+  .action-sheet-group h1 {
+    padding-left: 1.25rem !important;
+  }
+
   .action-sheet-button,
   .action-sheet-button-with-subtitle {
     text-align: left !important;

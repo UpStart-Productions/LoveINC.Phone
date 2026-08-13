@@ -46,6 +46,6 @@ export class AssistanceSignupPage {
   }
 
   onFormSubmitted() {
-    this.router.navigate(['/assistance/thank-you']);
+    this.router.navigate(['/tabs/assistance/thank-you']);
   }
 }

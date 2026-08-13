@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActionSheetController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { AppLauncher } from '@capacitor/app-launcher';
+import { DONATE_ACTION_SHEET_CLASS } from '../shared/action-sheet-classes';
 
 /** External donation page (Givebutter-powered flow still lives at /tabs/donate-money when re-enabled). */
 const LOVE_INC_ONLINE_DONATE_URL = 'https://loveincnewberg.org/donate/';
@@ -39,7 +40,7 @@ export class DonateActionSheetService {
           role: 'cancel'
         }
       ],
-      cssClass: 'donate-action-sheet'
+      cssClass: DONATE_ACTION_SHEET_CLASS
     });
 
     await actionSheet.present();

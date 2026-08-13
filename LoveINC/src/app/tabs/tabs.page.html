@@ -1,40 +1,56 @@
-<ion-tabs>
+<ion-tabs (ionTabsDidChange)="onTabsDidChange()">
   @if (showMainTabBar()) {
-    <ion-tab-bar slot="bottom" class="custom-tab-bar">
-    <ion-tab-button tab="home" href="/tabs/home">
-      <ion-icon aria-hidden="true" name="home-outline" class="outline-icon"></ion-icon>
-      <ion-icon aria-hidden="true" name="home" class="solid-icon"></ion-icon>
-      <ion-label>Home</ion-label>
-    </ion-tab-button>
+    <div class="floating-tab-bar-shell" slot="bottom">
+      <div class="custom-tab-bar" #tabBarTrack>
+        <span
+          class="tab-bar-highlight"
+          [class.tab-bar-highlight-animate]="highlightAnimate()"
+          [style.transform]="highlightTransform()"
+          [style.opacity]="highlightVisible() ? 1 : 0"
+          aria-hidden="true"
+        ></span>
 
-    <ion-tab-button tab="updates" href="/tabs/updates">
-      <ion-icon aria-hidden="true" name="newspaper-outline" class="outline-icon"></ion-icon>
-      <ion-icon aria-hidden="true" name="newspaper" class="solid-icon"></ion-icon>
-      <ion-label>Updates</ion-label>
-    </ion-tab-button>
+        <ion-tab-bar class="custom-tab-bar-inner" (ionTabBarChanged)="onTabBarChanged($event)">
+          <ion-tab-button tab="home" href="/tabs/home" aria-label="Home">
+            <span class="tab-bar-tab-content">
+              <i-lucide name="house-heart" [size]="26" class="tab-bar-lucide-icon"></i-lucide>
+            </span>
+          </ion-tab-button>
 
-    <!-- Spacer for the floating action button -->
-    <ion-tab-button class="fab-spacer" disabled="true" style="visibility: hidden;">
-    </ion-tab-button>
+          <ion-tab-button tab="updates" href="/tabs/updates" aria-label="Updates">
+            <span class="tab-bar-tab-content">
+              <i-lucide name="newspaper" [size]="26" class="tab-bar-lucide-icon"></i-lucide>
+            </span>
+          </ion-tab-button>
 
-    <ion-tab-button tab="tools" href="/tabs/tools">
-      <ion-icon aria-hidden="true" name="school-outline" class="outline-icon"></ion-icon>
-      <ion-icon aria-hidden="true" name="school" class="solid-icon"></ion-icon>
-      <ion-label>Learn</ion-label>
-    </ion-tab-button>
+          <ion-tab-button tab="impact-stories" href="/tabs/impact-stories" aria-label="Stories">
+            <span class="tab-bar-tab-content">
+              <i-lucide name="book-marked" [size]="26" class="tab-bar-lucide-icon"></i-lucide>
+            </span>
+          </ion-tab-button>
 
-    <ion-tab-button tab="more" href="/tabs/more">
-      <ion-icon aria-hidden="true" name="menu-outline" class="outline-icon"></ion-icon>
-      <ion-icon aria-hidden="true" name="menu" class="solid-icon"></ion-icon>
-      <ion-label>More</ion-label>
-    </ion-tab-button>
-    </ion-tab-bar>
+          <ion-tab-button tab="tools" href="/tabs/tools" aria-label="Learn">
+            <span class="tab-bar-tab-content">
+              <i-lucide name="graduation-cap" [size]="26" class="tab-bar-lucide-icon"></i-lucide>
+            </span>
+          </ion-tab-button>
 
-    <!-- Floating Action Button for Services -->
-    <ion-fab class="fab-center">
-      <ion-fab-button (click)="openServicesMenu()">
-        <div class="love-inc-heart-logo" style="width: 34px; height: 34px; margin-top: 3px;"></div>
-      </ion-fab-button>
-    </ion-fab>
+          <ion-tab-button tab="more" href="/tabs/more" aria-label="More">
+            <span class="tab-bar-tab-content">
+              <i-lucide name="menu" [size]="26" class="tab-bar-lucide-icon"></i-lucide>
+            </span>
+          </ion-tab-button>
+
+          <button
+            type="button"
+            class="tab-bar-services-fab"
+            aria-label="Services"
+            (click)="toggleServicesMenu()"
+          >
+            <span class="love-inc-heart-logo tab-bar-services-fab-logo" aria-hidden="true"></span>
+          </button>
+        </ion-tab-bar>
+      </div>
+    </div>
   }
 </ion-tabs>

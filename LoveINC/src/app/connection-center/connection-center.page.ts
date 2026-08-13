@@ -49,6 +49,6 @@ export class ConnectionCenterPage implements OnInit {
   }
 
   goToGetAssistance() {
-    void this.router.navigateByUrl('/assistance/intro');
+    void this.router.navigateByUrl('/tabs/assistance/intro');
   }
 }
