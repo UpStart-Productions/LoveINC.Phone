@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
+import { IonIcon } from '@ionic/angular/standalone';
 import { ContentCardComponent } from '../content-card/content-card.component';
 import type { ContentCardListItem } from '../content-card-list/content-card-list.model';
 import type {
@@ -13,7 +14,7 @@ import type {
 @Component({
   selector: 'app-peek-carousel',
   standalone: true,
-  imports: [CommonModule, NgTemplateOutlet, ContentCardComponent],
+  imports: [CommonModule, NgTemplateOutlet, IonIcon, ContentCardComponent],
   templateUrl: './peek-carousel.component.html',
   styleUrl: './peek-carousel.component.scss',
 })

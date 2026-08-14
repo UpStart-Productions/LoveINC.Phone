@@ -65,6 +65,16 @@ const ROOT_DRILL_IN_REDIRECTS: Routes = [
     redirectTo: '/tabs/content-detail/:type/:id',
     pathMatch: 'full',
   },
+  {
+    path: 'content-plan/:planKey/moment/:momentId',
+    redirectTo: '/tabs/content-plan/:planKey/moment/:momentId',
+    pathMatch: 'full',
+  },
+  {
+    path: 'content-plan/:planKey',
+    redirectTo: '/tabs/content-plan/:planKey',
+    pathMatch: 'full',
+  },
   { path: 'donate-goods', redirectTo: '/tabs/donate-goods', pathMatch: 'full' },
   { path: 'donate-money', redirectTo: '/tabs/donate-money', pathMatch: 'full' },
   { path: 'developer-options', redirectTo: '/tabs/developer-options', pathMatch: 'full' },
@@ -199,6 +209,16 @@ const TAB_DRILL_IN_ROUTES: Routes = [
     path: 'transformation-classes/:id',
     redirectTo: 'content-detail/class/:id',
     pathMatch: 'full',
+  },
+  {
+    path: 'content-plan/:planKey/moment/:momentId',
+    loadComponent: () =>
+      import('../content-plan/content-plan-moment.page').then((m) => m.ContentPlanMomentPage),
+  },
+  {
+    path: 'content-plan/:planKey',
+    loadComponent: () =>
+      import('../content-plan/content-plan.page').then((m) => m.ContentPlanPage),
   },
   {
     path: 'class-registration/:classId',

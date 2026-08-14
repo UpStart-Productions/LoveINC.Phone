@@ -382,3 +382,47 @@ export interface PlatformHomeFeedItem {
   volunteerPositions?: PlatformVolunteerPosition[];
   [key: string]: unknown;
 }
+
+export interface PlatformPlanAuthor {
+  name: string;
+  avatarUrl?: string | null;
+}
+
+export type PlatformPlanDisplayStyle = 'SINGLE_PAGE' | 'MULTI_PAGE' | 'LIST';
+
+export interface PlatformPlanBlock {
+  id?: string;
+  order: number;
+  blockId: string;
+  type: string;
+  content: Record<string, unknown>;
+}
+
+export interface PlatformPlanMoment {
+  planMomentId: string;
+  order: number;
+  id: string;
+  title: string;
+  shared: boolean;
+  blocks: PlatformPlanBlock[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PlatformPlan {
+  id: string;
+  slug: string;
+  title: string;
+  coverPhotoUrl?: string;
+  author: PlatformPlanAuthor;
+  activationType: string;
+  classId?: string;
+  class?: { id: string; slug: string; title: string };
+  activationStart?: string;
+  activationEnd?: string;
+  isActive: boolean;
+  displayStyle: PlatformPlanDisplayStyle;
+  moments: PlatformPlanMoment[];
+  createdAt: string;
+  updatedAt: string;
+}

@@ -1,0 +1,19 @@
+@if (plan.coverPhotoUrl) {
+  <div class="content-reader-hero">
+    <img [src]="plan.coverPhotoUrl" [alt]="plan.title" class="content-reader-hero__image" />
+    <div class="content-reader-hero__gradient" aria-hidden="true"></div>
+    <p class="content-reader-hero__title app-title">{{ plan.title }}</p>
+  </div>
+} @else {
+  <div class="content-reader-body p-l-18 p-r-18">
+    <div class="app-font-crimson m-t-18 m-b-18">
+      <p class="app-title">{{ plan.title }}</p>
+    </div>
+  </div>
+}
+
+<app-content-card-list
+  [items]="listItems"
+  [compactCategoryLabel]="true"
+  [defaultNavigationFrom]="navigationFrom"
+/>

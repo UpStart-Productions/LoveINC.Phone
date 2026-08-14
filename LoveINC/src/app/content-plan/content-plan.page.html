@@ -1,0 +1,70 @@
+@if (showPlanHeader) {
+  <ion-header class="content-reader-header">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <app-back-button></app-back-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+}
+
+<ion-content
+  [fullscreen]="true"
+  class="content-reader-scroll"
+  [class.content-reader-scroll--edge-hero]="showEdgeHero"
+  [class.content-reader-scroll--multi-nav]="!loading && plan?.displayStyle === 'MULTI_PAGE'"
+>
+  @if (showEdgeHero) {
+    <div class="content-reader-float-nav">
+      <app-back-button></app-back-button>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="content-reader-loading">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (!plan) {
+    <div class="content-reader-empty p-l-18 p-r-18 p-t-18">
+      <p class="app-body-secondary-sm">This plan could not be found.</p>
+    </div>
+  } @else {
+    @switch (plan.displayStyle) {
+      @case ('SINGLE_PAGE') {
+        <app-content-plan-single-view [plan]="plan" />
+      }
+      @case ('MULTI_PAGE') {
+        <app-content-plan-multi-view [plan]="plan" [pageIndex]="pageIndex" />
+      }
+      @case ('LIST') {
+        <app-content-plan-list-view [plan]="plan" />
+      }
+      @default {
+        <app-content-plan-single-view [plan]="plan" />
+      }
+    }
+  }
+
+  @if (!loading && plan?.displayStyle === 'MULTI_PAGE') {
+    <div slot="fixed" class="content-plan-multi-nav">
+      <button
+        type="button"
+        class="content-plan-multi-nav__btn"
+        [disabled]="!canGoMultiPrev"
+        (click)="goMultiPrev()"
+        aria-label="Previous page"
+      >
+        <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
+      </button>
+      <button
+        type="button"
+        class="content-plan-multi-nav__btn"
+        [disabled]="!canGoMultiNext"
+        (click)="goMultiNext()"
+        aria-label="Next page"
+      >
+        <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
+      </button>
+    </div>
+  }
+</ion-content>

@@ -1,0 +1,42 @@
+ion-content.content-reader-scroll--multi-nav {
+  --padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.content-plan-multi-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  left: 0;
+  right: 0;
+  bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  padding: 0 1.125rem;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.content-plan-multi-nav__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.925rem;
+  height: 1.925rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(var(--ion-color-primary-rgb), 0.22);
+  color: var(--ion-color-primary);
+  box-shadow: 0 0.125rem 0.25rem rgba(var(--app-scrim-rgb), 0.14);
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  ion-icon {
+    font-size: 0.875rem;
+  }
+}

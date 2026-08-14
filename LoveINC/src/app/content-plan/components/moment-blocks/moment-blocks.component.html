@@ -1,0 +1,92 @@
+@if (sortedBlocks.length === 0) {
+  <p class="app-body-secondary">No content yet.</p>
+} @else {
+  @for (block of sortedBlocks; track block.id ?? block.blockId) {
+    @switch (block.type) {
+      @case ('RICH_TEXT') {
+        @if (contentString(block, 'html')) {
+          <div class="rich-html" [innerHTML]="contentString(block, 'html') | safeHtml"></div>
+        }
+      }
+      @case ('TEXT_INPUT') {
+        <div class="m-b-24 m-t-18">
+          <ion-item>
+            <ion-label position="stacked">{{ contentString(block, 'label') || 'Response' }}</ion-label>
+            <ion-textarea
+              [placeholder]="contentString(block, 'text') || ''"
+              [autoGrow]="true"
+              autocapitalize="sentences"
+              rows="3">
+            </ion-textarea>
+          </ion-item>
+        </div>
+      }
+      @case ('CHECKBOX') {
+        @if (options(block).length > 0) {
+          <div class="m-b-24 m-t-18">
+            <p class="app-body m-b-6">{{ promptLabel(block) }}</p>
+            <ion-list lines="none">
+              @for (option of options(block); track option) {
+                <ion-item>
+                  <ion-checkbox slot="start" [value]="option"></ion-checkbox>
+                  <ion-label>{{ option }}</ion-label>
+                </ion-item>
+              }
+            </ion-list>
+          </div>
+        }
+      }
+      @case ('RADIO') {
+        @if (options(block).length > 0) {
+          <div class="m-b-24 m-t-18">
+            <p class="app-body m-b-6">{{ promptLabel(block) }}</p>
+            <ion-radio-group>
+              <ion-list lines="none">
+                @for (option of options(block); track option) {
+                  <ion-item>
+                    <ion-radio slot="start" [value]="option"></ion-radio>
+                    <ion-label>{{ option }}</ion-label>
+                  </ion-item>
+                }
+              </ion-list>
+            </ion-radio-group>
+          </div>
+        }
+      }
+      @case ('VIDEO') {
+        @if (contentString(block, 'caption')) {
+          <p class="app-body-secondary">{{ contentString(block, 'caption') }}</p>
+        }
+        @if (videoEmbedUrl(block); as embedUrl) {
+          <div class="moment-blocks__video">
+            <iframe
+              [src]="embedUrl | safeResourceUrl"
+              title="Video"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+        }
+      }
+      @case ('PHOTO') {
+        @if (mediaUrl(block); as url) {
+          <img class="moment-blocks__photo" [src]="url" [alt]="contentString(block, 'caption') || 'Photo'" />
+        }
+        @if (contentString(block, 'caption')) {
+          <p class="app-caption">{{ contentString(block, 'caption') }}</p>
+        }
+      }
+      @case ('DOCUMENT') {
+        @if (contentString(block, 'caption')) {
+          <p class="app-body-secondary">{{ contentString(block, 'caption') }}</p>
+        }
+        @if (mediaUrl(block); as url) {
+          <a class="app-link" [href]="url" target="_blank" rel="noopener">
+            {{ mediaFilename(block) || 'View document' }}
+          </a>
+        }
+      }
+    }
+  }
+}

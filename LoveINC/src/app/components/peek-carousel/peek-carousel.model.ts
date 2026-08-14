@@ -3,15 +3,13 @@ import type { ContentCardListItem } from '../content-card-list/content-card-list
 /** Slide layout used by `app-peek-carousel`. */
 export type PeekCarouselVariant = 'cover' | 'media' | 'list';
 
-/** Hero slide: fixed-size card with background visual and overlay text. */
+/** Hero slide: fixed-size card with photo and overlay text. */
 export interface PeekCarouselCoverItem {
   id: string;
   title: string;
-  subtitle?: string;
-  /** Remote image URL. When omitted, `imageColor` fills the card. */
-  imageUrl?: string;
-  /** Placeholder / mock fill when no `imageUrl`. */
-  imageColor?: string;
+  imageUrl: string;
+  authorName: string;
+  authorAvatarUrl?: string;
 }
 
 /** Taller slide: visual on top, title/date/description below. */

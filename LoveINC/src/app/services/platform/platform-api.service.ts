@@ -14,6 +14,9 @@ import type {
   PlatformNotification,
   PlatformOrganization,
   PlatformPartner,
+  PlatformPlan,
+  PlatformPlanDisplayStyle,
+  PlatformPlanMoment,
   PlatformService,
   PlatformTeamMember,
   PlatformTransformationTool,
@@ -172,6 +175,12 @@ export class PlatformApiService {
   getTransformationTools(): Observable<PlatformTransformationTool[]> {
     return this.get<{ transformationTools: PlatformTransformationTool[] }>('/transformation-tools').pipe(
       map((res) => res?.transformationTools ?? [])
+    );
+  }
+
+  getPlans(): Observable<PlatformPlan[]> {
+    return this.get<{ plans: PlatformPlan[] }>('/plans').pipe(
+      map((res) => res?.plans ?? [])
     );
   }
 

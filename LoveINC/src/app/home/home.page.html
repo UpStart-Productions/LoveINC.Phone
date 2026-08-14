@@ -37,7 +37,8 @@
       variant="cover"
       sectionTitle="Cover cards"
       [coverItems]="peekCoverItems"
-      [clickable]="false"
+      [clickable]="true"
+      (slideClick)="onPeekCoverSlideClick($event)"
     />
 
     <app-peek-carousel

@@ -298,7 +298,7 @@ export class TransformationToolPage implements OnInit, OnDestroy {
     if (!bar) return;
     const index = this.sections.findIndex((s) => s.id === sectionId);
     if (index < 0) return;
-    const tab = bar.querySelectorAll('.tft-tab').item(index) as HTMLElement | null;
+    const tab = bar.querySelectorAll('.content-reader-tab').item(index) as HTMLElement | null;
     tab?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     setTimeout(() => this.updateTabIndicator(), 300);
   }
@@ -315,7 +315,7 @@ export class TransformationToolPage implements OnInit, OnDestroy {
         return;
       }
 
-      const tab = bar.querySelectorAll('.tft-tab').item(index) as HTMLElement | null;
+      const tab = bar.querySelectorAll('.content-reader-tab').item(index) as HTMLElement | null;
       if (!tab) return;
 
       indicator.style.opacity = '1';

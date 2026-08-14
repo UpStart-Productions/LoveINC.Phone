@@ -32,11 +32,11 @@
   } @else if (contentItem) {
   <div>
     <!-- Hero Image -->
-    <div class="hero-image-container" *ngIf="contentItem.photoUrl">
-      <img [src]="contentItem.photoUrl" [alt]="contentItem.title" class="hero-image" />
+    <div class="content-reader-hero" *ngIf="contentItem.photoUrl">
+      <img [src]="contentItem.photoUrl" [alt]="contentItem.title" class="content-reader-hero__image" />
       @if (isImpactStory()) {
-        <div class="hero-image-gradient" aria-hidden="true"></div>
-        <p class="hero-image-title app-title">{{ contentItem.title }}</p>
+        <div class="content-reader-hero__gradient" aria-hidden="true"></div>
+        <p class="content-reader-hero__title app-title">{{ contentItem.title }}</p>
       }
       <span
         class="class-registered-pill"
