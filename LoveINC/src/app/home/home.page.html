@@ -32,6 +32,28 @@
 
   <app-goal-tracker-home-widget></app-goal-tracker-home-widget>
 
+  <div class="home-peek-carousel-demos">
+    <app-peek-carousel
+      variant="cover"
+      sectionTitle="Cover cards"
+      [coverItems]="peekCoverItems"
+      [clickable]="false"
+    />
+
+    <app-peek-carousel
+      variant="media"
+      sectionTitle="Media cards"
+      [mediaItems]="peekMediaItems"
+      [clickable]="false"
+    />
+
+    <app-peek-carousel
+      variant="list"
+      sectionTitle="List stacks"
+      [listSlides]="peekListSlides"
+    />
+  </div>
+
   <div class="cards-container">
     <app-card
       *ngFor="let card of cards"

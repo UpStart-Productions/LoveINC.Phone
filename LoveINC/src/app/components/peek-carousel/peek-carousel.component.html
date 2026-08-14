@@ -1,0 +1,123 @@
+<section
+  class="peek-carousel"
+  [class]="'peek-carousel--' + variant"
+  [style.--peek-carousel-peek]="peekCssValue"
+>
+  @if (sectionTitle) {
+    <h2 class="app-large peek-carousel__section-title">{{ sectionTitle }}</h2>
+  }
+
+  <div class="peek-carousel__track" tabindex="0" role="list">
+    @switch (variant) {
+      @case ('cover') {
+        @for (item of coverItems; track trackCoverItem($index, item)) {
+          <div class="peek-carousel__slide" role="listitem">
+            @if (clickable) {
+              <button type="button" class="peek-carousel-cover peek-carousel-cover--clickable" (click)="onCoverClick(item)">
+                <ng-container *ngTemplateOutlet="coverInner; context: { item }" />
+              </button>
+            } @else {
+              <div class="peek-carousel-cover">
+                <ng-container *ngTemplateOutlet="coverInner; context: { item }" />
+              </div>
+            }
+          </div>
+        }
+      }
+
+      @case ('media') {
+        @for (item of mediaItems; track trackMediaItem($index, item)) {
+          <div class="peek-carousel__slide" role="listitem">
+            @if (clickable) {
+              <button type="button" class="peek-carousel-media peek-carousel-media--clickable" (click)="onMediaClick(item)">
+                <ng-container *ngTemplateOutlet="mediaInner; context: { item }" />
+              </button>
+            } @else {
+              <div class="peek-carousel-media">
+                <ng-container *ngTemplateOutlet="mediaInner; context: { item }" />
+              </div>
+            }
+          </div>
+        }
+      }
+
+      @case ('list') {
+        @for (slide of listSlides; track trackListSlide($index, slide)) {
+          <div class="peek-carousel__slide" role="listitem">
+            <div class="peek-carousel-list-shell">
+              @for (row of slide.rows; track trackListRow($index, row); let last = $last) {
+                <app-content-card
+                  [listRow]="true"
+                  [listDivider]="!last"
+                  [compactCategoryLabel]="row.compactCategoryLabel ?? true"
+                  [category]="row.category"
+                  [categoryIcon]="row.categoryIcon"
+                  [lucideCategoryIcon]="row.lucideCategoryIcon"
+                  [categoryExtra]="row.categoryExtra"
+                  [title]="row.title"
+                  [titleSegments]="row.titleSegments"
+                  [underTitle]="row.underTitle"
+                  [detail]="row.detail"
+                  [detailSegments]="row.detailSegments"
+                  [imageUrl]="row.imageUrl"
+                  [iconName]="row.iconName"
+                  [lucideIcon]="row.lucideIcon"
+                  [iconBackgroundColor]="row.iconBackgroundColor ?? defaultIconBackgroundColor"
+                  [route]="row.route"
+                  [navigationFrom]="row.navigationFrom"
+                  [preserveQueryParams]="row.preserveQueryParams ?? false"
+                  [asideBadge]="row.asideBadge"
+                  [asideBadgeColor]="row.asideBadgeColor ?? 'success'"
+                  [avatarOverlayIcon]="row.avatarOverlayIcon"
+                  [avatarOverlayIconColor]="row.avatarOverlayIconColor ?? 'success'"
+                  [clickable]="row.route ? true : row.clickable !== false"
+                  (cardClick)="onListRowClick(slide, row)"
+                />
+              }
+            </div>
+          </div>
+        }
+      }
+    }
+  </div>
+</section>
+
+<ng-template #coverInner let-item="item">
+  @if (item.imageUrl) {
+    <img class="peek-carousel-cover__image" [src]="item.imageUrl" [alt]="" />
+  } @else {
+    <span
+      class="peek-carousel-cover__fill"
+      [style.background-color]="item.imageColor ?? defaultImageColor"
+      aria-hidden="true"
+    ></span>
+  }
+  <span class="peek-carousel-cover__scrim" aria-hidden="true"></span>
+  <span class="peek-carousel-cover__text">
+    <span class="peek-carousel-cover__title">{{ item.title }}</span>
+    @if (item.subtitle) {
+      <span class="peek-carousel-cover__subtitle">{{ item.subtitle }}</span>
+    }
+  </span>
+</ng-template>
+
+<ng-template #mediaInner let-item="item">
+  @if (item.imageUrl) {
+    <img class="peek-carousel-media__image" [src]="item.imageUrl" [alt]="" />
+  } @else {
+    <span
+      class="peek-carousel-media__fill"
+      [style.background-color]="item.imageColor ?? defaultImageColor"
+      aria-hidden="true"
+    ></span>
+  }
+  <span class="peek-carousel-media__body">
+    @if (item.date) {
+      <span class="app-caption peek-carousel-media__date">{{ item.date }}</span>
+    }
+    <span class="peek-carousel-media__title">{{ item.title }}</span>
+    @if (item.description) {
+      <span class="app-body-secondary peek-carousel-media__description">{{ item.description }}</span>
+    }
+  </span>
+</ng-template>

@@ -150,7 +150,7 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
     const sizePx = 2.75 * rootFontSize;
 
     const x = buttonRect.left + buttonRect.width / 2 - trackRect.left - sizePx / 2;
-    const y = buttonRect.top + buttonRect.height / 2 - trackRect.top - sizePx / 2;
+    const y = buttonRect.top + buttonRect.height / 2 - trackRect.top - sizePx / 2 - 1;
 
     this.highlightAnimate.set(animate);
     this.highlightTransform.set(`translate(${x}px, ${y}px)`);

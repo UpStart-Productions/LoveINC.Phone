@@ -3,6 +3,7 @@
   --floating-tab-bar-bottom-gap: 0.75rem;
   --floating-tab-bar-inline-inset: 0.25rem;
   --tab-bar-highlight-size: 2.75rem;
+  --tab-bar-icon-nudge-y: 2px;
 
   ion-tabs {
     --ion-tab-bar-background: transparent;
@@ -19,6 +20,7 @@
   min-height: var(--floating-tab-bar-pill-height);
   border-radius: 999px;
   background: #ffffff;
+  border: 1px solid var(--ion-color-light-gray, #e0e0e0);
   box-shadow:
     0 0.25rem 0.75rem rgba(var(--ion-color-dark-rgb), 0.08),
     0 0.0625rem 0.25rem rgba(var(--ion-color-dark-rgb), 0.06);
@@ -82,7 +84,7 @@
 
   .tab-bar-lucide-icon {
     display: block;
-    transform: translateY(3px);
+    transform: translateY(var(--tab-bar-icon-nudge-y));
     color: var(--love-inc-neutral-medium);
   }
 

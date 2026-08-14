@@ -17,6 +17,13 @@
   }
 }
 
+.home-peek-carousel-demos {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-block: 0.5rem 1rem;
+}
+
 /* Donate action sheet – subtitle layout */
 ::ng-deep .donate-action-sheet {
   .action-sheet-button-with-subtitle {

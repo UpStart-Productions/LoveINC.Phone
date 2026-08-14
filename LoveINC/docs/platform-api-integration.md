@@ -49,6 +49,8 @@ Import from `'../../services/platform'` or `'../../services/platform-api.service
 | `GET /organization` | ✅ | `getOrganization()` | About, contact |
 | `GET /events` | ✅ | `getEvents()` | Updates page |
 | `GET /classes` | ✅ | `getClasses()` | Transformation Classes page |
+| `GET /plans` | ✅ (platform) | — | Learn / microlearning (not wired in app yet) |
+| `GET /moments` | ✅ (platform) | — | Standalone moments catalog (not wired in app yet) |
 | `GET /services` | ✅ | `getServices()` | Gap Ministries, Services |
 | `GET /ctas` | ✅ | `getCtas()` | Home, CTAs |
 | `GET /impact-stories` | ✅ | `getImpactStories()` | Impact Stories page |
