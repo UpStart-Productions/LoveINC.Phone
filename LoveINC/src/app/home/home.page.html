@@ -38,20 +38,21 @@
       sectionTitle="Tools for Transformation"
       [tag]="tftPlansTag"
       [clickable]="true"
-      (slideClick)="onPeekCoverSlideClick($event)"
+      (slideClick)="onPeekPlanSlideClick($event)"
     />
 
     <app-peek-carousel
       variant="media"
-      sectionTitle="Media cards"
-      [mediaItems]="peekMediaItems"
-      [clickable]="false"
+      sectionTitle="Tools for Transformation"
+      [tag]="tftPlansTag"
+      [clickable]="true"
+      (slideClick)="onPeekPlanSlideClick($event)"
     />
 
     <app-peek-carousel
       variant="list"
-      sectionTitle="List stacks"
-      [listSlides]="peekListSlides"
+      sectionTitle="Tools for Transformation"
+      [tag]="tftPlansTag"
     />
   </div>
 

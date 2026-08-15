@@ -32,4 +32,7 @@ export interface ContentCardListItem {
   avatarOverlayIcon?: string;
   /** Ionic color for `avatarOverlayIcon` (default `success`). */
   avatarOverlayIconColor?: string;
+  /** Inline author row under title (avatar left of "By {name}"). */
+  authorName?: string;
+  authorAvatarUrl?: string;
 }

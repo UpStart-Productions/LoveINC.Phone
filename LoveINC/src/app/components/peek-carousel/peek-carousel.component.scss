@@ -178,6 +178,40 @@
   margin: 0;
 }
 
+.peek-carousel-media__author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.125rem;
+}
+
+.peek-carousel-media__author-avatar {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.peek-carousel-media__author-avatar--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ion-color-light-shade);
+  color: var(--ion-color-dark);
+
+  ion-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+}
+
+.peek-carousel-media__author-label {
+  font-size: var(--app-font-size-xs);
+  line-height: var(--app-line-height-body);
+  color: var(--app-text-secondary);
+}
+
 .peek-carousel-list-shell {
   border-radius: var(--app-card-radius);
   overflow: hidden;

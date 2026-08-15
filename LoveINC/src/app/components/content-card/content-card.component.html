@@ -50,6 +50,18 @@
             <p class="app-body-secondary">{{ underTitle }}</p>
           }
         }
+        @if (authorName) {
+          <div class="content-card-author">
+            @if (authorAvatarUrl) {
+              <img class="content-card-author__avatar" [src]="authorAvatarUrl" [alt]="authorName" />
+            } @else {
+              <span class="content-card-author__avatar content-card-author__avatar--placeholder" aria-hidden="true">
+                <ion-icon name="person-outline"></ion-icon>
+              </span>
+            }
+            <span class="app-body-secondary-xs content-card-author__label">By {{ authorName }}</span>
+          </div>
+        }
         @if (detailSegments?.length || detail) {
           <div class="content-card-detail">
             <p>

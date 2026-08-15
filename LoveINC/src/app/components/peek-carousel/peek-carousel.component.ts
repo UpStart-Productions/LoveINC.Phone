@@ -13,7 +13,7 @@ import { IonIcon } from '@ionic/angular/standalone';
 import { ContentCardComponent } from '../content-card/content-card.component';
 import type { ContentCardListItem } from '../content-card-list/content-card-list.model';
 import { ContentPlanService } from '../../content-plan/content-plan.service';
-import { mapContentPlanToCoverItem } from './peek-carousel.mapper';
+import { mapContentPlanToCoverItem, mapContentPlanToMediaItem, mapPlansToListSlides } from './peek-carousel.mapper';
 import type {
   PeekCarouselCoverItem,
   PeekCarouselListSlide,
@@ -39,7 +39,7 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
 
   @Input() sectionTitle?: string;
 
-  /** When set, cover slides load from plans tagged with this value. */
+  /** When set, cover, media, and list slides load from plans tagged with this value. */
   @Input() tag: string | null = null;
 
   @Input() coverItems: PeekCarouselCoverItem[] = [];
@@ -61,12 +61,28 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
   @Output() slideClick = new EventEmitter<PeekCarouselSlideClick>();
 
   taggedCoverItems: PeekCarouselCoverItem[] = [];
+  taggedMediaItems: PeekCarouselMediaItem[] = [];
+  taggedListSlides: PeekCarouselListSlide[] = [];
 
   get displayCoverItems(): PeekCarouselCoverItem[] {
     if (this.tag?.trim()) {
       return this.taggedCoverItems;
     }
     return this.coverItems;
+  }
+
+  get displayMediaItems(): PeekCarouselMediaItem[] {
+    if (this.tag?.trim()) {
+      return this.taggedMediaItems;
+    }
+    return this.mediaItems;
+  }
+
+  get displayListSlides(): PeekCarouselListSlide[] {
+    if (this.tag?.trim()) {
+      return this.taggedListSlides;
+    }
+    return this.listSlides;
   }
 
   get peekCssValue(): string {
@@ -119,6 +135,8 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
     const tag = this.tag?.trim();
     if (!tag) {
       this.taggedCoverItems = [];
+      this.taggedMediaItems = [];
+      this.taggedListSlides = [];
       return;
     }
 
@@ -127,9 +145,13 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
         this.taggedCoverItems = plans
           .map((plan) => mapContentPlanToCoverItem(plan))
           .filter((item): item is PeekCarouselCoverItem => item !== null);
+        this.taggedMediaItems = plans.map((plan) => mapContentPlanToMediaItem(plan));
+        this.taggedListSlides = mapPlansToListSlides(plans);
       },
       error: () => {
         this.taggedCoverItems = [];
+        this.taggedMediaItems = [];
+        this.taggedListSlides = [];
       },
     });
   }

@@ -99,6 +99,11 @@ export class ContentCardComponent {
   /** Ionic color for `avatarOverlayIcon` (default `success`). */
   @Input() avatarOverlayIconColor = 'success';
 
+  /** Optional author line under the title (avatar left of "By {name}"). */
+  @Input() authorName?: string;
+
+  @Input() authorAvatarUrl?: string;
+
   get hasAsideAvatar(): boolean {
     return !!(this.imageUrl || this.iconName || this.lucideIcon);
   }

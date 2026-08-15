@@ -20,6 +20,8 @@ export interface PeekCarouselMediaItem {
   description?: string;
   imageUrl?: string;
   imageColor?: string;
+  authorName?: string;
+  authorAvatarUrl?: string;
 }
 
 /** One carousel slide containing a vertical stack of list rows. */

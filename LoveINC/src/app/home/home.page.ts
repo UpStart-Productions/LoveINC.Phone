@@ -46,11 +46,7 @@ import { DismissedVouchersService } from '../services/dismissed-vouchers.service
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { CalendarService } from '../services/calendar/calendar.service';
 import { PeekCarouselComponent, PEEK_CAROUSEL_TFT_PLANS_TAG } from '../components/peek-carousel/peek-carousel.component';
-import type {
-  PeekCarouselListSlide,
-  PeekCarouselMediaItem,
-  PeekCarouselSlideClick,
-} from '../components/peek-carousel/peek-carousel.model';
+import type { PeekCarouselSlideClick } from '../components/peek-carousel/peek-carousel.model';
 
 const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
 const BROWSE_SERVICES_MAX_DISPLAYS = 3;
@@ -91,89 +87,6 @@ export type ClientSupportCardState =
 })
 export class HomePage implements OnInit {
   readonly tftPlansTag = PEEK_CAROUSEL_TFT_PLANS_TAG;
-
-  readonly peekMediaItems: PeekCarouselMediaItem[] = [
-    {
-      id: 'media-1',
-      title: 'Budget Basics',
-      date: 'Sat, Mar 21',
-      description: 'Track income and expenses with a simple weekly plan.',
-      imageColor: '#214491',
-    },
-    {
-      id: 'media-2',
-      title: 'Transformation Class',
-      date: 'Thu, Apr 2 · 6:00 PM',
-      description: 'Small group learning with mentors and practical tools.',
-      imageColor: '#349394',
-    },
-    {
-      id: 'media-3',
-      title: 'Daily Reflection',
-      date: 'Today',
-      description: 'A short prompt to pause and write what you are learning.',
-      imageColor: '#2c5f7d',
-    },
-  ];
-
-  readonly peekListSlides: PeekCarouselListSlide[] = [
-    {
-      id: 'list-1',
-      rows: [
-        {
-          id: 'row-1',
-          category: 'Spiritual Growth',
-          lucideCategoryIcon: 'compass',
-          title: 'Tools for Transformation',
-          detail: 'Guided devotionals',
-          lucideIcon: 'compass',
-          iconBackgroundColor: '#349394',
-        },
-        {
-          id: 'row-2',
-          category: 'Money Management',
-          lucideCategoryIcon: 'wallet',
-          title: 'Budget Planner',
-          detail: 'Weekly check-in',
-          lucideIcon: 'calculator',
-          iconBackgroundColor: '#214491',
-          asideBadge: 'New',
-        },
-      ],
-    },
-    {
-      id: 'list-2',
-      rows: [
-        {
-          id: 'row-3',
-          category: 'Life Skills',
-          lucideCategoryIcon: 'trophy',
-          title: 'Goal Tracker',
-          detail: '3 active goals',
-          lucideIcon: 'trophy',
-          iconBackgroundColor: '#eaa535',
-        },
-        {
-          id: 'row-4',
-          category: 'Personal Growth',
-          lucideCategoryIcon: 'sprout',
-          title: 'Your Journal',
-          detail: 'Last entry · Tue',
-          lucideIcon: 'sprout',
-          iconBackgroundColor: '#2c5f7d',
-        },
-        {
-          id: 'row-5',
-          category: 'Daily Scripture',
-          lucideCategoryIcon: 'bookmark',
-          title: 'Verse of the Day',
-          detail: 'Psalm 23',
-          lucideIcon: 'bookmark',
-          iconBackgroundColor: '#3B82F6',
-        },
-      ],
-    },
-  ];
 
   @ViewChild(SimpleBudgetHomeWidgetComponent)
   private budgetHomeWidget?: SimpleBudgetHomeWidgetComponent;
@@ -308,8 +221,8 @@ export class HomePage implements OnInit {
     });
   }
 
-  onPeekCoverSlideClick(event: PeekCarouselSlideClick): void {
-    if (event.variant !== 'cover') {
+  onPeekPlanSlideClick(event: PeekCarouselSlideClick): void {
+    if (event.variant !== 'cover' && event.variant !== 'media') {
       return;
     }
     void this.router.navigate(['/tabs/content-plan', event.item.id], {

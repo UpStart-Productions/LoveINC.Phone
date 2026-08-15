@@ -4,7 +4,7 @@
   [style.--peek-carousel-peek]="peekCssValue"
 >
   @if (sectionTitle) {
-    <h2 class="app-large peek-carousel__section-title">{{ sectionTitle }}</h2>
+    <p class="app-body-secondary-sm app-uppercase peek-carousel__section-title">{{ sectionTitle }}</p>
   }
 
   <div class="peek-carousel__track" tabindex="0" role="list">
@@ -26,7 +26,7 @@
       }
 
       @case ('media') {
-        @for (item of mediaItems; track trackMediaItem($index, item)) {
+        @for (item of displayMediaItems; track trackMediaItem($index, item)) {
           <div class="peek-carousel__slide" role="listitem">
             @if (clickable) {
               <button type="button" class="peek-carousel-media peek-carousel-media--clickable" (click)="onMediaClick(item)">
@@ -42,7 +42,7 @@
       }
 
       @case ('list') {
-        @for (slide of listSlides; track trackListSlide($index, slide)) {
+        @for (slide of displayListSlides; track trackListSlide($index, slide)) {
           <div class="peek-carousel__slide" role="listitem">
             <div class="peek-carousel-list-shell">
               @for (row of slide.rows; track trackListRow($index, row); let last = $last) {
@@ -70,6 +70,8 @@
                   [asideBadgeColor]="row.asideBadgeColor ?? 'success'"
                   [avatarOverlayIcon]="row.avatarOverlayIcon"
                   [avatarOverlayIconColor]="row.avatarOverlayIconColor ?? 'success'"
+                  [authorName]="row.authorName"
+                  [authorAvatarUrl]="row.authorAvatarUrl"
                   [clickable]="row.route ? true : row.clickable !== false"
                   (cardClick)="onListRowClick(slide, row)"
                 />
@@ -121,6 +123,22 @@
     <span class="peek-carousel-media__title">{{ item.title }}</span>
     @if (item.description) {
       <span class="app-body-secondary peek-carousel-media__description">{{ item.description }}</span>
+    }
+    @if (item.authorName) {
+      <span class="peek-carousel-media__author">
+        @if (item.authorAvatarUrl) {
+          <img
+            class="peek-carousel-media__author-avatar"
+            [src]="item.authorAvatarUrl"
+            [alt]="item.authorName"
+          />
+        } @else {
+          <span class="peek-carousel-media__author-avatar peek-carousel-media__author-avatar--placeholder" aria-hidden="true">
+            <ion-icon name="person-outline"></ion-icon>
+          </span>
+        }
+        <span class="peek-carousel-media__author-label">By {{ item.authorName }}</span>
+      </span>
     }
   </span>
 </ng-template>
