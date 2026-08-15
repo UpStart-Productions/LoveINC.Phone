@@ -45,42 +45,12 @@ import { AppUserDataService } from '../services/app-user-data.service';
 import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { CalendarService } from '../services/calendar/calendar.service';
-import { PeekCarouselComponent } from '../components/peek-carousel/peek-carousel.component';
+import { PeekCarouselComponent, PEEK_CAROUSEL_TFT_PLANS_TAG } from '../components/peek-carousel/peek-carousel.component';
 import type {
-  PeekCarouselCoverItem,
   PeekCarouselListSlide,
   PeekCarouselMediaItem,
   PeekCarouselSlideClick,
 } from '../components/peek-carousel/peek-carousel.model';
-import { ContentPlanService } from '../content-plan/content-plan.service';
-import { resolvePlanCoverImageUrl } from '../content-plan/content-plan.mapper';
-
-const MOCK_PEEK_COVER_ITEMS: PeekCarouselCoverItem[] = [
-  {
-    id: 'cover-1',
-    title: 'Good Grief',
-    imageUrl: 'assets/photos/journal-header.png',
-    authorName: 'Love INC Team',
-  },
-  {
-    id: 'cover-2',
-    title: 'Foundations',
-    imageUrl: 'assets/photos/classes-empty-header.png',
-    authorName: 'Love INC Team',
-  },
-  {
-    id: 'cover-3',
-    title: 'Fresh Start',
-    imageUrl: 'assets/photos/connection-center-header.png',
-    authorName: 'Love INC Team',
-  },
-  {
-    id: 'cover-4',
-    title: 'Faith & Work',
-    imageUrl: 'assets/photos/jobs-program-header.png',
-    authorName: 'Love INC Team',
-  },
-];
 
 const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
 const BROWSE_SERVICES_MAX_DISPLAYS = 3;
@@ -120,9 +90,7 @@ export type ClientSupportCardState =
   ],
 })
 export class HomePage implements OnInit {
-  /** Live GrovLink plan shown as the first cover-carousel card (when API returns one). */
-  featuredPlanCoverItem: PeekCarouselCoverItem | null = null;
-  private featuredPlanId: string | null = null;
+  readonly tftPlansTag = PEEK_CAROUSEL_TFT_PLANS_TAG;
 
   readonly peekMediaItems: PeekCarouselMediaItem[] = [
     {
@@ -225,13 +193,6 @@ export class HomePage implements OnInit {
   volunteerCtas: PlatformCta[] = [];
   showDonateButton = false;
 
-  get peekCoverItems(): PeekCarouselCoverItem[] {
-    if (!this.featuredPlanCoverItem) {
-      return MOCK_PEEK_COVER_ITEMS;
-    }
-    return [this.featuredPlanCoverItem, ...MOCK_PEEK_COVER_ITEMS.slice(1)];
-  }
-
   /** Get Help row on Home — intake nudge, vouchers, or browse services. */
   clientSupportCardState: ClientSupportCardState | null = null;
   clientSupportVoucherCount = 0;
@@ -253,22 +214,19 @@ export class HomePage implements OnInit {
     private appUserDataService: AppUserDataService,
     private dismissedVouchersService: DismissedVouchersService,
     private serviceUnlock: ServiceUnlockService,
-    private calendarService: CalendarService,
-    private contentPlanService: ContentPlanService
+    private calendarService: CalendarService
   ) {}
 
   ionViewDidEnter() {
     this.budgetHomeWidget?.refresh();
     this.goalTrackerHomeWidget?.refresh();
     this.transformationToolHomeWidget?.refresh();
-    this.loadFeaturedPlanCover();
     void this.reloadClientContext(false);
   }
 
   ngOnInit() {
     this.loadCards();
     this.loadCtas();
-    this.loadFeaturedPlanCover();
     this.refreshWelcomeTitle();
     this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
     void this.reloadClientContext(false);
@@ -299,7 +257,6 @@ export class HomePage implements OnInit {
           this.cards = cards;
         }),
         firstValueFrom(this.platformApi.getCtas()).then((ctas) => this.applyLoadedCtas(ctas)),
-        firstValueFrom(this.loadFeaturedPlanCover$()),
         this.reloadClientContext(true),
       ]);
     } catch {
@@ -351,54 +308,11 @@ export class HomePage implements OnInit {
     });
   }
 
-  private loadFeaturedPlanCover(): void {
-    this.loadFeaturedPlanCover$().subscribe();
-  }
-
-  private loadFeaturedPlanCover$(): Observable<void> {
-    return this.contentPlanService.getPlans(true).pipe(
-      tap((plans) => {
-        const plan = plans[0] ?? null;
-        if (!plan) {
-          this.featuredPlanCoverItem = null;
-          this.featuredPlanId = null;
-          return;
-        }
-
-        this.featuredPlanId = plan.id;
-        const imageUrl = resolvePlanCoverImageUrl(plan);
-        if (!imageUrl) {
-          this.featuredPlanCoverItem = null;
-          return;
-        }
-
-        this.featuredPlanCoverItem = {
-          id: plan.id,
-          title: plan.title,
-          imageUrl,
-          authorName: plan.author.name || 'Love INC',
-          authorAvatarUrl: plan.author.avatarUrl,
-        };
-        this.cdr.markForCheck();
-      }),
-      map(() => undefined),
-      catchError(() => {
-        this.featuredPlanCoverItem = null;
-        this.featuredPlanId = null;
-        this.cdr.markForCheck();
-        return of(undefined);
-      })
-    );
-  }
-
   onPeekCoverSlideClick(event: PeekCarouselSlideClick): void {
-    if (event.variant !== 'cover' || !this.featuredPlanId) {
+    if (event.variant !== 'cover') {
       return;
     }
-    if (event.item.id !== this.featuredPlanId) {
-      return;
-    }
-    void this.router.navigate(['/tabs/content-plan', this.featuredPlanId], {
+    void this.router.navigate(['/tabs/content-plan', event.item.id], {
       queryParams: { from: 'home' },
     });
   }

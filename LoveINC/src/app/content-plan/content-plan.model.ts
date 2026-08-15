@@ -32,4 +32,5 @@ export interface ContentPlan {
   author: ContentPlanAuthor;
   displayStyle: ContentPlanDisplayStyle;
   moments: ContentPlanMoment[];
+  tags?: string[];
 }

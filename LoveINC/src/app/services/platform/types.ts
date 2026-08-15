@@ -388,6 +388,12 @@ export interface PlatformPlanAuthor {
   avatarUrl?: string | null;
 }
 
+export interface PlatformPlanTag {
+  id?: string;
+  name?: string;
+  slug?: string;
+}
+
 export type PlatformPlanDisplayStyle = 'SINGLE_PAGE' | 'MULTI_PAGE' | 'LIST';
 
 export interface PlatformPlanBlock {
@@ -423,6 +429,7 @@ export interface PlatformPlan {
   isActive: boolean;
   displayStyle: PlatformPlanDisplayStyle;
   moments: PlatformPlanMoment[];
+  tags?: PlatformPlanTag[];
   createdAt: string;
   updatedAt: string;
 }

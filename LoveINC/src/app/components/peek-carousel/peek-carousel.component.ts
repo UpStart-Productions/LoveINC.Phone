@@ -1,8 +1,19 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { IonIcon } from '@ionic/angular/standalone';
 import { ContentCardComponent } from '../content-card/content-card.component';
 import type { ContentCardListItem } from '../content-card-list/content-card-list.model';
+import { ContentPlanService } from '../../content-plan/content-plan.service';
+import { mapContentPlanToCoverItem } from './peek-carousel.mapper';
 import type {
   PeekCarouselCoverItem,
   PeekCarouselListSlide,
@@ -11,6 +22,9 @@ import type {
   PeekCarouselVariant,
 } from './peek-carousel.model';
 
+/** Tag slug for plans shown under Tools for Transformation carousels. */
+export const PEEK_CAROUSEL_TFT_PLANS_TAG = 'tools-for-transformation';
+
 @Component({
   selector: 'app-peek-carousel',
   standalone: true,
@@ -18,10 +32,15 @@ import type {
   templateUrl: './peek-carousel.component.html',
   styleUrl: './peek-carousel.component.scss',
 })
-export class PeekCarouselComponent {
+export class PeekCarouselComponent implements OnInit, OnChanges {
+  private readonly contentPlanService = inject(ContentPlanService);
+
   @Input({ required: true }) variant!: PeekCarouselVariant;
 
   @Input() sectionTitle?: string;
+
+  /** When set, cover slides load from plans tagged with this value. */
+  @Input() tag: string | null = null;
 
   @Input() coverItems: PeekCarouselCoverItem[] = [];
   @Input() mediaItems: PeekCarouselMediaItem[] = [];
@@ -41,9 +60,28 @@ export class PeekCarouselComponent {
 
   @Output() slideClick = new EventEmitter<PeekCarouselSlideClick>();
 
+  taggedCoverItems: PeekCarouselCoverItem[] = [];
+
+  get displayCoverItems(): PeekCarouselCoverItem[] {
+    if (this.tag?.trim()) {
+      return this.taggedCoverItems;
+    }
+    return this.coverItems;
+  }
+
   get peekCssValue(): string {
     const clamped = Math.min(Math.max(this.peek, 0), 0.5);
     return `${clamped * 100}%`;
+  }
+
+  ngOnInit(): void {
+    this.loadTaggedPlans();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['tag'] && !changes['tag'].firstChange) {
+      this.loadTaggedPlans();
+    }
   }
 
   trackCoverItem(_index: number, item: PeekCarouselCoverItem): string {
@@ -75,5 +113,24 @@ export class PeekCarouselComponent {
   onListRowClick(slide: PeekCarouselListSlide, row: ContentCardListItem): void {
     if (row.route) return;
     this.slideClick.emit({ variant: 'list', slide });
+  }
+
+  private loadTaggedPlans(): void {
+    const tag = this.tag?.trim();
+    if (!tag) {
+      this.taggedCoverItems = [];
+      return;
+    }
+
+    this.contentPlanService.getPlansByTag(tag).subscribe({
+      next: (plans) => {
+        this.taggedCoverItems = plans
+          .map((plan) => mapContentPlanToCoverItem(plan))
+          .filter((item): item is PeekCarouselCoverItem => item !== null);
+      },
+      error: () => {
+        this.taggedCoverItems = [];
+      },
+    });
   }
 }

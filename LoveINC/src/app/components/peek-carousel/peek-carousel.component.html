@@ -10,7 +10,7 @@
   <div class="peek-carousel__track" tabindex="0" role="list">
     @switch (variant) {
       @case ('cover') {
-        @for (item of coverItems; track trackCoverItem($index, item)) {
+        @for (item of displayCoverItems; track trackCoverItem($index, item)) {
           <div class="peek-carousel__slide" role="listitem">
             @if (clickable) {
               <button type="button" class="peek-carousel-cover peek-carousel-cover--clickable" (click)="onCoverClick(item)">

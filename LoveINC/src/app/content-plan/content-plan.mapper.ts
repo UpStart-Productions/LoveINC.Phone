@@ -14,6 +14,7 @@ export function mapPlatformPlanToContentPlan(
       : undefined,
     author: mapPlatformPlanAuthor(plan.author, resolveUploadUrl),
     displayStyle: plan.displayStyle,
+    tags: mapPlatformPlanTags(plan.tags),
     moments: plan.moments.map((moment) => mapPlatformMoment(moment, resolveUploadUrl)),
   };
 }
@@ -28,6 +29,18 @@ function mapPlatformPlanAuthor(
     name,
     avatarUrl: avatarRaw ? resolveUploadUrl(avatarRaw) : undefined,
   };
+}
+
+function mapPlatformPlanTags(tags: PlatformPlan['tags']): string[] | undefined {
+  if (!tags?.length) {
+    return undefined;
+  }
+
+  const normalized = tags
+    .map((tag) => (tag.slug ?? tag.name ?? '').trim().toLowerCase())
+    .filter(Boolean);
+
+  return normalized.length ? normalized : undefined;
 }
 
 /** Plan cover photo, or the first moment photo block when no cover is set. */
@@ -45,6 +58,33 @@ export function resolvePlanCoverImageUrl(plan: ContentPlan): string | undefined 
         return url.trim();
       }
     }
+  }
+
+  return undefined;
+}
+
+/** Plain text from a moment block matched by stable `blockId` (e.g. `subtitle`). */
+export function resolveMomentBlockText(
+  moment: ContentPlanMoment,
+  blockId: string
+): string | undefined {
+  const block = moment.blocks.find((row) => row.blockId === blockId);
+  if (!block) {
+    return undefined;
+  }
+
+  const text = block.content['text'];
+  if (typeof text === 'string' && text.trim()) {
+    return text.trim();
+  }
+
+  const html = block.content['html'];
+  if (typeof html === 'string' && html.trim()) {
+    return html
+      .replace(/<br\s*\/?>/gi, ' ')
+      .replace(/<[^>]*>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   return undefined;

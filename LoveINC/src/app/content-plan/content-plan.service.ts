@@ -40,6 +40,21 @@ export class ContentPlanService {
     );
   }
 
+  getPlansByTag(tag: string, refresh = false): Observable<ContentPlan[]> {
+    const normalizedTag = tag.trim().toLowerCase();
+    if (!normalizedTag) {
+      return this.getPlans(refresh).pipe(map(() => []));
+    }
+
+    return this.getPlans(refresh).pipe(
+      map((plans) =>
+        plans.filter((plan) =>
+          plan.tags?.some((planTag) => planTag === normalizedTag)
+        )
+      )
+    );
+  }
+
   getMoment(
     planKey: string,
     momentId: string,

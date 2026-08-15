@@ -4,6 +4,16 @@
       <ion-buttons slot="start">
         <app-back-button></app-back-button>
       </ion-buttons>
+      @if (planHeaderTitle) {
+        <ion-title>{{ planHeaderTitle }}</ion-title>
+      }
+      @if (canShare) {
+        <ion-buttons slot="end">
+          <ion-button (click)="onShareClick()" aria-label="Share">
+            <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      }
     </ion-toolbar>
   </ion-header>
 }
@@ -12,11 +22,23 @@
   [fullscreen]="true"
   class="content-reader-scroll"
   [class.content-reader-scroll--edge-hero]="showEdgeHero"
-  [class.content-reader-scroll--multi-nav]="!loading && plan?.displayStyle === 'MULTI_PAGE'"
 >
   @if (showEdgeHero) {
-    <div class="content-reader-float-nav">
-      <app-back-button></app-back-button>
+    <div
+      class="content-reader-edge-chrome"
+      [class.content-reader-edge-chrome--scrolled]="edgeHeaderScrolled"
+    >
+      <div class="content-reader-edge-chrome__bar">
+        <app-back-button></app-back-button>
+        @if (plan) {
+          <p class="content-reader-edge-chrome__title">{{ plan.title }}</p>
+        }
+        @if (canShare) {
+          <ion-button fill="clear" (click)="onShareClick()" aria-label="Share">
+            <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+          </ion-button>
+        }
+      </div>
     </div>
   }
 
@@ -44,27 +66,35 @@
       }
     }
   }
-
-  @if (!loading && plan?.displayStyle === 'MULTI_PAGE') {
-    <div slot="fixed" class="content-plan-multi-nav">
-      <button
-        type="button"
-        class="content-plan-multi-nav__btn"
-        [disabled]="!canGoMultiPrev"
-        (click)="goMultiPrev()"
-        aria-label="Previous page"
-      >
-        <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
-      </button>
-      <button
-        type="button"
-        class="content-plan-multi-nav__btn"
-        [disabled]="!canGoMultiNext"
-        (click)="goMultiNext()"
-        aria-label="Next page"
-      >
-        <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
-      </button>
-    </div>
-  }
 </ion-content>
+
+@if (!loading && plan?.displayStyle === 'MULTI_PAGE') {
+  <ion-footer class="content-plan-multi-footer">
+    <ion-toolbar>
+      <div class="content-plan-multi-footer-shell">
+        <div class="content-plan-multi-nav-pill">
+          <div class="content-plan-multi-nav">
+            <button
+              type="button"
+              class="content-plan-multi-nav__btn"
+              [disabled]="!canGoMultiPrev"
+              (click)="goMultiPrev()"
+              aria-label="Previous page"
+            >
+              <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
+            </button>
+            <button
+              type="button"
+              class="content-plan-multi-nav__btn"
+              [disabled]="!canGoMultiNext"
+              (click)="goMultiNext()"
+              aria-label="Next page"
+            >
+              <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </ion-toolbar>
+  </ion-footer>
+}

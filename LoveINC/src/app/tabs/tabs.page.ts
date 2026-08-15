@@ -21,6 +21,7 @@ import {
 import { LucideAngularModule } from 'lucide-angular';
 import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
+import { MainTabBarService } from '../services/main-tab-bar.service';
 import { shouldHideMainTabBar } from '../shared/utils';
 import { SERVICES_ACTION_SHEET_CLASS } from '../shared/action-sheet-classes';
 
@@ -33,6 +34,7 @@ import { SERVICES_ACTION_SHEET_CLASS } from '../shared/action-sheet-classes';
 export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
   public environmentInjector = inject(EnvironmentInjector);
   private router = inject(Router);
+  private mainTabBarService = inject(MainTabBarService);
 
   @ViewChild('tabBarTrack', { read: ElementRef }) private tabBarTrackRef?: ElementRef<HTMLElement>;
 
@@ -45,6 +47,7 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
   highlightAnimate = signal(false);
 
   private routerEventsSub: ReturnType<typeof this.router.events.subscribe> | undefined;
+  private tabBarOverrideSub: ReturnType<typeof this.mainTabBarService.hiddenOverride$.subscribe> | undefined;
   private resizeObserver?: ResizeObserver;
   private highlightPositioned = false;
   private activeTabId: string | null = null;
@@ -68,6 +71,9 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
         this.updateTabBarVisibility();
         this.scheduleTabHighlightUpdate();
       });
+    this.tabBarOverrideSub = this.mainTabBarService.hiddenOverride$.subscribe(() => {
+      this.updateTabBarVisibility();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -101,7 +107,7 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private updateTabBarVisibility(): void {
-    const show = !shouldHideMainTabBar(this.router);
+    const show = !shouldHideMainTabBar(this.router) && !this.mainTabBarService.isForceHidden();
     const wasHidden = !this.showMainTabBar();
     this.showMainTabBar.set(show);
     if (show && wasHidden) {
@@ -162,6 +168,7 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
 
   async ngOnDestroy() {
     this.routerEventsSub?.unsubscribe();
+    this.tabBarOverrideSub?.unsubscribe();
     this.resizeObserver?.disconnect();
     void this.servicesActionSheet?.dismiss();
     try {
