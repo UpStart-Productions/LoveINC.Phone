@@ -32,6 +32,7 @@
       [authorName]="item.authorName"
       [authorAvatarUrl]="item.authorAvatarUrl"
       [createdAtLabel]="item.createdAtLabel"
+      [createdAtInlineWithAuthor]="item.createdAtInlineWithAuthor ?? false"
       [asideAvatarSize]="item.asideAvatarSize ?? defaultAsideAvatarSize"
       [clickable]="item.route ? true : item.clickable !== false"
       (cardClick)="onCardClick(item)"

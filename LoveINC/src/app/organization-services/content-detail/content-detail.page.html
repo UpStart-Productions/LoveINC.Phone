@@ -22,9 +22,7 @@
 
 <ion-content [fullscreen]="true" class="content-detail-page">
   @if (loading) {
-    <div class="loading-container">
-      <ion-spinner name="crescent"></ion-spinner>
-    </div>
+    <div class="content-detail-loading-shell" aria-busy="true"></div>
   } @else if (error) {
     <div class="empty-state">
       <p class="app-body-secondary-sm">{{ error }}</p>

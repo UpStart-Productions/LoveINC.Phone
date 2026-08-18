@@ -11,6 +11,8 @@ export interface MapContentPlanToListItemOptions {
   navigationFrom?: string;
   /** When false, omits per-row theme category (e.g. on the dedicated TfT list). */
   showThemeCategory?: boolean;
+  /** When true, date sits on the author row (right-aligned) instead of the aside. */
+  createdAtInlineWithAuthor?: boolean;
 }
 
 export function mapPlatformPlanToContentPlan(
@@ -80,6 +82,7 @@ export function mapContentPlanToListItem(
     authorName: author || undefined,
     authorAvatarUrl: plan.author.avatarUrl,
     createdAtLabel: formatContentPlanCreatedAtShortLabel(plan.createdAt),
+    createdAtInlineWithAuthor: options.createdAtInlineWithAuthor ?? false,
     imageUrl,
     lucideIcon: imageUrl ? undefined : 'compass',
     iconBackgroundColor: '#349394',

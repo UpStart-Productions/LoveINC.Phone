@@ -27,7 +27,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonSpinner,
   ModalController,
   NavController,
 } from '@ionic/angular/standalone';
@@ -81,7 +80,6 @@ import { AppBackButtonComponent } from '../../components/app-back-button/app-bac
   IonItem,
   IonLabel,
   IonList,
-  IonSpinner,
   SafeHtmlPipe,
     AppBackButtonComponent],
   providers: [AlertController, ActionSheetController, ToastController]
@@ -91,7 +89,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   contentType: ContentType = 'class';
   contentId: string = '';
   pageTitle: string = 'Details';
-  loading = false;
+  loading = true;
   error: string | null = null;
 
   /** From GrovLink local DB after a successful in-app registration for this class. */
@@ -218,6 +216,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   loadContentDetail() {
+    this.loading = true;
+    this.error = null;
+
     const apiTypes: ContentType[] = [
       'event',
       'class',
@@ -237,6 +238,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     const dataFile = this.getDataFile();
     if (!dataFile) {
       console.error('Unknown content type:', this.contentType);
+      this.loading = false;
       return;
     }
 
@@ -260,9 +262,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         if (this.contentType === 'class') {
           void this.refreshClassRegistrationLocalStatus();
         }
+        this.loading = false;
       },
       error: (err) => {
         console.error('Error loading content detail:', err);
+        this.loading = false;
       }});
   }
 
@@ -382,9 +386,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         if (!this.contentItem) {
           console.error('Event not found:', this.contentId);
         }
+        this.loading = false;
       },
       error: (err) => {
         console.error('Error loading event detail:', err);
+        this.loading = false;
       }});
   }
 
@@ -396,9 +402,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         if (!this.contentItem) {
           console.error('Impact story not found:', this.contentId);
         }
+        this.loading = false;
       },
       error: (err) => {
         console.error('Error loading impact story:', err);
+        this.loading = false;
       }});
   }
 
@@ -410,9 +418,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           if (!this.contentItem) {
             console.error('Gap ministry not found:', this.contentId);
           }
+          this.loading = false;
         },
         error: (err) => {
           console.error('Error loading gap ministry detail:', err);
+          this.loading = false;
         }});
   }
 
@@ -533,17 +543,21 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         const c = ctas.find((cta) => cta.id === this.contentId);
         if (!c) {
           console.error('CTA not found:', this.contentId);
+          this.loading = false;
           return;
         }
         const redirect = this.getCtaRelatedRedirect(c);
         if (redirect) {
+          this.loading = false;
           this.router.navigate(redirect.commands, { queryParams: redirect.queryParams, replaceUrl: true });
           return;
         }
         this.contentItem = this.mapPlatformCtaToContentDetail(c);
+        this.loading = false;
       },
       error: (err) => {
         console.error('Error loading CTA detail:', err);
+        this.loading = false;
       }});
   }
 
@@ -659,9 +673,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           console.error('Class not found:', this.contentId);
         }
         void this.refreshClassRegistrationLocalStatus();
+        this.loading = false;
       },
       error: (err) => {
         console.error('Error loading class detail:', err);
+        this.loading = false;
       }
     });
   }

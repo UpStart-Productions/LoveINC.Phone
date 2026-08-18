@@ -47,6 +47,18 @@
 @import './theme/goal-tracker-colors.scss';
 @import "quill/dist/quill.snow.css";
 
+/*
+ * Opaque stack page shells — prevents the previous screen from showing through
+ * during iOS push/pop while async content is still loading.
+ */
+ion-router-outlet > .ion-page ion-content {
+  --background: var(--ion-color-light);
+}
+
+ion-router-outlet > .ion-page ion-content::part(background) {
+  background: var(--ion-color-light);
+}
+
 /* Journal / ngx-quill: hide built-in toolbar (floating toolbar handles format) */
 .ql-toolbar {
   display: none !important;

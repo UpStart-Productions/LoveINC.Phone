@@ -115,6 +115,9 @@ export class ContentCardComponent {
   /** Creation date above the aside avatar, inline with the theme/category row (e.g. "Jan 1"). */
   @Input() createdAtLabel?: string;
 
+  /** When true, shows `createdAtLabel` on the author row (right-aligned) instead of the aside. */
+  @Input() createdAtInlineWithAuthor = false;
+
   /** Right-aside avatar size. `large` is 40% bigger than `small`. */
   @Input() asideAvatarSize: ContentCardAsideAvatarSize = 'small';
 
@@ -127,15 +130,20 @@ export class ContentCardComponent {
   }
 
   get showAside(): boolean {
-    return (
-      this.hasAsideAvatar ||
-      !!this.asideBadge?.trim() ||
-      !!this.createdAtLabel?.trim()
-    );
+    const asideDate = !!this.createdAtLabel?.trim() && !this.createdAtInlineWithAuthor;
+    return this.hasAsideAvatar || !!this.asideBadge?.trim() || asideDate;
   }
 
   get badgeAsideOnly(): boolean {
     return !!this.asideBadge?.trim() && !this.hasAsideAvatar && !this.createdAtLabel?.trim();
+  }
+
+  get showAsideDate(): boolean {
+    return !!this.createdAtLabel?.trim() && !this.createdAtInlineWithAuthor;
+  }
+
+  get showAuthorDate(): boolean {
+    return !!this.createdAtLabel?.trim() && this.createdAtInlineWithAuthor;
   }
 
   constructor(

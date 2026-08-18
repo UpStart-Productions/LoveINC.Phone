@@ -39,6 +39,8 @@ export interface ContentCardListItem {
   authorAvatarUrl?: string;
   /** Creation date above the aside avatar, inline with the theme/category row (e.g. "Jan 1"). */
   createdAtLabel?: string;
+  /** When true, shows `createdAtLabel` on the author row (right-aligned) instead of the aside. */
+  createdAtInlineWithAuthor?: boolean;
   /** Right-aside avatar size. `large` is 40% bigger than `small`. */
   asideAvatarSize?: 'small' | 'large';
 }

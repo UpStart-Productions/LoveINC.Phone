@@ -11,7 +11,7 @@
     <div
       class="content-card-layout"
       [class.content-card-layout--with-aside]="showAside"
-      [class.content-card-layout--with-aside-date]="!!createdAtLabel?.trim()"
+      [class.content-card-layout--with-aside-date]="showAsideDate"
       [class.content-card-layout--badge-aside-only]="badgeAsideOnly"
     >
       <div class="content-card-main">
@@ -66,7 +66,10 @@
           }
         }
         @if (authorName) {
-          <div class="content-card-author">
+          <div
+            class="content-card-author"
+            [class.content-card-author--with-date]="showAuthorDate"
+          >
             @if (authorAvatarUrl) {
               <img class="content-card-author__avatar" [src]="authorAvatarUrl" [alt]="authorName" />
             } @else {
@@ -75,6 +78,9 @@
               </span>
             }
             <span class="app-body-secondary-xs content-card-author__label">By {{ authorName }}</span>
+            @if (showAuthorDate) {
+              <span class="app-body-secondary-xs content-card-author__date">{{ createdAtLabel }}</span>
+            }
           </div>
         }
         @if (detailSegments?.length || detail) {
@@ -98,9 +104,9 @@
         class="content-card-aside"
         *ngIf="showAside"
         [class.content-card-aside--extra-only]="!hasAsideAvatar && !!asideBadge"
-        [class.content-card-aside--with-date]="!!createdAtLabel?.trim()"
+        [class.content-card-aside--with-date]="showAsideDate"
       >
-        @if (createdAtLabel) {
+        @if (showAsideDate) {
           <span class="app-body-secondary-xs content-card-aside-date">{{ createdAtLabel }}</span>
         }
         @if (hasAsideAvatar) {

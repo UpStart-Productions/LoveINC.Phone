@@ -57,6 +57,7 @@ export class TransformationToolsPage implements OnInit {
             mapContentPlanToListItem(plan, {
               navigationFrom: 'transformation-tools',
               showThemeCategory: false,
+              createdAtInlineWithAuthor: true,
             })
           );
           this.loading = false;

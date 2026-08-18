@@ -441,6 +441,21 @@ ion-card.clickable {
   margin-top: 0.125rem;
 }
 
+.content-card-author--with-date {
+  width: 100%;
+
+  .content-card-author__label {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .content-card-author__date {
+    flex-shrink: 0;
+    margin-left: auto;
+    text-align: right;
+  }
+}
+
 .content-card-aside-date {
   display: flex;
   align-items: center;
