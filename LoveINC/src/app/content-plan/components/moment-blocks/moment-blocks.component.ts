@@ -15,6 +15,11 @@ import { SafeResourceUrlPipe } from '../../../shared/pipes/safe-resource-url.pip
 import { parseScriptureRefs } from '../../../shared/utils/scripture-ref.util';
 import { ScriptureVerseModalService } from '../../../services/scripture-verse-modal.service';
 import { videoEmbedUrlFromLink } from '../../video-embed.util';
+import {
+  findMomentBlock,
+  isMomentMetaBlock,
+  resolveBlockRichHtml,
+} from '../../content-plan.mapper';
 import type { ContentPlanBlock } from '../../content-plan.model';
 import { buildContentPlanInputKey } from '../../content-plan-response.util';
 import {
@@ -56,6 +61,18 @@ export class MomentBlocksComponent implements OnChanges {
 
   get sortedBlocks(): ContentPlanBlock[] {
     return [...this.blocks].sort((a, b) => a.order - b.order);
+  }
+
+  get displayBlocks(): ContentPlanBlock[] {
+    return this.sortedBlocks.filter((block) => !isMomentMetaBlock(block));
+  }
+
+  get titleBlockHtml(): string | undefined {
+    return resolveBlockRichHtml(findMomentBlock(this.blocks, 'title'));
+  }
+
+  get subtitleBlockHtml(): string | undefined {
+    return resolveBlockRichHtml(findMomentBlock(this.blocks, 'subtitle'));
   }
 
   get canPersist(): boolean {

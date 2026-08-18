@@ -1,4 +1,4 @@
-import { resolveMomentBlockText } from './content-plan.mapper';
+import { isMomentMetaBlock, resolveMomentBlockText } from './content-plan.mapper';
 import type { ContentPlan, ContentPlanBlock, ContentPlanMoment } from './content-plan.model';
 
 function contentString(block: ContentPlanBlock, key: string): string {
@@ -17,6 +17,9 @@ function appendMomentBlocksShareHtml(blocks: ContentPlanBlock[]): string {
   let html = '';
 
   for (const block of sorted) {
+    if (isMomentMetaBlock(block)) {
+      continue;
+    }
     switch (block.type) {
       case 'RICH_TEXT': {
         const richHtml = contentString(block, 'html');

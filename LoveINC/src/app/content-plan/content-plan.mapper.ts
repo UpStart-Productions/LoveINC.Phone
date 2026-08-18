@@ -2,7 +2,12 @@ import { format } from 'date-fns';
 import type { ContentCardListItem } from '../components/content-card-list/content-card-list.model';
 import type { PlatformPlan, PlatformPlanMoment, PlatformTheme } from '../services/platform/types';
 import { formatDateRangeCompact } from '../shared/utils/date-time-formatting';
-import type { ContentPlan, ContentPlanMoment, ContentPlanTheme } from './content-plan.model';
+import type {
+  ContentPlan,
+  ContentPlanBlock,
+  ContentPlanMoment,
+  ContentPlanTheme,
+} from './content-plan.model';
 
 /** GrovLink microlearning theme for Tools for Transformation paths. */
 export const TOOLS_FOR_TRANSFORMATION_THEME_NAME = 'Tools for Transformation';
@@ -156,12 +161,55 @@ export function resolvePlanCoverImageUrl(plan: ContentPlan): string | undefined 
   return undefined;
 }
 
+function normalizeMomentBlockId(blockId: string): string {
+  return blockId.trim().toLowerCase();
+}
+
+/** Find a moment block by stable `blockId` (case-insensitive), e.g. `subtitle`. */
+export function findMomentBlock(
+  blocks: ContentPlanBlock[],
+  blockId: string
+): ContentPlanBlock | undefined {
+  const key = normalizeMomentBlockId(blockId);
+  return blocks.find((row) => normalizeMomentBlockId(row.blockId) === key);
+}
+
+/** Title/subtitle blocks render above the main block list. */
+export function isMomentMetaBlock(block: ContentPlanBlock): boolean {
+  const id = normalizeMomentBlockId(block.blockId);
+  return id === 'title' || id === 'subtitle';
+}
+
+/** HTML for displaying a block (Quill `html` or plain `text`). */
+export function resolveBlockRichHtml(block: ContentPlanBlock | undefined): string | undefined {
+  if (!block) {
+    return undefined;
+  }
+
+  const html = block.content['html'];
+  if (typeof html === 'string' && html.trim()) {
+    return html.trim();
+  }
+
+  const text = block.content['text'];
+  if (typeof text === 'string' && text.trim()) {
+    const escaped = text
+      .trim()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    return `<p>${escaped}</p>`;
+  }
+
+  return undefined;
+}
+
 /** Plain text from a moment block matched by stable `blockId` (e.g. `subtitle`). */
 export function resolveMomentBlockText(
   moment: ContentPlanMoment,
   blockId: string
 ): string | undefined {
-  const block = moment.blocks.find((row) => row.blockId === blockId);
+  const block = findMomentBlock(moment.blocks, blockId);
   if (!block) {
     return undefined;
   }

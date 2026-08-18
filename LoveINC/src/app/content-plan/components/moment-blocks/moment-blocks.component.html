@@ -1,7 +1,16 @@
-@if (sortedBlocks.length === 0) {
+@if (displayBlocks.length === 0 && !titleBlockHtml && !subtitleBlockHtml) {
   <p class="app-body-secondary">No content yet.</p>
 } @else {
-  @for (block of sortedBlocks; track block.id ?? block.blockId) {
+  @if (titleBlockHtml) {
+    <div class="moment-blocks__title app-title rich-html" [innerHTML]="titleBlockHtml | safeHtml"></div>
+  }
+  @if (subtitleBlockHtml) {
+    <div
+      class="moment-blocks__subtitle app-body-secondary rich-html"
+      [innerHTML]="subtitleBlockHtml | safeHtml"
+    ></div>
+  }
+  @for (block of displayBlocks; track block.id ?? block.blockId) {
     @switch (block.type) {
       @case ('RICH_TEXT') {
         @if (contentString(block, 'html')) {
