@@ -493,8 +493,9 @@ export class GapMinistriesPage implements OnInit {
   }
 
   onCardClick(service: GapService) {
-    this.router.navigate(['/tabs/content-detail', 'gap-ministry', service.id], {
-      queryParams: { from: 'gap-ministries' }});
+    void this.router.navigate(['/tabs/content-detail', 'gap-ministry', service.id], {
+      queryParams: { from: 'gap-ministries' },
+    });
   }
 
   async onShareService(service: GapService) {

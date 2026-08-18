@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router } from '@angular/router';
 import { DonateButtonService } from './donate-button.service';
 import { DonateActionSheetService } from './donate-action-sheet.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
@@ -93,10 +93,9 @@ export class ServicesPage implements OnInit {
 
   handleServiceClick(service: Service) {
     if (service.route) {
-      // Use navigateByUrl to ensure query params are properly included
-      const url = `${service.route}?from=services`;
-      console.log('Navigating to:', url);
-      this.router.navigateByUrl(url);
+      const tree = this.router.parseUrl(service.route);
+      tree.queryParams = { ...tree.queryParams, from: 'services' };
+      void this.router.navigateByUrl(tree);
     } else if (service.handler) {
       service.handler();
     }

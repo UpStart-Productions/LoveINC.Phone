@@ -397,6 +397,7 @@ export interface PlatformPlanTheme {
   id: string;
   name: string;
   isActive: boolean;
+  showOnHome?: boolean;
   displayStyle?: PlatformThemeDisplayStyle;
 }
 
@@ -404,6 +405,7 @@ export interface PlatformTheme {
   id: string;
   name: string;
   isActive: boolean;
+  showOnHome: boolean;
   displayStyle: PlatformThemeDisplayStyle;
   planCount?: number;
 }

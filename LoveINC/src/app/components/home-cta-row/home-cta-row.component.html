@@ -15,6 +15,7 @@
         <a
           class="app-link"
           routerLink="/tabs/connection-center"
+          [queryParams]="{ from: 'home' }"
           (click)="$event.stopPropagation()"
         >Connection Center</a>
       </p>

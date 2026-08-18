@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonItem, IonLabel, IonIcon, IonProgressBar } from '@ionic/angular/standalone';
@@ -15,10 +15,8 @@ import type { HomeCtaRowModel } from './home-cta-row.model';
 export class HomeCtaRowComponent {
   @Input({ required: true }) row!: HomeCtaRowModel;
 
-  constructor(
-    private router: Router,
-    private donateActionSheetService: DonateActionSheetService
-  ) {}
+  private readonly router = inject(Router);
+  private readonly donateActionSheetService = inject(DonateActionSheetService);
 
   get progressValue(): number {
     const g = this.row.progress?.goal;

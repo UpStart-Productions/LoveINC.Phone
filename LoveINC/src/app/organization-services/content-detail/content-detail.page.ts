@@ -1079,15 +1079,17 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     if (!this.contentItem?.id) return;
     const scheduleLabel =
       this.contentType === 'class' ? (this.getHeaderDateLabel() ?? this.contentItem.subtitle ?? '') : '';
-    this.router.navigate(['/tabs/class-registration', this.contentItem.id], {
+    void this.router.navigate(['/tabs/class-registration', this.contentItem.id], {
       state: {
         classTitle: this.contentItem.title,
         classPhotoUrl: this.contentItem.photoUrl?.trim() || '',
-        classScheduleLabel: scheduleLabel?.trim() ?? ''}});
+        classScheduleLabel: scheduleLabel?.trim() ?? '',
+      },
+    });
   }
 
   navigateToAssistanceIntro(): void {
-    void this.router.navigateByUrl('/tabs/assistance/intro');
+    void this.router.navigate(['/tabs/assistance/intro']);
   }
 
   isDonationDrive(): boolean {
@@ -1104,10 +1106,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   openDonateActionSheet(): void {
     if (this.isDonationDrive() && this.contentItem?.donation?.id) {
-      this.router.navigate(['/tabs/donate-goods'], {
-        queryParams: { donationId: this.contentItem.donation.id }});
+      void this.router.navigate(['/tabs/donate-goods'], {
+        queryParams: { donationId: this.contentItem.donation.id },
+      });
     } else if (this.isDonationDrive()) {
-      this.router.navigate(['/tabs/donate-goods']);
+      void this.router.navigate(['/tabs/donate-goods']);
     } else {
       this.donateActionSheetService.openDonateActionSheet();
     }

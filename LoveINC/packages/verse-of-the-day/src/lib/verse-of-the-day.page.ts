@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, Optional, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -43,6 +43,7 @@ import { navigateAppBack } from '@app/shared/utils/navigation-back.util';
 })
 export class VerseOfTheDayPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly navController = inject(NavController);
 
   verse: VerseOfTheDay | null = null;

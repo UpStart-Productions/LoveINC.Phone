@@ -47,7 +47,7 @@ export class DonateActionSheetService {
   }
 
   private handleGoodsDonation(): void {
-    this.router.navigate(['/tabs/donate-goods']);
+    void this.router.navigate(['/tabs/donate-goods']);
   }
 
   private async handleOnlineDonation(): Promise<void> {

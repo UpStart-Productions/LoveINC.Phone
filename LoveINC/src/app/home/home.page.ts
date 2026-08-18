@@ -46,7 +46,8 @@ import { DismissedVouchersService } from '../services/dismissed-vouchers.service
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { CalendarService } from '../services/calendar/calendar.service';
 import { MicrolearningThemeWidgetComponent } from '../components/microlearning-theme-widget/microlearning-theme-widget.component';
-import { TOOLS_FOR_TRANSFORMATION_THEME_NAME } from '../content-plan/content-plan.mapper';
+import { ContentPlanService } from '../content-plan/content-plan.service';
+import type { ContentPlanTheme } from '../content-plan/content-plan.model';
 import type { PeekCarouselSlideClick } from '../components/peek-carousel/peek-carousel.model';
 
 const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
@@ -86,7 +87,6 @@ export type ClientSupportCardState =
   ],
 })
 export class HomePage implements OnInit {
-  readonly tftPlansThemeName = TOOLS_FOR_TRANSFORMATION_THEME_NAME;
   /** Matches home widget category labels (card margin + ion-card-content padding). */
   readonly microlearningSectionTitleInset = 'calc(var(--app-card-margin) + 1rem)';
 
@@ -103,6 +103,7 @@ export class HomePage implements OnInit {
   private microlearningThemeWidgets?: QueryList<MicrolearningThemeWidgetComponent>;
 
   cards: HomeCard[] = [];
+  homeMicrolearningThemes: ContentPlanTheme[] = [];
   welcomeTitle = 'Welcome to Love INC';
   giveCtas: PlatformCta[] = [];
   volunteerCtas: PlatformCta[] = [];
@@ -129,7 +130,8 @@ export class HomePage implements OnInit {
     private appUserDataService: AppUserDataService,
     private dismissedVouchersService: DismissedVouchersService,
     private serviceUnlock: ServiceUnlockService,
-    private calendarService: CalendarService
+    private calendarService: CalendarService,
+    private contentPlanService: ContentPlanService
   ) {}
 
   ionViewDidEnter() {
@@ -140,6 +142,7 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.loadCards();
+    this.loadHomeMicrolearningThemes();
     this.loadCtas();
     this.refreshWelcomeTitle();
     this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
@@ -171,6 +174,9 @@ export class HomePage implements OnInit {
           this.cards = cards;
         }),
         firstValueFrom(this.platformApi.getCtas()).then((ctas) => this.applyLoadedCtas(ctas)),
+        firstValueFrom(this.fetchHomeMicrolearningThemes$(true)).then((themes) => {
+          this.homeMicrolearningThemes = themes;
+        }),
         this.reloadClientContext(true),
       ]);
     } catch {
@@ -211,6 +217,22 @@ export class HomePage implements OnInit {
           .map((story, index) => this.mapImpactStoryToHomeCard(story, index));
       })
     );
+  }
+
+  private fetchHomeMicrolearningThemes$(refresh = false): Observable<ContentPlanTheme[]> {
+    return this.contentPlanService.getThemesForHome(refresh);
+  }
+
+  private loadHomeMicrolearningThemes(refresh = false): void {
+    this.fetchHomeMicrolearningThemes$(refresh).subscribe({
+      next: (themes) => {
+        this.homeMicrolearningThemes = themes;
+      },
+      error: (err) => {
+        console.error('Error loading home microlearning themes:', err);
+        this.homeMicrolearningThemes = [];
+      },
+    });
   }
 
   loadCtas() {
@@ -591,7 +613,7 @@ export class HomePage implements OnInit {
 
   navigateToCard(card: HomeCard) {
     const detailType = this.getContentDetailType(card.type);
-    this.router.navigate(['/tabs/content-detail', detailType, card.id], {
+    void this.router.navigate(['/tabs/content-detail', detailType, card.id], {
       queryParams: { from: 'home' },
     });
   }

@@ -18,8 +18,22 @@
   --inner-padding-end: 0;
   --inner-padding-start: 0;
   --min-height: 0;
+  --background-activated: transparent;
+  --background-focused: transparent;
+  --background-hover: transparent;
+  --ripple-color: transparent;
+  --background-activated-opacity: 0;
+  --background-hover-opacity: 0;
+  --background-focused-opacity: 0;
+  -webkit-tap-highlight-color: transparent;
   align-items: center;
   border-radius: 0;
+}
+
+.home-cta-row-item.ion-activated,
+.home-cta-row-item.ion-focused {
+  --background: transparent;
+  background: transparent;
 }
 
 .home-cta-row-item ion-label {

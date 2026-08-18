@@ -69,6 +69,12 @@ export class ContentPlanService {
     );
   }
 
+  getThemesForHome(refresh = false): Observable<ContentPlanTheme[]> {
+    return this.getThemes(refresh).pipe(
+      map((themes) => themes.filter((theme) => theme.showOnHome))
+    );
+  }
+
   getThemeByName(themeName: string, refresh = false): Observable<ContentPlanTheme | null> {
     const themeKey = normalizePlanThemeKey(themeName);
     if (!themeKey) {

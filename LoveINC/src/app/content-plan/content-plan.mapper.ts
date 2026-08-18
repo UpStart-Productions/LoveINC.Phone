@@ -116,6 +116,7 @@ export function mapPlatformTheme(
     id: theme?.id?.trim() ?? '',
     name: theme?.name?.trim() ?? '',
     isActive: theme?.isActive ?? false,
+    showOnHome: theme?.showOnHome ?? false,
     displayStyle: theme?.displayStyle ?? 'COVER_CARDS',
   };
 }

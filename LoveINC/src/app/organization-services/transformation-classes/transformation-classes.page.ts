@@ -232,7 +232,7 @@ export class TransformationClassesPage implements OnInit {
   }
 
   navigateToClassDetail(classItem: TransformationClass) {
-    this.router.navigate(['/tabs/content-detail', 'class', classItem.id], {
+    void this.router.navigate(['/tabs/content-detail', 'class', classItem.id], {
       queryParams: { from: 'transformation-classes' },
     });
   }

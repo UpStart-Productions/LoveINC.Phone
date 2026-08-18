@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -45,6 +45,7 @@ export class ServiceUnlockScanPage implements OnInit, OnDestroy {
   constructor(
     private service: ServiceUnlockService,
     private route: ActivatedRoute,
+    private router: Router,
     private navController: NavController
   ) {}
 

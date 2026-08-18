@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -13,6 +13,7 @@ import {
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 
 @Component({
   selector: 'app-connection-center',
@@ -29,26 +30,27 @@ import { NotificationsButtonComponent } from '../components/notifications-button
     IonButton,
     IonIcon,
     NotificationsButtonComponent,
+    AppBackButtonComponent,
   ],
 })
 export class ConnectionCenterPage implements OnInit {
-  showDonateButton = false;
+  private readonly router = inject(Router);
+  private readonly donateButtonService = inject(DonateButtonService);
+  private readonly donateActionSheetService = inject(DonateActionSheetService);
 
-  constructor(
-    private router: Router,
-    private donateButtonService: DonateButtonService,
-    private donateActionSheetService: DonateActionSheetService
-  ) {}
+  showDonateButton = false;
 
   ngOnInit() {
     this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
   }
 
   openDonateMenu() {
-    this.donateActionSheetService.openDonateActionSheet();
+    void this.donateActionSheetService.openDonateActionSheet();
   }
 
   goToGetAssistance() {
-    void this.router.navigateByUrl('/tabs/assistance/intro');
+    void this.router.navigate(['/tabs/assistance/intro'], {
+      queryParams: { from: 'connection-center' },
+    });
   }
 }

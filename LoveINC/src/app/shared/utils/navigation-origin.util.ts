@@ -14,6 +14,7 @@ const FROM_TO_RETURN_URL: Readonly<Record<string, string>> = {
   'church-partnerships': '/tabs/church-partnerships',
   'gap-ministries': '/tabs/gap-ministries',
   'transformation-classes': '/tabs/transformation-classes',
+  'connection-center': '/tabs/connection-center',
   profile: '/tabs/profile',
 };
 

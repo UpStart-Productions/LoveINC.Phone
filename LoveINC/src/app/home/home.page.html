@@ -30,14 +30,18 @@
 
   <app-goal-tracker-home-widget></app-goal-tracker-home-widget>
 
-  <div class="home-microlearning-section m-t-12 m-b-6">
-    <app-microlearning-theme-widget
-      [themeName]="tftPlansThemeName"
-      [sectionTitleInset]="microlearningSectionTitleInset"
-      [clickable]="true"
-      (slideClick)="onPeekPlanSlideClick($event)"
-    />
-  </div>
+  @if (homeMicrolearningThemes.length) {
+    <div class="home-microlearning-section m-t-12 m-b-6">
+      @for (theme of homeMicrolearningThemes; track theme.id) {
+        <app-microlearning-theme-widget
+          [themeId]="theme.id"
+          [sectionTitleInset]="microlearningSectionTitleInset"
+          [clickable]="true"
+          (slideClick)="onPeekPlanSlideClick($event)"
+        />
+      }
+    </div>
+  }
 
   <div class="cards-container">
     <app-card

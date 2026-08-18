@@ -252,7 +252,7 @@ export class UpdatesPage implements OnInit {
   }
 
   navigateToDetail(item: UpdateItem) {
-    this.router.navigate(['/tabs/content-detail', item.type, item.id], {
+    void this.router.navigate(['/tabs/content-detail', item.type, item.id], {
       queryParams: { from: 'updates' },
     });
   }

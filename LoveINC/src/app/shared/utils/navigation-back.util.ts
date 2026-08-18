@@ -3,9 +3,7 @@ import type { NavController } from '@ionic/angular/standalone';
 import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
 
 /**
- * Preferred back navigation for Ionic stack routes:
- * 1. Pop the active ion-router-outlet stack when possible.
- * 2. Otherwise navigate back to `returnUrl` / `from` or the caller fallback.
+ * Back navigation: pop Ionic stack when possible, else navigateBack via `from` / fallback.
  */
 export async function navigateAppBack(
   navController: NavController,

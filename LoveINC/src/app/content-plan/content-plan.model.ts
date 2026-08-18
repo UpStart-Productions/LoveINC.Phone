@@ -31,6 +31,7 @@ export interface ContentPlanTheme {
   id: string;
   name: string;
   isActive: boolean;
+  showOnHome: boolean;
   displayStyle: ContentPlanThemeDisplayStyle;
 }
 

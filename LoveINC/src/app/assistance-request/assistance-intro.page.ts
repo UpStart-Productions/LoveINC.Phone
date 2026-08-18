@@ -25,7 +25,9 @@ import { LOVE_INC_OFFICE_TEL } from '../shared/love-inc-contact.constants';
     IonButton,
     IonButtons,
     IonIcon,
-    AppBackButtonComponent]})
+    AppBackButtonComponent,
+  ],
+})
 export class AssistanceIntroPage {
   constructor(private router: Router) {}
 
@@ -34,10 +36,10 @@ export class AssistanceIntroPage {
   }
 
   onGetStarted() {
-    this.router.navigate(['/tabs/assistance/signup']);
+    void this.router.navigate(['/tabs/assistance/signup']);
   }
 
   onHaveQRCode() {
-    this.router.navigate(['/tabs/service-unlock/scan']);
+    void this.router.navigate(['/tabs/service-unlock/scan']);
   }
 }

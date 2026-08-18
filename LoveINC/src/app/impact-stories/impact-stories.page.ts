@@ -54,8 +54,9 @@ export class ImpactStoriesPage implements OnInit {
   }
 
   navigateToDetail(story: PlatformImpactStory) {
-    this.router.navigate(['/tabs/content-detail', 'impact-story', story.id], {
-      queryParams: { from: 'impact-stories' }});
+    void this.router.navigate(['/tabs/content-detail', 'impact-story', story.id], {
+      queryParams: { from: 'impact-stories' },
+    });
   }
 
   async onShareStory(story: PlatformImpactStory) {

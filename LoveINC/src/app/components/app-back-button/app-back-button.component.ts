@@ -1,5 +1,5 @@
 import { Component, Input, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { IonButton, IonIcon, NavController } from '@ionic/angular/standalone';
 import { navigateAppBack } from '../../shared/utils/navigation-back.util';
 
