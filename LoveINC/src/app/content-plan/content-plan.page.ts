@@ -125,6 +125,14 @@ export class ContentPlanPage implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  ionViewWillEnter(): void {
+    this.syncMainTabBar();
+  }
+
+  ionViewWillLeave(): void {
+    this.mainTabBarService.setForceHidden(false);
+  }
+
   ngAfterViewInit(): void {
     void this.syncEdgeHeaderScrollListener();
   }

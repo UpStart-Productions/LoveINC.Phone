@@ -87,6 +87,8 @@ export type ClientSupportCardState =
 })
 export class HomePage implements OnInit {
   readonly tftPlansThemeName = TOOLS_FOR_TRANSFORMATION_THEME_NAME;
+  /** Matches home widget category labels (card margin + ion-card-content padding). */
+  readonly microlearningSectionTitleInset = 'calc(var(--app-card-margin) + 1rem)';
 
   @ViewChild(SimpleBudgetHomeWidgetComponent)
   private budgetHomeWidget?: SimpleBudgetHomeWidgetComponent;

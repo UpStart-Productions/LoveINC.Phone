@@ -1,7 +1,8 @@
 @if (loaded && theme) {
   <app-peek-carousel
     [variant]="carouselVariant"
-    [sectionTitle]="displaySectionTitle"
+    [sectionTitle]="displayHeading"
+    [sectionTitleInset]="sectionTitleInset"
     [themeId]="theme.id"
     [themeName]="theme.name"
     [clickable]="clickable"

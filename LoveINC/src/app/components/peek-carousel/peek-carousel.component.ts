@@ -36,6 +36,9 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
 
   @Input() sectionTitle?: string;
 
+  /** Left inset for the section title (e.g. `1rem` on Home). */
+  @Input() sectionTitleInset?: string;
+
   /** When set, slides load from plans in this theme. */
   @Input() themeId: string | null = null;
 

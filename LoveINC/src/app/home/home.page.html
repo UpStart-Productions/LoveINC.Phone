@@ -30,11 +30,14 @@
 
   <app-goal-tracker-home-widget></app-goal-tracker-home-widget>
 
-  <app-microlearning-theme-widget
-    [themeName]="tftPlansThemeName"
-    [clickable]="true"
-    (slideClick)="onPeekPlanSlideClick($event)"
-  />
+  <div class="home-microlearning-section m-t-12 m-b-6">
+    <app-microlearning-theme-widget
+      [themeName]="tftPlansThemeName"
+      [sectionTitleInset]="microlearningSectionTitleInset"
+      [clickable]="true"
+      (slideClick)="onPeekPlanSlideClick($event)"
+    />
+  </div>
 
   <div class="cards-container">
     <app-card

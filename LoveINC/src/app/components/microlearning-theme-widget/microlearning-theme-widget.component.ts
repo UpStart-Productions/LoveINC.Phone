@@ -35,8 +35,11 @@ export class MicrolearningThemeWidgetComponent implements OnInit, OnChanges {
   /** Load by theme id — takes precedence over themeName when both are set. */
   @Input() themeId: string | null = null;
 
-  /** Optional section title override; defaults to the theme name from the API. */
-  @Input() sectionTitle: string | null = null;
+  /** Optional heading override; defaults to the loaded theme name. */
+  @Input() heading: string | null = null;
+
+  /** Left inset for the section title row (e.g. `1rem` on Home). */
+  @Input() sectionTitleInset?: string;
 
   @Input() clickable = true;
 
@@ -49,8 +52,8 @@ export class MicrolearningThemeWidgetComponent implements OnInit, OnChanges {
   carouselVariant: PeekCarouselVariant = 'cover';
   loaded = false;
 
-  get displaySectionTitle(): string | undefined {
-    const override = this.sectionTitle?.trim();
+  get displayHeading(): string | undefined {
+    const override = this.heading?.trim();
     if (override) {
       return override;
     }

@@ -1,7 +1,7 @@
 <section
-  class="peek-carousel"
-  [class]="'peek-carousel--' + variant"
+  [ngClass]="['peek-carousel', 'peek-carousel--' + variant]"
   [style.--peek-carousel-peek]="peekCssValue"
+  [style.--peek-carousel-section-title-inset]="sectionTitleInset || null"
 >
   @if (sectionTitle) {
     <p class="app-body-secondary-sm app-uppercase peek-carousel__section-title">{{ sectionTitle }}</p>
