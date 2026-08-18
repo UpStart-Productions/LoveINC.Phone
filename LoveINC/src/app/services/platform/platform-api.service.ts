@@ -17,6 +17,7 @@ import type {
   PlatformPlan,
   PlatformPlanDisplayStyle,
   PlatformPlanMoment,
+  PlatformTheme,
   PlatformService,
   PlatformTeamMember,
   PlatformTransformationTool,
@@ -181,6 +182,12 @@ export class PlatformApiService {
   getPlans(): Observable<PlatformPlan[]> {
     return this.get<{ plans: PlatformPlan[] }>('/plans').pipe(
       map((res) => res?.plans ?? [])
+    );
+  }
+
+  getThemes(): Observable<PlatformTheme[]> {
+    return this.get<{ themes: PlatformTheme[] }>('/themes').pipe(
+      map((res) => res?.themes ?? [])
     );
   }
 

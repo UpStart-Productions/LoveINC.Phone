@@ -53,6 +53,21 @@
           </div>
         }
       }
+      @case ('TEXT') {
+        @if (isScriptureBlock(block) && scriptureRefs(block).length) {
+          <div class="accepted-items m-b-18 m-t-18">
+            @for (ref of scriptureRefs(block); track ref) {
+              <button
+                type="button"
+                class="action-pill action-pill--scripture app-uppercase"
+                (click)="openVerseModal(ref)"
+              >
+                {{ ref }}
+              </button>
+            }
+          </div>
+        }
+      }
       @case ('VIDEO') {
         @if (contentString(block, 'caption')) {
           <p class="app-body-secondary">{{ contentString(block, 'caption') }}</p>

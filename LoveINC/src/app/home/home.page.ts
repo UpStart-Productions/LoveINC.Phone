@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren, QueryList, ChangeDetectorRef, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { forkJoin, combineLatest, firstValueFrom, of, type Observable } from 'rxjs';
@@ -29,6 +29,7 @@ import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.com
 import {
   buildGetHelpCtaRow,
   buildGiveNowCtaRow,
+  buildVolunteerCtaRow,
   mapPlatformCtaToRow,
 } from '../components/home-cta-row/home-cta-row.mapper';
 import type { HomeCtaRowModel } from '../components/home-cta-row/home-cta-row.model';
@@ -45,7 +46,7 @@ import { AppUserDataService } from '../services/app-user-data.service';
 import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { CalendarService } from '../services/calendar/calendar.service';
-import { PeekCarouselComponent, PEEK_CAROUSEL_TFT_PLANS_TAG } from '../components/peek-carousel/peek-carousel.component';
+import { MicrolearningThemeWidgetComponent } from '../components/microlearning-theme-widget/microlearning-theme-widget.component';
 import type { PeekCarouselSlideClick } from '../components/peek-carousel/peek-carousel.model';
 
 const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
@@ -82,11 +83,11 @@ export type ClientSupportCardState =
     SimpleBudgetHomeWidgetComponent,
     GoalTrackerHomeWidgetComponent,
     NotificationsButtonComponent,
-    PeekCarouselComponent,
+    MicrolearningThemeWidgetComponent,
   ],
 })
 export class HomePage implements OnInit {
-  readonly tftPlansTag = PEEK_CAROUSEL_TFT_PLANS_TAG;
+  readonly tftPlansThemeName = 'Tools for Transformation';
 
   @ViewChild(SimpleBudgetHomeWidgetComponent)
   private budgetHomeWidget?: SimpleBudgetHomeWidgetComponent;
@@ -99,6 +100,9 @@ export class HomePage implements OnInit {
 
   @ViewChild(TransformationToolHomeWidgetComponent)
   private transformationToolHomeWidget?: TransformationToolHomeWidgetComponent;
+
+  @ViewChildren(MicrolearningThemeWidgetComponent)
+  private microlearningThemeWidgets?: QueryList<MicrolearningThemeWidgetComponent>;
 
   cards: HomeCard[] = [];
   welcomeTitle = 'Welcome to Love INC';
@@ -164,6 +168,7 @@ export class HomePage implements OnInit {
       this.goalTrackerHomeWidget?.refresh();
       this.verseHomeWidget?.refresh();
       this.transformationToolHomeWidget?.refresh();
+      this.microlearningThemeWidgets?.forEach((widget) => widget.refresh());
 
       await Promise.all([
         firstValueFrom(this.fetchHomeCards$()).then((cards) => {
@@ -290,6 +295,8 @@ export class HomePage implements OnInit {
         )
       );
     }
+
+    rows.push(buildVolunteerCtaRow());
 
     for (const cta of this.volunteerCtas) {
       rows.push(mapPlatformCtaToRow(cta, 'volunteer'));

@@ -71,6 +71,14 @@ export class ContentPlanPage implements OnInit, OnDestroy, AfterViewInit {
     return this.pageIndex < count - 1;
   }
 
+  get multiPageLabel(): string {
+    const total = this.plan?.moments.length ?? 0;
+    if (total <= 0) {
+      return '';
+    }
+    return `Page ${this.pageIndex + 1} of ${total}`;
+  }
+
   get canShare(): boolean {
     return !this.loading && !!this.plan;
   }

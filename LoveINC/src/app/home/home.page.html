@@ -32,29 +32,11 @@
 
   <app-goal-tracker-home-widget></app-goal-tracker-home-widget>
 
-  <div class="home-peek-carousel-demos">
-    <app-peek-carousel
-      variant="cover"
-      sectionTitle="Tools for Transformation"
-      [tag]="tftPlansTag"
-      [clickable]="true"
-      (slideClick)="onPeekPlanSlideClick($event)"
-    />
-
-    <app-peek-carousel
-      variant="media"
-      sectionTitle="Tools for Transformation"
-      [tag]="tftPlansTag"
-      [clickable]="true"
-      (slideClick)="onPeekPlanSlideClick($event)"
-    />
-
-    <app-peek-carousel
-      variant="list"
-      sectionTitle="Tools for Transformation"
-      [tag]="tftPlansTag"
-    />
-  </div>
+  <app-microlearning-theme-widget
+    [themeName]="tftPlansThemeName"
+    [clickable]="true"
+    (slideClick)="onPeekPlanSlideClick($event)"
+  />
 
   <div class="cards-container">
     <app-card

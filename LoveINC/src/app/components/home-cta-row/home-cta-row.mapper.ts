@@ -136,3 +136,15 @@ export function buildGiveNowCtaRow(): HomeCtaRowModel {
     action: { kind: 'donate-sheet' },
   };
 }
+
+export function buildVolunteerCtaRow(): HomeCtaRowModel {
+  return {
+    id: 'volunteer',
+    body: 'Volunteer with Love INC',
+    iconName: 'heart-outline',
+    iconColor: 'var(--love-inc-teal)',
+    pillText: 'Serve',
+    pillColor: 'var(--love-inc-teal)',
+    action: { kind: 'route', path: ['/tabs/volunteer-positions'], queryParams: { from: 'home' } },
+  };
+}

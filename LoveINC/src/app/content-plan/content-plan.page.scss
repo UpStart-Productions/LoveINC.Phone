@@ -19,7 +19,7 @@
 
 .content-plan-multi-footer-shell {
   margin-inline: var(--floating-tab-bar-inline-inset);
-  margin-bottom: calc(var(--floating-tab-bar-bottom-gap) + env(safe-area-inset-bottom) - 1rem);
+  margin-bottom: calc(var(--floating-tab-bar-bottom-gap) + env(safe-area-inset-bottom) - 1rem - 20px);
 }
 
 .content-plan-multi-nav-pill {
@@ -34,11 +34,18 @@
 }
 
 .content-plan-multi-nav {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.5rem;
   min-height: var(--floating-tab-bar-pill-height);
   padding: calc(0.375rem - 4px) calc(1.125rem - 16px);
+}
+
+.content-plan-multi-nav__label {
+  justify-self: center;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .content-plan-multi-nav__btn {

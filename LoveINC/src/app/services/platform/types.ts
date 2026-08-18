@@ -140,6 +140,9 @@ export interface PlatformVolunteerPosition {
   short_description?: string;
   shortDescription?: string;
   description?: string;
+  isOpen?: boolean;
+  endDate?: string;
+  end_date?: string;
   schedule?: string;
   schedule_rule?: PlatformScheduleRule;
   scheduleRule?: PlatformScheduleRule;
@@ -388,10 +391,21 @@ export interface PlatformPlanAuthor {
   avatarUrl?: string | null;
 }
 
-export interface PlatformPlanTag {
-  id?: string;
-  name?: string;
-  slug?: string;
+export type PlatformThemeDisplayStyle = 'COVER_CARDS' | 'DETAIL_CARDS' | 'LIST';
+
+export interface PlatformPlanTheme {
+  id: string;
+  name: string;
+  isActive: boolean;
+  displayStyle?: PlatformThemeDisplayStyle;
+}
+
+export interface PlatformTheme {
+  id: string;
+  name: string;
+  isActive: boolean;
+  displayStyle: PlatformThemeDisplayStyle;
+  planCount?: number;
 }
 
 export type PlatformPlanDisplayStyle = 'SINGLE_PAGE' | 'MULTI_PAGE' | 'LIST';
@@ -419,8 +433,10 @@ export interface PlatformPlan {
   id: string;
   slug: string;
   title: string;
+  order?: number;
   coverPhotoUrl?: string;
   author: PlatformPlanAuthor;
+  theme: PlatformPlanTheme;
   activationType: string;
   classId?: string;
   class?: { id: string; slug: string; title: string };
@@ -429,7 +445,6 @@ export interface PlatformPlan {
   isActive: boolean;
   displayStyle: PlatformPlanDisplayStyle;
   moments: PlatformPlanMoment[];
-  tags?: PlatformPlanTag[];
   createdAt: string;
   updatedAt: string;
 }

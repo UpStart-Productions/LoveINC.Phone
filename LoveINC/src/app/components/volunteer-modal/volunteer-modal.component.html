@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title class="app-title">{{ showForm ? 'Sign up to volunteer' : 'Volunteer' }}</ion-title>
+    <ion-title class="app-title">{{ showForm || genericSignup ? 'Sign up to volunteer' : 'Volunteer' }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="showForm ? onCancelForm() : dismiss()" fill="clear">
         <ion-icon name="close" slot="icon-only"></ion-icon>
@@ -9,66 +9,83 @@
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
-  <!-- Opportunity summary (always shown) -->
-  @for (pos of positions; track pos.id) {
-    <div class="volunteer-position">
-      <div class="volunteer-position-details app-body">
-        <p class="app-list-row-title volunteer-opportunity-title">{{ pos.title || 'Volunteer' }}</p>
-        <div class="volunteer-detail-row">
-          <ion-icon name="location-outline" class="volunteer-detail-icon"></ion-icon>
-          <div>
-            <span>{{ organizationName }}</span>
-            @if (address) {
-              <button
-                type="button"
-                class="volunteer-address-map-link app-body-secondary-sm"
-                (click)="openAddressOnMap($event)">
-                {{ address }}
-              </button>
-            }
+  @if (genericSignup) {
+    <p class="app-disclaimer m-b-6">We cannot guarantee open volunteer positions but we will save your information and be in touch soon.</p>
+    @if (hasUserInfo() && !showForm) {
+      <ion-list class="m-b-12">
+        <ion-item button="false" detail="false" lines="full" class="newsletter-item more-space">
+          <ion-checkbox
+            slot="start"
+            [(ngModel)]="notReceivingServices"
+            name="notReceivingServices">
+          </ion-checkbox>
+          <ion-label (click)="notReceivingServices = !notReceivingServices">
+            I affirm that I am not currently receiving services from Love INC.
+          </ion-label>
+        </ion-item>
+      </ion-list>
+      <ion-button expand="block" (click)="onGenericSubmit()">Submit</ion-button>
+    }
+  } @else {
+    @for (pos of positions; track pos.id) {
+      <div class="volunteer-position">
+        <div class="volunteer-position-details app-body">
+          <p class="app-list-row-title volunteer-opportunity-title">{{ pos.title || 'Volunteer' }}</p>
+          <div class="volunteer-detail-row">
+            <ion-icon name="location-outline" class="volunteer-detail-icon"></ion-icon>
+            <div>
+              <span>{{ organizationName }}</span>
+              @if (address) {
+                <button
+                  type="button"
+                  class="volunteer-address-map-link app-body-secondary-sm"
+                  (click)="openAddressOnMap($event)">
+                  {{ address }}
+                </button>
+              }
+            </div>
+          </div>
+          <div class="volunteer-detail-row">
+            <ion-icon name="time-outline" class="volunteer-detail-icon"></ion-icon>
+            <span>{{ pos.schedule ?? locationHours ?? '—' }}</span>
           </div>
         </div>
-        <div class="volunteer-detail-row">
-          <ion-icon name="time-outline" class="volunteer-detail-icon"></ion-icon>
-          <span>{{ pos.schedule ?? locationHours ?? '—' }}</span>
-        </div>
-      </div>
-      @if (pos.shortDescription) {
-        <div class="app-body-secondary-sm rich-html m-b-6" [innerHTML]="pos.shortDescription | safeHtml"></div>
-      }
-      @if (pos.longDescription ?? pos.description) {
-        @if ((pos.longDescription ?? pos.description) !== pos.shortDescription) {
-          <div class="app-body-secondary-sm rich-html m-b-6" [innerHTML]="(pos.longDescription ?? pos.description ?? '') | safeHtml"></div>
+        @if (pos.shortDescription) {
+          <div class="app-body-secondary-sm rich-html m-b-6" [innerHTML]="pos.shortDescription | safeHtml"></div>
         }
-      }
-      <p class="app-disclaimer m-b-6">We cannot guarantee open volunteer positions but we will save your information and be in touch soon.</p>
-      @if (hasUserInfo()) {
-        <ion-list class="m-b-12">
-          <ion-item button="false" detail="false" lines="full" class="newsletter-item more-space">
-            <ion-checkbox
-              slot="start"
-              [(ngModel)]="notReceivingServices"
-              name="notReceivingServices">
-            </ion-checkbox>
-            <ion-label (click)="notReceivingServices = !notReceivingServices">
-              I affirm that I am not currently receiving services from Love INC.
-            </ion-label>
-          </ion-item>
-        </ion-list>
-        <ion-button expand="block" (click)="onVolunteer(pos)">Volunteer</ion-button>
-      }
-    </div>
+        @if (pos.longDescription ?? pos.description) {
+          @if ((pos.longDescription ?? pos.description) !== pos.shortDescription) {
+            <div class="app-body-secondary-sm rich-html m-b-6" [innerHTML]="(pos.longDescription ?? pos.description ?? '') | safeHtml"></div>
+          }
+        }
+        <p class="app-disclaimer m-b-6">We cannot guarantee open volunteer positions but we will save your information and be in touch soon.</p>
+        @if (hasUserInfo()) {
+          <ion-list class="m-b-12">
+            <ion-item button="false" detail="false" lines="full" class="newsletter-item more-space">
+              <ion-checkbox
+                slot="start"
+                [(ngModel)]="notReceivingServices"
+                name="notReceivingServices">
+              </ion-checkbox>
+              <ion-label (click)="notReceivingServices = !notReceivingServices">
+                I affirm that I am not currently receiving services from Love INC.
+              </ion-label>
+            </ion-item>
+          </ion-list>
+          <ion-button expand="block" (click)="onVolunteer(pos)">Volunteer</ion-button>
+        }
+      </div>
+    }
   }
 
-  <!-- Form (shown when app doesn't have user info) -->
-  @if (showForm && selectedPosition) {
-    <div class="volunteer-form-wrapper m-t-24">
-      @if (positions.length > 1) {
+  @if (showForm) {
+    <div class="volunteer-form-wrapper" [class.m-t-24]="!genericSignup">
+      @if (!genericSignup && positions.length > 1) {
         <ion-item lines="none" class="position-select-item m-b-12">
           <ion-label position="stacked">Signing up for</ion-label>
           <div class="select-border-wrapper">
             <ion-select
-              [value]="selectedPosition.id"
+              [value]="selectedPosition?.id"
               (ionChange)="onPositionChange($event)"
               placeholder="Select position"
               interface="action-sheet">

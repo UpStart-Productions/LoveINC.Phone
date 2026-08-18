@@ -22,9 +22,6 @@ import type {
   PeekCarouselVariant,
 } from './peek-carousel.model';
 
-/** Tag slug for plans shown under Tools for Transformation carousels. */
-export const PEEK_CAROUSEL_TFT_PLANS_TAG = 'tools-for-transformation';
-
 @Component({
   selector: 'app-peek-carousel',
   standalone: true,
@@ -39,8 +36,11 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
 
   @Input() sectionTitle?: string;
 
-  /** When set, cover, media, and list slides load from plans tagged with this value. */
-  @Input() tag: string | null = null;
+  /** When set, slides load from plans in this theme. */
+  @Input() themeId: string | null = null;
+
+  /** When set, slides load from plans in this theme (case-insensitive name match). */
+  @Input() themeName: string | null = null;
 
   @Input() coverItems: PeekCarouselCoverItem[] = [];
   @Input() mediaItems: PeekCarouselMediaItem[] = [];
@@ -60,27 +60,27 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
 
   @Output() slideClick = new EventEmitter<PeekCarouselSlideClick>();
 
-  taggedCoverItems: PeekCarouselCoverItem[] = [];
-  taggedMediaItems: PeekCarouselMediaItem[] = [];
-  taggedListSlides: PeekCarouselListSlide[] = [];
+  themedCoverItems: PeekCarouselCoverItem[] = [];
+  themedMediaItems: PeekCarouselMediaItem[] = [];
+  themedListSlides: PeekCarouselListSlide[] = [];
 
   get displayCoverItems(): PeekCarouselCoverItem[] {
-    if (this.tag?.trim()) {
-      return this.taggedCoverItems;
+    if (this.hasThemedPlans()) {
+      return this.themedCoverItems;
     }
     return this.coverItems;
   }
 
   get displayMediaItems(): PeekCarouselMediaItem[] {
-    if (this.tag?.trim()) {
-      return this.taggedMediaItems;
+    if (this.hasThemedPlans()) {
+      return this.themedMediaItems;
     }
     return this.mediaItems;
   }
 
   get displayListSlides(): PeekCarouselListSlide[] {
-    if (this.tag?.trim()) {
-      return this.taggedListSlides;
+    if (this.hasThemedPlans()) {
+      return this.themedListSlides;
     }
     return this.listSlides;
   }
@@ -91,13 +91,21 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.loadTaggedPlans();
+    this.loadThemedPlans();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['tag'] && !changes['tag'].firstChange) {
-      this.loadTaggedPlans();
+    if (
+      (changes['themeName'] && !changes['themeName'].firstChange) ||
+      (changes['themeId'] && !changes['themeId'].firstChange)
+    ) {
+      this.loadThemedPlans();
     }
+  }
+
+  /** Re-fetch themed plans (e.g. pull-to-refresh on Home). */
+  refresh(): void {
+    this.loadThemedPlans(true);
   }
 
   trackCoverItem(_index: number, item: PeekCarouselCoverItem): string {
@@ -131,28 +139,37 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
     this.slideClick.emit({ variant: 'list', slide });
   }
 
-  private loadTaggedPlans(): void {
-    const tag = this.tag?.trim();
-    if (!tag) {
-      this.taggedCoverItems = [];
-      this.taggedMediaItems = [];
-      this.taggedListSlides = [];
+  private loadThemedPlans(refresh = false): void {
+    const themeId = this.themeId?.trim();
+    const themeName = this.themeName?.trim();
+    if (!themeId && !themeName) {
+      this.themedCoverItems = [];
+      this.themedMediaItems = [];
+      this.themedListSlides = [];
       return;
     }
 
-    this.contentPlanService.getPlansByTag(tag).subscribe({
+    const plans$ = themeId
+      ? this.contentPlanService.getPlansByThemeId(themeId, refresh)
+      : this.contentPlanService.getPlansByThemeName(themeName!, refresh);
+
+    plans$.subscribe({
       next: (plans) => {
-        this.taggedCoverItems = plans
+        this.themedCoverItems = plans
           .map((plan) => mapContentPlanToCoverItem(plan))
           .filter((item): item is PeekCarouselCoverItem => item !== null);
-        this.taggedMediaItems = plans.map((plan) => mapContentPlanToMediaItem(plan));
-        this.taggedListSlides = mapPlansToListSlides(plans);
+        this.themedMediaItems = plans.map((plan) => mapContentPlanToMediaItem(plan));
+        this.themedListSlides = mapPlansToListSlides(plans);
       },
       error: () => {
-        this.taggedCoverItems = [];
-        this.taggedMediaItems = [];
-        this.taggedListSlides = [];
+        this.themedCoverItems = [];
+        this.themedMediaItems = [];
+        this.themedListSlides = [];
       },
     });
+  }
+
+  private hasThemedPlans(): boolean {
+    return !!(this.themeId?.trim() || this.themeName?.trim());
   }
 }

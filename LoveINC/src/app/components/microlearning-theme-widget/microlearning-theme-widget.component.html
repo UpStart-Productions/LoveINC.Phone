@@ -1,0 +1,10 @@
+@if (loaded && theme) {
+  <app-peek-carousel
+    [variant]="carouselVariant"
+    [sectionTitle]="displaySectionTitle"
+    [themeId]="theme.id"
+    [themeName]="theme.name"
+    [clickable]="clickable"
+    (slideClick)="slideClick.emit($event)"
+  />
+}

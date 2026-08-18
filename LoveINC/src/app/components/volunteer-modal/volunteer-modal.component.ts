@@ -65,6 +65,9 @@ export class VolunteerModalComponent implements OnInit {
   @Input() address: string | null = null;
   @Input() locationHours: string | null = null;
   @Input() positions: VolunteerPosition[] = [];
+  /** Home CTA: interest signup for Love INC, not a specific open position. */
+  @Input() genericSignup = false;
+  @Input() affiliateId = '';
 
   showForm = false;
   selectedPosition: VolunteerPosition | null = null;
@@ -87,16 +90,28 @@ export class VolunteerModalComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    if (this.genericSignup) {
+      if (!this.hasUserInfo()) {
+        this.showForm = true;
+        this.prefillProfileFields();
+      }
+      return;
+    }
+
     if (!this.hasUserInfo() && this.positions?.length > 0) {
       this.showForm = true;
       this.selectedPosition = this.positions[0];
-      const profile = this.userProfileService.getProfile();
-      const onboarding = this.onboardingService.getOnboardingData();
-      this.firstName = profile.firstName ?? onboarding?.firstName ?? '';
-      this.lastName = profile.lastName ?? onboarding?.lastName ?? '';
-      this.email = profile.email ?? onboarding?.email ?? '';
-      this.wantsNewsletter = onboarding?.wantsNewsletter ?? false;
+      this.prefillProfileFields();
     }
+  }
+
+  private prefillProfileFields(): void {
+    const profile = this.userProfileService.getProfile();
+    const onboarding = this.onboardingService.getOnboardingData();
+    this.firstName = profile.firstName ?? onboarding?.firstName ?? '';
+    this.lastName = profile.lastName ?? onboarding?.lastName ?? '';
+    this.email = profile.email ?? onboarding?.email ?? '';
+    this.wantsNewsletter = onboarding?.wantsNewsletter ?? false;
   }
 
   hasUserInfo(): boolean {
@@ -129,9 +144,24 @@ export class VolunteerModalComponent implements OnInit {
     await this.submitAndDismiss(position);
   }
 
-  async onSubmitForm(value: UserProfileFormValue) {
-    if (!this.selectedPosition || this.submitting) return;
+  async onGenericSubmit() {
     if (!this.notReceivingServices) {
+      await this.showToast('Please affirm that you are not currently receiving services from Love INC.', 'danger');
+      return;
+    }
+    await this.submitGenericAndDismiss();
+  }
+
+  async onSubmitForm(value: UserProfileFormValue) {
+    if (this.submitting) return;
+    if (this.genericSignup) {
+      if (!this.notReceivingServices) {
+        await this.showToast('Please affirm that you are not currently receiving services from Love INC.', 'danger');
+        return;
+      }
+    } else if (!this.selectedPosition) {
+      return;
+    } else if (!this.notReceivingServices) {
       await this.showToast('Please affirm that you are not currently receiving services from Love INC.', 'danger');
       return;
     }
@@ -146,7 +176,11 @@ export class VolunteerModalComponent implements OnInit {
       email: value.email,
       wantsNewsletter: this.wantsNewsletter,
     });
-    await this.submitAndDismiss(this.selectedPosition);
+    if (this.genericSignup) {
+      await this.submitGenericAndDismiss();
+    } else {
+      await this.submitAndDismiss(this.selectedPosition!);
+    }
     this.submitting = false;
   }
 
@@ -162,6 +196,34 @@ export class VolunteerModalComponent implements OnInit {
     if (id) {
       const pos = this.positions.find((p) => p.id === id);
       if (pos) this.selectedPosition = pos;
+    }
+  }
+
+  private async submitGenericAndDismiss() {
+    try {
+      const { platform, model } = await this.deviceInfo.getDeviceInfo();
+      await this.platformApi.postAppUserNotification({
+        firstName: this.getFirstName(),
+        lastName: this.getLastName(),
+        email: this.getEmail(),
+        devicePlatform: platform,
+        deviceModel: model,
+        itemType: 'volunteer',
+        itemId: this.affiliateId,
+        itemTitle: 'Volunteer with Love INC',
+        deviceId: this.deviceId.getDeviceId(),
+      });
+      await this.modalController.dismiss();
+      await this.showToast('Thanks! We\'ll be in touch about volunteering with Love INC.', 'success');
+    } catch (err: unknown) {
+      const status = (err as { status?: number })?.status;
+      const msg = (err as { error?: { message?: string }; message?: string })?.error?.message
+        ?? (err as { message?: string })?.message;
+      console.error('Volunteer signup failed', err);
+      const toastMsg = status
+        ? `Request failed (${status}). ${msg ?? 'Please try again.'}`
+        : 'Something went wrong. Please try again.';
+      await this.showToast(toastMsg, 'danger');
     }
   }
 

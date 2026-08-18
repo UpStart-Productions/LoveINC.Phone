@@ -7,13 +7,19 @@ import {
   IonContent,
   IonButtons,
   IonSpinner,
+  IonButton,
 } from '@ionic/angular/standalone';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { ContentCardComponent } from '../components/content-card/content-card.component';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformVolunteerPositionWithAffiliate } from '../services/platform/types';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
-import { joinWithAppDot } from '../shared/utils';
+import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
+import {
+  isVolunteerPositionOpen,
+  joinWithAppDot,
+  sortVolunteerPositionsOpenFirst,
+} from '../shared/utils';
 
 @Component({
   selector: 'app-volunteer-positions',
@@ -28,8 +34,11 @@ import { joinWithAppDot } from '../shared/utils';
     IonContent,
     IonButtons,
     IonSpinner,
+    IonButton,
     ContentCardComponent,
-    AppBackButtonComponent]})
+    AppBackButtonComponent,
+  ],
+})
 export class VolunteerPositionsPage implements OnInit {
   positions: PlatformVolunteerPositionWithAffiliate[] = [];
   loading = true;
@@ -37,23 +46,37 @@ export class VolunteerPositionsPage implements OnInit {
   constructor(
     private platformApi: PlatformApiService,
     private scheduleFormatting: ScheduleFormattingService,
+    private volunteerActionSheetService: VolunteerActionSheetService
   ) {}
 
   ngOnInit() {
     this.loadPositions();
   }
 
+  get hasOpenPositions(): boolean {
+    return this.positions.some((p) => isVolunteerPositionOpen(p));
+  }
+
+  isPositionOpen(position: PlatformVolunteerPositionWithAffiliate): boolean {
+    return isVolunteerPositionOpen(position);
+  }
+
   loadPositions() {
     this.loading = true;
     this.platformApi.getVolunteerPositions().subscribe({
-      next: (items) => {
-        this.positions = items ?? [];
+      next: (positions) => {
+        this.positions = sortVolunteerPositionsOpenFirst(positions ?? []);
         this.loading = false;
       },
       error: (err) => {
         console.error('Error loading volunteer positions:', err);
         this.loading = false;
-      }});
+      },
+    });
+  }
+
+  openVolunteerSignup(): void {
+    void this.volunteerActionSheetService.openGeneralVolunteerSignup();
   }
 
   getPhotoUrl(position: PlatformVolunteerPositionWithAffiliate): string {
@@ -72,16 +95,6 @@ export class VolunteerPositionsPage implements OnInit {
     const rule = position['scheduleRule'] ?? position['schedule_rule'];
     if (!rule || typeof rule !== 'object') return undefined;
     return this.scheduleFormatting.formatScheduleRule(this.scheduleFormatting.normalizeScheduleRule(rule)) ?? undefined;
-  }
-
-  getDescription(position: PlatformVolunteerPositionWithAffiliate): string {
-    const desc = (position['description'] ?? position['shortDescription'] ?? '') as string;
-    const affiliate = position.affiliate?.name;
-    const addr = this.formatAddress(position);
-    const parts = [desc];
-    if (affiliate) parts.push(affiliate);
-    if (addr) parts.push(addr);
-    return parts.filter(Boolean).join('\n\n');
   }
 
   /** Short detail for card (schedule or address, not full description). */

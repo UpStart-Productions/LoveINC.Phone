@@ -3,6 +3,7 @@
  * @see src/app/shared/README.md
  */
 export { shouldHideMainTabBar } from './route-utils';
+export { isVolunteerPositionOpen, sortVolunteerPositionsOpenFirst } from './volunteer-position.util';
 export {
   resolveReturnUrl,
   resolveReturnUrlFromRouteTree,

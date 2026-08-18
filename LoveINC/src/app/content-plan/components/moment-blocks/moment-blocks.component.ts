@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonCheckbox,
@@ -11,6 +11,8 @@ import {
 } from '@ionic/angular/standalone';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { SafeResourceUrlPipe } from '../../../shared/pipes/safe-resource-url.pipe';
+import { parseScriptureRefs } from '../../../shared/utils/scripture-ref.util';
+import { ScriptureVerseModalService } from '../../../services/scripture-verse-modal.service';
 import { videoEmbedUrlFromLink } from '../../video-embed.util';
 import type { ContentPlanBlock } from '../../content-plan.model';
 
@@ -33,6 +35,8 @@ import type { ContentPlanBlock } from '../../content-plan.model';
   styleUrl: './moment-blocks.component.scss',
 })
 export class MomentBlocksComponent {
+  private readonly scriptureVerseModal = inject(ScriptureVerseModalService);
+
   @Input({ required: true }) blocks: ContentPlanBlock[] = [];
 
   get sortedBlocks(): ContentPlanBlock[] {
@@ -65,5 +69,17 @@ export class MomentBlocksComponent {
 
   videoEmbedUrl(block: ContentPlanBlock): string | null {
     return videoEmbedUrlFromLink(this.contentString(block, 'url'));
+  }
+
+  isScriptureBlock(block: ContentPlanBlock): boolean {
+    return block.blockId === 'scripture';
+  }
+
+  scriptureRefs(block: ContentPlanBlock): string[] {
+    return parseScriptureRefs(this.contentString(block, 'text'));
+  }
+
+  openVerseModal(reference: string): void {
+    void this.scriptureVerseModal.open(reference);
   }
 }

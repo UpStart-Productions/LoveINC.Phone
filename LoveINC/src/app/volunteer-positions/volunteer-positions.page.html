@@ -12,21 +12,41 @@
     <div class="loading-container">
       <ion-spinner name="crescent"></ion-spinner>
     </div>
-  } @else if (positions.length === 0) {
+  } @else if (!positions.length) {
     <div class="empty-state">
-      <p class="app-body-secondary-sm">No volunteer positions are currently available.</p>
+      <p class="app-body-secondary-sm m-b-24">No volunteer positions are currently available.</p>
+      <ion-button
+        expand="block"
+        color="primary"
+        class="pill-button"
+        (click)="openVolunteerSignup()">
+        Become a Volunteer
+      </ion-button>
     </div>
   } @else {
+    @if (!hasOpenPositions) {
+      <div class="empty-state empty-state--inline">
+        <p class="app-body-secondary-sm m-b-24">No open volunteer positions right now.</p>
+        <ion-button
+          expand="block"
+          color="primary"
+          class="pill-button"
+          (click)="openVolunteerSignup()">
+          Become a Volunteer
+        </ion-button>
+      </div>
+    }
+
     <div class="positions-list">
       @for (position of positions; track position.id) {
         <app-content-card
-          [category]="position.affiliate?.name"
-          [categoryIcon]="position.affiliate ? 'business-outline' : undefined"
           [title]="position.title ?? 'Volunteer'"
           [detail]="getCardDetail(position)"
           [imageUrl]="getPhotoUrl(position) || undefined"
           [iconName]="getPhotoUrl(position) ? undefined : 'heart-outline'"
           [iconBackgroundColor]="'#349394'"
+          [asideBadge]="isPositionOpen(position) ? 'Open' : undefined"
+          asideBadgeColor="success"
           [route]="'/tabs/content-detail/volunteer-position/' + position.id + '?from=volunteer-positions'"
         />
       }

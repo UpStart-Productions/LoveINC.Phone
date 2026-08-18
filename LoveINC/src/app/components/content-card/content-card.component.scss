@@ -76,13 +76,14 @@
 
 .content-card-aside-badge {
   flex-shrink: 0;
-  margin-top: -8px;
+  margin-top: 0.24rem;
   font-weight: 400;
   font-size: var(--app-font-size-xs, 0.75rem) !important;
-}
-
-.content-card-aside-badge::part(native) {
-  font-size: var(--app-font-size-xs, 0.75rem) !important;
+  line-height: 1;
+  --padding-top: 3px;
+  --padding-bottom: 5px;
+  --padding-start: 8px;
+  --padding-end: 8px;
 }
 
 .content-card-avatar {

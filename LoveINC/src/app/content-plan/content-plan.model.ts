@@ -2,6 +2,9 @@
 
 export type ContentPlanDisplayStyle = 'SINGLE_PAGE' | 'MULTI_PAGE' | 'LIST';
 
+/** How a theme's paths are browsed in the app (Cover Cards, Detail Cards, List). */
+export type ContentPlanThemeDisplayStyle = 'COVER_CARDS' | 'DETAIL_CARDS' | 'LIST';
+
 export interface ContentPlanBlock {
   id?: string;
   order: number;
@@ -24,13 +27,21 @@ export interface ContentPlanAuthor {
   avatarUrl?: string;
 }
 
+export interface ContentPlanTheme {
+  id: string;
+  name: string;
+  isActive: boolean;
+  displayStyle: ContentPlanThemeDisplayStyle;
+}
+
 export interface ContentPlan {
   id: string;
   slug: string;
   title: string;
+  order: number;
   coverPhotoUrl?: string;
   author: ContentPlanAuthor;
+  theme: ContentPlanTheme;
   displayStyle: ContentPlanDisplayStyle;
   moments: ContentPlanMoment[];
-  tags?: string[];
 }

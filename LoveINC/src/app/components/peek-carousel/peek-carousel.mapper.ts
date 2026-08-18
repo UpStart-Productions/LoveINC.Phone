@@ -4,7 +4,6 @@ import { resolveMomentBlockText, resolvePlanCoverImageUrl } from '../../content-
 import type { PeekCarouselCoverItem, PeekCarouselListSlide, PeekCarouselMediaItem } from './peek-carousel.model';
 
 const LIST_ROWS_PER_SLIDE = 2;
-const TFT_CATEGORY = 'Tools for Transformation';
 
 export function mapContentPlanToCoverItem(plan: ContentPlan): PeekCarouselCoverItem | null {
   const imageUrl = resolvePlanCoverImageUrl(plan);
@@ -51,7 +50,7 @@ export function mapContentPlanToListItem(
 
   return {
     id: plan.id,
-    category: TFT_CATEGORY,
+    category: plan.theme.name || 'Learning',
     lucideCategoryIcon: 'compass',
     compactCategoryLabel: true,
     title: plan.title,

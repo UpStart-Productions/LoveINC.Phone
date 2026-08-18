@@ -1,5 +1,5 @@
-import type { PlatformPlan, PlatformPlanMoment } from '../services/platform/types';
-import type { ContentPlan, ContentPlanMoment } from './content-plan.model';
+import type { PlatformPlan, PlatformPlanMoment, PlatformTheme } from '../services/platform/types';
+import type { ContentPlan, ContentPlanMoment, ContentPlanTheme } from './content-plan.model';
 
 export function mapPlatformPlanToContentPlan(
   plan: PlatformPlan,
@@ -9,13 +9,48 @@ export function mapPlatformPlanToContentPlan(
     id: plan.id,
     slug: plan.slug,
     title: plan.title,
+    order: typeof plan.order === 'number' ? plan.order : 0,
     coverPhotoUrl: plan.coverPhotoUrl
       ? resolveUploadUrl(plan.coverPhotoUrl)
       : undefined,
     author: mapPlatformPlanAuthor(plan.author, resolveUploadUrl),
+    theme: mapPlatformPlanTheme(plan.theme),
     displayStyle: plan.displayStyle,
-    tags: mapPlatformPlanTags(plan.tags),
-    moments: plan.moments.map((moment) => mapPlatformMoment(moment, resolveUploadUrl)),
+    moments: plan.moments
+      .map((moment) => mapPlatformMoment(moment, resolveUploadUrl))
+      .sort((a, b) => a.order - b.order),
+  };
+}
+
+export function compareContentPlansByOrder(a: ContentPlan, b: ContentPlan): number {
+  const orderDiff = a.order - b.order;
+  if (orderDiff !== 0) {
+    return orderDiff;
+  }
+  return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' });
+}
+
+export function sortContentPlansByOrder(plans: ContentPlan[]): ContentPlan[] {
+  return [...plans].sort(compareContentPlansByOrder);
+}
+
+/** Case-insensitive theme name match (trim + lowercase). */
+export function normalizePlanThemeKey(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function mapPlatformPlanTheme(theme: PlatformPlan['theme'] | undefined): ContentPlanTheme {
+  return mapPlatformTheme(theme);
+}
+
+export function mapPlatformTheme(
+  theme: PlatformPlan['theme'] | PlatformTheme | undefined | null
+): ContentPlanTheme {
+  return {
+    id: theme?.id?.trim() ?? '',
+    name: theme?.name?.trim() ?? '',
+    isActive: theme?.isActive ?? false,
+    displayStyle: theme?.displayStyle ?? 'COVER_CARDS',
   };
 }
 
@@ -29,18 +64,6 @@ function mapPlatformPlanAuthor(
     name,
     avatarUrl: avatarRaw ? resolveUploadUrl(avatarRaw) : undefined,
   };
-}
-
-function mapPlatformPlanTags(tags: PlatformPlan['tags']): string[] | undefined {
-  if (!tags?.length) {
-    return undefined;
-  }
-
-  const normalized = tags
-    .map((tag) => (tag.slug ?? tag.name ?? '').trim().toLowerCase())
-    .filter(Boolean);
-
-  return normalized.length ? normalized : undefined;
 }
 
 /** Plan cover photo, or the first moment photo block when no cover is set. */

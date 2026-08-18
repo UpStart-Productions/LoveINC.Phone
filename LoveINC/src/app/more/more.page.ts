@@ -154,7 +154,7 @@ export class MorePage implements OnInit {
         route: '/tabs/profile',
       },
       {
-        name: 'Open Volunteer Positions',
+        name: 'Volunteer Positions',
         icon: 'hand-right-outline',
         iconColor: 'var(--love-inc-orange)',
         route: '/tabs/volunteer-positions',
