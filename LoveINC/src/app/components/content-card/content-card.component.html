@@ -56,6 +56,9 @@
             {{ title }}
           }
         </h2>
+        @if (subtitle) {
+          <p class="app-body-secondary">{{ subtitle }}</p>
+        }
         @if (underTitle) {
           @if (tapUnderTitleToOpenMap) {
             <button type="button" class="content-card-under-title-map" (click)="onUnderTitleMapTap($event)">

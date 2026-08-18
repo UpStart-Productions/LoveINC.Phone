@@ -52,11 +52,11 @@
  * during iOS push/pop while async content is still loading.
  */
 ion-router-outlet > .ion-page ion-content {
-  --background: var(--ion-color-light);
+  --background: var(--ion-background-color);
 }
 
 ion-router-outlet > .ion-page ion-content::part(background) {
-  background: var(--ion-color-light);
+  background: var(--ion-background-color);
 }
 
 /* Journal / ngx-quill: hide built-in toolbar (floating toolbar handles format) */

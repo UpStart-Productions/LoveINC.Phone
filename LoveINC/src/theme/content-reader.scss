@@ -141,14 +141,17 @@
 
 .content-reader-edge-chrome__title {
   position: absolute;
-  left: 2.75rem;
-  right: 2.75rem;
+  left: 50%;
+  right: auto;
+  width: calc(100% - 7rem);
+  max-width: calc(100% - 7rem);
   margin: 0;
   padding-inline: 0.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: center;
+  transform: translateX(-50%);
   color: var(--ion-color-primary-contrast);
   font-size: var(--app-header-title-font-size);
   font-weight: var(--app-font-weight-semibold);

@@ -1,3 +1,10 @@
+.content-detail-edge-chrome__actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
 .content-detail-loading-shell {
   min-height: 1px;
 }
@@ -35,13 +42,13 @@
   }
 }
 
-/* Solid scroll area (app default is #f5f5f5) */
-ion-content.content-detail-page {
-  --background: var(--ion-color-light);
+/* White scroll area (overrides content-reader-scroll grey on this page) */
+ion-content.content-detail-page.content-reader-scroll {
+  --background: var(--ion-background-color);
 }
 
-ion-content.content-detail-page::part(background) {
-  background: var(--ion-color-light);
+ion-content.content-detail-page.content-reader-scroll::part(background) {
+  background: var(--ion-background-color);
 }
 
 /* Class instructor: light minicard, large avatar left, label + name right */

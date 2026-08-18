@@ -21,6 +21,7 @@
       @for (partner of partners; track partner.id) {
         <app-content-card
           [title]="partner.name"
+          [subtitle]="partner.tagline?.trim() || undefined"
           [underTitle]="formatAddress(partner) || undefined"
           [tapUnderTitleToOpenMap]="!!formatAddress(partner)"
           [mapPhone]="partner.phone"

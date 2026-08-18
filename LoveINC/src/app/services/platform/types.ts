@@ -166,6 +166,7 @@ export interface PlatformPartner {
   id: string;
   slug?: string;
   name: string;
+  tagline?: string;
   shortDescription?: string;
   longDescription?: string;
   phone?: string;

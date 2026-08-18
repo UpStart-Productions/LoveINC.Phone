@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { format } from 'date-fns';
@@ -84,13 +84,21 @@ import { AppBackButtonComponent } from '../../components/app-back-button/app-bac
     AppBackButtonComponent],
   providers: [AlertController, ActionSheetController, ToastController]
 })
-export class ContentDetailPage implements OnInit, OnDestroy {
+export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild(IonContent) private ionContent?: IonContent;
+
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  private edgeScrollEl: HTMLElement | null = null;
+  private edgeScrollListener: (() => void) | null = null;
+
   contentItem: ContentDetail | null = null;
   contentType: ContentType = 'class';
   contentId: string = '';
   pageTitle: string = 'Details';
   loading = true;
   error: string | null = null;
+  edgeHeaderScrolled = false;
 
   /** From GrovLink local DB after a successful in-app registration for this class. */
   isRegisteredForThisClass = false;
@@ -171,6 +179,60 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       this.intakeRequired = this.gapAccess.orgIntakeRequired;
       this.intakeCompleted = this.gapAccess.hasProviderContactAccess;
     }
+    void this.syncEdgeHeaderScrollListener();
+  }
+
+  ngAfterViewInit(): void {
+    void this.syncEdgeHeaderScrollListener();
+  }
+
+  /** Standard header when there is no cover photo (or still loading). */
+  get showStandardHeader(): boolean {
+    return !this.showEdgeHero;
+  }
+
+  /** Cover photo is top chrome; back/actions float over the hero. */
+  get showEdgeHero(): boolean {
+    return !this.loading && !!this.contentItem?.photoUrl?.trim();
+  }
+
+  private finishContentLoad(): void {
+    this.loading = false;
+    void this.syncEdgeHeaderScrollListener();
+  }
+
+  /** Fade header chrome in on scroll (content-plan / NephoPhone pattern). */
+  private async syncEdgeHeaderScrollListener(): Promise<void> {
+    this.teardownEdgeHeaderScrollListener();
+
+    if (!this.showEdgeHero || !this.ionContent) {
+      this.edgeHeaderScrolled = false;
+      this.cdr.markForCheck();
+      return;
+    }
+
+    const scrollEl = await this.ionContent.getScrollElement();
+    const onScroll = (): void => {
+      const scrolled = scrollEl.scrollTop > 5;
+      if (this.edgeHeaderScrolled === scrolled) {
+        return;
+      }
+      this.edgeHeaderScrolled = scrolled;
+      this.cdr.markForCheck();
+    };
+
+    this.edgeScrollEl = scrollEl;
+    this.edgeScrollListener = onScroll;
+    scrollEl.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  private teardownEdgeHeaderScrollListener(): void {
+    if (this.edgeScrollEl && this.edgeScrollListener) {
+      this.edgeScrollEl.removeEventListener('scroll', this.edgeScrollListener);
+    }
+    this.edgeScrollEl = null;
+    this.edgeScrollListener = null;
   }
 
   private async refreshClassRegistrationLocalStatus(): Promise<void> {
@@ -262,11 +324,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         if (this.contentType === 'class') {
           void this.refreshClassRegistrationLocalStatus();
         }
-        this.loading = false;
+        this.finishContentLoad();
       },
       error: (err) => {
         console.error('Error loading content detail:', err);
-        this.loading = false;
+        this.finishContentLoad();
       }});
   }
 
@@ -311,12 +373,12 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         if (!this.contentItem) {
           this.error = 'Position not found';
         }
-        this.loading = false;
+        this.finishContentLoad();
       },
       error: (err) => {
         console.error('Error loading volunteer position:', err);
         this.error = 'Failed to load position';
-        this.loading = false;
+        this.finishContentLoad();
       }});
   }
 
@@ -330,12 +392,12 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         if (!this.contentItem) {
           this.error = 'Partner not found';
         }
-        this.loading = false;
+        this.finishContentLoad();
       },
       error: (err) => {
         console.error('Error loading partner:', err);
         this.error = 'Failed to load partner';
-        this.loading = false;
+        this.finishContentLoad();
       }});
   }
 
@@ -386,11 +448,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         if (!this.contentItem) {
           console.error('Event not found:', this.contentId);
         }
-        this.loading = false;
+        this.finishContentLoad();
       },
       error: (err) => {
         console.error('Error loading event detail:', err);
-        this.loading = false;
+        this.finishContentLoad();
       }});
   }
 
@@ -402,11 +464,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         if (!this.contentItem) {
           console.error('Impact story not found:', this.contentId);
         }
-        this.loading = false;
+        this.finishContentLoad();
       },
       error: (err) => {
         console.error('Error loading impact story:', err);
-        this.loading = false;
+        this.finishContentLoad();
       }});
   }
 
@@ -418,11 +480,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           if (!this.contentItem) {
             console.error('Gap ministry not found:', this.contentId);
           }
-          this.loading = false;
+          this.finishContentLoad();
         },
         error: (err) => {
           console.error('Error loading gap ministry detail:', err);
-          this.loading = false;
+          this.finishContentLoad();
         }});
   }
 
@@ -543,21 +605,21 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         const c = ctas.find((cta) => cta.id === this.contentId);
         if (!c) {
           console.error('CTA not found:', this.contentId);
-          this.loading = false;
+          this.finishContentLoad();
           return;
         }
         const redirect = this.getCtaRelatedRedirect(c);
         if (redirect) {
-          this.loading = false;
+          this.finishContentLoad();
           this.router.navigate(redirect.commands, { queryParams: redirect.queryParams, replaceUrl: true });
           return;
         }
         this.contentItem = this.mapPlatformCtaToContentDetail(c);
-        this.loading = false;
+        this.finishContentLoad();
       },
       error: (err) => {
         console.error('Error loading CTA detail:', err);
-        this.loading = false;
+        this.finishContentLoad();
       }});
   }
 
@@ -673,11 +735,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           console.error('Class not found:', this.contentId);
         }
         void this.refreshClassRegistrationLocalStatus();
-        this.loading = false;
+        this.finishContentLoad();
       },
       error: (err) => {
         console.error('Error loading class detail:', err);
-        this.loading = false;
+        this.finishContentLoad();
       }
     });
   }
@@ -879,13 +941,6 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   isImpactStory(): boolean {
     return this.contentType === 'impact-story';
-  }
-
-  get showToolbarTitle(): boolean {
-    if (this.isImpactStory() && this.contentItem?.photoUrl) {
-      return false;
-    }
-    return true;
   }
 
   hasInstructor(): boolean {
@@ -1297,6 +1352,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.teardownEdgeHeaderScrollListener();
     this.subs.forEach((s) => s.unsubscribe());
     this.subs = [];
   }

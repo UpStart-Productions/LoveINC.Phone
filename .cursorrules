@@ -44,6 +44,7 @@
 
 ## Default Ionic Controls
 - DO NOT embellish or add custom styling to default Ionic controls unless explicitly instructed by the user
+- **Page background:** drill-in / detail screens use **white** (`--ion-background-color`) unless a page explicitly sets another (e.g. Home grey, microlearning `content-reader-scroll`).
 - **No loading spinners** — do not add `ion-spinner` or spinner-style loading UI for page transitions or async fetch. Use an opaque page shell (`ion-content::part(background)`) and show content when ready; empty shell while loading is fine.
 - Ionic is its own UI framework with well-designed default components
 - Use Ionic components out of the box with their default styling
