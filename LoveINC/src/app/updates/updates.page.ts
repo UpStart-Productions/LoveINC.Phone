@@ -10,7 +10,9 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
+  NavController,
 } from '@ionic/angular/standalone';
+import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CardComponent, CardActionIcon, type CardBadge } from '../components/card/card.component';
@@ -73,6 +75,7 @@ export class UpdatesPage implements OnInit {
 
   constructor(
     private router: Router,
+    private navController: NavController,
     private platformApi: PlatformApiService,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
@@ -252,7 +255,7 @@ export class UpdatesPage implements OnInit {
   }
 
   navigateToDetail(item: UpdateItem) {
-    void this.router.navigate(['/tabs/content-detail', item.type, item.id], {
+    void navigateAppForward(this.navController, this.router, ['/tabs/content-detail', item.type, item.id], {
       queryParams: { from: 'updates' },
     });
   }

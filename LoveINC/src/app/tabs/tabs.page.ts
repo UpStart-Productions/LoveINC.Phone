@@ -17,6 +17,7 @@ import {
   IonTabButton,
   ActionSheetController,
   AlertController,
+  NavController,
 } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
 import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
@@ -24,6 +25,7 @@ import { DonateActionSheetService } from '../services/donate-action-sheet.servic
 import { MainTabBarService } from '../services/main-tab-bar.service';
 import { shouldHideMainTabBar } from '../shared/utils';
 import { SERVICES_ACTION_SHEET_CLASS } from '../shared/action-sheet-classes';
+import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 
 @Component({
   selector: 'app-tabs',
@@ -34,6 +36,7 @@ import { SERVICES_ACTION_SHEET_CLASS } from '../shared/action-sheet-classes';
 export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
   public environmentInjector = inject(EnvironmentInjector);
   private router = inject(Router);
+  private navController = inject(NavController);
   private mainTabBarService = inject(MainTabBarService);
 
   @ViewChild('tabBarTrack', { read: ElementRef }) private tabBarTrackRef?: ElementRef<HTMLElement>;
@@ -128,6 +131,12 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
     }
 
     const path = this.router.url.split('?')[0];
+    for (const tab of this.mainTabIds) {
+      if (path === `/tabs/${tab}` || path.startsWith(`/tabs/${tab}/`)) {
+        return tab;
+      }
+    }
+
     const hrefMap: Record<string, string> = {
       '/tabs/home': 'home',
       '/tabs/updates': 'updates',
@@ -192,42 +201,54 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
           text: 'Connection Center',
           icon: 'people-circle-outline',
           handler: () => {
-            this.router.navigate(['/tabs/connection-center'], { queryParams: { from: 'services' } });
+            void navigateAppForward(this.navController, this.router, ['/tabs/connection-center'], {
+              queryParams: { from: 'services' },
+            });
           },
         },
         {
           text: 'Gap Ministries',
           icon: 'assets/custom-icons/hand-helping.svg',
           handler: () => {
-            this.router.navigate(['/tabs/gap-ministries'], { queryParams: { from: 'services' } });
+            void navigateAppForward(this.navController, this.router, ['/tabs/gap-ministries'], {
+              queryParams: { from: 'services' },
+            });
           },
         },
         {
           text: 'Transformational Classes',
           icon: 'school-outline',
           handler: () => {
-            this.router.navigate(['/tabs/transformation-classes'], { queryParams: { from: 'services' } });
+            void navigateAppForward(this.navController, this.router, ['/tabs/transformation-classes'], {
+              queryParams: { from: 'services' },
+            });
           },
         },
         {
           text: 'J.O.B.S.',
           icon: 'briefcase-outline',
           handler: () => {
-            this.router.navigate(['/tabs/jobs-program'], { queryParams: { from: 'services' } });
+            void navigateAppForward(this.navController, this.router, ['/tabs/jobs-program'], {
+              queryParams: { from: 'services' },
+            });
           },
         },
         {
           text: 'Hesed House',
           icon: 'house-outline',
           handler: () => {
-            this.router.navigate(['/tabs/hesed-house'], { queryParams: { from: 'services' } });
+            void navigateAppForward(this.navController, this.router, ['/tabs/hesed-house'], {
+              queryParams: { from: 'services' },
+            });
           },
         },
         {
           text: 'Prayer Request',
           icon: 'heart-outline',
           handler: () => {
-            this.router.navigate(['/tabs/prayer-request'], { queryParams: { from: 'services' } });
+            void navigateAppForward(this.navController, this.router, ['/tabs/prayer-request'], {
+              queryParams: { from: 'services' },
+            });
           },
         },
         {
@@ -236,7 +257,7 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
           cssClass: 'assistance-button',
           handler: () => {
             void actionSheet.onDidDismiss().then(() => {
-              void this.router.navigate(['/tabs/assistance/intro']);
+              void navigateAppForward(this.navController, this.router, ['/tabs/assistance/intro']);
             });
           },
         },

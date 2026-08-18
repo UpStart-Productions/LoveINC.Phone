@@ -8,9 +8,11 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
+  NavController,
 } from '@ionic/angular/standalone';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { LOVE_INC_OFFICE_TEL } from '../shared/love-inc-contact.constants';
+import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 
 @Component({
   selector: 'app-assistance-intro',
@@ -29,17 +31,20 @@ import { LOVE_INC_OFFICE_TEL } from '../shared/love-inc-contact.constants';
   ],
 })
 export class AssistanceIntroPage {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private navController: NavController
+  ) {}
 
   callConnectionCenter(): void {
     window.open(`tel:${LOVE_INC_OFFICE_TEL}`, '_self');
   }
 
   onGetStarted() {
-    void this.router.navigate(['/tabs/assistance/signup']);
+    void navigateAppForward(this.navController, this.router, ['/tabs/assistance/signup']);
   }
 
   onHaveQRCode() {
-    void this.router.navigate(['/tabs/service-unlock/scan']);
+    void navigateAppForward(this.navController, this.router, ['/tabs/service-unlock/scan']);
   }
 }

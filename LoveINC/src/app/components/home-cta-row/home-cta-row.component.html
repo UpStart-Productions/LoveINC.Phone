@@ -14,9 +14,8 @@
         Access services through our
         <a
           class="app-link"
-          routerLink="/tabs/connection-center"
-          [queryParams]="{ from: 'home' }"
-          (click)="$event.stopPropagation()"
+          href="/tabs/connection-center"
+          (click)="onConnectionCenterLinkClick($event)"
         >Connection Center</a>
       </p>
     } @else {

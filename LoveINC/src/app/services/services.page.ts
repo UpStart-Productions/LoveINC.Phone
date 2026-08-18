@@ -16,8 +16,10 @@ import {
   IonLabel,
   IonIcon,
   IonButton,
+  NavController,
 } from '@ionic/angular/standalone';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
+import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 
 interface Service {
   name: string;
@@ -79,6 +81,7 @@ export class ServicesPage implements OnInit {
 
   constructor(
     private router: Router,
+    private navController: NavController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService
   ) {}
@@ -95,7 +98,7 @@ export class ServicesPage implements OnInit {
     if (service.route) {
       const tree = this.router.parseUrl(service.route);
       tree.queryParams = { ...tree.queryParams, from: 'services' };
-      void this.router.navigateByUrl(tree);
+      void navigateAppForward(this.navController, this.router, tree);
     } else if (service.handler) {
       service.handler();
     }

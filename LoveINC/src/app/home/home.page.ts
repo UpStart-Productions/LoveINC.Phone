@@ -15,6 +15,7 @@ import {
   IonRefresher,
   IonRefresherContent,
   IonCard,
+  NavController,
 } from '@ionic/angular/standalone';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
 import { OnboardingService } from '../services/onboarding.service';
@@ -49,6 +50,7 @@ import { MicrolearningThemeWidgetComponent } from '../components/microlearning-t
 import { ContentPlanService } from '../content-plan/content-plan.service';
 import type { ContentPlanTheme } from '../content-plan/content-plan.model';
 import type { PeekCarouselSlideClick } from '../components/peek-carousel/peek-carousel.model';
+import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 
 const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
 const BROWSE_SERVICES_MAX_DISPLAYS = 3;
@@ -118,6 +120,7 @@ export class HomePage implements OnInit {
   constructor(
     private onboardingService: OnboardingService,
     private router: Router,
+    private navController: NavController,
     private platformApi: PlatformApiService,
     private cardFormatting: CardFormattingService,
     private donateActionSheetService: DonateActionSheetService,
@@ -248,7 +251,7 @@ export class HomePage implements OnInit {
     if (event.variant !== 'cover' && event.variant !== 'media') {
       return;
     }
-    void this.router.navigate(['/tabs/content-plan', event.item.id], {
+    void navigateAppForward(this.navController, this.router, ['/tabs/content-plan', event.item.id], {
       queryParams: { from: 'home' },
     });
   }
@@ -613,7 +616,7 @@ export class HomePage implements OnInit {
 
   navigateToCard(card: HomeCard) {
     const detailType = this.getContentDetailType(card.type);
-    void this.router.navigate(['/tabs/content-detail', detailType, card.id], {
+    void navigateAppForward(this.navController, this.router, ['/tabs/content-detail', detailType, card.id], {
       queryParams: { from: 'home' },
     });
   }

@@ -9,7 +9,9 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
+  NavController,
 } from '@ionic/angular/standalone';
+import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
 import { AlertController } from '@ionic/angular';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
 import { ContentCardListComponent } from '../../components/content-card-list/content-card-list.component';
@@ -122,6 +124,7 @@ export class GapMinistriesPage implements OnInit {
   constructor(
     private platformApi: PlatformApiService,
     private router: Router,
+    private navController: NavController,
     private alertController: AlertController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
@@ -493,7 +496,7 @@ export class GapMinistriesPage implements OnInit {
   }
 
   onCardClick(service: GapService) {
-    void this.router.navigate(['/tabs/content-detail', 'gap-ministry', service.id], {
+    void navigateAppForward(this.navController, this.router, ['/tabs/content-detail', 'gap-ministry', service.id], {
       queryParams: { from: 'gap-ministries' },
     });
   }

@@ -6,11 +6,13 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
+  NavController,
 } from '@ionic/angular/standalone';
 import { CardComponent } from '../components/card/card.component';
 import { PlatformApiService } from '../services/platform';
 import type { PlatformImpactStory } from '../services/platform/types';
 import { SharingService } from '../services/sharing/sharing.service';
+import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 
 @Component({
   selector: 'app-impact-stories',
@@ -31,6 +33,7 @@ export class ImpactStoriesPage implements OnInit {
 
   constructor(
     private router: Router,
+    private navController: NavController,
     private platformApi: PlatformApiService,
     private sharingService: SharingService
   ) {}
@@ -54,7 +57,7 @@ export class ImpactStoriesPage implements OnInit {
   }
 
   navigateToDetail(story: PlatformImpactStory) {
-    void this.router.navigate(['/tabs/content-detail', 'impact-story', story.id], {
+    void navigateAppForward(this.navController, this.router, ['/tabs/content-detail', 'impact-story', story.id], {
       queryParams: { from: 'impact-stories' },
     });
   }

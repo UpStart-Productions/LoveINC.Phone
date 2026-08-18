@@ -46,7 +46,7 @@ export class JournalListPage {
   ) {}
 
   goBack(): void {
-    void navigateAppBack(this.navController, this.route.snapshot, '/tabs/tools');
+    void navigateAppBack(this.navController, this.router, this.route.snapshot, '/tabs/tools');
   }
 
   async ionViewWillEnter(): Promise<void> {

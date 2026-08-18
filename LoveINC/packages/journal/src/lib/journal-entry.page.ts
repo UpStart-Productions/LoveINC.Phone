@@ -84,7 +84,7 @@ export class JournalEntryPage implements OnInit, OnDestroy {
 
   goBack(): void {
     this.navigatingAway = true;
-    void navigateAppBack(this.navController, this.route.snapshot, '/tabs/journal');
+    void navigateAppBack(this.navController, this.router, this.route.snapshot, '/tabs/journal');
   }
 
   async ngOnInit(): Promise<void> {

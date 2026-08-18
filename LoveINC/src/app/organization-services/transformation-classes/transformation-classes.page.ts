@@ -10,7 +10,9 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
+  NavController,
 } from '@ionic/angular/standalone';
+import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
 import { CardComponent, CardActionIcon } from '../../components/card/card.component';
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
@@ -81,6 +83,7 @@ export class TransformationClassesPage implements OnInit {
     private platformApi: PlatformApiService,
     private cardFormatting: CardFormattingService,
     private router: Router,
+    private navController: NavController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
     private sharingService: SharingService,
@@ -232,7 +235,7 @@ export class TransformationClassesPage implements OnInit {
   }
 
   navigateToClassDetail(classItem: TransformationClass) {
-    void this.router.navigate(['/tabs/content-detail', 'class', classItem.id], {
+    void navigateAppForward(this.navController, this.router, ['/tabs/content-detail', 'class', classItem.id], {
       queryParams: { from: 'transformation-classes' },
     });
   }

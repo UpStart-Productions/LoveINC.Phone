@@ -29,7 +29,9 @@ import {
   IonList,
   IonSpinner,
   ModalController,
+  NavController,
 } from '@ionic/angular/standalone';
+import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
 import { AlertController } from '@ionic/angular';
 import { ContentDetail, ContentType } from './content-detail.model';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
@@ -110,6 +112,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private navController: NavController,
     private http: HttpClient,
     private alertController: AlertController,
     private sharingService: SharingService,
@@ -1079,7 +1082,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     if (!this.contentItem?.id) return;
     const scheduleLabel =
       this.contentType === 'class' ? (this.getHeaderDateLabel() ?? this.contentItem.subtitle ?? '') : '';
-    void this.router.navigate(['/tabs/class-registration', this.contentItem.id], {
+    void navigateAppForward(this.navController, this.router, ['/tabs/class-registration', this.contentItem.id], {
       state: {
         classTitle: this.contentItem.title,
         classPhotoUrl: this.contentItem.photoUrl?.trim() || '',
@@ -1089,7 +1092,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   navigateToAssistanceIntro(): void {
-    void this.router.navigate(['/tabs/assistance/intro']);
+    void navigateAppForward(this.navController, this.router, ['/tabs/assistance/intro']);
   }
 
   isDonationDrive(): boolean {
@@ -1106,11 +1109,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   openDonateActionSheet(): void {
     if (this.isDonationDrive() && this.contentItem?.donation?.id) {
-      void this.router.navigate(['/tabs/donate-goods'], {
+      void navigateAppForward(this.navController, this.router, ['/tabs/donate-goods'], {
         queryParams: { donationId: this.contentItem.donation.id },
       });
     } else if (this.isDonationDrive()) {
-      void this.router.navigate(['/tabs/donate-goods']);
+      void navigateAppForward(this.navController, this.router, ['/tabs/donate-goods']);
     } else {
       this.donateActionSheetService.openDonateActionSheet();
     }

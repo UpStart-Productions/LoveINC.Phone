@@ -1,8 +1,9 @@
 import { Component, Input, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { IonItem, IonLabel, IonIcon, IonProgressBar } from '@ionic/angular/standalone';
+import { IonItem, IonLabel, IonIcon, IonProgressBar, NavController } from '@ionic/angular/standalone';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
+import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
 import type { HomeCtaRowModel } from './home-cta-row.model';
 
 @Component({
@@ -16,6 +17,7 @@ export class HomeCtaRowComponent {
   @Input({ required: true }) row!: HomeCtaRowModel;
 
   private readonly router = inject(Router);
+  private readonly navController = inject(NavController);
   private readonly donateActionSheetService = inject(DonateActionSheetService);
 
   get progressValue(): number {
@@ -59,14 +61,26 @@ export class HomeCtaRowComponent {
     return !!this.row.progress && this.row.progress.goal > 0;
   }
 
+  onConnectionCenterLinkClick(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    void navigateAppForward(this.navController, this.router, ['/tabs/connection-center'], {
+      queryParams: { from: 'home' },
+    });
+  }
+
   onRowClick(): void {
     const action = this.row.action;
     switch (action.kind) {
       case 'route':
-        void this.router.navigate(action.path, { queryParams: action.queryParams });
+        void navigateAppForward(this.navController, this.router, action.path, {
+          queryParams: action.queryParams,
+        });
         break;
       case 'content-detail':
-        void this.router.navigate(
+        void navigateAppForward(
+          this.navController,
+          this.router,
           ['/tabs/content-detail', action.contentType, action.id],
           { queryParams: { from: 'home' } }
         );
@@ -76,13 +90,19 @@ export class HomeCtaRowComponent {
         break;
       case 'get-help':
         if (action.target === 'assistance-intro') {
-          void this.router.navigate(['/tabs/assistance/intro']);
+          void navigateAppForward(this.navController, this.router, ['/tabs/assistance/intro']);
         } else if (action.target === 'profile') {
-          void this.router.navigate(['/tabs/profile'], { queryParams: { from: 'home' } });
+          void navigateAppForward(this.navController, this.router, ['/tabs/profile'], {
+            queryParams: { from: 'home' },
+          });
         } else if (action.target === 'gap-ministries') {
-          void this.router.navigate(['/tabs/gap-ministries'], { queryParams: { from: 'home' } });
+          void navigateAppForward(this.navController, this.router, ['/tabs/gap-ministries'], {
+            queryParams: { from: 'home' },
+          });
         } else {
-          void this.router.navigate(['/tabs/services'], { queryParams: { from: 'home' } });
+          void navigateAppForward(this.navController, this.router, ['/tabs/services'], {
+            queryParams: { from: 'home' },
+          });
         }
         break;
     }

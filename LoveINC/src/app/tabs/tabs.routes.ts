@@ -1,6 +1,36 @@
-import { Routes } from '@angular/router';
+import { Route, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 import { REGISTERED_TOOL_ROUTES } from '../registered-tools';
+import { MAIN_TAB_SEGMENTS } from '../shared/utils/navigation-tab-prefix.util';
+
+/** Tab-prefixed copies — Ionic child routes within tabs (documented pattern). */
+function prefixDrillInRoute(route: Route, tab: string): Route {
+  return {
+    ...route,
+    path: route.path ? `${tab}/${route.path}` : route.path,
+    children: route.children ? [...route.children] : undefined,
+  };
+}
+
+function expandTabStackRoutes(routes: Routes): Routes {
+  const expanded: Routes = [...routes];
+
+  for (const route of routes) {
+    if (!route.path || route.redirectTo) {
+      continue;
+    }
+    const firstSegment = route.path.split('/')[0];
+    if ((MAIN_TAB_SEGMENTS as readonly string[]).includes(firstSegment)) {
+      continue;
+    }
+
+    for (const tab of MAIN_TAB_SEGMENTS) {
+      expanded.push(prefixDrillInRoute(route, tab));
+    }
+  }
+
+  return expanded;
+}
 
 /** Keep bare root URLs working after moving drill-ins back under `/tabs`. */
 const ROOT_DRILL_IN_REDIRECTS: Routes = [
@@ -280,7 +310,7 @@ export const routes: Routes = [
         path: 'more',
         loadComponent: () => import('../more/more.page').then((m) => m.MorePage),
       },
-      ...TAB_DRILL_IN_ROUTES,
+      ...expandTabStackRoutes(TAB_DRILL_IN_ROUTES),
       {
         path: '',
         redirectTo: 'home',

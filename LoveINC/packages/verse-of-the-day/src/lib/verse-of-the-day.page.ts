@@ -61,7 +61,7 @@ export class VerseOfTheDayPage implements OnInit {
   }
 
   goBack(): void {
-    void navigateAppBack(this.navController, this.route.snapshot, '/tabs/home');
+    void navigateAppBack(this.navController, this.router, this.route.snapshot, '/tabs/home');
   }
 
   get sermonVideoId(): string | null {

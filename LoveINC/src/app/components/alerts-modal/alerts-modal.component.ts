@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModalController } from '@ionic/angular/standalone';
+import { ModalController, NavController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { NotificationsService, type AppNotification } from '../../services/notifications.service';
@@ -8,6 +8,7 @@ import {
   getNotificationRoute,
   type NotificationMeta,
 } from '../../shared/utils/notification-deeplink';
+import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
 import {
   IonHeader,
   IonToolbar,
@@ -59,6 +60,7 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
   constructor(
     private modalController: ModalController,
     private router: Router,
+    private navController: NavController,
     private notificationsService: NotificationsService
   ) {}
 
@@ -145,7 +147,7 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
         await this.notificationsService.markUserNotificationAsRead(notification.id);
       }
       await this.modalController.dismiss();
-      await this.router.navigate(['/tabs/profile']);
+      await navigateAppForward(this.navController, this.router, ['/tabs/profile']);
       return;
     }
 
@@ -169,6 +171,6 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
       await this.notificationsService.markAsRead(String(notification.id));
     }
     await this.modalController.dismiss();
-    await this.router.navigate(route);
+    await navigateAppForward(this.navController, this.router, route);
   }
 }

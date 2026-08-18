@@ -5,6 +5,13 @@
 export { shouldHideMainTabBar } from './route-utils';
 export { isVolunteerPositionOpen, sortVolunteerPositionsOpenFirst } from './volunteer-position.util';
 export { navigateAppBack } from './navigation-back.util';
+export { navigateAppForward } from './navigation-forward.util';
+export {
+  MAIN_TAB_SEGMENTS,
+  applyActiveTabPrefix,
+  resolveActiveMainTabSegment,
+  resolveStackParentUrl,
+} from './navigation-tab-prefix.util';
 export {
   resolveReturnUrl,
   resolveReturnUrlFromRouteTree,

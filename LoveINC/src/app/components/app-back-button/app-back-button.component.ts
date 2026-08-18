@@ -1,5 +1,5 @@
 import { Component, Input, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonButton, IonIcon, NavController } from '@ionic/angular/standalone';
 import { navigateAppBack } from '../../shared/utils/navigation-back.util';
 
@@ -18,9 +18,10 @@ export class AppBackButtonComponent {
   @Input() fallback = '/tabs/home';
 
   private readonly navController = inject(NavController);
+  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
   goBack(): void {
-    void navigateAppBack(this.navController, this.route.snapshot, this.fallback);
+    void navigateAppBack(this.navController, this.router, this.route.snapshot, this.fallback);
   }
 }

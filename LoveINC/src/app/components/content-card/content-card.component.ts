@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular/standalone';
+import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
 import { IonBadge, IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
 import { LocationMapModalService } from '../../services/location-map-modal.service';
@@ -21,6 +23,7 @@ export type ContentCardAsideAvatarSize = 'small' | 'large';
   imports: [CommonModule, IonBadge, IonCard, IonCardContent, IonIcon, LucideAngularModule],
 })
 export class ContentCardComponent {
+  private readonly navController = inject(NavController);
   /** Small category label above title (e.g. "Guided Scripture", "Guided Prayer") */
   @Input() category?: string;
 
@@ -165,7 +168,7 @@ export class ContentCardComponent {
         const current = this.router.parseUrl(this.router.url);
         tree.queryParams = { ...current.queryParams, ...tree.queryParams };
       }
-      void this.router.navigateByUrl(tree);
+      void navigateAppForward(this.navController, this.router, tree);
       return;
     }
     this.cardClick.emit();

@@ -133,6 +133,6 @@ export class ServiceUnlockScanPage implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    void navigateAppBack(this.navController, this.route.snapshot, '/tabs/more');
+    void navigateAppBack(this.navController, this.router, this.route.snapshot, '/tabs/more');
   }
 }

@@ -28,7 +28,9 @@ import {
   IonLabel,
   IonIcon,
   IonButton,
+  NavController,
 } from '@ionic/angular/standalone';
+import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 
 interface MoreItem {
   name: string;
@@ -77,6 +79,7 @@ export class MorePage implements OnInit {
 
   constructor(
     private router: Router,
+    private navController: NavController,
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
     private userProfileService: UserProfileService,
@@ -199,7 +202,7 @@ export class MorePage implements OnInit {
     if (item.route) {
       const tree = this.router.parseUrl(item.route);
       tree.queryParams = { ...tree.queryParams, from: 'more' };
-      void this.router.navigateByUrl(tree);
+      void navigateAppForward(this.navController, this.router, tree);
     } else if (item.externalUrl) {
       void this.openExternalUrl(item.externalUrl);
     } else if (item.handler) {

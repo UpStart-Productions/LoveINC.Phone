@@ -1,12 +1,15 @@
 import type { ActivatedRouteSnapshot } from '@angular/router';
+import { Router } from '@angular/router';
 import type { NavController } from '@ionic/angular/standalone';
 import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
+import { resolveStackParentUrl } from './navigation-tab-prefix.util';
 
 /**
- * Back navigation: pop Ionic stack when possible, else navigateBack via `from` / fallback.
+ * Back on the Ionic stack: pop when possible, else same-tab parent, else `from` / fallback.
  */
 export async function navigateAppBack(
   navController: NavController,
+  router: Router,
   routeSnapshot: ActivatedRouteSnapshot,
   fallback: string
 ): Promise<void> {
@@ -14,7 +17,12 @@ export async function navigateAppBack(
     return;
   }
 
+  const stackParent = resolveStackParentUrl(router.url);
+  if (stackParent) {
+    await navController.navigateBack(stackParent);
+    return;
+  }
+
   const explicit = resolveReturnUrlFromRouteTree(routeSnapshot);
-  const target = explicit ?? fallback;
-  await navController.navigateBack(target);
+  await navController.navigateBack(explicit ?? fallback);
 }

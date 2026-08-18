@@ -9,11 +9,13 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
+  NavController,
 } from '@ionic/angular/standalone';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
+import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 
 @Component({
   selector: 'app-connection-center',
@@ -35,6 +37,7 @@ import { AppBackButtonComponent } from '../components/app-back-button/app-back-b
 })
 export class ConnectionCenterPage implements OnInit {
   private readonly router = inject(Router);
+  private readonly navController = inject(NavController);
   private readonly donateButtonService = inject(DonateButtonService);
   private readonly donateActionSheetService = inject(DonateActionSheetService);
 
@@ -49,7 +52,7 @@ export class ConnectionCenterPage implements OnInit {
   }
 
   goToGetAssistance() {
-    void this.router.navigate(['/tabs/assistance/intro'], {
+    void navigateAppForward(this.navController, this.router, ['/tabs/assistance/intro'], {
       queryParams: { from: 'connection-center' },
     });
   }

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ActionSheetController } from '@ionic/angular/standalone';
+import { ActionSheetController, NavController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { AppLauncher } from '@capacitor/app-launcher';
 import { DONATE_ACTION_SHEET_CLASS } from '../shared/action-sheet-classes';
+import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 
 /** External donation page (Givebutter-powered flow still lives at /tabs/donate-money when re-enabled). */
 const LOVE_INC_ONLINE_DONATE_URL = 'https://loveincnewberg.org/donate/';
@@ -13,7 +14,8 @@ const LOVE_INC_ONLINE_DONATE_URL = 'https://loveincnewberg.org/donate/';
 export class DonateActionSheetService {
   constructor(
     private actionSheetController: ActionSheetController,
-    private router: Router
+    private router: Router,
+    private navController: NavController
   ) {}
 
   async openDonateActionSheet(): Promise<void> {
@@ -47,7 +49,7 @@ export class DonateActionSheetService {
   }
 
   private handleGoodsDonation(): void {
-    void this.router.navigate(['/tabs/donate-goods']);
+    void navigateAppForward(this.navController, this.router, ['/tabs/donate-goods']);
   }
 
   private async handleOnlineDonation(): Promise<void> {
@@ -58,6 +60,6 @@ export class DonateActionSheetService {
       window.open(LOVE_INC_ONLINE_DONATE_URL, '_blank');
     }
     // In-app Givebutter (Powered By) page — keep route; re-enable when needed:
-    // this.router.navigate(['/tabs/donate-money']);
+    // navigateAppForward(this.navController, this.router, ['/tabs/donate-money']);
   }
 }
