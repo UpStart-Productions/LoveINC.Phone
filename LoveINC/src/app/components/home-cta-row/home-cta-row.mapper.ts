@@ -108,15 +108,29 @@ export function mapPlatformCtaToRow(
   };
 }
 
+export function buildConnectionCenterCtaRow(): HomeCtaRowModel {
+  return {
+    id: 'connection-center',
+    body: 'Access services through our Connection Center',
+    iconName: 'people-circle-outline',
+    iconColor: 'var(--love-inc-blue)',
+    pillText: 'Start',
+    pillColor: 'var(--love-inc-blue)',
+    action: {
+      kind: 'route',
+      path: ['/tabs/connection-center'],
+      queryParams: { from: 'home' },
+    },
+  };
+}
+
 export function buildGetHelpCtaRow(
   description: string,
-  intakeConnectionLink: boolean,
   action: 'profile' | 'gap-ministries' | 'assistance-intro'
 ): HomeCtaRowModel {
   return {
     id: 'get-help',
     body: description,
-    bodyMode: intakeConnectionLink ? 'intake-connection' : 'plain',
     iconName: 'people-circle-outline',
     iconColor: 'var(--love-inc-blue)',
     pillText: 'Start',

@@ -12,11 +12,9 @@ export const MAIN_TAB_SEGMENTS = [
 export type MainTabSegment = (typeof MAIN_TAB_SEGMENTS)[number];
 
 /**
- * Routes that already live at `/tabs/{segment}` and must never be rewritten
- * (e.g. About at `/tabs/about`, not `/tabs/more/about`).
+ * Routes that already live at `/tabs/{segment}` and must never be rewritten.
  */
 export const FLAT_TAB_SHELL_SEGMENTS = new Set<string>([
-  'about',
   ...MAIN_TAB_SEGMENTS,
 ]);
 

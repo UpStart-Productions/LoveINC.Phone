@@ -1,5 +1,3 @@
-export type HomeCtaBodyMode = 'plain' | 'intake-connection';
-
 export interface HomeCtaProgress {
   current: number;
   goal: number;
@@ -19,7 +17,6 @@ export type HomeCtaAction =
 export interface HomeCtaRowModel {
   id: string;
   body: string;
-  bodyMode?: HomeCtaBodyMode;
   subtitle?: string;
   photoUrl?: string;
   iconName?: string;

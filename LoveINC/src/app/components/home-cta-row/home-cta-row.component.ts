@@ -1,7 +1,7 @@
 import { Component, Input, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonItem, IonLabel, IonIcon, IonProgressBar, NavController } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
 import type { HomeCtaRowModel } from './home-cta-row.model';
@@ -11,7 +11,7 @@ import type { HomeCtaRowModel } from './home-cta-row.model';
   templateUrl: './home-cta-row.component.html',
   styleUrls: ['./home-cta-row.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterLink, IonItem, IonLabel, IonIcon, IonProgressBar],
+  imports: [CommonModule, IonItem, IonLabel, IonIcon, IonProgressBar],
 })
 export class HomeCtaRowComponent {
   @Input({ required: true }) row!: HomeCtaRowModel;
@@ -59,14 +59,6 @@ export class HomeCtaRowComponent {
 
   get showProgress(): boolean {
     return !!this.row.progress && this.row.progress.goal > 0;
-  }
-
-  onConnectionCenterLinkClick(event: Event): void {
-    event.preventDefault();
-    event.stopPropagation();
-    void navigateAppForward(this.navController, this.router, ['/tabs/connection-center'], {
-      queryParams: { from: 'home' },
-    });
   }
 
   onRowClick(): void {

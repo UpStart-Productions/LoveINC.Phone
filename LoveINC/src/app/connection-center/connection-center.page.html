@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <app-back-button></app-back-button>
+      <app-back-button [fallback]="backFallback"></app-back-button>
     </ion-buttons>
     <ion-title>Connection Center</ion-title>
     <ion-buttons slot="end">

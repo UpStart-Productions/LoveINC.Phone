@@ -6,6 +6,7 @@ import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { PlatformApiService } from '../services/platform';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
+import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { 
   IonHeader, 
   IonToolbar, 
@@ -39,6 +40,7 @@ import {
     IonButton,
     IonButtons,
     NotificationsButtonComponent,
+    AppBackButtonComponent,
   ],
 })
 export class AboutPage implements OnInit {

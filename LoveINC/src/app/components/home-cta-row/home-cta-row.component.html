@@ -1,6 +1,6 @@
 <ion-item
   class="home-cta-row-item"
-  [class.home-cta-row-item--flat]="row.id === 'get-help' || row.id === 'give-now' || row.id === 'volunteer'"
+  [class.home-cta-row-item--flat]="row.id === 'get-help' || row.id === 'give-now' || row.id === 'volunteer' || row.id === 'connection-center'"
   button
   detail="false"
   lines="none"
@@ -9,18 +9,7 @@
     <img slot="start" [src]="row.photoUrl" alt="" class="home-cta-row__photo" />
   }
   <ion-label>
-    @if (row.bodyMode === 'intake-connection') {
-      <p class="app-title">
-        Access services through our
-        <a
-          class="app-link"
-          href="/tabs/connection-center"
-          (click)="onConnectionCenterLinkClick($event)"
-        >Connection Center</a>
-      </p>
-    } @else {
-      <p class="app-title">{{ row.body }}</p>
-    }
+    <p class="app-title">{{ row.body }}</p>
     @if (row.subtitle) {
       <p class="app-body-secondary-xs m-t-4">{{ row.subtitle }}</p>
     }

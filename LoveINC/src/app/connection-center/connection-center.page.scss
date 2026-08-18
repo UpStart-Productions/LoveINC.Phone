@@ -1,13 +1,16 @@
-/* Solid white scroll area (same pattern as content-detail / class details) */
-ion-content.connection-center-page {
-  --background: var(--ion-background-color);
-  --ion-background-color: var(--ion-background-color);
+:host ion-content.connection-center-page {
+  --background: var(--ion-color-light);
+}
+
+:host ion-content.connection-center-page::part(background) {
+  background: var(--ion-color-light);
 }
 
 .connection-center-photo {
   width: 100%;
   height: 30vh;
   overflow: hidden;
+  background: var(--ion-color-light);
 
   img {
     display: block;

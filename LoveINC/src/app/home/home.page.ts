@@ -29,6 +29,7 @@ import type { PlatformCta, PlatformClass, PlatformEvent, PlatformHomeFeedItem, P
 import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.component';
 import {
   buildGetHelpCtaRow,
+  buildConnectionCenterCtaRow,
   buildGiveNowCtaRow,
   buildVolunteerCtaRow,
   mapPlatformCtaToRow,
@@ -308,13 +309,16 @@ export class HomePage implements OnInit {
     const rows: HomeCtaRowModel[] = [];
 
     if (this.showGetHelpCta && this.clientSupportCardState) {
-      rows.push(
-        buildGetHelpCtaRow(
-          this.clientSupportCardDescription,
-          this.clientSupportCardState === 'intake_required',
-          this.clientSupportCardAction
-        )
-      );
+      if (this.clientSupportCardState === 'intake_required') {
+        rows.push(buildConnectionCenterCtaRow());
+      } else {
+        rows.push(
+          buildGetHelpCtaRow(
+            this.clientSupportCardDescription,
+            this.clientSupportCardAction
+          )
+        );
+      }
     }
 
     rows.push(buildVolunteerCtaRow());

@@ -29,7 +29,12 @@ function expandTabStackRoutes(routes: Routes): Routes {
     }
   }
 
-  return expanded;
+  return expanded.map((route) => {
+    if (route.path === 'about' && !route.redirectTo) {
+      return { path: 'about', redirectTo: 'more/about', pathMatch: 'full' as const };
+    }
+    return route;
+  });
 }
 
 /** Keep bare root URLs working after moving drill-ins back under `/tabs`. */
@@ -69,6 +74,7 @@ const ROOT_DRILL_IN_REDIRECTS: Routes = [
   { path: 'profile', redirectTo: '/tabs/profile', pathMatch: 'full' },
   { path: 'service-unlock/scan', redirectTo: '/tabs/service-unlock/scan', pathMatch: 'full' },
   { path: 'church-map', redirectTo: '/tabs/church-map', pathMatch: 'full' },
+  { path: 'about', redirectTo: '/tabs/more/about', pathMatch: 'full' },
   { path: 'connection-center', redirectTo: '/tabs/connection-center', pathMatch: 'full' },
   { path: 'jobs-program', redirectTo: '/tabs/jobs-program', pathMatch: 'full' },
   { path: 'hesed-house', redirectTo: '/tabs/hesed-house', pathMatch: 'full' },
@@ -115,6 +121,10 @@ const ROOT_DRILL_IN_REDIRECTS: Routes = [
 ];
 
 const TAB_DRILL_IN_ROUTES: Routes = [
+  {
+    path: 'about',
+    loadComponent: () => import('../about/about.page').then((m) => m.AboutPage),
+  },
   {
     path: 'staff',
     loadComponent: () => import('../staff/staff.page').then((m) => m.StaffPage),
@@ -297,10 +307,6 @@ export const routes: Routes = [
       {
         path: 'home',
         loadComponent: () => import('../home/home.page').then((m) => m.HomePage),
-      },
-      {
-        path: 'about',
-        loadComponent: () => import('../about/about.page').then((m) => m.AboutPage),
       },
       {
         path: 'updates',

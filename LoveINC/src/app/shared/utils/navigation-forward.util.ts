@@ -28,7 +28,9 @@ export async function navigateAppForward(
   void fragment;
   void replaceUrl;
 
-  return navController.navigateForward(tree.toString(), {
+  const url = router.serializeUrl(tree);
+
+  return navController.navigateForward(url, {
     ...rest,
     state,
   });

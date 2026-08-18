@@ -2,7 +2,7 @@ import type { ActivatedRouteSnapshot, ParamMap } from '@angular/router';
 
 const FROM_TO_RETURN_URL: Readonly<Record<string, string>> = {
   home: '/tabs/home',
-  about: '/tabs/about',
+  about: '/tabs/more',
   updates: '/tabs/updates',
   more: '/tabs/more',
   tools: '/tabs/tools',

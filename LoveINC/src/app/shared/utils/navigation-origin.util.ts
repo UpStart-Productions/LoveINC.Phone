@@ -3,7 +3,7 @@ import type { ActivatedRouteSnapshot, ParamMap } from '@angular/router';
 /** Maps `?from=` query values to tab-shell return URLs. */
 const FROM_TO_RETURN_URL: Readonly<Record<string, string>> = {
   home: '/tabs/home',
-  about: '/tabs/about',
+  about: '/tabs/more',
   updates: '/tabs/updates',
   more: '/tabs/more',
   tools: '/tabs/tools',
@@ -14,7 +14,6 @@ const FROM_TO_RETURN_URL: Readonly<Record<string, string>> = {
   'church-partnerships': '/tabs/church-partnerships',
   'gap-ministries': '/tabs/gap-ministries',
   'transformation-classes': '/tabs/transformation-classes',
-  'connection-center': '/tabs/connection-center',
   profile: '/tabs/profile',
 };
 

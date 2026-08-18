@@ -6,6 +6,7 @@ export { shouldHideMainTabBar } from './route-utils';
 export { isVolunteerPositionOpen, sortVolunteerPositionsOpenFirst } from './volunteer-position.util';
 export { navigateAppBack } from './navigation-back.util';
 export { navigateAppForward } from './navigation-forward.util';
+export { navigateAppFlat } from './navigation-flat.util';
 export {
   MAIN_TAB_SEGMENTS,
   applyActiveTabPrefix,
