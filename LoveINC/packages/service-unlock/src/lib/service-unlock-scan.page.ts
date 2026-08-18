@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { Location } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -11,8 +10,10 @@ import {
   IonButton,
   IonIcon,
   IonSpinner,
+  NavController,
 } from '@ionic/angular/standalone';
 import { ServiceUnlockService } from './services/service-unlock.service';
+import { navigateAppBack } from '@app/shared/utils/navigation-back.util';
 import { BarcodeScanner, BarcodeFormat } from '@capacitor-mlkit/barcode-scanning';
 import { Capacitor } from '@capacitor/core';
 
@@ -34,8 +35,6 @@ import { Capacitor } from '@capacitor/core';
   ],
 })
 export class ServiceUnlockScanPage implements OnInit, OnDestroy {
-  private readonly location = inject(Location);
-
   scanning = false;
   error: string | null = null;
   success = false;
@@ -45,7 +44,8 @@ export class ServiceUnlockScanPage implements OnInit, OnDestroy {
 
   constructor(
     private service: ServiceUnlockService,
-    private router: Router
+    private route: ActivatedRoute,
+    private navController: NavController
   ) {}
 
   ngOnDestroy(): void {
@@ -132,6 +132,6 @@ export class ServiceUnlockScanPage implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.location.back();
+    void navigateAppBack(this.navController, this.route.snapshot, '/tabs/more');
   }
 }

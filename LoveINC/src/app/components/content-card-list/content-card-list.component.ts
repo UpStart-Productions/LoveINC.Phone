@@ -15,6 +15,7 @@ export class ContentCardListComponent {
   @Input() compactCategoryLabel = false;
   @Input() defaultNavigationFrom?: string;
   @Input() defaultIconBackgroundColor = '#8b7355';
+  @Input() defaultAsideAvatarSize: 'small' | 'large' = 'small';
 
   /** Emitted when a row without `route` is tapped. */
   @Output() itemClick = new EventEmitter<ContentCardListItem>();

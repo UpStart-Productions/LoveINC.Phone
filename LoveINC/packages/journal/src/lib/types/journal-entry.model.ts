@@ -4,4 +4,5 @@ export interface JournalEntry {
   content: string;
   createdAt: string;
   updatedAt: string;
+  planId?: string | null;
 }

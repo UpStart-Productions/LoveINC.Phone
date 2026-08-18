@@ -44,4 +44,5 @@ export interface ContentPlan {
   theme: ContentPlanTheme;
   displayStyle: ContentPlanDisplayStyle;
   moments: ContentPlanMoment[];
+  createdAt?: string;
 }

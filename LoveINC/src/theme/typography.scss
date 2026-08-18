@@ -294,6 +294,15 @@ ion-accordion .ion-accordion-toggle-icon {
   font-weight: var(--app-font-weight-medium);
 }
 
+/* Status pills (Open, NEW, aside badges) */
+.app-status-pill {
+  font-size: var(--app-font-size-xs) !important;
+  font-weight: var(--app-font-weight-normal);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 /* List item titles */
 ion-item ion-label h2,
 ion-item ion-label h3,

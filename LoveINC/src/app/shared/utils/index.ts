@@ -4,6 +4,7 @@
  */
 export { shouldHideMainTabBar } from './route-utils';
 export { isVolunteerPositionOpen, sortVolunteerPositionsOpenFirst } from './volunteer-position.util';
+export { navigateAppBack } from './navigation-back.util';
 export {
   resolveReturnUrl,
   resolveReturnUrlFromRouteTree,

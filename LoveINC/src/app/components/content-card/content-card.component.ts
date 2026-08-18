@@ -11,6 +11,8 @@ export type ContentCardTextSegment = {
   tone?: 'positive' | 'negative';
 };
 
+export type ContentCardAsideAvatarSize = 'small' | 'large';
+
 @Component({
   selector: 'app-content-card',
   templateUrl: './content-card.component.html',
@@ -30,6 +32,9 @@ export class ContentCardComponent {
 
   /** Optional extra text before category (e.g. "0", "Day 5") */
   @Input() categoryExtra?: string;
+
+  /** Lucide icon inline before the title (e.g. graduation-cap for learning journal entries). */
+  @Input() lucideTitleIcon?: string;
 
   /** Main title (bold) */
   @Input() title!: string;
@@ -104,12 +109,30 @@ export class ContentCardComponent {
 
   @Input() authorAvatarUrl?: string;
 
+  /** Creation date above the aside avatar, inline with the theme/category row (e.g. "Jan 1"). */
+  @Input() createdAtLabel?: string;
+
+  /** Right-aside avatar size. `large` is 40% bigger than `small`. */
+  @Input() asideAvatarSize: ContentCardAsideAvatarSize = 'small';
+
+  get asideLucideIconSize(): number {
+    return this.asideAvatarSize === 'large' ? 34 : 24;
+  }
+
   get hasAsideAvatar(): boolean {
     return !!(this.imageUrl || this.iconName || this.lucideIcon);
   }
 
   get showAside(): boolean {
-    return this.hasAsideAvatar || !!this.asideBadge?.trim();
+    return (
+      this.hasAsideAvatar ||
+      !!this.asideBadge?.trim() ||
+      !!this.createdAtLabel?.trim()
+    );
+  }
+
+  get badgeAsideOnly(): boolean {
+    return !!this.asideBadge?.trim() && !this.hasAsideAvatar && !this.createdAtLabel?.trim();
   }
 
   constructor(

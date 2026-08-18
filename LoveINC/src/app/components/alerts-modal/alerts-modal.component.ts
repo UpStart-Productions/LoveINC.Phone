@@ -22,7 +22,11 @@ import {
   IonSpinner,
   IonRefresher,
   IonRefresherContent,
+  IonBadge,
 } from '@ionic/angular/standalone';
+
+/** TEMP: show read + unread in the notifications panel. Revert before release. */
+const SHOW_ALL_NOTIFICATIONS_IN_PANEL = true;
 
 @Component({
   selector: 'app-alerts-modal',
@@ -44,6 +48,7 @@ import {
     IonItem,
     IonLabel,
     IonSpinner,
+    IonBadge,
   ],
 })
 export class AlertsModalComponent implements OnInit, OnDestroy {
@@ -64,7 +69,7 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (list) => {
           this.notifications = list
-            .filter((n) => !n.read)
+            .filter((n) => SHOW_ALL_NOTIFICATIONS_IN_PANEL || !n.read)
             .sort(
               (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
             );
@@ -94,6 +99,7 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
 
   /** Unread and created in the last 7 days (rolling window). */
   isNewNotification(n: AppNotification): boolean {
+    if (SHOW_ALL_NOTIFICATIONS_IN_PANEL) return true;
     if (n.read) return false;
     const created = new Date(n.createdAt).getTime();
     if (Number.isNaN(created)) return false;

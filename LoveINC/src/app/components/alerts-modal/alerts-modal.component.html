@@ -36,7 +36,7 @@
             <div class="notification-content">
               <p class="app-body m-b-6">{{ notification.body }}</p>
               <div class="notification-footer">
-                <span *ngIf="isNewNotification(notification)" class="new-pill" aria-label="New">NEW</span>
+                <ion-badge *ngIf="isNewNotification(notification)" class="app-status-pill" color="success" aria-label="New">NEW</ion-badge>
                 <span class="app-body-secondary-xs notification-time">{{ formatDate(notification.createdAt) }}</span>
               </div>
             </div>

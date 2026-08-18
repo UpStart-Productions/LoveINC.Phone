@@ -9,6 +9,8 @@ export interface ContentCardListItem {
   lucideCategoryIcon?: string;
   categoryExtra?: string;
   titleSegments?: ContentCardTextSegment[];
+  /** Lucide icon inline before the title. */
+  lucideTitleIcon?: string;
   underTitle?: string;
   detail?: string;
   detailSegments?: ContentCardTextSegment[];
@@ -35,4 +37,8 @@ export interface ContentCardListItem {
   /** Inline author row under title (avatar left of "By {name}"). */
   authorName?: string;
   authorAvatarUrl?: string;
+  /** Creation date above the aside avatar, inline with the theme/category row (e.g. "Jan 1"). */
+  createdAtLabel?: string;
+  /** Right-aside avatar size. `large` is 40% bigger than `small`. */
+  asideAvatarSize?: 'small' | 'large';
 }

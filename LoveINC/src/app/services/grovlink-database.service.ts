@@ -163,6 +163,15 @@ export class GrovLinkDatabaseService {
       );
     `);
     await db.execute(`
+      CREATE TABLE IF NOT EXISTS content_plan_responses (
+        plan_id TEXT NOT NULL,
+        input_key TEXT NOT NULL,
+        value_json TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY (plan_id, input_key)
+      );
+    `);
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS app_preferences (
         key TEXT PRIMARY KEY,
         value TEXT NOT NULL
@@ -261,31 +270,31 @@ export class GrovLinkDatabaseService {
   }
 
   /**
-   * Save a single Transformation Tool response input's value for this device.
-   * `inputKey` should uniquely identify the input within the tool (e.g. `${stepOrder}:${inputIndex}`).
+   * Save a single microlearning path response for this device.
+   * `inputKey` should uniquely identify the input within the plan (e.g. `${planMomentId}:${blockId}`).
    */
-  async saveTransformationToolResponse(
-    toolId: string,
+  async saveContentPlanResponse(
+    planId: string,
     inputKey: string,
     value: string | string[]
   ): Promise<void> {
     const db = await this.getDbConnection();
     await db.run(
-      `INSERT OR REPLACE INTO transformation_tool_responses (tool_id, input_key, value_json, updated_at)
+      `INSERT OR REPLACE INTO content_plan_responses (plan_id, input_key, value_json, updated_at)
        VALUES (?, ?, ?, ?)`,
-      [toolId, inputKey, JSON.stringify(value), new Date().toISOString()]
+      [planId, inputKey, JSON.stringify(value), new Date().toISOString()]
     );
   }
 
-  /** Get all saved response values for a tool, keyed by inputKey. */
-  async getTransformationToolResponses(
-    toolId: string
+  /** Get all saved response values for a content plan, keyed by inputKey. */
+  async getContentPlanResponses(
+    planId: string
   ): Promise<Record<string, string | string[]>> {
     try {
       const db = await this.getDbConnection();
       const result = await db.query(
-        'SELECT input_key, value_json FROM transformation_tool_responses WHERE tool_id = ?',
-        [toolId]
+        'SELECT input_key, value_json FROM content_plan_responses WHERE plan_id = ?',
+        [planId]
       );
       const responses: Record<string, string | string[]> = {};
       for (const row of result?.values ?? []) {
@@ -304,10 +313,10 @@ export class GrovLinkDatabaseService {
     }
   }
 
-  /** Clear all saved responses for a tool (e.g. "Start over"). */
-  async clearTransformationToolResponses(toolId: string): Promise<void> {
+  /** Clear all saved responses for a content plan. */
+  async clearContentPlanResponses(planId: string): Promise<void> {
     const db = await this.getDbConnection();
-    await db.run('DELETE FROM transformation_tool_responses WHERE tool_id = ?', [toolId]);
+    await db.run('DELETE FROM content_plan_responses WHERE plan_id = ?', [planId]);
   }
 
   async getAppPreference(key: string): Promise<string | null> {

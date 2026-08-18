@@ -3,11 +3,17 @@
   [class.content-card--compact-category-label]="compactCategoryLabel"
   [class.content-card--list-row]="listRow"
   [class.content-card--list-divider]="listDivider"
+  [class.content-card--aside-avatar-large]="asideAvatarSize === 'large'"
   [class.clickable]="clickable"
   (click)="clickable && handleClick()"
 >
   <ion-card-content>
-    <div class="content-card-layout" [class.content-card-layout--with-aside]="showAside">
+    <div
+      class="content-card-layout"
+      [class.content-card-layout--with-aside]="showAside"
+      [class.content-card-layout--with-aside-date]="!!createdAtLabel?.trim()"
+      [class.content-card-layout--badge-aside-only]="badgeAsideOnly"
+    >
       <div class="content-card-main">
         @if (category || categoryExtra) {
           <div class="category-row">
@@ -29,7 +35,16 @@
             }
           </div>
         }
-        <h2>
+        <h2 [class.content-card-title-with-icon]="!!lucideTitleIcon">
+          @if (lucideTitleIcon) {
+            <i-lucide
+              [name]="lucideTitleIcon"
+              [size]="16"
+              color="var(--ion-color-dark)"
+              class="content-card-title-icon"
+              aria-hidden="true"
+            ></i-lucide>
+          }
           @if (titleSegments?.length) {
             @for (seg of titleSegments; track $index) {
               <span
@@ -83,7 +98,11 @@
         class="content-card-aside"
         *ngIf="showAside"
         [class.content-card-aside--extra-only]="!hasAsideAvatar && !!asideBadge"
+        [class.content-card-aside--with-date]="!!createdAtLabel?.trim()"
       >
+        @if (createdAtLabel) {
+          <span class="app-body-secondary-xs content-card-aside-date">{{ createdAtLabel }}</span>
+        }
         @if (hasAsideAvatar) {
           <div
             class="content-card-avatar"
@@ -93,7 +112,7 @@
               <img [src]="imageUrl" [alt]="title" class="content-card-image" />
             } @else if (lucideIcon) {
               <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
-                <i-lucide [name]="lucideIcon" [size]="24" color="#ffffff" class="content-card-icon"></i-lucide>
+                <i-lucide [name]="lucideIcon" [size]="asideLucideIconSize" color="#ffffff" class="content-card-icon"></i-lucide>
               </div>
             } @else if (iconName) {
               <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
@@ -111,7 +130,7 @@
           </div>
         }
         @if (asideBadge) {
-          <ion-badge class="content-card-aside-badge" [color]="asideBadgeColor">{{ asideBadge }}</ion-badge>
+          <ion-badge class="app-status-pill content-card-aside-badge" [color]="asideBadgeColor">{{ asideBadge }}</ion-badge>
         }
         <ng-content select="[content-card-aside-extra]"></ng-content>
       </div>

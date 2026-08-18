@@ -32,7 +32,7 @@
   <div *ngIf="loading" class="ion-padding">
     <p>Loading…</p>
   </div>
-  <ng-container *ngIf="!loading">
+  <ng-container *ngIf="!loading && !navigatingAway">
     <div class="journal-entry-body">
       <div class="ion-padding title-field">
         <ion-input

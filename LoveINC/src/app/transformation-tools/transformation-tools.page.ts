@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonHeader,
@@ -10,10 +10,11 @@ import {
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { ContentCardListComponent } from '../components/content-card-list/content-card-list.component';
 import type { ContentCardListItem } from '../components/content-card-list/content-card-list.model';
-import { PlatformApiService } from '../services/platform';
-import type { PlatformTransformationTool } from '../services/platform/types';
-import { GrovLinkDatabaseService } from '../services/grovlink-database.service';
-import { isTransformationToolFullyComplete } from './transformation-tool-completion.util';
+import { ContentPlanService } from '../content-plan/content-plan.service';
+import {
+  mapContentPlanToListItem,
+  TOOLS_FOR_TRANSFORMATION_THEME_NAME,
+} from '../content-plan/content-plan.mapper';
 
 @Component({
   selector: 'app-transformation-tools',
@@ -31,74 +32,40 @@ import { isTransformationToolFullyComplete } from './transformation-tool-complet
   ],
 })
 export class TransformationToolsPage implements OnInit {
-  tools: PlatformTransformationTool[] = [];
+  listItems: ContentCardListItem[] = [];
   loading = true;
-  private completedToolIds = new Set<string>();
 
-  constructor(
-    private platformApi: PlatformApiService,
-    private db: GrovLinkDatabaseService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private contentPlanService: ContentPlanService) {}
 
-  ngOnInit() {
-    this.loadTools();
+  ngOnInit(): void {
+    this.loadPlans();
   }
 
-  async ionViewWillEnter(): Promise<void> {
-    if (this.tools.length > 0) {
-      await this.refreshCompletionStatus();
+  ionViewWillEnter(): void {
+    if (!this.loading) {
+      this.loadPlans(true);
     }
   }
 
-  loadTools() {
+  private loadPlans(refresh = false): void {
     this.loading = true;
-    this.platformApi.getTransformationTools().subscribe({
-      next: (items) => {
-        this.tools = (items ?? []).sort((a, b) => a.sortOrder - b.sortOrder);
-        this.loading = false;
-        void this.refreshCompletionStatus();
-      },
-      error: (err) => {
-        console.error('Error loading transformation tools:', err);
-        this.loading = false;
-      },
-    });
-  }
-
-  get transformationToolListItems(): ContentCardListItem[] {
-    return this.tools.map((tool) => {
-      const photoUrl = tool.photoUrl
-        ? this.platformApi.resolveUploadUrl(tool.photoUrl) || tool.photoUrl
-        : undefined;
-      const isComplete = this.completedToolIds.has(tool.id);
-
-      return {
-        id: tool.id,
-        title: tool.title,
-        detail: tool.author?.name?.trim() ? `By ${tool.author.name.trim()}` : undefined,
-        imageUrl: photoUrl,
-        iconName: photoUrl ? undefined : 'compass-outline',
-        iconBackgroundColor: '#349394',
-        avatarOverlayIcon: photoUrl && isComplete ? 'checkmark-circle' : undefined,
-        avatarOverlayIconColor: 'success',
-        route: `/tabs/transformation-tools/${tool.id}`,
-        preserveQueryParams: true,
-      };
-    });
-  }
-
-  private async refreshCompletionStatus(): Promise<void> {
-    const next = new Set<string>();
-
-    for (const tool of this.tools) {
-      const responses = await this.db.getTransformationToolResponses(tool.id);
-      if (isTransformationToolFullyComplete(tool, responses)) {
-        next.add(tool.id);
-      }
-    }
-
-    this.completedToolIds = next;
-    this.cdr.markForCheck();
+    this.contentPlanService
+      .getPlansByThemeName(TOOLS_FOR_TRANSFORMATION_THEME_NAME, refresh)
+      .subscribe({
+        next: (plans) => {
+          this.listItems = plans.map((plan) =>
+            mapContentPlanToListItem(plan, {
+              navigationFrom: 'transformation-tools',
+              showThemeCategory: false,
+            })
+          );
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error loading Tools for Transformation plans:', err);
+          this.listItems = [];
+          this.loading = false;
+        },
+      });
   }
 }

@@ -72,6 +72,7 @@
                   [avatarOverlayIconColor]="row.avatarOverlayIconColor ?? 'success'"
                   [authorName]="row.authorName"
                   [authorAvatarUrl]="row.authorAvatarUrl"
+                  [createdAtLabel]="row.createdAtLabel"
                   [clickable]="row.route ? true : row.clickable !== false"
                   (cardClick)="onListRowClick(slide, row)"
                 />
@@ -117,27 +118,31 @@
     ></span>
   }
   <span class="peek-carousel-media__body">
-    @if (item.date) {
-      <span class="app-caption peek-carousel-media__date">{{ item.date }}</span>
-    }
     <span class="peek-carousel-media__title">{{ item.title }}</span>
     @if (item.description) {
       <span class="app-body-secondary peek-carousel-media__description">{{ item.description }}</span>
     }
-    @if (item.authorName) {
+    @if (item.authorName || item.date) {
       <span class="peek-carousel-media__author">
-        @if (item.authorAvatarUrl) {
-          <img
-            class="peek-carousel-media__author-avatar"
-            [src]="item.authorAvatarUrl"
-            [alt]="item.authorName"
-          />
-        } @else {
-          <span class="peek-carousel-media__author-avatar peek-carousel-media__author-avatar--placeholder" aria-hidden="true">
-            <ion-icon name="person-outline"></ion-icon>
+        @if (item.authorName) {
+          <span class="peek-carousel-media__author-identity">
+            @if (item.authorAvatarUrl) {
+              <img
+                class="peek-carousel-media__author-avatar"
+                [src]="item.authorAvatarUrl"
+                [alt]="item.authorName"
+              />
+            } @else {
+              <span class="peek-carousel-media__author-avatar peek-carousel-media__author-avatar--placeholder" aria-hidden="true">
+                <ion-icon name="person-outline"></ion-icon>
+              </span>
+            }
+            <span class="peek-carousel-media__author-label">By {{ item.authorName }}</span>
           </span>
         }
-        <span class="peek-carousel-media__author-label">By {{ item.authorName }}</span>
+        @if (item.date) {
+          <span class="app-body-secondary-xs peek-carousel-media__date">{{ item.date }}</span>
+        }
       </span>
     }
   </span>

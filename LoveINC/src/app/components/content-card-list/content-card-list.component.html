@@ -11,6 +11,7 @@
       [categoryExtra]="item.categoryExtra"
       [title]="item.title"
       [titleSegments]="item.titleSegments"
+      [lucideTitleIcon]="item.lucideTitleIcon"
       [underTitle]="item.underTitle"
       [detail]="item.detail"
       [detailSegments]="item.detailSegments"
@@ -30,6 +31,8 @@
       [avatarOverlayIconColor]="item.avatarOverlayIconColor ?? 'success'"
       [authorName]="item.authorName"
       [authorAvatarUrl]="item.authorAvatarUrl"
+      [createdAtLabel]="item.createdAtLabel"
+      [asideAvatarSize]="item.asideAvatarSize ?? defaultAsideAvatarSize"
       [clickable]="item.route ? true : item.clickable !== false"
       (cardClick)="onCardClick(item)"
       />

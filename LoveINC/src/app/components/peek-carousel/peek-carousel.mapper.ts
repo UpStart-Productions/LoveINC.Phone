@@ -1,6 +1,11 @@
 import type { ContentCardListItem } from '../content-card-list/content-card-list.model';
 import type { ContentPlan } from '../../content-plan/content-plan.model';
-import { resolveMomentBlockText, resolvePlanCoverImageUrl } from '../../content-plan/content-plan.mapper';
+import {
+  formatContentPlanCreatedAtLabel,
+  mapContentPlanToListItem,
+  resolveMomentBlockText,
+  resolvePlanCoverImageUrl,
+} from '../../content-plan/content-plan.mapper';
 import type { PeekCarouselCoverItem, PeekCarouselListSlide, PeekCarouselMediaItem } from './peek-carousel.model';
 
 const LIST_ROWS_PER_SLIDE = 2;
@@ -35,33 +40,7 @@ export function mapContentPlanToMediaItem(plan: ContentPlan): PeekCarouselMediaI
     imageColor: '#349394',
     authorName: author || 'Love INC',
     authorAvatarUrl: plan.author.avatarUrl,
-  };
-}
-
-export function mapContentPlanToListItem(
-  plan: ContentPlan,
-  navigationFrom = 'home'
-): ContentCardListItem {
-  const author = plan.author.name?.trim();
-  const subtitle = plan.moments[0]
-    ? resolveMomentBlockText(plan.moments[0], 'subtitle')
-    : undefined;
-  const imageUrl = resolvePlanCoverImageUrl(plan);
-
-  return {
-    id: plan.id,
-    category: plan.theme.name || 'Learning',
-    lucideCategoryIcon: 'compass',
-    compactCategoryLabel: true,
-    title: plan.title,
-    detail: subtitle,
-    authorName: author || undefined,
-    authorAvatarUrl: plan.author.avatarUrl,
-    imageUrl,
-    lucideIcon: imageUrl ? undefined : 'compass',
-    iconBackgroundColor: '#349394',
-    route: `/tabs/content-plan/${plan.id}`,
-    navigationFrom,
+    date: formatContentPlanCreatedAtLabel(plan.createdAt),
   };
 }
 
@@ -69,7 +48,9 @@ export function mapPlansToListSlides(
   plans: ContentPlan[],
   navigationFrom = 'home'
 ): PeekCarouselListSlide[] {
-  const rows = plans.map((plan) => mapContentPlanToListItem(plan, navigationFrom));
+  const rows = plans.map((plan) =>
+    mapContentPlanToListItem(plan, { navigationFrom, showThemeCategory: true })
+  );
   if (!rows.length) {
     return [];
   }
@@ -83,3 +64,5 @@ export function mapPlansToListSlides(
   }
   return slides;
 }
+
+export { mapContentPlanToListItem };

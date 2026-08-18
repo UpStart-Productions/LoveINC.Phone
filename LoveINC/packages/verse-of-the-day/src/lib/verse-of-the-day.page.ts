@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, Optional, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -11,6 +11,7 @@ import {
   IonSpinner,
   IonIcon,
   IonCard,
+  NavController,
 } from '@ionic/angular/standalone';
 import {
   VerseOfTheDayService,
@@ -19,7 +20,7 @@ import {
   VERSE_OF_THE_DAY_SHARE,
 } from './verse-of-the-day.service';
 import { SafeResourceUrlPipe } from './safe-resource-url.pipe';
-import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
+import { navigateAppBack } from '@app/shared/utils/navigation-back.util';
 
 @Component({
   selector: 'app-verse-of-the-day',
@@ -42,7 +43,7 @@ import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
 })
 export class VerseOfTheDayPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
+  private readonly navController = inject(NavController);
 
   verse: VerseOfTheDay | null = null;
   loading = true;
@@ -59,9 +60,7 @@ export class VerseOfTheDayPage implements OnInit {
   }
 
   goBack(): void {
-    const explicit = resolveReturnUrlFromRouteTree(this.route.snapshot);
-    const target = explicit ?? '/tabs/home';
-    void this.router.navigateByUrl(target, { replaceUrl: true });
+    void navigateAppBack(this.navController, this.route.snapshot, '/tabs/home');
   }
 
   get sermonVideoId(): string | null {

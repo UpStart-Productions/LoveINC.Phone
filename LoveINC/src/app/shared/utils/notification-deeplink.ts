@@ -62,7 +62,7 @@ export function mapNotificationMetaToContentType(meta: NotificationMeta | null |
 export function getNotificationRoute(meta: NotificationMeta | null | undefined): string[] | null {
   if (!meta?.itemType || !meta?.itemId) return null;
   if (meta.itemType === 'transformation_tool') {
-    return ['/tabs/transformation-tools', meta.itemId];
+    return ['/tabs/content-plan', meta.itemId];
   }
   const routeType = mapNotificationMetaToContentType(meta);
   if (!routeType) return null;

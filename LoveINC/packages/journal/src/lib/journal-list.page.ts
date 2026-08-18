@@ -9,12 +9,13 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
+  NavController,
 } from '@ionic/angular/standalone';
 import { ContentCardListComponent } from '@app/components/content-card-list/content-card-list.component';
 import type { ContentCardListItem } from '@app/components/content-card-list/content-card-list.model';
+import { navigateAppBack } from '@app/shared/utils/navigation-back.util';
 import { JournalService } from './services/journal.service';
 import { JournalEntry } from './types/journal-entry.model';
-import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
 
 @Component({
   selector: 'app-journal-list',
@@ -40,13 +41,12 @@ export class JournalListPage {
   constructor(
     private journalService: JournalService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private navController: NavController
   ) {}
 
   goBack(): void {
-    const explicit = resolveReturnUrlFromRouteTree(this.route.snapshot);
-    const target = explicit ?? '/tabs/tools';
-    void this.router.navigateByUrl(target, { replaceUrl: true });
+    void navigateAppBack(this.navController, this.route.snapshot, '/tabs/tools');
   }
 
   async ionViewWillEnter(): Promise<void> {
@@ -68,6 +68,7 @@ export class JournalListPage {
     return this.entries.map((entry) => ({
       id: String(entry.id),
       title: entry.title || 'Untitled',
+      lucideTitleIcon: entry.planId ? 'graduation-cap' : undefined,
       asideBadge: entry.updatedAt ? this.formatUpdatedMonthDay(entry.updatedAt) : undefined,
       route: `/tabs/journal/${entry.id}`,
       preserveQueryParams: true,

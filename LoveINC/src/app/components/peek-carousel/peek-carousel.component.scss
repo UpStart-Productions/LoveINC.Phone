@@ -162,7 +162,8 @@
 }
 
 .peek-carousel-media__date {
-  display: block;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .peek-carousel-media__title {
@@ -181,8 +182,16 @@
 .peek-carousel-media__author {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
   margin-top: 0.125rem;
+}
+
+.peek-carousel-media__author-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
 }
 
 .peek-carousel-media__author-avatar {

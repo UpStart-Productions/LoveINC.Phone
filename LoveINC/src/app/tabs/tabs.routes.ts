@@ -18,11 +18,6 @@ const ROOT_DRILL_IN_REDIRECTS: Routes = [
   { path: 'videos', redirectTo: '/tabs/videos', pathMatch: 'full' },
   { path: 'tools', redirectTo: '/tabs/tools', pathMatch: 'full' },
   { path: 'transformation-tools', redirectTo: '/tabs/transformation-tools', pathMatch: 'full' },
-  {
-    path: 'transformation-tools/:id',
-    redirectTo: '/tabs/transformation-tools/:id',
-    pathMatch: 'full',
-  },
   { path: 'simple-budget', redirectTo: '/tabs/simple-budget', pathMatch: 'full' },
   { path: 'simple-budget/weekly', redirectTo: '/tabs/simple-budget/weekly', pathMatch: 'full' },
   { path: 'simple-budget/review', redirectTo: '/tabs/simple-budget/review', pathMatch: 'full' },
@@ -135,13 +130,6 @@ const TAB_DRILL_IN_ROUTES: Routes = [
     loadComponent: () =>
       import('../transformation-tools/transformation-tools.page').then(
         (m) => m.TransformationToolsPage
-      ),
-  },
-  {
-    path: 'transformation-tools/:id',
-    loadComponent: () =>
-      import('../transformation-tools/transformation-tool.page').then(
-        (m) => m.TransformationToolPage
       ),
   },
   ...REGISTERED_TOOL_ROUTES,

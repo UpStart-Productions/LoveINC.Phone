@@ -34,7 +34,6 @@ import {
 } from '../components/home-cta-row/home-cta-row.mapper';
 import type { HomeCtaRowModel } from '../components/home-cta-row/home-cta-row.model';
 import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-widget/verse-of-the-day-widget.component';
-import { TransformationToolHomeWidgetComponent } from '../components/transformation-tool-home-widget/transformation-tool-home-widget.component';
 import { SimpleBudgetHomeWidgetComponent } from '../components/simple-budget-home-widget/simple-budget-home-widget.component';
 import { GoalTrackerHomeWidgetComponent } from '../components/goal-tracker-home-widget/goal-tracker-home-widget.component';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
@@ -47,6 +46,7 @@ import { DismissedVouchersService } from '../services/dismissed-vouchers.service
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { CalendarService } from '../services/calendar/calendar.service';
 import { MicrolearningThemeWidgetComponent } from '../components/microlearning-theme-widget/microlearning-theme-widget.component';
+import { TOOLS_FOR_TRANSFORMATION_THEME_NAME } from '../content-plan/content-plan.mapper';
 import type { PeekCarouselSlideClick } from '../components/peek-carousel/peek-carousel.model';
 
 const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
@@ -79,7 +79,6 @@ export type ClientSupportCardState =
     CardComponent,
     HomeCtaRowComponent,
     VerseOfTheDayWidgetComponent,
-    TransformationToolHomeWidgetComponent,
     SimpleBudgetHomeWidgetComponent,
     GoalTrackerHomeWidgetComponent,
     NotificationsButtonComponent,
@@ -87,7 +86,7 @@ export type ClientSupportCardState =
   ],
 })
 export class HomePage implements OnInit {
-  readonly tftPlansThemeName = 'Tools for Transformation';
+  readonly tftPlansThemeName = TOOLS_FOR_TRANSFORMATION_THEME_NAME;
 
   @ViewChild(SimpleBudgetHomeWidgetComponent)
   private budgetHomeWidget?: SimpleBudgetHomeWidgetComponent;
@@ -97,9 +96,6 @@ export class HomePage implements OnInit {
 
   @ViewChild(VerseOfTheDayWidgetComponent)
   private verseHomeWidget?: VerseOfTheDayWidgetComponent;
-
-  @ViewChild(TransformationToolHomeWidgetComponent)
-  private transformationToolHomeWidget?: TransformationToolHomeWidgetComponent;
 
   @ViewChildren(MicrolearningThemeWidgetComponent)
   private microlearningThemeWidgets?: QueryList<MicrolearningThemeWidgetComponent>;
@@ -137,7 +133,6 @@ export class HomePage implements OnInit {
   ionViewDidEnter() {
     this.budgetHomeWidget?.refresh();
     this.goalTrackerHomeWidget?.refresh();
-    this.transformationToolHomeWidget?.refresh();
     void this.reloadClientContext(false);
   }
 
@@ -167,7 +162,6 @@ export class HomePage implements OnInit {
       this.budgetHomeWidget?.refresh();
       this.goalTrackerHomeWidget?.refresh();
       this.verseHomeWidget?.refresh();
-      this.transformationToolHomeWidget?.refresh();
       this.microlearningThemeWidgets?.forEach((widget) => widget.refresh());
 
       await Promise.all([

@@ -38,7 +38,13 @@
     <div class="app-font-crimson">
       <ion-card class="content-reader-panel-card">
         <div class="ion-padding app-body">
-          <app-moment-blocks [blocks]="activeMoment.blocks" />
+          <app-moment-blocks
+            [blocks]="activeMoment.blocks"
+            [planId]="plan.id"
+            [planTitle]="plan.title"
+            [themeName]="plan.theme.name"
+            [planMomentId]="activeMoment.planMomentId"
+          />
         </div>
       </ion-card>
     </div>

@@ -709,6 +709,38 @@ ion-modal.date-picker-modal-sheet ion-header ion-toolbar ion-title {
   flex-shrink: 0;
 }
 
+/* Status pills — Open, NEW, card aside badges (typography in theme/typography.scss) */
+.app-status-pill {
+  flex-shrink: 0;
+  border-radius: 9999px;
+  --padding-top: 3px;
+  --padding-bottom: 5px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+span.app-status-pill,
+button.app-status-pill {
+  display: inline-block;
+  padding: 3px 8px 5px;
+  border: none;
+}
+
+button.app-status-pill {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-status-pill--success {
+  background: var(--ion-color-success);
+  color: var(--ion-color-success-contrast);
+}
+
+.app-status-pill--gold {
+  background: var(--love-inc-gold);
+  color: var(--app-text-primary);
+}
+
 /* Donation card detail rows (address, schedule, notes) - icons + spacing */
 .donation-details .donation-detail-row {
   display: flex;

@@ -1,7 +1,7 @@
 import { Component, Input, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonButton, IonIcon } from '@ionic/angular/standalone';
-import { resolveReturnUrlFromRouteTree } from '../../shared/utils/navigation-origin.util';
+import { IonButton, IonIcon, NavController } from '@ionic/angular/standalone';
+import { navigateAppBack } from '../../shared/utils/navigation-back.util';
 
 @Component({
   selector: 'app-back-button',
@@ -14,15 +14,13 @@ import { resolveReturnUrlFromRouteTree } from '../../shared/utils/navigation-ori
   `,
 })
 export class AppBackButtonComponent {
-  /** Used when no `from` / `returnUrl` query param is present. */
+  /** Used when stack pop is unavailable and no `from` / `returnUrl` query param is present. */
   @Input() fallback = '/tabs/home';
 
-  private readonly router = inject(Router);
+  private readonly navController = inject(NavController);
   private readonly route = inject(ActivatedRoute);
 
   goBack(): void {
-    const explicit = resolveReturnUrlFromRouteTree(this.route.snapshot);
-    const target = explicit ?? this.fallback;
-    void this.router.navigateByUrl(target, { replaceUrl: true });
+    void navigateAppBack(this.navController, this.route.snapshot, this.fallback);
   }
 }

@@ -13,6 +13,9 @@
           <ion-item>
             <ion-label position="stacked">{{ contentString(block, 'label') || 'Response' }}</ion-label>
             <ion-textarea
+              [ngModel]="getTextResponse(block)"
+              (ngModelChange)="setTextResponse(block, $event)"
+              (ionBlur)="onTextBlur(block)"
               [placeholder]="contentString(block, 'text') || ''"
               [autoGrow]="true"
               autocapitalize="sentences"
@@ -28,7 +31,12 @@
             <ion-list lines="none">
               @for (option of options(block); track option) {
                 <ion-item>
-                  <ion-checkbox slot="start" [value]="option"></ion-checkbox>
+                  <ion-checkbox
+                    slot="start"
+                    [value]="option"
+                    [checked]="isChecked(block, option)"
+                    (ionChange)="onCheckboxChange(block, option, $event.detail.checked)"
+                  ></ion-checkbox>
                   <ion-label>{{ option }}</ion-label>
                 </ion-item>
               }
@@ -40,7 +48,10 @@
         @if (options(block).length > 0) {
           <div class="m-b-24 m-t-18">
             <p class="app-body m-b-6">{{ promptLabel(block) }}</p>
-            <ion-radio-group>
+            <ion-radio-group
+              [value]="getRadioResponse(block)"
+              (ionChange)="onRadioChange(block, $event.detail.value)"
+            >
               <ion-list lines="none">
                 @for (option of options(block); track option) {
                   <ion-item>

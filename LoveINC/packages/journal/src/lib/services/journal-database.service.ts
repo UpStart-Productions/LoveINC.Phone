@@ -108,6 +108,21 @@ export class JournalDatabaseService {
         updatedAt TEXT NOT NULL
       );
     `);
+    await this.migrateJournalEntries();
+  }
+
+  private async migrateJournalEntries(): Promise<void> {
+    const db = await this.getDbConnection();
+    try {
+      await db.run('ALTER TABLE journal_entries ADD COLUMN planId TEXT');
+    } catch {
+      // Column already exists.
+    }
+    await db.execute(`
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_journal_entries_plan_id
+      ON journal_entries (planId)
+      WHERE planId IS NOT NULL;
+    `);
   }
 
   resetConnection(): void {

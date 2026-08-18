@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular/standalone';
+import { AlertController, NavController } from '@ionic/angular/standalone';
 import {
   IonHeader,
   IonToolbar,
@@ -20,7 +20,7 @@ import {
   type JournalQuillEditorConfig,
 } from './rich-text/quill-editor.component';
 import { JournalEntry } from './types/journal-entry.model';
-import { resolveReturnUrlFromRouteTree } from './navigation-origin.util';
+import { navigateAppBack } from '@app/shared/utils/navigation-back.util';
 
 @Component({
   selector: 'app-journal-entry',
@@ -51,6 +51,7 @@ export class JournalEntryPage implements OnInit, OnDestroy {
   entryId: number | null = null;
   private saving = false;
   loading = true;
+  navigatingAway = false;
   quillConfig: JournalQuillEditorConfig = {
     placeholder: 'Write your thoughts…',
     height: '100%',
@@ -64,21 +65,30 @@ export class JournalEntryPage implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private navController: NavController,
     private journalService: JournalService,
     private alertController: AlertController
   ) {}
+
+  ionViewWillEnter(): void {
+    this.navigatingAway = false;
+  }
+
+  ionViewWillLeave(): void {
+    this.navigatingAway = true;
+  }
 
   ngOnDestroy(): void {
     this.clearAutoSaveTimer();
   }
 
   goBack(): void {
-    const explicit = resolveReturnUrlFromRouteTree(this.route.snapshot);
-    const target = explicit ?? '/tabs/tools';
-    void this.router.navigateByUrl(target, { replaceUrl: true });
+    this.navigatingAway = true;
+    void navigateAppBack(this.navController, this.route.snapshot, '/tabs/journal');
   }
 
   async ngOnInit(): Promise<void> {
+    this.navigatingAway = false;
     const pathTail = this.route.snapshot.url[0]?.path;
     this.routeIsNew = pathTail === 'new';
     this.loading = true;
@@ -99,7 +109,7 @@ export class JournalEntryPage implements OnInit, OnDestroy {
       if (e) {
         this.hydrateFromEntry(e);
       } else {
-        await this.router.navigateByUrl('/tabs/journal', { replaceUrl: true });
+        await this.navController.navigateBack('/tabs/journal');
       }
     }
     this.loading = false;

@@ -40,6 +40,7 @@
     <div class="positions-list">
       @for (position of positions; track position.id) {
         <app-content-card
+          asideAvatarSize="large"
           [title]="position.title ?? 'Volunteer'"
           [detail]="getCardDetail(position)"
           [imageUrl]="getPhotoUrl(position) || undefined"

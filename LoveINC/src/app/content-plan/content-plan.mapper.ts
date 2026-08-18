@@ -1,5 +1,17 @@
+import { format } from 'date-fns';
+import type { ContentCardListItem } from '../components/content-card-list/content-card-list.model';
 import type { PlatformPlan, PlatformPlanMoment, PlatformTheme } from '../services/platform/types';
+import { formatDateRangeCompact } from '../shared/utils/date-time-formatting';
 import type { ContentPlan, ContentPlanMoment, ContentPlanTheme } from './content-plan.model';
+
+/** GrovLink microlearning theme for Tools for Transformation paths. */
+export const TOOLS_FOR_TRANSFORMATION_THEME_NAME = 'Tools for Transformation';
+
+export interface MapContentPlanToListItemOptions {
+  navigationFrom?: string;
+  /** When false, omits per-row theme category (e.g. on the dedicated TfT list). */
+  showThemeCategory?: boolean;
+}
 
 export function mapPlatformPlanToContentPlan(
   plan: PlatformPlan,
@@ -16,9 +28,63 @@ export function mapPlatformPlanToContentPlan(
     author: mapPlatformPlanAuthor(plan.author, resolveUploadUrl),
     theme: mapPlatformPlanTheme(plan.theme),
     displayStyle: plan.displayStyle,
+    createdAt: plan.createdAt?.trim() || undefined,
     moments: plan.moments
       .map((moment) => mapPlatformMoment(moment, resolveUploadUrl))
       .sort((a, b) => a.order - b.order),
+  };
+}
+
+/** Display label for detail cards (e.g. "AUG 15, 2026"). */
+export function formatContentPlanCreatedAtLabel(createdAt?: string): string | undefined {
+  const raw = createdAt?.trim();
+  if (!raw) {
+    return undefined;
+  }
+  const label = formatDateRangeCompact(raw, raw);
+  return label || undefined;
+}
+
+/** Short list-card date (e.g. "Jan 1") — no year, not all caps. */
+export function formatContentPlanCreatedAtShortLabel(createdAt?: string): string | undefined {
+  const raw = createdAt?.trim();
+  if (!raw) {
+    return undefined;
+  }
+  const date = new Date(raw);
+  if (Number.isNaN(date.getTime())) {
+    return undefined;
+  }
+  return format(date, 'MMM d');
+}
+
+export function mapContentPlanToListItem(
+  plan: ContentPlan,
+  options: MapContentPlanToListItemOptions = {}
+): ContentCardListItem {
+  const navigationFrom = options.navigationFrom ?? 'home';
+  const showThemeCategory = options.showThemeCategory ?? true;
+  const author = plan.author.name?.trim();
+  const subtitle = plan.moments[0]
+    ? resolveMomentBlockText(plan.moments[0], 'subtitle')
+    : undefined;
+  const imageUrl = resolvePlanCoverImageUrl(plan);
+
+  return {
+    id: plan.id,
+    category: showThemeCategory ? plan.theme.name || 'Learning' : undefined,
+    lucideCategoryIcon: showThemeCategory ? 'compass' : undefined,
+    compactCategoryLabel: showThemeCategory,
+    title: plan.title,
+    detail: subtitle,
+    authorName: author || undefined,
+    authorAvatarUrl: plan.author.avatarUrl,
+    createdAtLabel: formatContentPlanCreatedAtShortLabel(plan.createdAt),
+    imageUrl,
+    lucideIcon: imageUrl ? undefined : 'compass',
+    iconBackgroundColor: '#349394',
+    route: `/tabs/content-plan/${plan.id}`,
+    navigationFrom,
   };
 }
 
