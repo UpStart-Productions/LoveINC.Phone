@@ -3,22 +3,21 @@
     <ion-buttons slot="start">
       <app-back-button fallback="/tabs/tools"></app-back-button>
     </ion-buttons>
-    <ion-title>Tools for Transformation</ion-title>
+    <ion-title>{{ pageTitle }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   @if (!loading && listItems.length === 0) {
     <p class="app-body-secondary p-l-18 p-r-18 p-t-12">
-      No tools are available right now. Check back soon.
+      No paths are available right now. Check back soon.
     </p>
   }
   @if (!loading && listItems.length > 0) {
     <app-content-card-list
       [items]="listItems"
-      defaultNavigationFrom="transformation-tools"
+      defaultNavigationFrom="content-plan-theme"
       defaultAsideAvatarSize="large"
-      [defaultIconBackgroundColor]="'#349394'"
     />
   }
 </ion-content>

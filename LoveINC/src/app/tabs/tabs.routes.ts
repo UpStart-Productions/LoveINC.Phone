@@ -52,7 +52,12 @@ const ROOT_DRILL_IN_REDIRECTS: Routes = [
   { path: 'verse-of-the-day', redirectTo: '/tabs/verse-of-the-day', pathMatch: 'full' },
   { path: 'videos', redirectTo: '/tabs/videos', pathMatch: 'full' },
   { path: 'tools', redirectTo: '/tabs/tools', pathMatch: 'full' },
-  { path: 'transformation-tools', redirectTo: '/tabs/transformation-tools', pathMatch: 'full' },
+  { path: 'transformation-tools', redirectTo: '/tabs/tools', pathMatch: 'full' },
+  {
+    path: 'content-plan-theme/:themeId',
+    redirectTo: '/tabs/content-plan-theme/:themeId',
+    pathMatch: 'full',
+  },
   { path: 'simple-budget', redirectTo: '/tabs/simple-budget', pathMatch: 'full' },
   { path: 'simple-budget/weekly', redirectTo: '/tabs/simple-budget/weekly', pathMatch: 'full' },
   { path: 'simple-budget/review', redirectTo: '/tabs/simple-budget/review', pathMatch: 'full' },
@@ -166,11 +171,14 @@ const TAB_DRILL_IN_ROUTES: Routes = [
     loadComponent: () => import('../tools/tools.page').then((m) => m.ToolsPage),
   },
   {
-    path: 'transformation-tools',
+    path: 'content-plan-theme/:themeId',
     loadComponent: () =>
-      import('../transformation-tools/transformation-tools.page').then(
-        (m) => m.TransformationToolsPage
-      ),
+      import('../content-plan-theme/content-plan-theme.page').then((m) => m.ContentPlanThemePage),
+  },
+  {
+    path: 'transformation-tools',
+    redirectTo: 'tools',
+    pathMatch: 'full',
   },
   ...REGISTERED_TOOL_ROUTES,
   {

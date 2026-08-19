@@ -510,6 +510,18 @@ ion-card.clickable {
     display: block;
   }
 
+  .category-icon-svg .ql-lucide-icon {
+    display: inline-flex;
+    vertical-align: -0.125em;
+  }
+
+  .category-icon-svg .lucide-inline-icon {
+    width: 1em;
+    height: 1em;
+    stroke: currentColor;
+    fill: none;
+  }
+
   .app-body-secondary {
     margin-bottom: 0;
   }
@@ -528,6 +540,11 @@ ion-card.clickable {
   }
 
   i-lucide.icon {
+    width: var(--app-font-size-xs);
+    height: var(--app-font-size-xs);
+  }
+
+  .category-icon-svg .lucide-inline-icon {
     width: var(--app-font-size-xs);
     height: var(--app-font-size-xs);
   }
@@ -575,6 +592,17 @@ ion-card.clickable {
 }
 
 .content-card--compact-category-label.content-card .category-row i-lucide.icon {
+  width: var(--app-font-size-xs);
+  height: var(--app-font-size-xs);
+}
+
+.content-card--compact-category-label.content-card .category-row .category-icon-svg {
+  font-size: var(--app-font-size-xs);
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.content-card--compact-category-label.content-card .category-row .category-icon-svg .lucide-inline-icon {
   width: var(--app-font-size-xs);
   height: var(--app-font-size-xs);
 }

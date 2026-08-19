@@ -113,6 +113,19 @@ ion-router-outlet > .ion-page ion-content::part(background) {
     opacity: 0.88;
   }
 
+  /* Quill / GrovLink inline Lucide icon embeds */
+  .ql-lucide-icon {
+    display: inline-flex;
+    vertical-align: -0.125em;
+  }
+
+  .lucide-inline-icon {
+    width: 1em;
+    height: 1em;
+    stroke: currentColor;
+    fill: none;
+  }
+
   blockquote {
     margin: 0.75rem 0;
     margin-inline: 0;

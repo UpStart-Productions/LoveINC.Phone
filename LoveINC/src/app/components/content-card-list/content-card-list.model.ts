@@ -7,6 +7,8 @@ export interface ContentCardListItem {
   category?: string;
   categoryIcon?: string;
   lucideCategoryIcon?: string;
+  /** Inline Lucide SVG HTML for the category/eyebrow row. */
+  categoryIconSvg?: string;
   categoryExtra?: string;
   titleSegments?: ContentCardTextSegment[];
   /** Lucide icon inline before the title. */

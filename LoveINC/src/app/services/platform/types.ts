@@ -397,6 +397,8 @@ export type PlatformThemeDisplayStyle = 'COVER_CARDS' | 'DETAIL_CARDS' | 'LIST';
 export interface PlatformPlanTheme {
   id: string;
   name: string;
+  subtitle?: string;
+  iconSvg?: string;
   isActive: boolean;
   showOnHome?: boolean;
   displayStyle?: PlatformThemeDisplayStyle;
@@ -405,6 +407,8 @@ export interface PlatformPlanTheme {
 export interface PlatformTheme {
   id: string;
   name: string;
+  subtitle?: string;
+  iconSvg?: string;
   isActive: boolean;
   showOnHome: boolean;
   displayStyle: PlatformThemeDisplayStyle;

@@ -5,9 +5,11 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <app-content-card-list
-    [items]="toolListItems"
-    [compactCategoryLabel]="true"
-    defaultNavigationFrom="tools"
-  />
+  @if (listItems.length) {
+    <app-content-card-list
+      [items]="listItems"
+      [compactCategoryLabel]="true"
+      defaultNavigationFrom="tools"
+    />
+  }
 </ion-content>

@@ -9,9 +9,6 @@ import type {
   ContentPlanTheme,
 } from './content-plan.model';
 
-/** GrovLink microlearning theme for Tools for Transformation paths. */
-export const TOOLS_FOR_TRANSFORMATION_THEME_NAME = 'Tools for Transformation';
-
 export interface MapContentPlanToListItemOptions {
   navigationFrom?: string;
   /** When false, omits per-row theme category (e.g. on the dedicated TfT list). */
@@ -65,6 +62,24 @@ export function formatContentPlanCreatedAtShortLabel(createdAt?: string): string
   return format(date, 'MMM d');
 }
 
+export function mapContentPlanThemeToLearnListItem(theme: ContentPlanTheme): ContentCardListItem {
+  const subtitle = theme.subtitle?.trim();
+  const iconSvg = theme.iconSvg?.trim();
+  const lucideIcon = parseLucideIconNameFromIconSvg(iconSvg);
+
+  return {
+    id: theme.id,
+    title: theme.name,
+    category: subtitle || undefined,
+    categoryIconSvg: iconSvg || undefined,
+    lucideIcon,
+    iconBackgroundColor: '#349394',
+    compactCategoryLabel: true,
+    route: `/tabs/content-plan-theme/${theme.id}`,
+    navigationFrom: 'tools',
+  };
+}
+
 export function mapContentPlanToListItem(
   plan: ContentPlan,
   options: MapContentPlanToListItemOptions = {}
@@ -76,11 +91,15 @@ export function mapContentPlanToListItem(
     ? resolveMomentBlockText(plan.moments[0], 'subtitle')
     : undefined;
   const imageUrl = resolvePlanCoverImageUrl(plan);
+  const themeSubtitle = plan.theme.subtitle?.trim();
+  const themeIconSvg = plan.theme.iconSvg?.trim();
 
   return {
     id: plan.id,
-    category: showThemeCategory ? plan.theme.name || 'Learning' : undefined,
-    lucideCategoryIcon: showThemeCategory ? 'compass' : undefined,
+    category: showThemeCategory
+      ? themeSubtitle || plan.theme.name || 'Learning'
+      : undefined,
+    categoryIconSvg: showThemeCategory && themeIconSvg ? themeIconSvg : undefined,
     compactCategoryLabel: showThemeCategory,
     title: plan.title,
     detail: subtitle,
@@ -89,8 +108,6 @@ export function mapContentPlanToListItem(
     createdAtLabel: formatContentPlanCreatedAtShortLabel(plan.createdAt),
     createdAtInlineWithAuthor: options.createdAtInlineWithAuthor ?? false,
     imageUrl,
-    lucideIcon: imageUrl ? undefined : 'compass',
-    iconBackgroundColor: '#349394',
     route: `/tabs/content-plan/${plan.id}`,
     navigationFrom,
   };
@@ -120,9 +137,14 @@ function mapPlatformPlanTheme(theme: PlatformPlan['theme'] | undefined): Content
 export function mapPlatformTheme(
   theme: PlatformPlan['theme'] | PlatformTheme | undefined | null
 ): ContentPlanTheme {
+  const subtitle = theme?.subtitle?.trim();
+  const iconSvg = theme?.iconSvg?.trim();
+
   return {
     id: theme?.id?.trim() ?? '',
     name: theme?.name?.trim() ?? '',
+    subtitle: subtitle || undefined,
+    iconSvg: iconSvg || undefined,
     isActive: theme?.isActive ?? false,
     showOnHome: theme?.showOnHome ?? false,
     displayStyle: theme?.displayStyle ?? 'COVER_CARDS',
@@ -163,6 +185,15 @@ export function resolvePlanCoverImageUrl(plan: ContentPlan): string | undefined 
 
 function normalizeMomentBlockId(blockId: string): string {
   return blockId.trim().toLowerCase();
+}
+
+/** Read Lucide icon name from GrovLink inline SVG markup (`data-icon` attribute). */
+function parseLucideIconNameFromIconSvg(iconSvg: string | undefined): string | undefined {
+  if (!iconSvg?.trim()) {
+    return undefined;
+  }
+  const match = iconSvg.match(/\bdata-icon="([a-z0-9-]+)"/);
+  return match?.[1];
 }
 
 /** Find a moment block by stable `blockId` (case-insensitive), e.g. `subtitle`. */

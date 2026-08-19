@@ -6,6 +6,7 @@ import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
 import { IonBadge, IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
 import { LocationMapModalService } from '../../services/location-map-modal.service';
+import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 
 /** Optional fragments for coloring numeric parts (e.g. budget amounts). */
 export type ContentCardTextSegment = {
@@ -20,7 +21,7 @@ export type ContentCardAsideAvatarSize = 'small' | 'large';
   templateUrl: './content-card.component.html',
   styleUrls: ['./content-card.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonBadge, IonCard, IonCardContent, IonIcon, LucideAngularModule],
+  imports: [CommonModule, IonBadge, IonCard, IonCardContent, IonIcon, LucideAngularModule, SafeHtmlPipe],
 })
 export class ContentCardComponent {
   private readonly navController = inject(NavController);
@@ -32,6 +33,9 @@ export class ContentCardComponent {
 
   /** Optional Lucide icon name for category line (e.g. "sprout") */
   @Input() lucideCategoryIcon?: string;
+
+  /** Inline Lucide SVG HTML for category line (from GrovLink theme.iconSvg or Quill). */
+  @Input() categoryIconSvg?: string;
 
   /** Optional extra text before category (e.g. "0", "Day 5") */
   @Input() categoryExtra?: string;

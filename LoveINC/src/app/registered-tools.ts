@@ -113,15 +113,6 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
  */
 export const REGISTERED_TOOL_CARDS: ToolCard[] = [
   {
-    category: 'Spiritual Growth',
-    lucideCategoryIcon: 'compass',
-    title: 'Tools for Transformation',
-    detail: 'Guided devotionals for growth',
-    lucideIcon: 'compass',
-    iconBackgroundColor: '#349394',
-    route: '/tabs/transformation-tools',
-  },
-  {
     category: 'Daily Scripture',
     lucideCategoryIcon: 'bookmark',
     title: 'Verse of the Day',

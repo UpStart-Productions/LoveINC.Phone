@@ -15,9 +15,15 @@
       [class.content-card-layout--badge-aside-only]="badgeAsideOnly"
     >
       <div class="content-card-main">
-        @if (category || categoryExtra) {
+        @if (category || categoryExtra || categoryIconSvg) {
           <div class="category-row">
-            @if (lucideCategoryIcon) {
+            @if (categoryIconSvg) {
+              <span
+                class="icon category-icon-svg"
+                [innerHTML]="categoryIconSvg | safeHtml"
+                aria-hidden="true"
+              ></span>
+            } @else if (lucideCategoryIcon) {
               <i-lucide
                 [name]="lucideCategoryIcon"
                 [size]="showAside || compactCategoryLabel ? 12 : 16"
@@ -28,10 +34,10 @@
               <ion-icon [name]="categoryIcon" class="icon"></ion-icon>
             }
             @if (categoryExtra) {
-              <span class="app-body-secondary">{{ categoryExtra }}</span>
+              <span [class]="compactCategoryLabel ? 'app-body-secondary-xs' : 'app-body-secondary'">{{ categoryExtra }}</span>
             }
             @if (category) {
-              <span class="app-body-secondary">{{ category }}</span>
+              <span [class]="compactCategoryLabel ? 'app-body-secondary-xs' : 'app-body-secondary'">{{ category }}</span>
             }
           </div>
         }

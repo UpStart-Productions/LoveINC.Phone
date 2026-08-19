@@ -30,6 +30,8 @@ export interface ContentPlanAuthor {
 export interface ContentPlanTheme {
   id: string;
   name: string;
+  subtitle?: string;
+  iconSvg?: string;
   isActive: boolean;
   showOnHome: boolean;
   displayStyle: ContentPlanThemeDisplayStyle;
