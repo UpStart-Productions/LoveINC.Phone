@@ -6,6 +6,10 @@
   margin-bottom: 0.75rem;
 }
 
+.moment-blocks__media-caption {
+  margin: 0 0 0.5rem;
+}
+
 .moment-blocks__video {
   position: relative;
   width: 100%;
@@ -27,4 +31,8 @@
   display: block;
   width: 100%;
   border-radius: var(--app-card-radius);
+}
+
+ion-item ion-checkbox[aria-hidden='true'] {
+  pointer-events: none;
 }

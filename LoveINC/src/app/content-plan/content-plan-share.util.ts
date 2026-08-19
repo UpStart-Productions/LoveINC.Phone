@@ -39,10 +39,13 @@ function appendMomentBlocksShareHtml(blocks: ContentPlanBlock[]): string {
       }
       case 'CHECKBOX':
       case 'RADIO': {
-        const label = contentString(block, 'label') || 'Choose one';
+        const label = contentString(block, 'label');
         const options = blockOptions(block);
         if (options.length === 0) break;
-        html += `<p><strong>${label}</strong></p><ul>`;
+        if (label) {
+          html += `<p><strong>${label}</strong></p>`;
+        }
+        html += '<ul>';
         for (const option of options) {
           html += `<li>${option}</li>`;
         }

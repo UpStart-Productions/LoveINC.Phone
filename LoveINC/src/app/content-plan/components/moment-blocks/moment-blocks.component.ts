@@ -6,8 +6,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonRadio,
-  IonRadioGroup,
   IonTextarea,
 } from '@ionic/angular/standalone';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
@@ -38,8 +36,6 @@ import {
     IonTextarea,
     IonList,
     IonCheckbox,
-    IonRadioGroup,
-    IonRadio,
     SafeHtmlPipe,
     SafeResourceUrlPipe,
   ],
@@ -90,10 +86,6 @@ export class MomentBlocksComponent implements OnChanges {
     return typeof value === 'string' ? value.trim() : '';
   }
 
-  promptLabel(block: ContentPlanBlock): string {
-    return this.contentString(block, 'label') || 'Choose one';
-  }
-
   options(block: ContentPlanBlock): string[] {
     const raw = block.content['options'];
     if (!Array.isArray(raw)) return [];
@@ -140,32 +132,36 @@ export class MomentBlocksComponent implements OnChanges {
     void this.responseService.saveTextResponse(this.persistContext(), block, value);
   }
 
-  getRadioResponse(block: ContentPlanBlock): string {
-    return this.getTextResponse(block);
-  }
-
-  onRadioChange(block: ContentPlanBlock, value: string | number | null | undefined): void {
-    if (!this.canPersist) return;
-    const next = typeof value === 'string' ? value : '';
-    this.responses[this.inputKey(block)] = next;
-    void this.responseService.saveRadioResponse(this.persistContext(), block, next);
-  }
-
-  isChecked(block: ContentPlanBlock, option: string): boolean {
+  isOptionSelected(block: ContentPlanBlock, option: string): boolean {
     const value = this.responses[this.inputKey(block)];
+    if (block.type === 'RADIO') {
+      return typeof value === 'string' && value === option;
+    }
     return Array.isArray(value) && value.includes(option);
   }
 
-  onCheckboxChange(block: ContentPlanBlock, option: string, checked: boolean): void {
-    if (!this.canPersist) return;
+  toggleOption(block: ContentPlanBlock, option: string): void {
     const key = this.inputKey(block);
+    if (block.type === 'RADIO') {
+      const current = this.responses[key];
+      const selected = typeof current === 'string' ? current : '';
+      const next = selected === option ? '' : option;
+      this.responses[key] = next;
+      if (this.canPersist) {
+        void this.responseService.saveRadioResponse(this.persistContext(), block, next);
+      }
+      return;
+    }
+
     const current = this.responses[key];
     const selected = Array.isArray(current) ? [...current] : [];
-    const next = checked
-      ? Array.from(new Set([...selected, option]))
-      : selected.filter((row) => row !== option);
+    const next = selected.includes(option)
+      ? selected.filter((row) => row !== option)
+      : Array.from(new Set([...selected, option]));
     this.responses[key] = next;
-    void this.responseService.saveCheckboxResponse(this.persistContext(), block, next);
+    if (this.canPersist) {
+      void this.responseService.saveCheckboxResponse(this.persistContext(), block, next);
+    }
   }
 
   private inputKey(block: ContentPlanBlock): string {

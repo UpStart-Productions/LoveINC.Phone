@@ -11,6 +11,27 @@
     ></div>
   }
   @for (block of displayBlocks; track block.id ?? block.blockId) {
+    @if (block.type === 'CHECKBOX' || block.type === 'RADIO') {
+      @if (options(block).length > 0) {
+        <div class="m-b-24 m-t-18">
+          @if (contentString(block, 'label')) {
+            <p class="app-body m-b-6">{{ contentString(block, 'label') }}</p>
+          }
+          <ion-list lines="none">
+            @for (option of options(block); track option) {
+              <ion-item button detail="false" (click)="toggleOption(block, option)">
+                <ion-checkbox
+                  slot="start"
+                  [checked]="isOptionSelected(block, option)"
+                  aria-hidden="true"
+                ></ion-checkbox>
+                <ion-label><p class="app-body-sm">{{ option }}</p></ion-label>
+              </ion-item>
+            }
+          </ion-list>
+        </div>
+      }
+    } @else {
     @switch (block.type) {
       @case ('RICH_TEXT') {
         @if (contentString(block, 'html')) {
@@ -33,48 +54,6 @@
           </ion-item>
         </div>
       }
-      @case ('CHECKBOX') {
-        @if (options(block).length > 0) {
-          <div class="m-b-24 m-t-18">
-            @if (contentString(block, 'label')) {
-              <p class="app-body m-b-6">{{ contentString(block, 'label') }}</p>
-            }
-            <ion-list lines="none">
-              @for (option of options(block); track option) {
-                <ion-item>
-                  <ion-checkbox
-                    slot="start"
-                    [value]="option"
-                    [checked]="isChecked(block, option)"
-                    (ionChange)="onCheckboxChange(block, option, $event.detail.checked)"
-                  ></ion-checkbox>
-                  <ion-label><p class="app-body-sm">{{ option }}</p></ion-label>
-                </ion-item>
-              }
-            </ion-list>
-          </div>
-        }
-      }
-      @case ('RADIO') {
-        @if (options(block).length > 0) {
-          <div class="m-b-24 m-t-18">
-            <p class="app-body m-b-6">{{ promptLabel(block) }}</p>
-            <ion-radio-group
-              [value]="getRadioResponse(block)"
-              (ionChange)="onRadioChange(block, $event.detail.value)"
-            >
-              <ion-list lines="none">
-                @for (option of options(block); track option) {
-                  <ion-item>
-                    <ion-radio slot="start" [value]="option"></ion-radio>
-                    <ion-label>{{ option }}</ion-label>
-                  </ion-item>
-                }
-              </ion-list>
-            </ion-radio-group>
-          </div>
-        }
-      }
       @case ('TEXT') {
         @if (isScriptureBlock(block) && scriptureRefs(block).length) {
           <div class="accepted-items m-b-18 m-t-18">
@@ -91,20 +70,22 @@
         }
       }
       @case ('VIDEO') {
-        @if (contentString(block, 'caption')) {
-          <p class="app-body">{{ contentString(block, 'caption') }}</p>
-        }
-        @if (videoEmbedUrl(block); as embedUrl) {
-          <div class="moment-blocks__video">
-            <iframe
-              [src]="embedUrl | safeResourceUrl"
-              title="Video"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-            ></iframe>
-          </div>
-        }
+        <div class="moment-blocks__media">
+          @if (contentString(block, 'caption')) {
+            <p class="app-body moment-blocks__media-caption">{{ contentString(block, 'caption') }}</p>
+          }
+          @if (videoEmbedUrl(block); as embedUrl) {
+            <div class="moment-blocks__video">
+              <iframe
+                [src]="embedUrl | safeResourceUrl"
+                title="Video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+              ></iframe>
+            </div>
+          }
+        </div>
       }
       @case ('PHOTO') {
         @if (mediaUrl(block); as url) {
@@ -115,15 +96,18 @@
         }
       }
       @case ('DOCUMENT') {
-        @if (contentString(block, 'caption')) {
-          <p class="app-body">{{ contentString(block, 'caption') }}</p>
-        }
-        @if (mediaUrl(block); as url) {
-          <a class="app-link" [href]="url" target="_blank" rel="noopener">
-            {{ mediaFilename(block) || 'View document' }}
-          </a>
-        }
+        <div class="moment-blocks__media">
+          @if (contentString(block, 'caption')) {
+            <p class="app-body moment-blocks__media-caption">{{ contentString(block, 'caption') }}</p>
+          }
+          @if (mediaUrl(block); as url) {
+            <a class="app-link" [href]="url" target="_blank" rel="noopener">
+              {{ mediaFilename(block) || 'View document' }}
+            </a>
+          }
+        </div>
       }
+    }
     }
   }
 }
