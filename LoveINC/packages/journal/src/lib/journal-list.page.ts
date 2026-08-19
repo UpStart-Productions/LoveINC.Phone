@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -9,11 +9,10 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
-  NavController,
 } from '@ionic/angular/standalone';
 import { ContentCardListComponent } from '@app/components/content-card-list/content-card-list.component';
 import type { ContentCardListItem } from '@app/components/content-card-list/content-card-list.model';
-import { navigateAppBack } from '@app/shared/utils/navigation-back.util';
+import { AppBackButtonComponent } from '@app/components/app-back-button/app-back-button.component';
 import { JournalService } from './services/journal.service';
 import { JournalEntry } from './types/journal-entry.model';
 
@@ -32,29 +31,25 @@ import { JournalEntry } from './types/journal-entry.model';
     IonButton,
     IonIcon,
     ContentCardListComponent,
+    AppBackButtonComponent,
   ],
 })
-export class JournalListPage {
+export class JournalListPage implements OnInit {
   entries: JournalEntry[] = [];
   loading = true;
 
   constructor(
     private journalService: JournalService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private navController: NavController
+    private router: Router
   ) {}
 
-  goBack(): void {
-    void navigateAppBack(this.navController, this.router, this.route.snapshot, '/tabs/tools');
+  ngOnInit(): void {
+    void this.loadEntries();
   }
 
-  async ionViewWillEnter(): Promise<void> {
-    this.loading = true;
-    try {
-      this.entries = await this.journalService.getAll();
-    } finally {
-      this.loading = false;
+  ionViewWillEnter(): void {
+    if (!this.loading) {
+      void this.loadEntries();
     }
   }
 
@@ -79,6 +74,15 @@ export class JournalListPage {
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
   ] as const;
+
+  private async loadEntries(): Promise<void> {
+    this.loading = true;
+    try {
+      this.entries = await this.journalService.getAll();
+    } finally {
+      this.loading = false;
+    }
+  }
 
   /** e.g. "Apr 7" (3-letter month, day with no leading zero) in local time. */
   private formatUpdatedMonthDay(iso: string): string {

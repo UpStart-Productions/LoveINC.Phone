@@ -4,6 +4,16 @@
 - **Short answers by default.** Terse, one-line or few-line responses unless the user says they want a conversation, brainstorming, or a deep dive.
 - Do not write long explanations, tables, or multi-section essays for simple factual questions.
 
+## No premature optimizations (CRITICAL)
+- **Do not invent performance or loading architecture.** The user will explicitly instruct lazy loading, delays, caching, shell wrappers, or other optimizations when needed. This app is not serving trillion-record GETs—local SQLite and normal API calls do not need speculative tuning.
+- **Match working siblings.** If Verse of the Day, Tools for Transformation, or another nearby screen already navigates and loads correctly, copy that pattern. Do not add extra layers “for performance.”
+- **Do NOT add without explicit user instruction:**
+  - Extra shell pages that lazy-load a child list/detail (e.g. shell → `ion-router-outlet` → list)
+  - Alternate navigation modes (flat router swap, micro-app routing) when standard Ionic push/pop already works on sibling screens
+  - Artificial delays, deferred paint tricks, or loading gates beyond what the reference page already does
+  - “Ghost content” / opaque-shell / transition fixes aimed at perceived lag—fix the real cause or ask first
+- **When fixing lag or transition issues:** compare to a working screen in the same flow first; remove complexity before adding new abstractions.
+
 ## Love INC–specific: client / volunteer onboarding (READ BEFORE DEBUGGING)
 - **Not a universal nonprofit rule.** This app intentionally treats **Get Help** (`get-help`) and **Volunteer** (`volunteer`) as **mutually exclusive** in onboarding and gates volunteer **signup** UI (card icons, action sheet, some detail buttons) for users on the **client** path.
 - If volunteer actions “don’t appear” or the volunteer sheet “does nothing” for a **Get Help** user, that is often **by design**, not a broken build.

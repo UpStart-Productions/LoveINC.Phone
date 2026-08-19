@@ -93,24 +93,17 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
   {
     path: 'journal',
     loadComponent: () =>
-      import('@upstart-productions/journal').then((m) => m.JournalShellPage),
-    children: [
-      {
-        path: '',
-        loadComponent: () =>
-          import('@upstart-productions/journal').then((m) => m.JournalListPage),
-      },
-      {
-        path: 'new',
-        loadComponent: () =>
-          import('@upstart-productions/journal').then((m) => m.JournalEntryPage),
-      },
-      {
-        path: ':id',
-        loadComponent: () =>
-          import('@upstart-productions/journal').then((m) => m.JournalEntryPage),
-      },
-    ],
+      import('@upstart-productions/journal').then((m) => m.JournalListPage),
+  },
+  {
+    path: 'journal/new',
+    loadComponent: () =>
+      import('@upstart-productions/journal').then((m) => m.JournalEntryPage),
+  },
+  {
+    path: 'journal/:id',
+    loadComponent: () =>
+      import('@upstart-productions/journal').then((m) => m.JournalEntryPage),
   },
 ];
 

@@ -8,12 +8,24 @@ import { navigateAppBack } from '../../shared/utils/navigation-back.util';
   standalone: true,
   imports: [IonButton, IonIcon],
   template: `
-    <ion-button (click)="goBack()" fill="clear" aria-label="Back">
-      <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+    <ion-button
+      (click)="goBack()"
+      fill="clear"
+      [color]="onLightBackground ? 'dark' : undefined"
+      aria-label="Back"
+    >
+      <ion-icon
+        name="arrow-back-outline"
+        slot="icon-only"
+        [color]="onLightBackground ? 'dark' : undefined"
+      ></ion-icon>
     </ion-button>
   `,
 })
 export class AppBackButtonComponent {
+  /** White toolbar micro-apps (Goal Tracker, Simple Budget) need a dark chevron. */
+  @Input() onLightBackground = false;
+
   /** Used when stack pop is unavailable and no `from` / `returnUrl` query param is present. */
   @Input() fallback = '/tabs/home';
 

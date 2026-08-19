@@ -293,12 +293,23 @@ ion-header ion-back-button {
   color: var(--ion-color-primary-contrast);
 }
 
-/* Simple Budget / Goal Tracker: white toolbar needs a dark back chevron */
-ion-toolbar.custom-toolbar ion-back-button,
-ion-toolbar.custom-toolbar ion-buttons app-back-button ion-button,
-ion-toolbar.custom-toolbar ion-buttons app-back-button ion-button ion-icon {
-  --color: var(--ion-color-dark);
-  color: var(--ion-color-dark);
+/* Goal Tracker / Simple Budget: white toolbars need dark chrome (overrides global dark header) */
+ion-header ion-toolbar.custom-toolbar {
+  --background: #ffffff !important;
+  --color: var(--ion-color-dark) !important;
+  background: #ffffff !important;
+
+  ion-title {
+    --color: var(--ion-color-dark) !important;
+    color: var(--ion-color-dark) !important;
+  }
+
+  ion-back-button,
+  ion-buttons ion-button,
+  ion-buttons ion-button ion-icon {
+    --color: var(--ion-color-dark) !important;
+    color: var(--ion-color-dark) !important;
+  }
 }
 
 /* Global Donate Header Button Styling */

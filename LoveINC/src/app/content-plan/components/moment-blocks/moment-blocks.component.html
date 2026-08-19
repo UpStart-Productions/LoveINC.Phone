@@ -36,7 +36,9 @@
       @case ('CHECKBOX') {
         @if (options(block).length > 0) {
           <div class="m-b-24 m-t-18">
-            <p class="app-body m-b-6">{{ promptLabel(block) }}</p>
+            @if (contentString(block, 'label')) {
+              <p class="app-body m-b-6">{{ contentString(block, 'label') }}</p>
+            }
             <ion-list lines="none">
               @for (option of options(block); track option) {
                 <ion-item>
@@ -46,7 +48,7 @@
                     [checked]="isChecked(block, option)"
                     (ionChange)="onCheckboxChange(block, option, $event.detail.checked)"
                   ></ion-checkbox>
-                  <ion-label>{{ option }}</ion-label>
+                  <ion-label><p class="app-body-sm">{{ option }}</p></ion-label>
                 </ion-item>
               }
             </ion-list>
@@ -90,7 +92,7 @@
       }
       @case ('VIDEO') {
         @if (contentString(block, 'caption')) {
-          <p class="app-body-secondary">{{ contentString(block, 'caption') }}</p>
+          <p class="app-body">{{ contentString(block, 'caption') }}</p>
         }
         @if (videoEmbedUrl(block); as embedUrl) {
           <div class="moment-blocks__video">
@@ -114,7 +116,7 @@
       }
       @case ('DOCUMENT') {
         @if (contentString(block, 'caption')) {
-          <p class="app-body-secondary">{{ contentString(block, 'caption') }}</p>
+          <p class="app-body">{{ contentString(block, 'caption') }}</p>
         }
         @if (mediaUrl(block); as url) {
           <a class="app-link" [href]="url" target="_blank" rel="noopener">

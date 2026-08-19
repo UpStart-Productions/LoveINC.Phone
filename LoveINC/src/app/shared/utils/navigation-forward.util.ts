@@ -1,10 +1,11 @@
 import { Router, UrlTree, type NavigationExtras } from '@angular/router';
 import type { NavController } from '@ionic/angular/standalone';
+import { treeContainsMicroApp } from './navigation-micro-app.util';
 import { applyActiveTabPrefix, toNavigationTree } from './navigation-tab-prefix.util';
 
 /**
  * Forward navigation on the active tab stack (Ionic iOS slide-in).
- * Prefixes flat drill-in URLs with the current tab segment when needed.
+ * Micro-apps (Goal Tracker, Budget Planner) use flat router navigation instead.
  */
 export async function navigateAppForward(
   navController: NavController,
@@ -23,12 +24,16 @@ export async function navigateAppForward(
 
   tree = applyActiveTabPrefix(router, tree);
 
-  const { queryParams, fragment, state, replaceUrl, ...rest } = options ?? {};
+  const { queryParams, fragment, replaceUrl, state, ...rest } = options ?? {};
   void queryParams;
   void fragment;
   void replaceUrl;
 
   const url = router.serializeUrl(tree);
+
+  if (treeContainsMicroApp(tree)) {
+    return router.navigateByUrl(url, { state });
+  }
 
   return navController.navigateForward(url, {
     ...rest,

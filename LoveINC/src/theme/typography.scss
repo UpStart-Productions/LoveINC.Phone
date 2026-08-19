@@ -328,6 +328,11 @@ ion-item ion-label p.app-body-secondary-sm {
   font-size: var(--app-font-size-sm) !important;
 }
 
+ion-item ion-label p.app-body-sm {
+  font-size: var(--app-font-size-sm) !important;
+  color: var(--app-text-primary);
+}
+
 ion-item ion-label p.app-body-secondary-xs {
   font-size: var(--app-font-size-xs) !important;
 }

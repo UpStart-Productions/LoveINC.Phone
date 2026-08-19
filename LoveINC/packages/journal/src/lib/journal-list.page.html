@@ -1,9 +1,7 @@
-<ion-header [translucent]="true" class="ion-no-border">
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-            <ion-button (click)="goBack()" fill="clear" aria-label="Back">
-        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
-      </ion-button>
+      <app-back-button fallback="/tabs/tools"></app-back-button>
     </ion-buttons>
     <ion-title>Journal</ion-title>
     <ion-buttons slot="end">
@@ -14,11 +12,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="journal-list-page">
-  <div *ngIf="loading" class="p-l-18 p-r-18 p-t-18">
-    <p class="app-body-secondary">Loading…</p>
-  </div>
-  <ng-container *ngIf="!loading && entries.length === 0">
+<ion-content [fullscreen]="true">
+  @if (!loading && entries.length === 0) {
     <div class="journal-list-header-photo">
       <img
         src="assets/photos/journal-header.png"
@@ -36,9 +31,8 @@
         Add your first entry
       </ion-button>
     </div>
-  </ng-container>
-  <app-content-card-list
-    *ngIf="!loading && entries.length > 0"
-    [items]="journalListItems"
-  />
+  }
+  @if (!loading && entries.length > 0) {
+    <app-content-card-list [items]="journalListItems" />
+  }
 </ion-content>

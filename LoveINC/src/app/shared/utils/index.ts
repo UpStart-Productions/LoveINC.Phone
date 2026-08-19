@@ -8,6 +8,11 @@ export { navigateAppBack } from './navigation-back.util';
 export { navigateAppForward } from './navigation-forward.util';
 export { navigateAppFlat } from './navigation-flat.util';
 export {
+  MICRO_APP_ROOT_SEGMENTS,
+  treeContainsMicroApp,
+  urlContainsMicroApp,
+} from './navigation-micro-app.util';
+export {
   MAIN_TAB_SEGMENTS,
   applyActiveTabPrefix,
   resolveActiveMainTabSegment,
