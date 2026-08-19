@@ -4,13 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { 
   IonHeader, 
   IonToolbar, 
-  IonTitle, 
   IonContent,
   IonButtons,
   IonButton,
   IonIcon,
-  IonItem,
-  IonLabel,
   IonSearchbar
 } from '@ionic/angular/standalone';
 import { CardComponent, CardActionIcon } from '../components/card/card.component';
@@ -70,13 +67,10 @@ interface DonationLocation {
     CommonModule,
     IonHeader, 
     IonToolbar, 
-    IonTitle, 
     IonContent,
     IonButtons,
     IonButton,
     IonIcon,
-    IonItem,
-    IonLabel,
     IonSearchbar,
     CardComponent,
     NotificationsButtonComponent,

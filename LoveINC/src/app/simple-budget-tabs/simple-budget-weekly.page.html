@@ -8,10 +8,10 @@
       <span
         *ngIf="!loading && summary"
         class="remaining-badge"
-        [class.positive]="(summary?.remaining ?? 0) >= 0"
-        [class.negative]="(summary?.remaining ?? 0) < 0"
+        [class.positive]="summary.remaining >= 0"
+        [class.negative]="summary.remaining < 0"
       >
-        ${{ formatBadgeAmount(summary?.remaining ?? 0) }}
+        ${{ formatBadgeAmount(summary.remaining) }}
       </span>
     </ion-buttons>
   </ion-toolbar>
@@ -187,7 +187,7 @@
       }
     </div>
 
-    @if (plan?.strategyNotes?.trim()) {
+    @if (plan.strategyNotes?.trim()) {
       <div class="summary-card strategies-card">
         <h3 class="summary-card-title">Adjustment strategies</h3>
         <ul class="strategies-list">

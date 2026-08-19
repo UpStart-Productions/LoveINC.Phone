@@ -32,7 +32,7 @@
         [habit]="habit"
         [nested]="true"
         [selectedDate]="selectedDate"
-        [isCompleted]="completionMap[habit.id!] ?? false"
+        [isCompleted]="completionMap[habit.id!]"
         [allowComplete]="true"
         [allowEdit]="true"
         (habitMarkedEvent)="onHabitMarked($event)"
