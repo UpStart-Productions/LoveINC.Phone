@@ -55,13 +55,11 @@
     </div>
   }
 
-  @if (loading) {
-    <div class="content-detail-loading-shell" aria-busy="true"></div>
-  } @else if (error) {
+  @if (!loading && error) {
     <div class="empty-state">
       <p class="app-body-secondary-sm">{{ error }}</p>
     </div>
-  } @else if (contentItem) {
+  } @else if (!loading && contentItem) {
   <div>
     @if (contentItem.photoUrl) {
       <div class="content-reader-hero">

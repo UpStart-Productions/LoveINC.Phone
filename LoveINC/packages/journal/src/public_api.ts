@@ -6,7 +6,6 @@ export { JournalService } from './lib/services/journal.service';
 export { QuillToolbarService } from './lib/rich-text/quill-toolbar.service';
 export { JournalQuillEditorComponent } from './lib/rich-text/quill-editor.component';
 export { JournalQuillFloatingToolbarComponent } from './lib/rich-text/quill-floating-toolbar.component';
-export { JournalShellPage } from './lib/journal-shell.page';
 export { JournalListPage } from './lib/journal-list.page';
 export { JournalEntryPage } from './lib/journal-entry.page';
 

@@ -48,8 +48,7 @@
 @import "quill/dist/quill.snow.css";
 
 /*
- * Opaque stack page shells — prevents the previous screen from showing through
- * during iOS push/pop while async content is still loading.
+ * Default stack page content background (white drill-ins).
  */
 ion-router-outlet > .ion-page ion-content {
   --background: var(--ion-background-color);

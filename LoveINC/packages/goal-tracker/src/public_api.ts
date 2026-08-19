@@ -8,4 +8,3 @@ export {
   GoalTrackerHomeService,
   type GoalTrackerHomeSnapshot,
 } from './lib/services/goal-tracker-home.service';
-export { GoalTrackerPage } from './lib/goal-tracker.page';

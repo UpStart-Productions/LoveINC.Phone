@@ -28,13 +28,7 @@ if (!this.platform.is('capacitor')) {
 
 ### 2. Add route
 
-```typescript
-{
-  path: 'goal-tracker',
-  loadComponent: () =>
-    import('@upstart-productions/goal-tracker').then((m) => m.GoalTrackerPage),
-}
-```
+Love INC hosts Goal Tracker in the app shell (`goal-tracker-tabs.page` under `src/app/goal-tracker-tabs/`). Register that page in your routes — see `registered-tools.ts` in this repo. This package exports services, types, and DB access only.
 
 ### 3. iOS: CocoaPods required
 

@@ -1,12 +1,7 @@
 /* Grey page + white grouped blocks (same tokens as ion-card in theme/cards.scss). */
 :host ion-content.more-page-content {
-  --background: var(--ion-background-color);
   /* Match Nepho settings.page — room so scrollable list clears the version badge */
   --padding-bottom: 80px;
-}
-
-:host ion-content.more-page-content::part(background) {
-  background: var(--ion-background-color);
 }
 
 .more-section {
