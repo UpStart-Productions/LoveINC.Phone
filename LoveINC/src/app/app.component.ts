@@ -4,7 +4,6 @@ import {
   OnDestroy,
   CUSTOM_ELEMENTS_SCHEMA,
   DestroyRef,
-  NgZone,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -166,9 +165,6 @@ export class AppComponent implements OnInit, OnDestroy {
   /** Blocks router until DBs are ready; prevents empty Goal Tracker when live-reload causes WebView reload on resume */
   appReady = false;
   private appStateListener: { remove: () => Promise<void> } | undefined;
-  /** True after we've observed at least one foreground event; avoids “resume” on cold-start inactive→active. */
-  private sawFirstForeground = false;
-  private appWasBackgrounded = false;
   private dbInitTimeoutId: ReturnType<typeof setTimeout> | undefined;
   /** If SQLite/native bridge hangs after a long background / WebView restart, still show the shell. */
   private readonly dbInitTimeoutMs = 10_000;
@@ -189,8 +185,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private pushRegistration: PushRegistrationService,
     private router: Router,
     private serviceUnlock: ServiceUnlockService,
-    private destroyRef: DestroyRef,
-    private ngZone: NgZone
+    private destroyRef: DestroyRef
   ) {
     // Initialize all icons for app-wide use
     this.initializeIcons();
@@ -268,24 +263,12 @@ export class AppComponent implements OnInit, OnDestroy {
     ]).catch(() => {});
     this.markAppReady();
 
-    // When app becomes active, reload Goal Tracker. With WebView reload we get a fresh app so we never
-    // see isActive: false first; fire on every isActive: true so we catch resume after reload.
+    // Refresh app user data and Goal Tracker when returning to foreground.
     try {
       this.appStateListener = await App.addListener('appStateChange', (state) => {
         if (!state.isActive) {
-          if (this.sawFirstForeground) {
-            this.appWasBackgrounded = true;
-          }
           return;
         }
-        this.sawFirstForeground = true;
-        const resumeFromBackground = this.appWasBackgrounded;
-        this.appWasBackgrounded = false;
-
-        if (resumeFromBackground && Capacitor.isNativePlatform()) {
-          this.navigateToReliableHomeAfterResume();
-        }
-
         this.syncAppUserFromApi();
         this.goalTrackerRefresh.requestRefresh();
       });
@@ -342,19 +325,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.dbInitTimeoutId = undefined;
     }
     this.appReady = true;
-  }
-
-  /**
-   * After a real background → foreground transition on native, jump to a route that always bootstraps cleanly.
-   * Skipped during onboarding so we do not yank users out of the flow.
-   */
-  private navigateToReliableHomeAfterResume(): void {
-    if (!this.onboardingService.hasCompletedOnboarding()) {
-      return;
-    }
-    this.ngZone.run(() => {
-      void this.router.navigateByUrl('/tabs/home', { replaceUrl: true });
-    });
   }
 
   private syncAppUserFromApi(): void {
