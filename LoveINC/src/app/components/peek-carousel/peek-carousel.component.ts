@@ -10,9 +10,12 @@ import {
 } from '@angular/core';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { IonIcon } from '@ionic/angular/standalone';
+import { LucideAngularModule } from 'lucide-angular';
 import { ContentCardComponent } from '../content-card/content-card.component';
 import type { ContentCardListItem } from '../content-card-list/content-card-list.model';
 import { ContentPlanService } from '../../content-plan/content-plan.service';
+import { parseLucideIconNameFromIconSvg } from '../../content-plan/content-plan.mapper';
+import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 import { mapContentPlanToCoverItem, mapContentPlanToMediaItem, mapPlansToListSlides } from './peek-carousel.mapper';
 import type {
   PeekCarouselCoverItem,
@@ -25,7 +28,7 @@ import type {
 @Component({
   selector: 'app-peek-carousel',
   standalone: true,
-  imports: [CommonModule, NgTemplateOutlet, IonIcon, ContentCardComponent],
+  imports: [CommonModule, NgTemplateOutlet, IonIcon, LucideAngularModule, ContentCardComponent, SafeHtmlPipe],
   templateUrl: './peek-carousel.component.html',
   styleUrl: './peek-carousel.component.scss',
 })
@@ -35,6 +38,9 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
   @Input({ required: true }) variant!: PeekCarouselVariant;
 
   @Input() sectionTitle?: string;
+
+  /** Inline Lucide SVG HTML shown before `sectionTitle` (GrovLink theme.iconSvg). */
+  @Input() sectionTitleIconSvg?: string;
 
   /** Left inset for the section title (e.g. `1rem` on Home). */
   @Input() sectionTitleInset?: string;
@@ -91,6 +97,10 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
   get peekCssValue(): string {
     const clamped = Math.min(Math.max(this.peek, 0), 0.5);
     return `${clamped * 100}%`;
+  }
+
+  get sectionTitleLucideIcon(): string | undefined {
+    return parseLucideIconNameFromIconSvg(this.sectionTitleIconSvg);
   }
 
   ngOnInit(): void {

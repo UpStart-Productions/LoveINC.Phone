@@ -41,6 +41,9 @@ export class MicrolearningThemeWidgetComponent implements OnInit, OnChanges {
   /** Left inset for the section title row (e.g. `1rem` on Home). */
   @Input() sectionTitleInset?: string;
 
+  /** Inline Lucide SVG HTML for the section title (from Home or loaded theme). */
+  @Input() sectionTitleIconSvg?: string;
+
   @Input() clickable = true;
 
   @Output() slideClick = new EventEmitter<PeekCarouselSlideClick>();
@@ -59,6 +62,14 @@ export class MicrolearningThemeWidgetComponent implements OnInit, OnChanges {
     }
     const name = this.theme?.name?.trim();
     return name || undefined;
+  }
+
+  get displaySectionTitleIconSvg(): string | undefined {
+    const fromInput = this.sectionTitleIconSvg?.trim();
+    if (fromInput) {
+      return fromInput;
+    }
+    return this.theme?.iconSvg?.trim() || undefined;
   }
 
   ngOnInit(): void {

@@ -35,6 +35,7 @@
       @for (theme of homeMicrolearningThemes; track theme.id) {
         <app-microlearning-theme-widget
           [themeId]="theme.id"
+          [sectionTitleIconSvg]="theme.iconSvg"
           [sectionTitleInset]="microlearningSectionTitleInset"
           [clickable]="true"
           (slideClick)="onPeekPlanSlideClick($event)"

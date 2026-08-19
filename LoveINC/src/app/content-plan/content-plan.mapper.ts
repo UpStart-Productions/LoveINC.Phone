@@ -62,6 +62,15 @@ export function formatContentPlanCreatedAtShortLabel(createdAt?: string): string
   return format(date, 'MMM d');
 }
 
+/** Read Lucide icon name from GrovLink inline SVG markup (`data-icon` attribute). */
+export function parseLucideIconNameFromIconSvg(iconSvg: string | undefined): string | undefined {
+  if (!iconSvg?.trim()) {
+    return undefined;
+  }
+  const match = iconSvg.match(/\bdata-icon="([a-z0-9-]+)"/);
+  return match?.[1];
+}
+
 export function mapContentPlanThemeToLearnListItem(theme: ContentPlanTheme): ContentCardListItem {
   const subtitle = theme.subtitle?.trim();
   const iconSvg = theme.iconSvg?.trim();
@@ -185,15 +194,6 @@ export function resolvePlanCoverImageUrl(plan: ContentPlan): string | undefined 
 
 function normalizeMomentBlockId(blockId: string): string {
   return blockId.trim().toLowerCase();
-}
-
-/** Read Lucide icon name from GrovLink inline SVG markup (`data-icon` attribute). */
-function parseLucideIconNameFromIconSvg(iconSvg: string | undefined): string | undefined {
-  if (!iconSvg?.trim()) {
-    return undefined;
-  }
-  const match = iconSvg.match(/\bdata-icon="([a-z0-9-]+)"/);
-  return match?.[1];
 }
 
 /** Find a moment block by stable `blockId` (case-insensitive), e.g. `subtitle`. */
