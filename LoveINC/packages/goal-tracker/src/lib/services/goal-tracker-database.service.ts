@@ -20,7 +20,7 @@ export class GoalTrackerDatabaseService {
   private db: SQLiteDBConnection | null = null;
   private platform: string = '';
   private static sharedDb: SQLiteDBConnection | null = null;
-  private static isInitializing = false;
+  private static initPromise: Promise<void> | null = null;
   private readonly DB_NAME = 'goal_tracker';
 
   constructor(private platformService: Platform) {
@@ -48,18 +48,23 @@ export class GoalTrackerDatabaseService {
   }
 
   async openDatabase(): Promise<void> {
-    if (GoalTrackerDatabaseService.isInitializing) {
-      while (GoalTrackerDatabaseService.isInitializing) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-      if (GoalTrackerDatabaseService.sharedDb) {
-        this.db = GoalTrackerDatabaseService.sharedDb;
-        return;
-      }
+    if (GoalTrackerDatabaseService.sharedDb) {
+      this.db = GoalTrackerDatabaseService.sharedDb;
+      return;
     }
 
-    GoalTrackerDatabaseService.isInitializing = true;
+    if (!GoalTrackerDatabaseService.initPromise) {
+      GoalTrackerDatabaseService.initPromise = this.performOpenDatabase();
+    }
 
+    await GoalTrackerDatabaseService.initPromise;
+
+    if (GoalTrackerDatabaseService.sharedDb) {
+      this.db = GoalTrackerDatabaseService.sharedDb;
+    }
+  }
+
+  private async performOpenDatabase(): Promise<void> {
     try {
       try {
         this.db = await this.sqlite.retrieveConnection(this.DB_NAME, false);
@@ -98,7 +103,7 @@ export class GoalTrackerDatabaseService {
       GoalTrackerDatabaseService.sharedDb = this.db;
       await this.createTables();
     } finally {
-      GoalTrackerDatabaseService.isInitializing = false;
+      GoalTrackerDatabaseService.initPromise = null;
     }
   }
 

@@ -21,7 +21,7 @@ export class ServiceUnlockDatabaseService {
   private db: SQLiteDBConnection | null = null;
   private platform: string = '';
   private static sharedDb: SQLiteDBConnection | null = null;
-  private static isInitializing = false;
+  private static initPromise: Promise<void> | null = null;
   private readonly DB_NAME = 'service_unlock';
 
   constructor(private platformService: Platform) {
@@ -43,18 +43,23 @@ export class ServiceUnlockDatabaseService {
   }
 
   async openDatabase(): Promise<void> {
-    if (ServiceUnlockDatabaseService.isInitializing) {
-      while (ServiceUnlockDatabaseService.isInitializing) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-      if (ServiceUnlockDatabaseService.sharedDb) {
-        this.db = ServiceUnlockDatabaseService.sharedDb;
-        return;
-      }
+    if (ServiceUnlockDatabaseService.sharedDb) {
+      this.db = ServiceUnlockDatabaseService.sharedDb;
+      return;
     }
 
-    ServiceUnlockDatabaseService.isInitializing = true;
+    if (!ServiceUnlockDatabaseService.initPromise) {
+      ServiceUnlockDatabaseService.initPromise = this.performOpenDatabase();
+    }
 
+    await ServiceUnlockDatabaseService.initPromise;
+
+    if (ServiceUnlockDatabaseService.sharedDb) {
+      this.db = ServiceUnlockDatabaseService.sharedDb;
+    }
+  }
+
+  private async performOpenDatabase(): Promise<void> {
     try {
       try {
         this.db = await this.sqlite.retrieveConnection(this.DB_NAME, false);
@@ -93,7 +98,7 @@ export class ServiceUnlockDatabaseService {
       ServiceUnlockDatabaseService.sharedDb = this.db;
       await this.createTables();
     } finally {
-      ServiceUnlockDatabaseService.isInitializing = false;
+      ServiceUnlockDatabaseService.initPromise = null;
     }
   }
 

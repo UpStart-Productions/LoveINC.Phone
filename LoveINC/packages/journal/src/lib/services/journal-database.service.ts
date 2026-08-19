@@ -17,7 +17,7 @@ export class JournalDatabaseService {
   private db: SQLiteDBConnection | null = null;
   private platform = '';
   private static sharedDb: SQLiteDBConnection | null = null;
-  private static isInitializing = false;
+  private static initPromise: Promise<void> | null = null;
   private readonly DB_NAME = 'loveinc_journal';
 
   constructor(private platformService: Platform) {
@@ -44,17 +44,23 @@ export class JournalDatabaseService {
   }
 
   async openDatabase(): Promise<void> {
-    if (JournalDatabaseService.isInitializing) {
-      while (JournalDatabaseService.isInitializing) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-      if (JournalDatabaseService.sharedDb) {
-        this.db = JournalDatabaseService.sharedDb;
-        return;
-      }
+    if (JournalDatabaseService.sharedDb) {
+      this.db = JournalDatabaseService.sharedDb;
+      return;
     }
 
-    JournalDatabaseService.isInitializing = true;
+    if (!JournalDatabaseService.initPromise) {
+      JournalDatabaseService.initPromise = this.performOpenDatabase();
+    }
+
+    await JournalDatabaseService.initPromise;
+
+    if (JournalDatabaseService.sharedDb) {
+      this.db = JournalDatabaseService.sharedDb;
+    }
+  }
+
+  private async performOpenDatabase(): Promise<void> {
     try {
       try {
         this.db = await this.sqlite.retrieveConnection(this.DB_NAME, false);
@@ -93,7 +99,7 @@ export class JournalDatabaseService {
       JournalDatabaseService.sharedDb = this.db;
       await this.createTables();
     } finally {
-      JournalDatabaseService.isInitializing = false;
+      JournalDatabaseService.initPromise = null;
     }
   }
 

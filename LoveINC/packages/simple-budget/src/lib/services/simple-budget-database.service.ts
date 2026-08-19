@@ -20,7 +20,7 @@ export class SimpleBudgetDatabaseService {
   private db: SQLiteDBConnection | null = null;
   private platform = '';
   private static sharedDb: SQLiteDBConnection | null = null;
-  private static isInitializing = false;
+  private static initPromise: Promise<void> | null = null;
   private readonly DB_NAME = 'simple_budget';
 
   constructor(private platformService: Platform) {
@@ -47,18 +47,23 @@ export class SimpleBudgetDatabaseService {
   }
 
   async openDatabase(): Promise<void> {
-    if (SimpleBudgetDatabaseService.isInitializing) {
-      while (SimpleBudgetDatabaseService.isInitializing) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-      if (SimpleBudgetDatabaseService.sharedDb) {
-        this.db = SimpleBudgetDatabaseService.sharedDb;
-        return;
-      }
+    if (SimpleBudgetDatabaseService.sharedDb) {
+      this.db = SimpleBudgetDatabaseService.sharedDb;
+      return;
     }
 
-    SimpleBudgetDatabaseService.isInitializing = true;
+    if (!SimpleBudgetDatabaseService.initPromise) {
+      SimpleBudgetDatabaseService.initPromise = this.performOpenDatabase();
+    }
 
+    await SimpleBudgetDatabaseService.initPromise;
+
+    if (SimpleBudgetDatabaseService.sharedDb) {
+      this.db = SimpleBudgetDatabaseService.sharedDb;
+    }
+  }
+
+  private async performOpenDatabase(): Promise<void> {
     try {
       try {
         this.db = await this.sqlite.retrieveConnection(this.DB_NAME, false);
@@ -97,7 +102,7 @@ export class SimpleBudgetDatabaseService {
       SimpleBudgetDatabaseService.sharedDb = this.db;
       await this.createTables();
     } finally {
-      SimpleBudgetDatabaseService.isInitializing = false;
+      SimpleBudgetDatabaseService.initPromise = null;
     }
   }
 

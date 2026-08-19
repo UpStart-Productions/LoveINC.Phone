@@ -34,7 +34,7 @@ export class GrovLinkDatabaseService {
   private db: SQLiteDBConnection | null = null;
   private platform: string = '';
   private static sharedDb: SQLiteDBConnection | null = null;
-  private static isInitializing = false;
+  private static initPromise: Promise<void> | null = null;
   private readonly DB_NAME = 'grovlink';
 
   constructor(private platformService: Platform) {
@@ -69,18 +69,23 @@ export class GrovLinkDatabaseService {
   }
 
   async openDatabase(): Promise<void> {
-    if (GrovLinkDatabaseService.isInitializing) {
-      while (GrovLinkDatabaseService.isInitializing) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-      if (GrovLinkDatabaseService.sharedDb) {
-        this.db = GrovLinkDatabaseService.sharedDb;
-        return;
-      }
+    if (GrovLinkDatabaseService.sharedDb) {
+      this.db = GrovLinkDatabaseService.sharedDb;
+      return;
     }
 
-    GrovLinkDatabaseService.isInitializing = true;
+    if (!GrovLinkDatabaseService.initPromise) {
+      GrovLinkDatabaseService.initPromise = this.performOpenDatabase();
+    }
 
+    await GrovLinkDatabaseService.initPromise;
+
+    if (GrovLinkDatabaseService.sharedDb) {
+      this.db = GrovLinkDatabaseService.sharedDb;
+    }
+  }
+
+  private async performOpenDatabase(): Promise<void> {
     try {
       try {
         this.db = await this.sqlite.retrieveConnection(this.DB_NAME, false);
@@ -120,7 +125,7 @@ export class GrovLinkDatabaseService {
       GrovLinkDatabaseService.sharedDb = this.db;
       await this.createTables();
     } finally {
-      GrovLinkDatabaseService.isInitializing = false;
+      GrovLinkDatabaseService.initPromise = null;
     }
   }
 
