@@ -23,7 +23,7 @@ import { VolunteerActionSheetService } from '../../services/volunteer-action-she
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 import { CardFormattingService, type FormattedCard } from '../../services/card-formatting.service';
 import { CalendarService } from '../../services/calendar/calendar.service';
-import { formatClassListDateRange, joinWithAppDot } from '../../shared/utils';
+import { formatClassListDateRange, joinWithAppDot, apiIsoToDisplayDate } from '../../shared/utils';
 
 export interface ClassDocument {
   title: string;
@@ -242,8 +242,8 @@ export class TransformationClassesPage implements OnInit {
 
   formatSessionDates(classItem: TransformationClass): string {
     if (!classItem.nextSession) return '';
-    const startDate = new Date(classItem.nextSession.startDate);
-    const endDate = new Date(classItem.nextSession.endDate);
+    const startDate = apiIsoToDisplayDate(classItem.nextSession.startDate);
+    const endDate = apiIsoToDisplayDate(classItem.nextSession.endDate);
     return formatClassListDateRange(startDate, endDate);
   }
 

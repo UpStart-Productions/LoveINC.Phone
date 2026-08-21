@@ -28,6 +28,8 @@ export interface ContentDetail {
   /** When set, shown in the Instructor row instead of the person icon */
   instructorPhotoUrl?: string;
   registrationLink?: string;
+  remoteAccess?: boolean;
+  joinUrl?: string;
   durationMinutes?: number;
   cost?: string;
   nextSession?: {

@@ -8,12 +8,16 @@ import {
   formatClassSessionSubtitle,
   formatDateRangeCompact,
   formatTimeStringFull,
+  formatSessionTime,
   formatTimeRangeFull,
   dayTo2Letter,
   dayNumberTo2Letter,
   uppercaseMonth,
   APP_DOT,
   joinWithAppDot,
+  apiIsoToDisplayDate,
+  formatIsoTime12hr,
+  isUtcDateOnlyIso,
 } from '../../shared/utils';
 import { HttpClient } from '@angular/common/http';
 import { 
@@ -523,12 +527,12 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       const sessions = off.sessions?.filter((s) => !s.isCancelled) ?? [];
       const firstSession = sessions[0];
       if (firstSession) {
-        const start = new Date(firstSession.startDate);
+        const start = apiIsoToDisplayDate(firstSession.startDate);
         const dayName = DAY_NAMES[start.getDay()];
         const time =
-          this.formatSessionTime(firstSession.startDate) +
+          formatIsoTime12hr(firstSession.startDate) +
           (firstSession.endDate
-            ? `${APP_DOT}${this.formatSessionTime(firstSession.endDate)}`
+            ? `${APP_DOT}${formatIsoTime12hr(firstSession.endDate)}`
             : '');
         subtitle = joinWithAppDot(off.provider?.name, `${dayName} ${time}`);
         nextSession = {
@@ -661,14 +665,18 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
         `${e.address.city}, ${e.address.state} ${e.address.zip}`].filter(Boolean);
       location = parts.join('\n');
     }
-    const start = new Date(e.startDate);
-    const end = new Date(e.endDate);
+    const start = apiIsoToDisplayDate(e.startDate, { remoteAccess: e.remoteAccess });
+    const end = apiIsoToDisplayDate(e.endDate, { remoteAccess: e.remoteAccess });
+    const showTime = !isUtcDateOnlyIso(e.startDate) || !isUtcDateOnlyIso(e.endDate);
     const eventDate = uppercaseMonth(format(start, 'EEEE, MMMM d, yyyy'));
-    const eventTime =
-      start.getTime() !== end.getTime()
+    const eventTime = showTime
+      ? start.getTime() !== end.getTime()
         ? formatTimeRangeFull(format(start, 'h:mm a'), format(end, 'h:mm a'))
-        : format(start, 'h:mm a');
-    const subtitle = formatEventSubtitle(e.startDate, e.endDate);
+        : format(start, 'h:mm a')
+      : '';
+    const subtitle = formatEventSubtitle(e.startDate, e.endDate, {
+      remoteAccess: e.remoteAccess,
+    });
     return {
       id: e.id,
       title: e.title,
@@ -679,7 +687,11 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       eventTime,
       startDate: e.startDate,
       endDate: e.endDate,
-      location};
+      location,
+      registrationLink: e.registrationLink,
+      remoteAccess: e.remoteAccess,
+      joinUrl: e.joinUrl,
+    };
   }
 
   private mapPlatformImpactStoryToContentDetail(s: PlatformImpactStory): ContentDetail {
@@ -755,9 +767,15 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       nextSession = {
         ...nextSession,
         dayOfWeek: dayTo2Letter(nextSession.dayOfWeek),
-        time: nextSession.time ? formatTimeStringFull(nextSession.time) : nextSession.time};
+        time: nextSession.time
+          ? formatSessionTime(nextSession.time, nextSession.startDate, {
+              remoteAccess: c.remoteAccess,
+            })
+          : nextSession.time};
     }
-    const subtitle = nextSession ? formatClassSessionSubtitle(nextSession) : undefined;
+    const subtitle = nextSession
+      ? formatClassSessionSubtitle(nextSession, { remoteAccess: c.remoteAccess })
+      : undefined;
 
     // Map API attachments to classDocuments for display
     const fromAttachments = (c.attachments ?? []).map((a) => ({
@@ -800,7 +818,11 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       durationMinutes: c.durationMinutes,
       cost: c.cost,
       nextSession,
-      classDocuments: classDocuments.length ? classDocuments : undefined};
+      classDocuments: classDocuments.length ? classDocuments : undefined,
+      registrationLink: c.registrationLink,
+      remoteAccess: c.remoteAccess,
+      joinUrl: c.joinUrl,
+    };
   }
 
   private filenameFromUrl(url: string): string {
@@ -832,18 +854,6 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     const rawTime = joinWithAppDot(rule?.startTime, rule?.endTime) || '';
     const time = formatTimeStringFull(rawTime) || rawTime;
     return { startDate, endDate, dayOfWeek, time };
-  }
-
-  /** Format session date string as 12hr time. Uses UTC components when API stores local times as UTC. */
-  private formatSessionTime(isoDate: string): string {
-    const d = new Date(isoDate);
-    const isUtc = /Z$|[\+\-]\d{2}:?\d{2}$/.test(isoDate.trim());
-    const h = isUtc ? d.getUTCHours() : d.getHours();
-    const m = isUtc ? d.getUTCMinutes() : d.getMinutes();
-    const period = h >= 12 ? 'pm' : 'am';
-    const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
-    const min = m.toString().padStart(2, '0');
-    return `${hour12}:${min}${period}`;
   }
 
   private getDataFile(): string | null {
@@ -1104,11 +1114,28 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     return null;
   }
 
+  showRegisterActionButton(): boolean {
+    return !!(
+      this.contentItem?.registrationLink ||
+      this.contentItem?.actionButtonLink ||
+      this.contentItem?.actionButtonText
+    );
+  }
+
   hasActionButton(): boolean {
     if (this.contentType === 'class') {
       return false;
     }
-    return !!(this.contentItem?.registrationLink || this.contentItem?.actionButtonLink || this.contentItem?.actionButtonText);
+    return this.showJoinButton() || this.showRegisterActionButton();
+  }
+
+  showJoinButton(): boolean {
+    return !!this.contentItem?.joinUrl && !this.loading && !this.error;
+  }
+
+  onJoinClick(): void {
+    const url = this.contentItem?.joinUrl;
+    if (url) window.open(url, '_blank');
   }
 
   /** In-app class registration (platform classes). */
@@ -1146,7 +1173,7 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       return false;
     }
     if (!this.isRegisteredForThisClass) return true;
-    return this.hasSchedule();
+    return this.hasSchedule() || this.showJoinButton();
   }
 
   navigateToClassRegistration(): void {

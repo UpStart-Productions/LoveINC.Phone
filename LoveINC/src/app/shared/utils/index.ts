@@ -26,7 +26,13 @@ export { mapNotificationMetaToContentType, getNotificationRoute, type Notificati
 export { markQuillParagraphGaps } from './quill-rich-html';
 export {
   APP_DOT,
+  DEFAULT_DISPLAY_TIME_ZONE,
+  setDisplayTimeZone,
+  getDisplayTimeZone,
   joinWithAppDot,
+  isUtcDateOnlyIso,
+  apiIsoToDisplayDate,
+  formatIsoTime12hr,
   formatClassListDateRange,
   formatEventDatesCompact,
   formatDateRangeCompact,
@@ -34,6 +40,7 @@ export {
   formatTimeStringCompact,
   formatEventSubtitle,
   formatTimeStringFull,
+  formatSessionTime,
   formatTimeRangeFull,
   formatClassSessionSubtitle,
   dayTo2Letter,

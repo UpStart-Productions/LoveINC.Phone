@@ -6,6 +6,121 @@ import { format, parse, addDays } from 'date-fns';
  */
 export const APP_DOT = ' · ' as const;
 
+/** Fallback until the organization API returns the affiliate zone. */
+export const DEFAULT_DISPLAY_TIME_ZONE = 'America/Los_Angeles';
+
+let displayTimeZone = DEFAULT_DISPLAY_TIME_ZONE;
+
+/** Affiliate IANA zone from GrovLink (in-person wall clock). */
+export function setDisplayTimeZone(timeZone: string | null | undefined): void {
+  const trimmed = timeZone?.trim();
+  if (trimmed) displayTimeZone = trimmed;
+}
+
+export function getDisplayTimeZone(): string {
+  return displayTimeZone;
+}
+
+export type DateDisplayOptions = {
+  /** When true, show the viewer's local time instead of the affiliate wall clock. */
+  remoteAccess?: boolean;
+};
+
+const UTC_MIDNIGHT_ISO = /^\d{4}-\d{2}-\d{2}T00:00:00(\.\d+)?Z$/i;
+
+export function isUtcDateOnlyIso(iso: string): boolean {
+  return UTC_MIDNIGHT_ISO.test(iso.trim());
+}
+
+function tzParts(
+  date: Date,
+  options: Intl.DateTimeFormatOptions,
+  timeZone: string
+): Record<string, string> {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    ...options,
+  }).formatToParts(date);
+  const out: Record<string, string> = {};
+  for (const p of parts) {
+    if (p.type !== 'literal') out[p.type] = p.value;
+  }
+  return out;
+}
+
+/**
+ * Convert a GrovLink ISO string into a Date whose local Y/M/D/H/M match the
+ * affiliate wall clock (or the device clock when remoteAccess is on).
+ * UTC midnight stamps stay calendar dates, not 5pm.
+ */
+export function apiIsoToDisplayDate(
+  iso: string,
+  opts?: DateDisplayOptions
+): Date {
+  const trimmed = iso.trim();
+  const instant = new Date(trimmed);
+  if (Number.isNaN(instant.getTime())) return instant;
+  if (isUtcDateOnlyIso(trimmed)) {
+    const [y, m, d] = trimmed.slice(0, 10).split('-').map(Number);
+    return new Date(y, m - 1, d, 12, 0, 0, 0);
+  }
+  if (opts?.remoteAccess) {
+    return instant;
+  }
+  const p = tzParts(
+    instant,
+    {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    },
+    displayTimeZone
+  );
+  let hour = Number(p['hour']);
+  const period = (p['dayPeriod'] ?? '').toLowerCase();
+  if (period.startsWith('p') && hour < 12) hour += 12;
+  if (period.startsWith('a') && hour === 12) hour = 0;
+  return new Date(
+    Number(p['year']),
+    Number(p['month']) - 1,
+    Number(p['day']),
+    hour,
+    Number(p['minute']),
+    Number(p['second'] ?? 0)
+  );
+}
+
+function parseApiIso(
+  iso: string | undefined,
+  opts?: DateDisplayOptions
+): Date | null {
+  if (!iso?.trim()) return null;
+  const d = apiIsoToDisplayDate(iso, opts);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+function isoHasWallClockTime(iso: string | undefined): boolean {
+  return !!iso?.trim() && !isUtcDateOnlyIso(iso.trim());
+}
+
+/** 12hr time from a GrovLink ISO instant (affiliate zone, or viewer when remote). */
+export function formatIsoTime12hr(
+  isoDate: string,
+  opts?: DateDisplayOptions
+): string {
+  const d = apiIsoToDisplayDate(isoDate, opts);
+  if (Number.isNaN(d.getTime()) || isUtcDateOnlyIso(isoDate.trim())) return '';
+  const h = d.getHours();
+  const m = d.getMinutes();
+  const period = h >= 12 ? 'pm' : 'am';
+  const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  return `${hour12}:${m.toString().padStart(2, '0')}${period}`;
+}
+
 /**
  * Join non-empty string parts with {@link APP_DOT} (e.g. schedule + address, or start + end time fields).
  */
@@ -80,11 +195,16 @@ export function formatTimeRangeCompact(start: Date, end: Date): string {
  * - Single day: "Thu, May 21, 6 - 8pm" (not "Thu, May 21 - May 21 6:00 PM - 8:00 PM")
  * - Multi-day: "Thu, May 21 · Fri, May 22, 6 · 8pm"
  */
-export function formatEventDatesCompact(startDate: string, endDate: string): string {
+export function formatEventDatesCompact(
+  startDate: string,
+  endDate: string,
+  opts?: DateDisplayOptions
+): string {
   if (!startDate && !endDate) return '';
-  const start = startDate ? new Date(startDate) : null;
-  const end = endDate ? new Date(endDate) : null;
+  const start = parseApiIso(startDate, opts);
+  const end = parseApiIso(endDate, opts);
   if (!start && !end) return '';
+  const showTime = isoHasWallClockTime(startDate) || isoHasWallClockTime(endDate);
 
   const dateStr = uppercaseMonth(
     start && end && isSameDay(start, end)
@@ -99,9 +219,9 @@ export function formatEventDatesCompact(startDate: string, endDate: string): str
   );
 
   const timeStr =
-    start && end && start.getTime() !== end.getTime()
+    showTime && start && end && start.getTime() !== end.getTime()
       ? `, ${formatTimeRangeCompact(start, end)}`
-      : start
+      : showTime && start
         ? `, ${formatTimeRangeCompact(start, start)}`
         : '';
 
@@ -148,10 +268,14 @@ export function formatTimeStringCompact(timeStr: string): string {
  * Single day: "May 21, 2026" (never "May 21 · May 21, 2026").
  * Multi-day: "May 21 · May 22, 2026".
  */
-export function formatDateRangeCompact(startDate: string, endDate: string): string {
+export function formatDateRangeCompact(
+  startDate: string,
+  endDate: string,
+  opts?: DateDisplayOptions
+): string {
   if (!startDate && !endDate) return '';
-  const start = startDate ? new Date(startDate) : null;
-  const end = endDate ? new Date(endDate) : null;
+  const start = parseApiIso(startDate, opts);
+  const end = parseApiIso(endDate, opts);
   if (!start && !end) return '';
   if (start && end && isSameDay(start, end)) {
     return uppercaseMonth(format(start, 'MMM d, yyyy'));
@@ -171,11 +295,16 @@ export function formatDateRangeCompact(startDate: string, endDate: string): stri
  * Single day: "FRIDAY, MARCH 16, 2026\n6:00 · 8:00 PM"
  * Multi-day: "FRIDAY, MARCH 16 · MARCH 17, 2026\n6:00 · 8:00 PM"
  */
-export function formatEventSubtitle(startDate?: string, endDate?: string): string {
+export function formatEventSubtitle(
+  startDate?: string,
+  endDate?: string,
+  opts?: DateDisplayOptions
+): string {
   if (!startDate && !endDate) return '';
-  const start = startDate ? new Date(startDate) : null;
-  const end = endDate ? new Date(endDate) : null;
+  const start = parseApiIso(startDate, opts);
+  const end = parseApiIso(endDate, opts);
   if (!start && !end) return '';
+  const showTime = isoHasWallClockTime(startDate) || isoHasWallClockTime(endDate);
 
   const dayStr = start ? format(start, 'EEEE').toUpperCase() : '';
   const dateStr = uppercaseMonth(
@@ -190,9 +319,9 @@ export function formatEventSubtitle(startDate?: string, endDate?: string): strin
             : ''
   );
 
-  const timeStr = start ? format(start, 'h:mm a') : '';
+  const timeStr = showTime && start ? format(start, 'h:mm a') : '';
   const timeRange =
-    end && start && start.getTime() !== end.getTime()
+    showTime && end && start && start.getTime() !== end.getTime()
       ? formatTimeRangeFull(format(start, 'h:mm a'), format(end, 'h:mm a'))
       : timeStr;
 
@@ -270,19 +399,80 @@ export function dayNumberTo2Letter(n: number): string {
   return format(addDays(sun, n), 'EEE').slice(0, 2).toUpperCase();
 }
 
+function wallClockInTimeZoneToUtc(
+  ymd: string,
+  hms: string,
+  timeZone: string
+): Date {
+  const desired = `${ymd}T${hms}`;
+  let utcMs = Date.parse(`${desired}Z`);
+  const dtf = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+  });
+  for (let i = 0; i < 4; i++) {
+    const parts = dtf.formatToParts(new Date(utcMs));
+    const g = (type: string) => parts.find((p) => p.type === type)?.value ?? '00';
+    const got = `${g('year')}-${g('month')}-${g('day')}T${g('hour')}:${g('minute')}:${g('second')}`;
+    utcMs += Date.parse(`${desired}Z`) - Date.parse(`${got}Z`);
+  }
+  return new Date(utcMs);
+}
+
+function formatClockStringForViewer(timeStr: string, dateIso: string): string {
+  const ymd = dateIso.trim().slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return formatTimeStringFull(timeStr);
+  const parts = timeStr.split(/\s*[-–·]\s*|\s+to\s+/i).map((s) => s.trim()).filter(Boolean);
+  const formatted = parts.map((part) => {
+    const match = part.match(/^(\d{1,2}):(\d{2})/);
+    if (!match) return formatTimeStringFull(part);
+    const hms = `${match[1].padStart(2, '0')}:${match[2]}:00`;
+    const instant = wallClockInTimeZoneToUtc(ymd, hms, displayTimeZone);
+    return format(instant, 'h:mm a');
+  });
+  if (formatted.length >= 2) {
+    return formatTimeRangeFull(formatted[0], formatted[formatted.length - 1]);
+  }
+  return formatted[0] ?? timeStr;
+}
+
+export function formatSessionTime(
+  timeStr: string,
+  dateIso: string,
+  opts?: DateDisplayOptions
+): string {
+  if (!timeStr?.trim()) return '';
+  return opts?.remoteAccess
+    ? formatClockStringForViewer(timeStr, dateIso)
+    : formatTimeStringFull(timeStr);
+}
+
 /**
  * Format class session for card/detail subtitle.
  * Line 1: date range. Line 2: day + time (when time is present).
  * "May 21, 2026\nFR 6:00 · 8:00 PM" or "May 21 · May 22, 2026\nFR 6:00 · 8:00 PM"
  */
-export function formatClassSessionSubtitle(session: {
-  startDate: string;
-  endDate: string;
-  dayOfWeek: string;
-  time: string;
-}): string {
-  const dateRange = formatDateRangeCompact(session.startDate, session.endDate);
-  const time12hr = session.time ? formatTimeStringFull(session.time) : '';
+export function formatClassSessionSubtitle(
+  session: {
+    startDate: string;
+    endDate: string;
+    dayOfWeek: string;
+    time: string;
+  },
+  opts?: DateDisplayOptions
+): string {
+  const dateRange = formatDateRangeCompact(session.startDate, session.endDate, opts);
+  const time12hr = session.time
+    ? opts?.remoteAccess
+      ? formatClockStringForViewer(session.time, session.startDate)
+      : formatTimeStringFull(session.time)
+    : '';
   const dayAbbr = dayTo2Letter(session.dayOfWeek);
   return time12hr ? `${dateRange}\n${dayAbbr} ${time12hr}` : dateRange;
 }

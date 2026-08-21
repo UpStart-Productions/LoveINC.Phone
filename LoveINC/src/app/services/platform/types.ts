@@ -31,6 +31,8 @@ export interface PlatformOrganization {
   /** Customer name when this org is the affiliate/tenant. Use for Service Access messaging. */
   customerName?: string;
   customer?: { name: string };
+  /** IANA zone for in-person wall clock (from the affiliate). */
+  timezone?: string;
 }
 
 export interface PlatformCustomer {
@@ -65,6 +67,9 @@ export interface PlatformEvent {
   photoUrl?: string;
   address?: PlatformAddress;
   volunteerPositions?: PlatformVolunteerPosition[];
+  registrationLink?: string;
+  remoteAccess?: boolean;
+  joinUrl?: string;
 }
 
 export interface PlatformClassNextSession {
@@ -101,6 +106,9 @@ export interface PlatformClass {
   cost?: string;
   photoUrl?: string;
   nextSession?: PlatformClassNextSession;
+  registrationLink?: string;
+  remoteAccess?: boolean;
+  joinUrl?: string;
   /** Attachments from API (handouts, PDFs, etc.) */
   attachments?: PlatformClassAttachment[];
   /** Alternative: schedule from offerings (scheduleRule + sessions) */
@@ -384,6 +392,7 @@ export interface PlatformHomeFeedItem {
   actionValue?: string;
   address?: PlatformAddress;
   volunteerPositions?: PlatformVolunteerPosition[];
+  remoteAccess?: boolean;
   [key: string]: unknown;
 }
 

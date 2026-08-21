@@ -242,6 +242,16 @@
       <!-- Class registration (in-app) + calendar -->
       <div class="action-buttons m-t-24" *ngIf="showClassActionButtons()">
         <ion-button
+          *ngIf="showJoinButton()"
+          expand="block"
+          fill="outline"
+          color="primary"
+          (click)="onJoinClick()"
+        >
+          <ion-icon slot="start" name="videocam-outline"></ion-icon>
+          Join
+        </ion-button>
+        <ion-button
           *ngIf="showClassCompleteIntakeButton()"
           expand="block"
           color="primary"
@@ -268,7 +278,22 @@
 
       <!-- Action Buttons (non-class content) -->
       <div class="action-buttons m-t-24" *ngIf="hasActionButton()">
-        <ion-button expand="block" color="primary" (click)="onActionButtonClick()">
+        <ion-button
+          *ngIf="showJoinButton()"
+          expand="block"
+          fill="outline"
+          color="primary"
+          (click)="onJoinClick()"
+        >
+          <ion-icon slot="start" name="videocam-outline"></ion-icon>
+          Join
+        </ion-button>
+        <ion-button
+          *ngIf="showRegisterActionButton()"
+          expand="block"
+          color="primary"
+          (click)="onActionButtonClick()"
+        >
           <ion-icon slot="start" name="link-outline"></ion-icon>
           {{ contentItem.actionButtonText || 'Register Now' }}
         </ion-button>

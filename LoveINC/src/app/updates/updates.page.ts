@@ -144,7 +144,9 @@ export class UpdatesPage implements OnInit {
   }
 
   private mapEventToUpdateItem(e: PlatformEvent): UpdateItem {
-    const subtitle = formatEventSubtitle(e.startDate, e.endDate);
+    const subtitle = formatEventSubtitle(e.startDate, e.endDate, {
+      remoteAccess: e.remoteAccess,
+    });
     const rawPositions = (e.volunteerPositions ?? (e as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
     const address = e.address ? this.formatAddress(e.address) : null;
     const volunteerPositions = rawPositions.length

@@ -28,6 +28,7 @@ import { GoalTrackerRefreshService } from './goal-tracker-tabs/services/goal-tra
 import { PushRegistrationService } from './services/push-registration.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { getNotificationRoute } from './shared/utils/notification-deeplink';
+import { setDisplayTimeZone } from './shared/utils';
 import { addIcons } from 'ionicons';
 import {
   // Tab Bar Icons
@@ -95,6 +96,7 @@ import {
   peopleOutline,
   timeOutline,
   linkOutline,
+  videocamOutline,
   flashOutline,
   pulseOutline,
   alertCircleOutline,
@@ -233,6 +235,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Fetch app user data from API (deviceId + email if available) for UI config
     this.syncAppUserFromApi();
+    this.loadAffiliateTimeZone();
 
     this.dbInitTimeoutId = setTimeout(() => {
       this.dbInitTimeoutId = undefined;
@@ -325,6 +328,14 @@ export class AppComponent implements OnInit, OnDestroy {
       this.dbInitTimeoutId = undefined;
     }
     this.appReady = true;
+  }
+
+  private loadAffiliateTimeZone(): void {
+    this.platformApi.getOrganization().subscribe({
+      next: (org) => {
+        if (org?.timezone) setDisplayTimeZone(org.timezone);
+      },
+    });
   }
 
   private syncAppUserFromApi(): void {
@@ -446,6 +457,7 @@ export class AppComponent implements OnInit, OnDestroy {
       peopleOutline,
       timeOutline,
       linkOutline,
+      videocamOutline,
       flashOutline,
       pulseOutline,
       alertCircleOutline,

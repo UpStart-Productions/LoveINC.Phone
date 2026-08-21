@@ -144,7 +144,9 @@ export class CardFormattingService {
     const startDate = (item as PlatformEvent).startDate ?? (item as PlatformHomeFeedItem).startDate;
     const endDate = (item as PlatformEvent).endDate ?? (item as PlatformHomeFeedItem).endDate;
     if (startDate || endDate) {
-      return formatEventSubtitle(startDate, endDate);
+      return formatEventSubtitle(startDate, endDate, {
+        remoteAccess: !!(item as PlatformEvent).remoteAccess,
+      });
     }
     return (item as PlatformHomeFeedItem).subtitle ?? '';
   }
@@ -155,16 +157,24 @@ export class CardFormattingService {
 
     // PlatformClass: nextSession or offerings
     if (platformClass.nextSession) {
-      return formatClassSessionSubtitle(platformClass.nextSession);
+      return formatClassSessionSubtitle(platformClass.nextSession, {
+        remoteAccess: platformClass.remoteAccess,
+      });
     }
     if (platformClass.offerings?.length) {
       const derived = this.deriveNextSessionFromOfferings(platformClass.offerings);
-      if (derived) return formatClassSessionSubtitle(derived);
+      if (derived) {
+        return formatClassSessionSubtitle(derived, {
+          remoteAccess: platformClass.remoteAccess,
+        });
+      }
     }
 
     // PlatformHomeFeedItem: startDate/endDate or instructor
     if (homeItem.startDate || homeItem.endDate) {
-      return formatEventSubtitle(homeItem.startDate, homeItem.endDate);
+      return formatEventSubtitle(homeItem.startDate, homeItem.endDate, {
+        remoteAccess: !!homeItem.remoteAccess,
+      });
     }
     if (homeItem.instructor) {
       return `Instructor: ${homeItem.instructor}`;

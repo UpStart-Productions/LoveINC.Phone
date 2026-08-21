@@ -33,7 +33,7 @@ import { ScheduleFormattingService } from '../../services/schedule-formatting.se
 import { CalendarService } from '../../services/calendar/calendar.service';
 import { LocationMapModalService } from '../../services/location-map-modal.service';
 import { GapAccessService } from '../../services/gap-access.service';
-import { APP_DOT, joinWithAppDot } from '../../shared/utils';
+import { APP_DOT, joinWithAppDot, apiIsoToDisplayDate, formatIsoTime12hr } from '../../shared/utils';
 
 export interface GapServiceVoucher {
   id: string;
@@ -254,12 +254,12 @@ export class GapMinistriesPage implements OnInit {
     const sessions = off.sessions?.filter((s) => !s.isCancelled) ?? [];
     const firstSession = sessions[0];
     if (firstSession) {
-      const start = new Date(firstSession.startDate);
+      const start = apiIsoToDisplayDate(firstSession.startDate);
       const dayName = dayNames[start.getDay()];
       const time =
-        this.formatSessionTime(firstSession.startDate) +
+        formatIsoTime12hr(firstSession.startDate) +
         (firstSession.endDate
-          ? `${APP_DOT}${this.formatSessionTime(firstSession.endDate)}`
+          ? `${APP_DOT}${formatIsoTime12hr(firstSession.endDate)}`
           : '');
       return { schedule: dayName ?? 'By Appointment', daysTimes: time };
     }
@@ -275,18 +275,6 @@ export class GapMinistriesPage implements OnInit {
       return { schedule, daysTimes: time || 'See schedule' };
     }
     return { schedule: 'By Appointment', daysTimes: 'By appointment' };
-  }
-
-  /** Format session date string as 12hr time. Uses UTC components when API stores local times as UTC. */
-  private formatSessionTime(isoDate: string): string {
-    const d = new Date(isoDate);
-    const isUtc = /Z$|[\+\-]\d{2}:?\d{2}$/.test(isoDate.trim());
-    const h = isUtc ? d.getUTCHours() : d.getHours();
-    const m = isUtc ? d.getUTCMinutes() : d.getMinutes();
-    const period = h >= 12 ? 'pm' : 'am';
-    const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
-    const min = m.toString().padStart(2, '0');
-    return `${hour12}:${min}${period}`;
   }
 
   private formatTime24To12(time24: string): string {
