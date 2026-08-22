@@ -100,14 +100,14 @@
           @if (contentItem.instructorPhotoUrl) {
             <img
               [src]="contentItem.instructorPhotoUrl"
-              [attr.alt]="contentItem.teacher ? '' : 'Instructor'"
+              [attr.alt]="contentItem.teacher ? '' : personSectionTitle"
             />
           } @else {
             <ion-icon name="person-outline" color="dark"></ion-icon>
           }
         </div>
         <div class="instructor-minicard-text">
-          <h3 class="app-uppercase-thin">Instructor</h3>
+          <h3 class="app-uppercase-thin">{{ personSectionTitle }}</h3>
           <div
             *ngIf="instructorDisplayName || instructorTitleDisplay || hasInstructorNotes()"
             class="instructor-minicard-body"
@@ -173,7 +173,6 @@
         <ion-item *ngIf="hasEventDateTime()">
           <ion-icon slot="start" name="calendar-outline" color="dark"></ion-icon>
           <ion-label>
-            <h3 class="app-body">Date & Time</h3>
             <p *ngIf="contentItem.eventDate">{{ contentItem.eventDate }}</p>
             <p *ngIf="contentItem.eventTime">{{ contentItem.eventTime }}</p>
           </ion-label>
@@ -192,7 +191,6 @@
         <ion-item *ngIf="hasLocation()" button detail="false" (click)="openLocationMapModal()">
           <ion-icon slot="start" name="location-outline" color="dark"></ion-icon>
           <ion-label>
-            <h3 class="app-body">Location</h3>
             <p>{{ contentItem.location }}</p>
           </ion-label>
         </ion-item>
@@ -225,23 +223,18 @@
         </ion-item>
 
         <!-- Documents (classes and events) -->
-        <ion-item *ngIf="hasClassDocuments()" class="class-documents-header-item">
+        <ion-item *ngIf="hasClassDocuments()">
           <ion-icon slot="start" name="document-text-outline" color="dark"></ion-icon>
           <ion-label>
-            <h3 class="app-body">Documents</h3>
+            @for (doc of contentItem.classDocuments; track doc.title) {
+              @if (doc.url) {
+                <p><a [href]="doc.url" target="_blank" rel="noopener" class="app-link">{{ doc.title }}</a></p>
+              } @else {
+                <p>{{ doc.title }}</p>
+              }
+            }
           </ion-label>
         </ion-item>
-
-        <!-- Class Documents List -->
-        <div *ngIf="hasClassDocuments()" class="class-documents-list">
-          @for (doc of contentItem.classDocuments; track doc.title) {
-            @if (doc.url) {
-              <a [href]="doc.url" target="_blank" class="app-link">{{ doc.title }}</a>
-            } @else {
-              <span class="app-body">{{ doc.title }}</span>
-            }
-          }
-        </div>
       </ion-list>
 
       <div class="action-buttons m-t-24" *ngIf="showClassActionButtons() || hasActionButton() || isEvent()">

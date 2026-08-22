@@ -220,6 +220,13 @@ export class ChurchMapPage implements OnInit, OnDestroy {
     if (this.mapPins.length === 1) {
       this.map.setCenter({ lat: first.lat, lng: first.lng });
       this.map.setZoom(14);
+      const onlyMarker = this.markers[0];
+      const onlyPartner = first.partner;
+      google.maps.event.addListenerOnce(this.map, 'idle', () => {
+        this.ngZone.run(() => {
+          void this.showChurchPopover(onlyMarker, onlyPartner);
+        });
+      });
     } else {
       this.map.fitBounds(bounds, { top: 64, right: 48, bottom: 48, left: 48 });
     }

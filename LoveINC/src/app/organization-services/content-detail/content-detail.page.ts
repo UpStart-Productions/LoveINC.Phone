@@ -997,6 +997,11 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
+  /** Person minicard heading: Contact on events, Instructor on classes. */
+  get personSectionTitle(): string {
+    return this.isEvent() ? 'Contact' : 'Instructor';
+  }
+
   onDescriptionClick(event: Event): void {
     handleRichHtmlClick(event);
   }
@@ -1021,7 +1026,7 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       '../../components/instructor-bio-modal/instructor-bio-modal.component'
     );
     const item = this.contentItem;
-    const name = (item.teacher ?? '').trim() || 'Instructor';
+    const name = (item.teacher ?? '').trim() || this.personSectionTitle;
     const modal = await this.modalController.create({
       component: InstructorBioModalComponent,
       componentProps: {
@@ -1408,9 +1413,9 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       const line = t
         ? `${this.contentItem.teacher}: ${t}`
         : this.contentItem.teacher;
-      html += `<p><strong>Instructor:</strong> ${line}</p>`;
+      html += `<p><strong>${this.personSectionTitle}:</strong> ${line}</p>`;
     } else if ((this.contentItem.instructorTitle ?? '').trim()) {
-      html += `<p><strong>Instructor:</strong> ${(this.contentItem.instructorTitle ?? '').trim()}</p>`;
+      html += `<p><strong>${this.personSectionTitle}:</strong> ${(this.contentItem.instructorTitle ?? '').trim()}</p>`;
     }
     if (this.contentItem.instructorNotes?.trim()) {
       html += `<p>${this.contentItem.instructorNotes.trim()}</p>`;

@@ -111,18 +111,22 @@ export class DonationLocationMapModalComponent implements AfterViewInit, OnDestr
 
     marker.addListener('click', () => {
       this.ngZone.run(() => {
-        this.showLocationPopover(marker);
+        void this.showLocationPopover(marker);
       });
     });
 
     google.maps.event.addListenerOnce(this.map, 'idle', () => {
-      this.ngZone.run(() => {
-        if (!this.initialPopoverShown) {
-          this.initialPopoverShown = true;
-          this.showLocationPopover(marker);
-        }
-      });
+      this.ngZone.run(() => this.tryShowInitialPopover(marker));
     });
+    setTimeout(() => {
+      this.ngZone.run(() => this.tryShowInitialPopover(marker));
+    }, 400);
+  }
+
+  private tryShowInitialPopover(marker: any): void {
+    if (this.initialPopoverShown) return;
+    this.initialPopoverShown = true;
+    void this.showLocationPopover(marker);
   }
 
   private async initMap() {
@@ -171,58 +175,75 @@ export class DonationLocationMapModalComponent implements AfterViewInit, OnDestr
     }
     const mapEl = document.getElementById('donation-map');
     if (!mapEl) return;
+
     const position = marker.getPosition();
     const overlay = new google.maps.OverlayView();
+    let placed = false;
+
+    const tryPresentAtPin = (): void => {
+      if (placed) return;
+      const projection = overlay.getProjection();
+      if (!projection) return;
+      const point = projection.fromLatLngToContainerPixel(position);
+      if (!point) return;
+
+      placed = true;
+      overlay.setMap(null);
+
+      const rect = mapEl.getBoundingClientRect();
+      const clientX = rect.left + point.x;
+      const clientY = rect.top + point.y;
+      const triggerEl = document.createElement('div');
+      triggerEl.style.position = 'fixed';
+      triggerEl.style.left = `${clientX}px`;
+      triggerEl.style.top = `${clientY}px`;
+      triggerEl.style.width = '1px';
+      triggerEl.style.height = '1px';
+      triggerEl.style.pointerEvents = 'none';
+      document.body.appendChild(triggerEl);
+      const event = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        clientX,
+        clientY,
+        view: window,
+      });
+      Object.defineProperty(event, 'target', { value: triggerEl, enumerable: true });
+
+      this.ngZone.run(() => {
+        void (async () => {
+          const { LocationPopoverComponent } = await import(
+            '../location-popover/location-popover.component'
+          );
+          this.popover = await this.popoverController.create({
+            component: LocationPopoverComponent,
+            componentProps: {
+              title: this.organization,
+              address: this.address,
+              hours: this.hours,
+              items: this.acceptedItems,
+              itemsIcon: this.itemsIcon,
+              phone: this.phone?.trim() || null,
+              website: this.website?.trim() || null,
+            },
+            event,
+            showBackdrop: false,
+            cssClass: 'location-popover',
+            arrow: false,
+          });
+          this.popover.onDidDismiss().then(() => {
+            this.popover = null;
+            triggerEl.remove();
+          });
+          await this.popover.present();
+        })();
+      });
+    };
+
+    overlay.onAdd = () => {};
+    overlay.draw = () => {
+      tryPresentAtPin();
+    };
     overlay.setMap(this.map);
-    overlay.draw = function () {};
-    const projection = overlay.getProjection();
-    if (!projection) {
-      google.maps.event.addListenerOnce(this.map, 'idle', () => this.showLocationPopover(marker));
-      return;
-    }
-    const point = projection.fromLatLngToContainerPixel(position);
-    const rect = mapEl.getBoundingClientRect();
-    const clientX = rect.left + point.x;
-    const clientY = rect.top + point.y;
-    const triggerEl = document.createElement('div');
-    triggerEl.style.position = 'fixed';
-    triggerEl.style.left = `${clientX}px`;
-    triggerEl.style.top = `${clientY}px`;
-    triggerEl.style.width = '1px';
-    triggerEl.style.height = '1px';
-    triggerEl.style.pointerEvents = 'none';
-    document.body.appendChild(triggerEl);
-    const event = new MouseEvent('click', {
-      bubbles: true,
-      cancelable: true,
-      clientX,
-      clientY,
-      view: window,
-    });
-    Object.defineProperty(event, 'target', { value: triggerEl });
-    const { LocationPopoverComponent } = await import(
-      '../location-popover/location-popover.component'
-    );
-    this.popover = await this.popoverController.create({
-      component: LocationPopoverComponent,
-      componentProps: {
-        title: this.organization,
-        address: this.address,
-        hours: this.hours,
-        items: this.acceptedItems,
-        itemsIcon: this.itemsIcon,
-        phone: this.phone?.trim() || null,
-        website: this.website?.trim() || null,
-      },
-      event,
-      showBackdrop: false,
-      cssClass: 'location-popover',
-      arrow: false,
-    });
-    this.popover.onDidDismiss().then(() => {
-      this.popover = null;
-      triggerEl.remove();
-    });
-    await this.popover.present();
   }
 }
