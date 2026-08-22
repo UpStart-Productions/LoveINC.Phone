@@ -35,6 +35,8 @@ import {
   NavController,
 } from '@ionic/angular/standalone';
 import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
+import { handleRichHtmlClick } from '../../shared/utils/rich-html-links';
+import { Browser } from '@capacitor/browser';
 import { AlertController } from '@ionic/angular';
 import { ContentDetail, ContentType } from './content-detail.model';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
@@ -691,6 +693,8 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       registrationLink: e.registrationLink,
       remoteAccess: e.remoteAccess,
       joinUrl: e.joinUrl,
+      ...this.mapInstructorFields(e),
+      classDocuments: this.mapAttachments(e),
     };
   }
 
@@ -777,51 +781,78 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       ? formatClassSessionSubtitle(nextSession, { remoteAccess: c.remoteAccess })
       : undefined;
 
-    // Map API attachments to classDocuments for display
-    const fromAttachments = (c.attachments ?? []).map((a) => ({
-      title: a.label?.trim() || this.filenameFromUrl(a.url) || 'Document',
-      url: this.platformApi.resolveUploadUrl(a.url) || a.url}));
-    const legacy = c as { classDocuments?: Array<{ title?: string; url?: string }>; documents?: Array<{ title?: string; url?: string }> };
-    const fromLegacy = (legacy.classDocuments ?? legacy.documents ?? []).map((d) => ({
-      title: d.title ?? 'Document',
-      url: d.url ? this.platformApi.resolveUploadUrl(d.url) || d.url : undefined}));
-    const classDocuments = [...fromAttachments, ...fromLegacy]
-      .filter((d) => d.url)
-      .map((d) => ({ title: d.title, url: d.url!, type: undefined as 'handout' | 'worksheet' | 'resource' | undefined }));
-
-    const cPhoto = c as PlatformClass & {
-      instructor_photo_url?: string;
-      instructor_title?: string;
-      instructor_notes?: string;
-    };
-    const rawInstructorPhoto = c.instructorPhotoUrl ?? cPhoto.instructor_photo_url;
-    const instructorPhotoUrl = rawInstructorPhoto
-      ? (this.platformApi.resolveUploadUrl(rawInstructorPhoto) || rawInstructorPhoto)
-      : undefined;
-    const instructorTitle =
-      (c.instructorTitle ?? cPhoto.instructor_title ?? '').trim() || undefined;
-    const rawNotes = c.instructorNotes ?? cPhoto.instructor_notes ?? '';
-    const instructorNotes =
-      (typeof rawNotes === 'string' ? rawNotes : '').trim() || undefined;
-
     return {
       id: c.id,
       title: c.title,
       description: c.longDescription ?? c.shortDescription ?? '',
       photoUrl: (this.platformApi.resolveUploadUrl(c.photoUrl) || c.photoUrl) ?? '',
       subtitle,
-      teacher: c.instructor,
-      instructorTitle,
-      instructorNotes,
-      instructorPhotoUrl: instructorPhotoUrl || undefined,
+      ...this.mapInstructorFields(c),
       location,
       durationMinutes: c.durationMinutes,
       cost: c.cost,
       nextSession,
-      classDocuments: classDocuments.length ? classDocuments : undefined,
+      classDocuments: this.mapAttachments(c),
       registrationLink: c.registrationLink,
       remoteAccess: c.remoteAccess,
       joinUrl: c.joinUrl,
+    };
+  }
+
+  private mapAttachments(
+    source: { attachments?: Array<{ label?: string; url: string }> }
+  ): ContentDetail['classDocuments'] {
+    const fromAttachments = (source.attachments ?? []).map((a) => ({
+      title: a.label?.trim() || this.filenameFromUrl(a.url) || 'Document',
+      url: this.platformApi.resolveUploadUrl(a.url) || a.url,
+    }));
+    const legacy = source as {
+      classDocuments?: Array<{ title?: string; url?: string }>;
+      documents?: Array<{ title?: string; url?: string }>;
+    };
+    const fromLegacy = (legacy.classDocuments ?? legacy.documents ?? []).map((d) => ({
+      title: d.title ?? 'Document',
+      url: d.url ? this.platformApi.resolveUploadUrl(d.url) || d.url : undefined,
+    }));
+    const docs = [...fromAttachments, ...fromLegacy]
+      .filter((d) => d.url)
+      .map((d) => ({
+        title: d.title,
+        url: d.url!,
+        type: undefined as 'handout' | 'worksheet' | 'resource' | undefined,
+      }));
+    return docs.length ? docs : undefined;
+  }
+
+  private mapInstructorFields(source: {
+    instructor?: string;
+    instructorTitle?: string;
+    instructorNotes?: string;
+    instructorPhotoUrl?: string;
+  }): Pick<ContentDetail, 'teacher' | 'instructorTitle' | 'instructorNotes' | 'instructorPhotoUrl'> {
+    const raw = source as typeof source & {
+      instructor_photo_url?: string;
+      instructor_title?: string;
+      instructor_notes?: string;
+      contact?: { name?: string; title?: string; notes?: string; bio?: string; photoUrl?: string };
+      person?: { name?: string; title?: string; notes?: string; bio?: string; photoUrl?: string };
+      host?: { name?: string; title?: string; notes?: string; bio?: string; photoUrl?: string };
+      people?: Array<{ name?: string; title?: string; notes?: string; bio?: string; photoUrl?: string }>;
+      contacts?: Array<{ name?: string; title?: string; notes?: string; bio?: string; photoUrl?: string }>;
+    };
+    const fromList = raw.people?.[0] ?? raw.contacts?.[0];
+    const nested = raw.contact ?? raw.person ?? raw.host ?? fromList;
+    const rawPhoto = source.instructorPhotoUrl ?? raw.instructor_photo_url ?? nested?.photoUrl;
+    const instructorPhotoUrl = rawPhoto
+      ? this.platformApi.resolveUploadUrl(rawPhoto) || rawPhoto
+      : undefined;
+    const rawNotes = source.instructorNotes ?? raw.instructor_notes ?? nested?.notes ?? nested?.bio ?? '';
+    return {
+      teacher: (source.instructor ?? nested?.name ?? '').trim() || undefined,
+      instructorTitle:
+        (source.instructorTitle ?? raw.instructor_title ?? nested?.title ?? '').trim() || undefined,
+      instructorNotes: (typeof rawNotes === 'string' ? rawNotes : '').trim() || undefined,
+      instructorPhotoUrl: instructorPhotoUrl || undefined,
     };
   }
 
@@ -919,22 +950,23 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
 
   async onActionButtonClick() {
     if (!this.contentItem) return;
-    
-    if (this.contentItem.registrationLink) {
-      // Open registration link
-      window.open(this.contentItem.registrationLink, '_blank');
-    } else if (this.contentItem.actionButtonLink) {
-      // Open action link
-      window.open(this.contentItem.actionButtonLink, '_blank');
-    } else {
-      // Default action
-      const alert = await this.alertController.create({
-        header: this.contentItem.actionButtonText || 'Action',
-        message: `Action for ${this.contentItem.title}`,
-        buttons: ['OK']
-      });
-      await alert.present();
+
+    if (this.externalRegistrationUrl) {
+      await this.openExternalRegistration();
+      return;
     }
+
+    if (this.contentItem.actionButtonLink) {
+      window.open(this.contentItem.actionButtonLink, '_blank');
+      return;
+    }
+
+    const alert = await this.alertController.create({
+      header: this.contentItem.actionButtonText || 'Action',
+      message: `Action for ${this.contentItem.title}`,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 
   formatSessionDates(): string {
@@ -955,16 +987,18 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
 
   hasInstructor(): boolean {
     if (!this.contentItem) return false;
+    if (this.contentType !== 'class' && this.contentType !== 'event') return false;
     const item = this.contentItem;
-    if (this.contentType === 'class') {
-      return !!(
-        item.teacher?.trim() ||
-        item.instructorPhotoUrl ||
-        item.instructorTitle?.trim() ||
-        item.instructorNotes?.trim()
-      );
-    }
-    return !!item.teacher?.trim();
+    return !!(
+      item.teacher?.trim() ||
+      item.instructorPhotoUrl ||
+      item.instructorTitle?.trim() ||
+      item.instructorNotes?.trim()
+    );
+  }
+
+  onDescriptionClick(event: Event): void {
+    handleRichHtmlClick(event);
   }
 
   /** Instructor display name only (not job title). */
@@ -994,10 +1028,7 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
         instructorName: name,
         jobTitle: (item.instructorTitle ?? '').trim(),
         notes: (item.instructorNotes ?? '').trim(),
-        photoUrl:
-          this.contentType === 'class' && item.instructorPhotoUrl
-            ? item.instructorPhotoUrl
-            : undefined},
+        photoUrl: item.instructorPhotoUrl || undefined},
       cssClass: 'entry-notes-modal',
       presentingElement: await this.modalController.getTop(),
       showBackdrop: true,
@@ -1114,9 +1145,20 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     return null;
   }
 
+  get externalRegistrationUrl(): string {
+    return this.contentItem?.registrationLink?.trim() ?? '';
+  }
+
+  get registerActionButtonLabel(): string {
+    if (this.externalRegistrationUrl) {
+      return this.contentType === 'event' ? 'Event Registration' : 'Class Registration';
+    }
+    return this.contentItem?.actionButtonText || 'Register Now';
+  }
+
   showRegisterActionButton(): boolean {
     return !!(
-      this.contentItem?.registrationLink ||
+      this.externalRegistrationUrl ||
       this.contentItem?.actionButtonLink ||
       this.contentItem?.actionButtonText
     );
@@ -1138,6 +1180,18 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     if (url) window.open(url, '_blank');
   }
 
+  /** API registration link — skip intake and the in-app form. */
+  showClassExternalRegisterButton(): boolean {
+    return (
+      this.contentType === 'class' &&
+      !!this.contentItem &&
+      !this.loading &&
+      !this.error &&
+      !this.isRegisteredForThisClass &&
+      !!this.externalRegistrationUrl
+    );
+  }
+
   /** In-app class registration (platform classes). */
   showClassRegisterButton(): boolean {
     return (
@@ -1146,11 +1200,12 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       !this.loading &&
       !this.error &&
       !this.isRegisteredForThisClass &&
+      !this.externalRegistrationUrl &&
       !this.classIntakeGateActive
     );
   }
 
-  /** I Need Assistance for users who must complete intake before registering (same rules as Gap list). */
+  /** Get Assistance for users who must complete intake before registering (same rules as Gap list). */
   showClassCompleteIntakeButton(): boolean {
     return (
       this.contentType === 'class' &&
@@ -1158,6 +1213,7 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       !this.loading &&
       !this.error &&
       !this.isRegisteredForThisClass &&
+      !this.externalRegistrationUrl &&
       this.classIntakeGateActive
     );
   }
@@ -1176,6 +1232,12 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     return this.hasSchedule() || this.showJoinButton();
   }
 
+  async openExternalRegistration(): Promise<void> {
+    const url = this.externalRegistrationUrl;
+    if (!url) return;
+    await Browser.open({ url });
+  }
+
   navigateToClassRegistration(): void {
     if (!this.contentItem?.id) return;
     const scheduleLabel =
@@ -1189,8 +1251,8 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  navigateToAssistanceIntro(): void {
-    void navigateAppForward(this.navController, this.router, ['/tabs/assistance/intro']);
+  navigateToConnectionCenter(): void {
+    void navigateAppForward(this.navController, this.router, ['/tabs/connection-center']);
   }
 
   isDonationDrive(): boolean {

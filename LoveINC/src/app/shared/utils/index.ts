@@ -24,6 +24,7 @@ export {
 } from './navigation-origin.util';
 export { mapNotificationMetaToContentType, getNotificationRoute, type NotificationMeta } from './notification-deeplink';
 export { markQuillParagraphGaps } from './quill-rich-html';
+export { linkifyRichHtmlEmails, handleRichHtmlClick } from './rich-html-links';
 export {
   APP_DOT,
   DEFAULT_DISPLAY_TIME_ZONE,

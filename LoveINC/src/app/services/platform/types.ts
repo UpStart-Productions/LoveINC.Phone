@@ -70,6 +70,11 @@ export interface PlatformEvent {
   registrationLink?: string;
   remoteAccess?: boolean;
   joinUrl?: string;
+  instructor?: string;
+  instructorTitle?: string;
+  instructorNotes?: string;
+  instructorPhotoUrl?: string;
+  attachments?: PlatformClassAttachment[];
 }
 
 export interface PlatformClassNextSession {

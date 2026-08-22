@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { markQuillParagraphGaps } from '../utils/quill-rich-html';
+import { linkifyRichHtmlEmails } from '../utils/rich-html-links';
 
 /**
  * Bypasses Angular's HTML sanitizer so custom elements (e.g. ion-icon) render in innerHTML.
@@ -13,6 +14,6 @@ export class SafeHtmlPipe implements PipeTransform {
 
   transform(html: string | undefined): SafeHtml {
     const raw = html ?? '';
-    return this.sanitizer.bypassSecurityTrustHtml(markQuillParagraphGaps(raw));
+    return this.sanitizer.bypassSecurityTrustHtml(linkifyRichHtmlEmails(markQuillParagraphGaps(raw)));
   }
 }

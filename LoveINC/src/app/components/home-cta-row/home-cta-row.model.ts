@@ -10,7 +10,7 @@ export type HomeCtaAction =
   | { kind: 'donate-sheet' }
   | {
       kind: 'get-help';
-      target: 'assistance-intro' | 'profile' | 'gap-ministries' | 'services';
+      target: 'connection-center' | 'profile' | 'gap-ministries' | 'services';
     };
 
 /** Single home-screen CTA row — static or API-driven. */

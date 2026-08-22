@@ -1,33 +1,63 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
+<ion-content
+  [fullscreen]="true"
+  class="content-reader-scroll connection-center-page content-reader-scroll--edge-hero"
+>
+  <div
+    class="content-reader-edge-chrome"
+    [class.content-reader-edge-chrome--scrolled]="edgeHeaderScrolled"
+  >
+    <div class="content-reader-edge-chrome__bar">
       <app-back-button [fallback]="backFallback"></app-back-button>
-    </ion-buttons>
-    <ion-title>Connection Center</ion-title>
-    <ion-buttons slot="end">
-      <app-notifications-button></app-notifications-button>
-      <ion-button *ngIf="showDonateButton" (click)="openDonateMenu()" class="donate-header-button">
-        <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+      <p class="content-reader-edge-chrome__title">Get Assistance</p>
+      <div class="connection-center-edge-chrome__actions">
+        <app-notifications-button></app-notifications-button>
+        <ion-button *ngIf="showDonateButton" (click)="openDonateMenu()" class="donate-header-button">
+          <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </div>
 
-<ion-content [fullscreen]="true" class="connection-center-page">
-  <div class="connection-center-photo">
-    <img src="assets/photos/connection-center-header.png" alt="Connection Center volunteers and community" />
+  <div class="content-reader-hero">
+    <img
+      src="assets/photos/connection-center-header.png"
+      alt="Connection Center volunteers and community"
+      class="content-reader-hero__image"
+    />
+    <div class="content-reader-hero__gradient" aria-hidden="true"></div>
+    <p class="content-reader-hero__title app-title">Get Assistance</p>
   </div>
 
   <div class="p-l-18 p-r-18 p-t-18 p-b-36">
     <p class="app-body-secondary m-b-24">
-      The Connection Center works closely with 23 churches to provide essential services, known as GAP Ministries,
-      that meet needs otherwise unmet in the community. These services include clothing, non-food pantry items,
-      bikes, linens, showers, firewood, and kitchen items and many more. Our regular volunteers are the heart of the
-      Connection Center, listening to people's stories, providing practical assistance, offering financial guidance,
-      and praying with clients, resulting in life-changing moments of peace and support.
+      The Connection Center partners with 23 churches to meet needs through GAP Ministries—clothing,
+      pantry items, bikes, linens, showers, firewood, kitchen items, and more. Volunteers listen, offer
+      practical help, and pray with clients.
     </p>
-    <ion-button expand="block" color="primary" (click)="goToGetAssistance()">
-      Get Assistance
+    <h2 class="m-b-12">What to expect</h2>
+    <ul class="connection-center-steps app-body-secondary m-b-24">
+      <li>We'll review your request within 1–2 business days.</li>
+      <li>We'll reach out by phone or email to learn more about your situation.</li>
+      <li>Together we'll connect you with the right support.</li>
+    </ul>
+    <p class="app-body-secondary m-b-24">
+      Your information is confidential and used only to help you.
+    </p>
+    <ion-button expand="block" color="primary" (click)="onGetStarted()">
+      Get Started
+    </ion-button>
+    <ion-button expand="block" fill="outline" class="m-t-12" (click)="callConnectionCenter()">
+      <ion-icon slot="start" name="call-outline"></ion-icon>
+      Call Connection Center
     </ion-button>
   </div>
+
+  <app-content-card
+    class="connection-center-qr-card"
+    asideAvatarSize="large"
+    title="Already have a QR code from our Connection Center?"
+    detail="Tap here to access services."
+    imageUrl="assets/photos/connection-center-qr.png"
+    (cardClick)="onHaveQRCode()"
+  />
 </ion-content>

@@ -115,7 +115,7 @@ const ROOT_DRILL_IN_REDIRECTS: Routes = [
   { path: 'donate-money', redirectTo: '/tabs/donate-money', pathMatch: 'full' },
   { path: 'developer-options', redirectTo: '/tabs/developer-options', pathMatch: 'full' },
   { path: 'services', redirectTo: '/tabs/services', pathMatch: 'full' },
-  { path: 'assistance/intro', redirectTo: '/tabs/assistance/intro', pathMatch: 'full' },
+  { path: 'assistance/intro', redirectTo: '/tabs/connection-center', pathMatch: 'full' },
   { path: 'assistance/signup', redirectTo: '/tabs/assistance/signup', pathMatch: 'full' },
   { path: 'assistance/thank-you', redirectTo: '/tabs/assistance/thank-you', pathMatch: 'full' },
   {
@@ -287,8 +287,8 @@ const TAB_DRILL_IN_ROUTES: Routes = [
   },
   {
     path: 'assistance/intro',
-    loadComponent: () =>
-      import('../assistance-request/assistance-intro.page').then((m) => m.AssistanceIntroPage),
+    redirectTo: '/tabs/connection-center',
+    pathMatch: 'full',
   },
   {
     path: 'assistance/signup',

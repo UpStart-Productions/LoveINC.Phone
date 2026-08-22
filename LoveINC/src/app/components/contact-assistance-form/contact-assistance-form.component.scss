@@ -1,3 +1,25 @@
 .contact-assistance-form {
   padding-bottom: 3rem;
 }
+
+.required-dot {
+  display: inline-block;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--ion-color-danger);
+  vertical-align: 0.15em;
+}
+
+ion-label .required-dot {
+  margin-left: 0.35rem;
+}
+
+.required-legend {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+
+  .required-dot {
+    margin-right: 0.35rem;
+  }
+}

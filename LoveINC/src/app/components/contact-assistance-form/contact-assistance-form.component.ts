@@ -82,6 +82,7 @@ export class ContactAssistanceFormComponent implements OnInit {
       !this.form.firstName.trim() ||
       !this.form.lastName.trim() ||
       !this.form.city ||
+      !this.form.phone?.trim() ||
       !this.form.email.trim() ||
       !this.form.reason
     ) {
@@ -89,10 +90,8 @@ export class ContactAssistanceFormComponent implements OnInit {
     }
     const emailValid = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(this.form.email.trim());
     if (!emailValid) return false;
-    if (this.form.phone?.trim()) {
-      const digits = this.form.phone.replace(/\D/g, '');
-      if (digits.length !== 10) return false;
-    }
+    const digits = this.form.phone.replace(/\D/g, '');
+    if (digits.length !== 10) return false;
     return true;
   }
 

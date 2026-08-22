@@ -111,7 +111,7 @@ ion-item:has(ion-checkbox) ion-checkbox {
 }
 
 /* Error state - ONLY for fields with custom validators (phone, email) via .form-field-with-error */
-.form-field-with-error ion-input.ion-invalid {
+.form-field-with-error ion-input.ion-invalid.ion-touched {
   --border-color: var(--ion-color-danger);
   border-color: var(--ion-color-danger) !important;
 }

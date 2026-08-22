@@ -255,7 +255,9 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
           cssClass: 'assistance-button',
           handler: () => {
             void actionSheet.onDidDismiss().then(() => {
-              void navigateAppFlat(this.router, ['/tabs/assistance/intro']);
+              void navigateAppFlat(this.router, ['/tabs/connection-center'], {
+                queryParams: { from: 'services' },
+              });
             });
           },
         },

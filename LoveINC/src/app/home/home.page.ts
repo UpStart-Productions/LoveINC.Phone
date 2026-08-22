@@ -299,8 +299,8 @@ export class HomePage implements OnInit {
     }
   }
 
-  get clientSupportCardAction(): 'profile' | 'gap-ministries' | 'assistance-intro' {
-    if (this.clientSupportCardState === 'intake_required') return 'assistance-intro';
+  get clientSupportCardAction(): 'profile' | 'gap-ministries' | 'connection-center' {
+    if (this.clientSupportCardState === 'intake_required') return 'connection-center';
     if (this.clientSupportCardState === 'has_vouchers') return 'profile';
     return 'gap-ministries';
   }

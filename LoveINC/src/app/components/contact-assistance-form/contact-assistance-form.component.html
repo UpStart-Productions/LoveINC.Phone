@@ -1,7 +1,10 @@
 <div class="contact-assistance-form">
+  <p class="app-body-secondary m-b-18">
+    Your information is confidential and used only to help you.
+  </p>
   <ion-list>
     <ion-item>
-      <ion-label position="stacked">First Name</ion-label>
+      <ion-label position="stacked">First Name <span class="required-dot" aria-hidden="true"></span></ion-label>
       <ion-input
         type="text"
         [(ngModel)]="form.firstName"
@@ -12,7 +15,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Last Name</ion-label>
+      <ion-label position="stacked">Last Name <span class="required-dot" aria-hidden="true"></span></ion-label>
       <ion-input
         type="text"
         [(ngModel)]="form.lastName"
@@ -23,7 +26,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">City of Residence</ion-label>
+      <ion-label position="stacked">City of Residence <span class="required-dot" aria-hidden="true"></span></ion-label>
       <div class="select-border-wrapper">
         <ion-select
           [(ngModel)]="form.city"
@@ -41,7 +44,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Phone</ion-label>
+      <ion-label position="stacked">Phone <span class="required-dot" aria-hidden="true"></span></ion-label>
       <div class="form-field-with-error">
         <ion-input
           type="tel"
@@ -60,7 +63,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Email</ion-label>
+      <ion-label position="stacked">Email <span class="required-dot" aria-hidden="true"></span></ion-label>
       <div class="form-field-with-error">
         <ion-input
           type="email"
@@ -68,7 +71,6 @@
           name="email"
           autocapitalize="none"
           appEmailValidator
-          required
           #email="ngModel"
           [class.ion-invalid]="email.invalid && email.touched">
         </ion-input>
@@ -79,7 +81,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Reason for Contact</ion-label>
+      <ion-label position="stacked">Reason for Contact <span class="required-dot" aria-hidden="true"></span></ion-label>
       <div class="select-border-wrapper">
         <ion-select
           [(ngModel)]="form.reason"
@@ -97,13 +99,13 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Questions or Concerns</ion-label>
+      <ion-label position="stacked">Anything else we should know?</ion-label>
       <ion-textarea
         [(ngModel)]="form.comments"
         name="comments"
         rows="4"
         autocapitalize="sentences"
-        placeholder="Enter your questions or concerns here...">
+        placeholder="Optional">
       </ion-textarea>
     </ion-item>
 
@@ -118,6 +120,8 @@
       </ion-label>
     </ion-item>
   </ion-list>
+
+  <p class="required-legend app-body-secondary-sm"><span class="required-dot" aria-hidden="true"></span> Required</p>
 
   <ion-button
     expand="block"

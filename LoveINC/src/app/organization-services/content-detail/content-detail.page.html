@@ -87,12 +87,17 @@
 
       <p *ngIf="contentItem.subtitle && contentType !== 'event' && contentType !== 'class' && !getHeaderDateLabel()" class="app-title m-b-24 content-subtitle">{{ contentItem.subtitle }}</p>
 
-      <div *ngIf="contentItem.description" class="app-body-secondary rich-html m-b-24" [innerHTML]="contentItem.description | safeHtml"></div>
+      <div
+        *ngIf="contentItem.description"
+        class="app-body-secondary rich-html m-b-24"
+        [innerHTML]="contentItem.description | safeHtml"
+        (click)="onDescriptionClick($event)"
+      ></div>
 
-      <!-- Instructor (classes): minicard, large avatar left -->
+      <!-- Person (classes and events): minicard, large avatar left -->
       <div *ngIf="hasInstructor()" class="instructor-minicard m-b-24">
         <div class="instructor-minicard-avatar" aria-hidden="true">
-          @if (contentType === 'class' && contentItem.instructorPhotoUrl) {
+          @if (contentItem.instructorPhotoUrl) {
             <img
               [src]="contentItem.instructorPhotoUrl"
               [attr.alt]="contentItem.teacher ? '' : 'Instructor'"
@@ -219,11 +224,11 @@
           </ion-label>
         </ion-item>
 
-        <!-- Class Documents Header -->
+        <!-- Documents (classes and events) -->
         <ion-item *ngIf="hasClassDocuments()" class="class-documents-header-item">
           <ion-icon slot="start" name="document-text-outline" color="dark"></ion-icon>
           <ion-label>
-            <h3 class="app-body">Class Documents</h3>
+            <h3 class="app-body">Documents</h3>
           </ion-label>
         </ion-item>
 
@@ -239,8 +244,7 @@
         </div>
       </ion-list>
 
-      <!-- Class registration (in-app) + calendar -->
-      <div class="action-buttons m-t-24" *ngIf="showClassActionButtons()">
+      <div class="action-buttons m-t-24" *ngIf="showClassActionButtons() || hasActionButton() || isEvent()">
         <ion-button
           *ngIf="showJoinButton()"
           expand="block"
@@ -252,10 +256,28 @@
           Join
         </ion-button>
         <ion-button
+          *ngIf="showClassExternalRegisterButton()"
+          expand="block"
+          color="primary"
+          (click)="openExternalRegistration()"
+        >
+          <ion-icon slot="start" name="link-outline"></ion-icon>
+          Class Registration
+        </ion-button>
+        <ion-button
+          *ngIf="contentType !== 'class' && showRegisterActionButton()"
+          expand="block"
+          color="primary"
+          (click)="onActionButtonClick()"
+        >
+          <ion-icon slot="start" name="link-outline"></ion-icon>
+          {{ registerActionButtonLabel }}
+        </ion-button>
+        <ion-button
           *ngIf="showClassCompleteIntakeButton()"
           expand="block"
           color="primary"
-          (click)="navigateToAssistanceIntro()"
+          (click)="navigateToConnectionCenter()"
         >
           <ion-icon slot="start" name="document-text-outline"></ion-icon>
           Complete Intake to Register
@@ -270,35 +292,13 @@
           Register
         </ion-button>
 
-        <ion-button *ngIf="hasSchedule()" expand="block" fill="outline" color="primary" (click)="onAddToCalendarClick()">
-          <ion-icon slot="start" name="calendar-outline"></ion-icon>
-          Add to Calendar
-        </ion-button>
-      </div>
-
-      <!-- Action Buttons (non-class content) -->
-      <div class="action-buttons m-t-24" *ngIf="hasActionButton()">
         <ion-button
-          *ngIf="showJoinButton()"
+          *ngIf="hasSchedule() || isEvent()"
           expand="block"
           fill="outline"
           color="primary"
-          (click)="onJoinClick()"
+          (click)="onAddToCalendarClick()"
         >
-          <ion-icon slot="start" name="videocam-outline"></ion-icon>
-          Join
-        </ion-button>
-        <ion-button
-          *ngIf="showRegisterActionButton()"
-          expand="block"
-          color="primary"
-          (click)="onActionButtonClick()"
-        >
-          <ion-icon slot="start" name="link-outline"></ion-icon>
-          {{ contentItem.actionButtonText || 'Register Now' }}
-        </ion-button>
-
-        <ion-button *ngIf="hasSchedule()" expand="block" fill="outline" color="primary" (click)="onAddToCalendarClick()">
           <ion-icon slot="start" name="calendar-outline"></ion-icon>
           Add to Calendar
         </ion-button>

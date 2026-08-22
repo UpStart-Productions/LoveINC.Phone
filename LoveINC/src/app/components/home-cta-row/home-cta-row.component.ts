@@ -81,8 +81,10 @@ export class HomeCtaRowComponent {
         void this.donateActionSheetService.openDonateActionSheet();
         break;
       case 'get-help':
-        if (action.target === 'assistance-intro') {
-          void navigateAppForward(this.navController, this.router, ['/tabs/assistance/intro']);
+        if (action.target === 'connection-center') {
+          void navigateAppForward(this.navController, this.router, ['/tabs/connection-center'], {
+            queryParams: { from: 'home' },
+          });
         } else if (action.target === 'profile') {
           void navigateAppForward(this.navController, this.router, ['/tabs/profile'], {
             queryParams: { from: 'home' },

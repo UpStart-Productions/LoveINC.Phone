@@ -126,7 +126,7 @@ export function buildConnectionCenterCtaRow(): HomeCtaRowModel {
 
 export function buildGetHelpCtaRow(
   description: string,
-  action: 'profile' | 'gap-ministries' | 'assistance-intro'
+  action: 'profile' | 'gap-ministries' | 'connection-center'
 ): HomeCtaRowModel {
   return {
     id: 'get-help',
