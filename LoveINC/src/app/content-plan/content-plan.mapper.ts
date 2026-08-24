@@ -166,9 +166,13 @@ function mapPlatformPlanAuthor(
 ): ContentPlan['author'] {
   const name = author?.name?.trim() ?? '';
   const avatarRaw = author?.avatarUrl?.trim();
+  const title = author?.title?.trim();
+  const bio = author?.bio?.trim();
   return {
     name,
     avatarUrl: avatarRaw ? resolveUploadUrl(avatarRaw) : undefined,
+    title: title || undefined,
+    bio: bio || undefined,
   };
 }
 

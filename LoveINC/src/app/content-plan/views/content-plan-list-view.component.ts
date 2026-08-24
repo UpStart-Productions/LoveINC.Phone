@@ -1,23 +1,19 @@
 import { Component, Input } from '@angular/core';
-import { IonIcon } from '@ionic/angular/standalone';
 import { ContentCardListComponent } from '../../components/content-card-list/content-card-list.component';
 import type { ContentCardListItem } from '../../components/content-card-list/content-card-list.model';
+import { ContentPlanAuthorHeroComponent } from '../components/content-plan-author-hero/content-plan-author-hero.component';
 import { resolveMomentBlockText, resolvePlanCoverImageUrl } from '../content-plan.mapper';
 import type { ContentPlan } from '../content-plan.model';
 
 @Component({
   selector: 'app-content-plan-list-view',
   standalone: true,
-  imports: [IonIcon, ContentCardListComponent],
+  imports: [ContentPlanAuthorHeroComponent, ContentCardListComponent],
   templateUrl: './content-plan-list-view.component.html',
 })
 export class ContentPlanListViewComponent {
   @Input({ required: true }) plan!: ContentPlan;
   @Input() navigationFrom = 'content-plan';
-
-  get hasPlanAuthor(): boolean {
-    return !!this.plan.author.name?.trim();
-  }
 
   get listItems(): ContentCardListItem[] {
     const planCoverUrl = resolvePlanCoverImageUrl(this.plan);

@@ -25,6 +25,10 @@ export interface ContentPlanMoment {
 export interface ContentPlanAuthor {
   name: string;
   avatarUrl?: string;
+  /** Job / role title when available from the plan or team record. */
+  title?: string;
+  /** Bio HTML when available from the plan or team record. */
+  bio?: string;
 }
 
 export interface ContentPlanTheme {

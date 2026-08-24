@@ -404,6 +404,8 @@ export interface PlatformHomeFeedItem {
 export interface PlatformPlanAuthor {
   name: string;
   avatarUrl?: string | null;
+  title?: string | null;
+  bio?: string | null;
 }
 
 export type PlatformThemeDisplayStyle = 'COVER_CARDS' | 'DETAIL_CARDS' | 'LIST';

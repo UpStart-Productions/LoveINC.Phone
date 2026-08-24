@@ -1,12 +1,13 @@
 import { Component, Input } from '@angular/core';
-import { IonCard, IonIcon } from '@ionic/angular/standalone';
+import { IonCard } from '@ionic/angular/standalone';
+import { ContentPlanAuthorHeroComponent } from '../components/content-plan-author-hero/content-plan-author-hero.component';
 import { MomentBlocksComponent } from '../components/moment-blocks/moment-blocks.component';
 import type { ContentPlan, ContentPlanMoment } from '../content-plan.model';
 
 @Component({
   selector: 'app-content-plan-multi-view',
   standalone: true,
-  imports: [IonCard, IonIcon, MomentBlocksComponent],
+  imports: [IonCard, ContentPlanAuthorHeroComponent, MomentBlocksComponent],
   templateUrl: './content-plan-multi-view.component.html',
 })
 export class ContentPlanMultiViewComponent {
@@ -15,9 +16,5 @@ export class ContentPlanMultiViewComponent {
 
   get activeMoment(): ContentPlanMoment | null {
     return this.plan.moments[this.pageIndex] ?? null;
-  }
-
-  get hasPlanAuthor(): boolean {
-    return !!this.plan.author.name?.trim();
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, map, shareReplay } from 'rxjs';
+import { Observable, forkJoin, map, shareReplay } from 'rxjs';
 import { PlatformApiService } from '../services/platform/platform-api.service';
+import { enrichPlanAuthorFromTeam } from './content-plan-author.util';
 import {
   mapPlatformPlanToContentPlan,
   mapPlatformTheme,
@@ -21,14 +22,25 @@ export class ContentPlanService {
     }
 
     if (!this.plansCache$) {
-      this.plansCache$ = this.platformApi.getPlans().pipe(
-        map((plans) =>
+      this.plansCache$ = forkJoin({
+        plans: this.platformApi.getPlans(),
+        team: this.platformApi.getTeam(),
+      }).pipe(
+        map(({ plans, team }) =>
           sortContentPlansByOrder(
-            plans.map((plan) =>
-              mapPlatformPlanToContentPlan(plan, (path) =>
+            plans.map((plan) => {
+              const mapped = mapPlatformPlanToContentPlan(plan, (path) =>
                 this.platformApi.resolveUploadUrl(path)
-              )
-            )
+              );
+              return {
+                ...mapped,
+                author: enrichPlanAuthorFromTeam(
+                  mapped.author,
+                  team,
+                  (path) => this.platformApi.resolveUploadUrl(path)
+                ),
+              };
+            })
           )
         ),
         shareReplay(1)

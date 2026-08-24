@@ -4,25 +4,7 @@
     <div class="content-reader-hero__gradient" aria-hidden="true"></div>
     <div class="content-reader-hero__text">
       <p class="content-reader-hero__title app-title">{{ plan.title }}</p>
-      @if (hasPlanAuthor) {
-        <div class="content-reader-hero__author">
-          @if (plan.author.avatarUrl) {
-            <img
-              class="content-reader-hero__author-avatar"
-              [src]="plan.author.avatarUrl"
-              [alt]="plan.author.name"
-            />
-          } @else {
-            <span
-              class="content-reader-hero__author-avatar content-reader-hero__author-avatar--placeholder"
-              aria-hidden="true"
-            >
-              <ion-icon name="person-outline"></ion-icon>
-            </span>
-          }
-          <span class="content-reader-hero__author-label">By {{ plan.author.name }}</span>
-        </div>
-      }
+      <app-content-plan-author-hero [author]="plan.author" />
     </div>
   </div>
 }
