@@ -4,6 +4,7 @@ import {
   OnDestroy,
   CUSTOM_ELEMENTS_SCHEMA,
   DestroyRef,
+  NgZone,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -26,7 +27,7 @@ import {
 import { SimpleBudgetDatabaseService, WeekPlanService } from '@upstart-productions/simple-budget';
 import { GoalTrackerRefreshService } from './goal-tracker-tabs/services/goal-tracker-refresh.service';
 import { PushRegistrationService } from './services/push-registration.service';
-import { ServiceUnlockService } from '@upstart-productions/service-unlock';
+import { ServiceUnlockService, ServiceUnlockDatabaseService } from '@upstart-productions/service-unlock';
 import { getNotificationRoute } from './shared/utils/notification-deeplink';
 import { setDisplayTimeZone } from './shared/utils';
 import { addIcons } from 'ionicons';
@@ -164,12 +165,8 @@ import {
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  /** Blocks router until DBs are ready; prevents empty Goal Tracker when live-reload causes WebView reload on resume */
-  appReady = false;
   private appStateListener: { remove: () => Promise<void> } | undefined;
-  private dbInitTimeoutId: ReturnType<typeof setTimeout> | undefined;
-  /** If SQLite/native bridge hangs after a long background / WebView restart, still show the shell. */
-  private readonly dbInitTimeoutMs = 10_000;
+  private lastForegroundHandledAt = 0;
 
   constructor(
     private onboardingService: OnboardingService,
@@ -182,11 +179,13 @@ export class AppComponent implements OnInit, OnDestroy {
     private goalTrackerDb: GoalTrackerDatabaseService,
     private journalDb: JournalDatabaseService,
     private simpleBudgetDb: SimpleBudgetDatabaseService,
+    private serviceUnlockDb: ServiceUnlockDatabaseService,
     private weekPlanService: WeekPlanService,
     private goalTrackerRefresh: GoalTrackerRefreshService,
     private pushRegistration: PushRegistrationService,
     private router: Router,
     private serviceUnlock: ServiceUnlockService,
+    private ngZone: NgZone,
     private destroyRef: DestroyRef
   ) {
     // Initialize all icons for app-wide use
@@ -237,47 +236,23 @@ export class AppComponent implements OnInit, OnDestroy {
     this.syncAppUserFromApi();
     this.loadAffiliateTimeZone();
 
-    this.dbInitTimeoutId = setTimeout(() => {
-      this.dbInitTimeoutId = undefined;
-      if (!this.appReady) {
-        console.warn(
-          'AppComponent: database init still pending after ' +
-            this.dbInitTimeoutMs +
-            'ms; showing app shell (possible WebView resume / native bridge delay).'
-        );
-        this.markAppReady();
-      }
-    }, this.dbInitTimeoutMs);
+    this.initDatabasesInBackground();
 
-    // Initialize databases before router loads
-    await Promise.all([
-      this.grovlinkDb.getDbConnection().catch((err) => {
-        console.warn('GrovLink DB init deferred:', err);
-      }),
-      this.goalTrackerDb.getDbConnection().catch((err) => {
-        console.warn('Goal Tracker DB init deferred:', err);
-      }),
-      this.simpleBudgetDb.getDbConnection().catch((err) => {
-        console.warn('Simple Budget DB init deferred:', err);
-      }),
-      this.journalDb.getDbConnection().catch((err) => {
-        console.warn('Journal DB init deferred:', err);
-      }),
-    ]).catch(() => {});
-    this.markAppReady();
-
-    // Refresh app user data and Goal Tracker when returning to foreground.
+    // Refresh data, reconcile SQLite, and repaint when returning to foreground.
     try {
       this.appStateListener = await App.addListener('appStateChange', (state) => {
         if (!state.isActive) {
           return;
         }
-        this.syncAppUserFromApi();
-        this.goalTrackerRefresh.requestRefresh();
+        void this.onAppForeground();
       });
     } catch (error) {
       console.log('App plugin not available');
     }
+
+    this.platform.resume.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      void this.onAppForeground();
+    });
 
     // Push: returning users get a deferred prompt so it is not the first system dialog on cold start.
     if (this.onboardingService.hasCompletedOnboarding()) {
@@ -319,15 +294,55 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  private markAppReady(): void {
-    if (this.appReady) {
+  private initDatabasesInBackground(): void {
+    void Promise.all([
+      this.grovlinkDb.getDbConnection().catch((err) => {
+        console.warn('GrovLink DB init deferred:', err);
+      }),
+      this.goalTrackerDb.getDbConnection().catch((err) => {
+        console.warn('Goal Tracker DB init deferred:', err);
+      }),
+      this.simpleBudgetDb.getDbConnection().catch((err) => {
+        console.warn('Simple Budget DB init deferred:', err);
+      }),
+      this.journalDb.getDbConnection().catch((err) => {
+        console.warn('Journal DB init deferred:', err);
+      }),
+      this.serviceUnlockDb.getDbConnection().catch((err) => {
+        console.warn('Service Unlock DB init deferred:', err);
+      }),
+    ]).catch(() => {});
+  }
+
+  private async onAppForeground(): Promise<void> {
+    const now = Date.now();
+    if (now - this.lastForegroundHandledAt < 500) {
       return;
     }
-    if (this.dbInitTimeoutId !== undefined) {
-      clearTimeout(this.dbInitTimeoutId);
-      this.dbInitTimeoutId = undefined;
+    this.lastForegroundHandledAt = now;
+
+    this.ngZone.run(() => this.forceWebViewRepaint());
+
+    await Promise.all([
+      this.grovlinkDb.reconcileConnectionsOnResume(),
+      this.goalTrackerDb.reconcileConnectionsOnResume(),
+      this.simpleBudgetDb.reconcileConnectionsOnResume(),
+      this.journalDb.reconcileConnectionsOnResume(),
+      this.serviceUnlockDb.reconcileConnectionsOnResume(),
+    ]).catch(() => {});
+
+    this.syncAppUserFromApi();
+    this.goalTrackerRefresh.requestRefresh();
+  }
+
+  /** Nudge WKWebView compositing after long background (blank white layer on iOS). */
+  private forceWebViewRepaint(): void {
+    if (typeof document === 'undefined') {
+      return;
     }
-    this.appReady = true;
+    document.body.classList.add('app-resume-repaint');
+    void document.body.offsetHeight;
+    document.body.classList.remove('app-resume-repaint');
   }
 
   private loadAffiliateTimeZone(): void {
@@ -375,10 +390,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   async ngOnDestroy() {
-    if (this.dbInitTimeoutId !== undefined) {
-      clearTimeout(this.dbInitTimeoutId);
-      this.dbInitTimeoutId = undefined;
-    }
     // Remove app state listener
     if (this.appStateListener) {
       try {

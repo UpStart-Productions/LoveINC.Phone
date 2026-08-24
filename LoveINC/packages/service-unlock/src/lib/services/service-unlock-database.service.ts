@@ -5,6 +5,7 @@ import {
   SQLiteDBConnection,
 } from '@capacitor-community/sqlite';
 import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 import type { UnlockState } from '../types/service-unlock.types';
 
 /**
@@ -39,7 +40,38 @@ export class ServiceUnlockDatabaseService {
     } catch {
       // Plugin may not be ready on web before jeep-sqlite init
     }
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const { result } = await this.sqlite.checkConnectionsConsistency();
+        if (result === false) {
+          ServiceUnlockDatabaseService.sharedDb = null;
+          this.db = null;
+        }
+      } catch {
+        ServiceUnlockDatabaseService.sharedDb = null;
+        this.db = null;
+      }
+    }
     return true;
+  }
+
+  /** Re-sync JS/native SQLite handles after long background (iOS WKWebView resume). */
+  async reconcileConnectionsOnResume(): Promise<void> {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
+    try {
+      const { result } = await this.sqlite.checkConnectionsConsistency();
+      if (result !== false) {
+        return;
+      }
+    } catch {
+      // Fall through to reset stale handles.
+    }
+    ServiceUnlockDatabaseService.sharedDb = null;
+    this.db = null;
+    ServiceUnlockDatabaseService.initPromise = null;
+    await this.getDbConnection().catch(() => {});
   }
 
   async openDatabase(): Promise<void> {

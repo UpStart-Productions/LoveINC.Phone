@@ -68,6 +68,25 @@ export class GrovLinkDatabaseService {
     return true;
   }
 
+  /** Re-sync JS/native SQLite handles after long background (iOS WKWebView resume). */
+  async reconcileConnectionsOnResume(): Promise<void> {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
+    try {
+      const { result } = await this.sqlite.checkConnectionsConsistency();
+      if (result !== false) {
+        return;
+      }
+    } catch {
+      // Fall through to reset stale handles.
+    }
+    GrovLinkDatabaseService.sharedDb = null;
+    this.db = null;
+    GrovLinkDatabaseService.initPromise = null;
+    await this.getDbConnection().catch(() => {});
+  }
+
   async openDatabase(): Promise<void> {
     if (GrovLinkDatabaseService.sharedDb) {
       this.db = GrovLinkDatabaseService.sharedDb;

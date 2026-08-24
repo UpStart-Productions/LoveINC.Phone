@@ -4,6 +4,7 @@ import {
   SQLiteConnection,
   SQLiteDBConnection,
 } from '@capacitor-community/sqlite';
+import { Capacitor } from '@capacitor/core';
 import { Platform } from '@ionic/angular';
 
 /**
@@ -41,6 +42,24 @@ export class JournalDatabaseService {
       // ignore
     }
     return true;
+  }
+
+  /** Re-sync JS/native SQLite handles after long background (iOS WKWebView resume). */
+  async reconcileConnectionsOnResume(): Promise<void> {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
+    try {
+      const { result } = await this.sqlite.checkConnectionsConsistency();
+      if (result !== false) {
+        return;
+      }
+    } catch {
+      // Fall through to reset stale handles.
+    }
+    this.resetConnection();
+    JournalDatabaseService.initPromise = null;
+    await this.getDbConnection().catch(() => {});
   }
 
   async openDatabase(): Promise<void> {
