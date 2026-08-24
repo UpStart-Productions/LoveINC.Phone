@@ -1,4 +1,6 @@
 PODS:
+  - Alamofire (5.10.2)
+  - BigInt (5.2.0)
   - Capacitor (8.0.1):
     - CapacitorCordova
   - CapacitorApp (8.0.0):
@@ -40,6 +42,12 @@ PODS:
     - Capacitor
   - CapacitorStatusBar (8.0.0):
     - Capacitor
+  - CapgoCapacitorUpdater (8.51.14):
+    - Alamofire (= 5.10.2)
+    - BigInt (= 5.2.0)
+    - Capacitor
+    - Version (= 0.8.0)
+    - ZIPFoundation (~> 0.9)
   - EbarooniCapacitorCalendar (8.0.1):
     - Capacitor
   - GoogleDataTransport (10.1.0):
@@ -94,6 +102,7 @@ PODS:
   - SQLCipher/common (4.10.0)
   - SQLCipher/standard (4.10.0):
     - SQLCipher/common
+  - Version (0.8.0)
   - ZIPFoundation (0.9.20)
 
 DEPENDENCIES:
@@ -116,10 +125,13 @@ DEPENDENCIES:
   - "CapacitorShare (from `../../node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
+  - "CapgoCapacitorUpdater (from `../../node_modules/@capgo/capacitor-updater`)"
   - "EbarooniCapacitorCalendar (from `../../node_modules/@ebarooni/capacitor-calendar`)"
 
 SPEC REPOS:
   trunk:
+    - Alamofire
+    - BigInt
     - GoogleDataTransport
     - GoogleMLKit
     - GoogleToolboxForMac
@@ -133,6 +145,7 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - SQLCipher
+    - Version
     - ZIPFoundation
 
 EXTERNAL SOURCES:
@@ -174,10 +187,14 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/splash-screen"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
+  CapgoCapacitorUpdater:
+    :path: "../../node_modules/@capgo/capacitor-updater"
   EbarooniCapacitorCalendar:
     :path: "../../node_modules/@ebarooni/capacitor-calendar"
 
 SPEC CHECKSUMS:
+  Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
+  BigInt: f668a80089607f521586bbe29513d708491ef2f7
   Capacitor: ff35b0f66370b84aa238251b35b91886a3207c16
   CapacitorApp: 3963a84197280757b84f126afd1520a85ae3b092
   CapacitorAppLauncher: 7f2330aa2d8a72a4767ab05af9df4bf68166ebf0
@@ -197,6 +214,7 @@ SPEC CHECKSUMS:
   CapacitorShare: 12f1d192170cbcf9f108fd675ac8e343761a4638
   CapacitorSplashScreen: 422880d7117605c30699eb4b21644b62db42e86c
   CapacitorStatusBar: 312e2e67928dfe9514c4a8916a1fd610552f5f35
+  CapgoCapacitorUpdater: 46ee5ced3cadce0db3d3c720bdd9c8442a25d526
   EbarooniCapacitorCalendar: 7f286e9a761e00bf899a11077ca0ca9514b2ac00
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleMLKit: ddd51d7dff36ff28defa69afedd9cdce684fd857
@@ -211,8 +229,9 @@ SPEC CHECKSUMS:
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   SQLCipher: eb79c64049cb002b4e9fcb30edb7979bf4706dfc
+  Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
 
-PODFILE CHECKSUM: 768a2e082514976ef1d1bb74ee5e280cf7f48120
+PODFILE CHECKSUM: a0f9363a5a4327b7e864428c7ea82f89164d250d
 
 COCOAPODS: 1.16.2

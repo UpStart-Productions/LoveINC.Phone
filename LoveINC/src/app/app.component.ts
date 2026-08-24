@@ -13,6 +13,7 @@ import { Capacitor } from '@capacitor/core';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { App } from '@capacitor/app';
+import { CapacitorUpdater } from '@capgo/capacitor-updater';
 import { OnboardingService } from './services/onboarding.service';
 import { UserProfileService } from './services/user-profile.service';
 import { AppUserDataService } from './services/app-user-data.service';
@@ -311,7 +312,23 @@ export class AppComponent implements OnInit, OnDestroy {
       this.serviceUnlockDb.getDbConnection().catch((err) => {
         console.warn('Service Unlock DB init deferred:', err);
       }),
-    ]).catch(() => {});
+    ])
+      .catch(() => {})
+      .then(() => this.notifyUpdaterAppReady());
+  }
+
+  /**
+   * Tell capacitor-updater the app booted successfully. Until this is called (within
+   * appReadyTimeout, 10s - see capacitor.config.ts), the plugin treats the currently-applied
+   * OTA bundle as unconfirmed and auto-reverts to the last-known-good bundle on next launch.
+   * Called after SQLite init settles above (each DB's own errors are already caught and
+   * logged there) so a broken OTA bundle can never permanently strand a user on it.
+   */
+  private notifyUpdaterAppReady(): void {
+    if (!Capacitor.isNativePlatform()) return;
+    CapacitorUpdater.notifyAppReady().catch((err) => {
+      console.warn('CapacitorUpdater.notifyAppReady failed:', err);
+    });
   }
 
   private async onAppForeground(): Promise<void> {
