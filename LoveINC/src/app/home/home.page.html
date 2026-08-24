@@ -16,48 +16,51 @@
   <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  @if (homeCtaRows.length) {
-    <ion-card class="home-cta-card">
-      @for (row of homeCtaRows; track row.id) {
-        <app-home-cta-row [row]="row"></app-home-cta-row>
-      }
-    </ion-card>
-  }
 
-  <app-verse-of-the-day-widget></app-verse-of-the-day-widget>
+  <div class="home-sections">
+    @if (homeCtaRows.length) {
+      <ion-card class="home-cta-card">
+        @for (row of homeCtaRows; track row.id) {
+          <app-home-cta-row [row]="row"></app-home-cta-row>
+        }
+      </ion-card>
+    }
 
-  <app-simple-budget-home-widget></app-simple-budget-home-widget>
+    <app-verse-of-the-day-widget></app-verse-of-the-day-widget>
 
-  <app-goal-tracker-home-widget></app-goal-tracker-home-widget>
+    <app-simple-budget-home-widget></app-simple-budget-home-widget>
 
-  @if (homeMicrolearningThemes.length) {
-    <div class="home-microlearning-section m-t-12 m-b-6">
-      @for (theme of homeMicrolearningThemes; track theme.id) {
-        <app-microlearning-theme-widget
-          [themeId]="theme.id"
-          [sectionTitleIconSvg]="theme.iconSvg"
-          [sectionTitleInset]="microlearningSectionTitleInset"
-          [clickable]="true"
-          (slideClick)="onPeekPlanSlideClick($event)"
-        />
-      }
+    <app-goal-tracker-home-widget></app-goal-tracker-home-widget>
+
+    @for (theme of homeMicrolearningThemes; track theme.id) {
+      <app-microlearning-theme-widget
+        [themeId]="theme.id"
+        [sectionTitleIconSvg]="theme.iconSvg"
+        [sectionTitleInset]="microlearningSectionTitleInset"
+        [clickable]="true"
+        (slideClick)="onPeekPlanSlideClick($event)"
+      />
+    }
+
+    @if (showShareAppCard) {
+      <app-home-share-app-card (dismiss)="onShareAppCardDismiss()" />
+    }
+
+    <div class="cards-container">
+      <app-card
+        *ngFor="let card of cards"
+        class="app-card-compact"
+        [class.app-card-impact]="card.type === 'impact'"
+        [imageUrl]="card.photoUrl"
+        [badge]="card.badge"
+        [title]="card.title"
+        [subtitle]="card.subtitle"
+        [description]="card.shortDescription"
+        [actionIcons]="getActionIcons(card)"
+        [clickable]="true"
+        (cardClick)="navigateToCard(card)"
+        (shareClick)="onShareCard(card)">
+      </app-card>
     </div>
-  }
-
-  <div class="cards-container">
-    <app-card
-      *ngFor="let card of cards"
-      class="app-card-compact"
-      [class.app-card-impact]="card.type === 'impact'"
-      [imageUrl]="card.photoUrl"
-      [badge]="card.badge"
-      [title]="card.title"
-      [subtitle]="card.subtitle"
-      [description]="card.shortDescription"
-      [actionIcons]="getActionIcons(card)"
-      [clickable]="true"
-      (cardClick)="navigateToCard(card)"
-      (shareClick)="onShareCard(card)">
-    </app-card>
   </div>
 </ion-content>

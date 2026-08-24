@@ -25,6 +25,7 @@ import type {
   standalone: true,
   imports: [CommonModule, PeekCarouselComponent],
   templateUrl: './microlearning-theme-widget.component.html',
+  styleUrl: './microlearning-theme-widget.component.scss',
 })
 export class MicrolearningThemeWidgetComponent implements OnInit, OnChanges {
   private readonly contentPlanService = inject(ContentPlanService);

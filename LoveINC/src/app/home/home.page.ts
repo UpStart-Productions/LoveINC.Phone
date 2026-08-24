@@ -45,9 +45,11 @@ import { UserProfileService } from '../services/user-profile.service';
 import { DeviceIdService } from '../services/device-id.service';
 import { AppUserDataService } from '../services/app-user-data.service';
 import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
+import { DismissedShareAppCardService } from '../services/dismissed-share-app-card.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { CalendarService } from '../services/calendar/calendar.service';
 import { MicrolearningThemeWidgetComponent } from '../components/microlearning-theme-widget/microlearning-theme-widget.component';
+import { HomeShareAppCardComponent } from '../components/home-share-app-card/home-share-app-card.component';
 import { ContentPlanService } from '../content-plan/content-plan.service';
 import type { ContentPlanTheme } from '../content-plan/content-plan.model';
 import type { PeekCarouselSlideClick } from '../components/peek-carousel/peek-carousel.model';
@@ -87,6 +89,7 @@ export type ClientSupportCardState =
     GoalTrackerHomeWidgetComponent,
     NotificationsButtonComponent,
     MicrolearningThemeWidgetComponent,
+    HomeShareAppCardComponent,
   ],
 })
 export class HomePage implements OnInit {
@@ -107,6 +110,7 @@ export class HomePage implements OnInit {
 
   cards: HomeCard[] = [];
   homeMicrolearningThemes: ContentPlanTheme[] = [];
+  showShareAppCard = false;
   welcomeTitle = 'Welcome to Love INC';
   giveCtas: PlatformCta[] = [];
   volunteerCtas: PlatformCta[] = [];
@@ -133,6 +137,7 @@ export class HomePage implements OnInit {
     private deviceIdService: DeviceIdService,
     private appUserDataService: AppUserDataService,
     private dismissedVouchersService: DismissedVouchersService,
+    private dismissedShareAppCardService: DismissedShareAppCardService,
     private serviceUnlock: ServiceUnlockService,
     private calendarService: CalendarService,
     private contentPlanService: ContentPlanService
@@ -145,6 +150,7 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
+    this.showShareAppCard = !this.dismissedShareAppCardService.isDismissed();
     this.loadCards();
     this.loadHomeMicrolearningThemes();
     this.loadCtas();
@@ -426,6 +432,11 @@ export class HomePage implements OnInit {
     } catch {
       // ignore
     }
+  }
+
+  onShareAppCardDismiss(): void {
+    this.dismissedShareAppCardService.dismiss();
+    this.showShareAppCard = false;
   }
 
   openDonateMenu() {

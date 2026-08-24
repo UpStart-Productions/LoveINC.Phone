@@ -3,7 +3,6 @@ import type { ContentPlan } from '../../content-plan/content-plan.model';
 import {
   formatContentPlanCreatedAtLabel,
   mapContentPlanToListItem,
-  resolveMomentBlockText,
   resolvePlanCoverImageUrl,
 } from '../../content-plan/content-plan.mapper';
 import type { PeekCarouselCoverItem, PeekCarouselListSlide, PeekCarouselMediaItem } from './peek-carousel.model';
@@ -28,14 +27,10 @@ export function mapContentPlanToCoverItem(plan: ContentPlan): PeekCarouselCoverI
 export function mapContentPlanToMediaItem(plan: ContentPlan): PeekCarouselMediaItem {
   const imageUrl = resolvePlanCoverImageUrl(plan);
   const author = plan.author.name?.trim();
-  const subtitle = plan.moments[0]
-    ? resolveMomentBlockText(plan.moments[0], 'subtitle')
-    : undefined;
 
   return {
     id: plan.id,
     title: plan.title,
-    description: subtitle,
     imageUrl,
     imageColor: '#349394',
     authorName: author || 'Love INC',

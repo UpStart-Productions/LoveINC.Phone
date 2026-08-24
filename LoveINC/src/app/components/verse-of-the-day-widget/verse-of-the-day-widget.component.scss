@@ -1,1 +1,3 @@
-/* Verse of the Day uses content-card; title typography in content-card via :host-context */
+:host {
+  display: block;
+}

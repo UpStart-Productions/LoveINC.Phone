@@ -21,6 +21,9 @@ export interface SharingOptions {
 
   /** Optional URL to append (e.g. App Store / Play Store listing for “share the app”). */
   url?: string;
+
+  /** Action sheet header (defaults to “Share Content”). */
+  actionSheetHeader?: string;
 }
 
 /**

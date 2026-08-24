@@ -20,11 +20,37 @@ export interface ClassRegistrationPayloadForStorage {
   deviceId?: string;
 }
 
+/** One versioned schema step. Migrations are additive-only (new tables/columns/indexes) —
+ *  never DROP or RENAME, so an OTA rollback to an older JS bundle still works against a
+ *  DB that's been migrated forward. `statements` run together in one transaction; if any
+ *  statement throws, the whole migration (including the user_version bump) rolls back so
+ *  it's retried cleanly on the next app launch instead of leaving the DB half-migrated. */
+interface OtaDbMigration {
+  version: number;
+  description: string;
+  statements: string[];
+}
+
 /**
  * GrovLink Database Service
  *
  * Generic app database for features that need local storage (e.g. read notifications).
  * Supports iOS, Android, and Web (via jeep-sqlite).
+ *
+ * Schema changes ship via OTA bundles, so this class owns a `PRAGMA user_version`-based
+ * migration runner instead of a single `CREATE TABLE IF NOT EXISTS` block: every DB open
+ * (fresh install AND every relaunch after that) runs `runMigrations()`, which applies only
+ * the migrations newer than the DB's current user_version, in order. A brand-new install
+ * starts at user_version 0 and runs every migration starting at MIGRATIONS[0]; an existing
+ * install on disk just picks up whatever is newer than what it already has. This is what
+ * replaces the old approach of calling createTables() ad hoc — there is no code path left
+ * that opens this DB without going through the runner, so a migration can never be silently
+ * skipped.
+ *
+ * To ship a schema change in a future OTA bundle: add a new entry to MIGRATIONS with the
+ * next version number and additive-only SQL (ADD COLUMN / CREATE TABLE / CREATE INDEX).
+ * Never edit an existing entry once it has shipped — devices that already applied it must
+ * never see it change under them.
  */
 @Injectable({
   providedIn: 'root',
@@ -36,6 +62,55 @@ export class GrovLinkDatabaseService {
   private static sharedDb: SQLiteDBConnection | null = null;
   private static initPromise: Promise<void> | null = null;
   private readonly DB_NAME = 'grovlink';
+
+  /** Baseline schema (v1) plus every schema change shipped since. Append-only — see class doc. */
+  private readonly MIGRATIONS: OtaDbMigration[] = [
+    {
+      version: 1,
+      description: 'Baseline schema: read notifications, verse cache, class registrations, tool/plan responses, app preferences.',
+      statements: [
+        `CREATE TABLE IF NOT EXISTS read_notifications (
+          id TEXT PRIMARY KEY,
+          readAt TEXT NOT NULL
+        );`,
+        `CREATE TABLE IF NOT EXISTS verse_of_the_day_cache (
+          dateKey TEXT PRIMARY KEY,
+          json TEXT NOT NULL
+        );`,
+        `CREATE TABLE IF NOT EXISTS class_registrations (
+          id TEXT PRIMARY KEY,
+          server_id TEXT NOT NULL,
+          class_id TEXT NOT NULL,
+          class_title TEXT,
+          class_schedule_label TEXT,
+          submitted_at TEXT NOT NULL,
+          payload_json TEXT NOT NULL
+        );`,
+        `CREATE INDEX IF NOT EXISTS idx_class_registrations_class_id
+         ON class_registrations (class_id);`,
+        `CREATE TABLE IF NOT EXISTS transformation_tool_responses (
+          tool_id TEXT NOT NULL,
+          input_key TEXT NOT NULL,
+          value_json TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          PRIMARY KEY (tool_id, input_key)
+        );`,
+        `CREATE TABLE IF NOT EXISTS content_plan_responses (
+          plan_id TEXT NOT NULL,
+          input_key TEXT NOT NULL,
+          value_json TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          PRIMARY KEY (plan_id, input_key)
+        );`,
+        `CREATE TABLE IF NOT EXISTS app_preferences (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL
+        );`,
+      ],
+    },
+    // Next schema change goes here as { version: 2, description: '...', statements: [...] }.
+    // Additive only: ADD COLUMN / CREATE TABLE IF NOT EXISTS / CREATE INDEX IF NOT EXISTS.
+  ];
 
   constructor(private platformService: Platform) {
     this.sqlite = new SQLiteConnection(CapacitorSQLite);
@@ -113,7 +188,7 @@ export class GrovLinkDatabaseService {
           if (!isOpen) await this.db.open();
         }
         GrovLinkDatabaseService.sharedDb = this.db;
-        await this.createTables();
+        await this.runMigrations(this.db);
         return;
       } catch {
         // No existing connection
@@ -142,65 +217,64 @@ export class GrovLinkDatabaseService {
 
       await this.db.open();
       GrovLinkDatabaseService.sharedDb = this.db;
-      await this.createTables();
+      await this.runMigrations(this.db);
     } finally {
       GrovLinkDatabaseService.initPromise = null;
     }
   }
 
-  private async createTables(): Promise<void> {
-    const db = await this.getDbConnection();
-    await db.execute(`
-      CREATE TABLE IF NOT EXISTS read_notifications (
-        id TEXT PRIMARY KEY,
-        readAt TEXT NOT NULL
-      );
-    `);
-    await db.execute(`
-      CREATE TABLE IF NOT EXISTS verse_of_the_day_cache (
-        dateKey TEXT PRIMARY KEY,
-        json TEXT NOT NULL
-      );
-    `);
-    await db.execute(`
-      CREATE TABLE IF NOT EXISTS class_registrations (
-        id TEXT PRIMARY KEY,
-        server_id TEXT NOT NULL,
-        class_id TEXT NOT NULL,
-        class_title TEXT,
-        class_schedule_label TEXT,
-        submitted_at TEXT NOT NULL,
-        payload_json TEXT NOT NULL
-      );
-    `);
-    await db.execute(`
-      CREATE INDEX IF NOT EXISTS idx_class_registrations_class_id
-      ON class_registrations (class_id);
-    `);
-    await db.execute(`
-      CREATE TABLE IF NOT EXISTS transformation_tool_responses (
-        tool_id TEXT NOT NULL,
-        input_key TEXT NOT NULL,
-        value_json TEXT NOT NULL,
-        updated_at TEXT NOT NULL,
-        PRIMARY KEY (tool_id, input_key)
-      );
-    `);
-    await db.execute(`
-      CREATE TABLE IF NOT EXISTS content_plan_responses (
-        plan_id TEXT NOT NULL,
-        input_key TEXT NOT NULL,
-        value_json TEXT NOT NULL,
-        updated_at TEXT NOT NULL,
-        PRIMARY KEY (plan_id, input_key)
-      );
-    `);
-    await db.execute(`
-      CREATE TABLE IF NOT EXISTS app_preferences (
-        key TEXT PRIMARY KEY,
-        value TEXT NOT NULL
-      );
-    `);
+  /** Read `PRAGMA user_version` off the connection (0 for a brand-new, never-migrated DB). */
+  private async getSchemaVersion(db: SQLiteDBConnection): Promise<number> {
+    const result = await db.query('PRAGMA user_version;');
+    const row = result?.values?.[0];
+    if (row === undefined || row === null) return 0;
+    let raw: unknown;
+    if (Array.isArray(row)) {
+      raw = row[0];
+    } else if (typeof row === 'object' && 'user_version' in (row as Record<string, unknown>)) {
+      raw = (row as Record<string, unknown>)['user_version'];
+    } else {
+      raw = row;
+    }
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  /**
+   * Apply every migration newer than the DB's current user_version, in order, one at a time.
+   * Each migration's statements + its user_version bump run in a single transaction, so a
+   * failure partway through rolls the whole step back — the DB is left at the last fully
+   * applied version rather than half-migrated, and the step is retried on the next launch.
+   */
+  private async runMigrations(db: SQLiteDBConnection): Promise<void> {
+    const currentVersion = await this.getSchemaVersion(db);
+    const pending = this.MIGRATIONS.filter((m) => m.version > currentVersion).sort(
+      (a, b) => a.version - b.version
+    );
+
+    for (const migration of pending) {
+      try {
+        await db.beginTransaction();
+        for (const statement of migration.statements) {
+          await db.execute(statement, false);
+        }
+        // PRAGMA user_version doesn't accept bound parameters; the value is our own
+        // integer literal (never user input), so string interpolation here is safe.
+        await db.execute(`PRAGMA user_version = ${migration.version};`, false);
+        await db.commitTransaction();
+      } catch (error) {
+        try {
+          await db.rollbackTransaction();
+        } catch {
+          // Rollback best-effort; the original error below is what matters.
+        }
+        throw new Error(
+          `OTA DB migration to v${migration.version} ("${migration.description}") failed: ${
+            (error as Error)?.message ?? String(error)
+          }`
+        );
+      }
+    }
   }
 
   async getDbConnection(): Promise<SQLiteDBConnection> {

@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Capacitor } from '@capacitor/core';
 import { AppLauncher } from '@capacitor/app-launcher';
 import { LucideAngularModule } from 'lucide-angular';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { UserProfileService } from '../services/user-profile.service';
-import { SharingService } from '../services/sharing/sharing.service';
-import { environment } from '../../environments/environment';
+import { ShareAppService } from '../services/share-app.service';
 import {
   LOVE_INC_PRIVACY_POLICY_URL,
   LOVE_INC_TERMS_OF_USE_URL,
@@ -83,7 +81,7 @@ export class MorePage implements OnInit {
     private donateButtonService: DonateButtonService,
     private donateActionSheetService: DonateActionSheetService,
     private userProfileService: UserProfileService,
-    private sharingService: SharingService,
+    private shareAppService: ShareAppService,
     readonly appVersion: AppVersionService,
     private appRate: AppRateService
   ) {}
@@ -233,20 +231,7 @@ export class MorePage implements OnInit {
 
   private async openShareApp(): Promise<void> {
     try {
-      const platform = Capacitor.getPlatform();
-      let storeUrl: string | undefined;
-      if (platform === 'ios') {
-        storeUrl = environment.iosAppStoreListingUrl?.trim() || undefined;
-      } else if (platform === 'android') {
-        storeUrl = environment.androidPlayStoreListingUrl?.trim() || undefined;
-      }
-      await this.sharingService.shareContent({
-        title: 'Love INC',
-        subject: 'Love INC app',
-        htmlContent:
-          '<p>Check out the Love INC mobile app for stories, tools, and ways to connect with our community.</p>',
-        url: storeUrl,
-      });
+      await this.shareAppService.shareApp();
     } catch (e) {
       console.error('More: openShareApp failed', e);
     }

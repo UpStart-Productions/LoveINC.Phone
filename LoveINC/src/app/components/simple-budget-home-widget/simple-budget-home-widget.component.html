@@ -1,17 +1,15 @@
 @if (showCard) {
-  <div class="m-t-12 home-widget-below-verse">
-    <app-content-card
-      [compactCategoryLabel]="true"
-      [category]="'Simple Budget'"
-      [categoryIcon]="'wallet-outline'"
-      [title]="cardTitle"
-      [titleSegments]="titleSegments"
-      [detail]="cardDetail"
-      [detailSegments]="detailSegments ?? undefined"
-      [iconName]="'calculator-outline'"
-      [iconBackgroundColor]="'#214491'"
-      [route]="'/tabs/simple-budget/weekly'"
-      [navigationFrom]="'home'"
-    />
-  </div>
+  <app-content-card
+    [compactCategoryLabel]="true"
+    [category]="'Simple Budget'"
+    [categoryIcon]="'wallet-outline'"
+    [title]="cardTitle"
+    [titleSegments]="titleSegments"
+    [detail]="cardDetail"
+    [detailSegments]="detailSegments ?? undefined"
+    [iconName]="'calculator-outline'"
+    [iconBackgroundColor]="'#214491'"
+    [route]="'/tabs/simple-budget/weekly'"
+    [navigationFrom]="'home'"
+  />
 }

@@ -186,6 +186,9 @@
   --app-card-background: #ffffff;
   --app-card-margin-bottom: 1.25rem;
 
+  /** Vertical gap between Home screen sections (CTA, widgets, carousels, feed). */
+  --home-section-gap: calc(0.75rem + 4px);
+
   /** Goal Tracker – themeable colors (override via host app) **/
   --goal-tracker-primary: var(--ion-text-color);
   --goal-tracker-secondary: var(--ion-color-medium);

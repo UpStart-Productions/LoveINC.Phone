@@ -1,0 +1,39 @@
+/*
+ * Home screen vertical rhythm — global so nested widget cards are included.
+ * Tune spacing for the whole screen via --home-section-gap in variables.scss.
+ */
+
+ion-content.home-page .home-sections {
+  padding-top: var(--home-section-gap);
+  padding-bottom: 6.25rem;
+}
+
+/* Custom element hosts default to inline — block so sibling margins apply. */
+ion-content.home-page .home-sections > * {
+  display: block;
+}
+
+/* Space between adjacent sections (empty :host { display: none } widgets are skipped). */
+ion-content.home-page .home-sections > * + * {
+  margin-top: var(--home-section-gap);
+}
+
+/* Stack owns vertical rhythm; cards keep horizontal inset only. */
+ion-content.home-page .home-sections ion-card {
+  margin-block: 0;
+  margin-inline: var(--app-card-margin);
+}
+
+ion-content.home-page .home-sections .cards-container {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Feed rows are nested under .cards-container, not .home-sections > *. */
+ion-content.home-page .home-sections .cards-container > app-card {
+  display: block;
+}
+
+ion-content.home-page .home-sections .cards-container > app-card + app-card {
+  margin-top: var(--home-section-gap);
+}

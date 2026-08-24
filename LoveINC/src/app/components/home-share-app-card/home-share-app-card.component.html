@@ -1,0 +1,17 @@
+<div class="home-share-app-card">
+  <div class="home-share-app-card__hero">
+    <img class="home-share-app-card__image" [src]="photoUrl" alt="" />
+  </div>
+  <div class="home-share-app-card__body">
+    <h3>{{ title }}</h3>
+    <p class="app-body-secondary home-share-app-card__description">{{ blurb }}</p>
+    <div class="home-share-app-card__actions">
+      <button type="button" class="app-link app-body-secondary-sm" (click)="onShareNow()">
+        Share now
+      </button>
+      <button type="button" class="app-link app-body-secondary-sm" (click)="onDismiss()">
+        Dismiss
+      </button>
+    </div>
+  </div>
+</div>

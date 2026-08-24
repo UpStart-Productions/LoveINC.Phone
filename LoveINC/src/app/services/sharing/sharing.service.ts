@@ -28,7 +28,7 @@ export class SharingService {
       
       // Show action sheet with sharing options
       const actionSheet = await this.actionSheetCtrl.create({
-        header: 'Share Content',
+        header: options.actionSheetHeader ?? 'Share Content',
         cssClass: SHARE_ACTION_SHEET_CLASS,
         buttons: [
           {

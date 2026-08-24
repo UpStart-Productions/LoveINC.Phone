@@ -9,6 +9,7 @@
   --peek-carousel-slide-width: calc(100% - var(--peek-carousel-peek));
   --peek-carousel-cover-height: 10.5rem;
   --peek-carousel-media-image-height: 8.75rem;
+  --peek-carousel-media-card-height: calc(var(--peek-carousel-media-image-height) + 6.375rem);
 }
 
 .peek-carousel__section-title {
@@ -40,6 +41,7 @@
 
 .peek-carousel__track {
   display: flex;
+  align-items: flex-start;
   gap: var(--peek-carousel-gap);
   overflow-x: auto;
   overscroll-behavior-x: contain;
@@ -168,6 +170,12 @@
   box-shadow: var(--app-card-shadow);
 }
 
+.peek-carousel--media .peek-carousel-media {
+  display: flex;
+  flex-direction: column;
+  height: var(--peek-carousel-media-card-height);
+}
+
 .peek-carousel-media__image,
 .peek-carousel-media__fill {
   display: block;
@@ -178,8 +186,10 @@
 
 .peek-carousel-media__body {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 0.25rem;
+  min-height: 0;
   padding: 0.875rem 0.875rem 1rem;
 }
 
@@ -189,7 +199,10 @@
 }
 
 .peek-carousel-media__title {
-  display: block;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   font-size: var(--app-font-size-title);
   font-weight: var(--app-font-weight-semibold);
   line-height: var(--app-line-height-title);
