@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import type { ContentCardListItem } from '../components/content-card-list/content-card-list.model';
 import type { PlatformPlan, PlatformPlanMoment, PlatformTheme } from '../services/platform/types';
 import { formatDateRangeCompact } from '../shared/utils/date-time-formatting';
+import { hasMeaningfulRichText } from './content-plan-author.util';
 import type {
   ContentPlan,
   ContentPlanBlock,
@@ -114,6 +115,8 @@ export function mapContentPlanToListItem(
     detail: subtitle,
     authorName: author || undefined,
     authorAvatarUrl: plan.author.avatarUrl,
+    authorTitle: plan.author.title,
+    authorBio: hasMeaningfulRichText(plan.author.bio) ? plan.author.bio : undefined,
     createdAtLabel: formatContentPlanCreatedAtShortLabel(plan.createdAt),
     createdAtInlineWithAuthor: options.createdAtInlineWithAuthor ?? false,
     imageUrl,
@@ -164,15 +167,18 @@ function mapPlatformPlanAuthor(
   author: PlatformPlan['author'] | undefined,
   resolveUploadUrl: (path?: string) => string
 ): ContentPlan['author'] {
-  const name = author?.name?.trim() ?? '';
-  const avatarRaw = author?.avatarUrl?.trim();
-  const title = author?.title?.trim();
-  const bio = author?.bio?.trim();
+  const raw = author;
+  const nested = raw?.person;
+  const name = raw?.name?.trim() ?? nested?.name?.trim() ?? '';
+  const avatarRaw = raw?.avatarUrl?.trim() ?? nested?.photoUrl?.trim();
+  const title = raw?.title?.trim() ?? nested?.title?.trim();
+  const bioCandidate = raw?.bio ?? raw?.notes ?? nested?.bio ?? nested?.notes;
+  const bio = hasMeaningfulRichText(bioCandidate) ? bioCandidate!.trim() : undefined;
   return {
     name,
-    avatarUrl: avatarRaw ? resolveUploadUrl(avatarRaw) : undefined,
+    avatarUrl: avatarRaw ? resolveUploadUrl(avatarRaw) || avatarRaw : undefined,
     title: title || undefined,
-    bio: bio || undefined,
+    bio,
   };
 }
 

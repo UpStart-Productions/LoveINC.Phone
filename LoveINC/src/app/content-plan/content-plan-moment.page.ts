@@ -14,6 +14,7 @@ import {
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { SharingService } from '../services/sharing/sharing.service';
 import { MomentBlocksComponent } from './components/moment-blocks/moment-blocks.component';
+import { ContentPlanAuthorHeroComponent } from './components/content-plan-author-hero/content-plan-author-hero.component';
 import {
   buildContentPlanMomentShareHtml,
   buildContentPlanMomentShareSubject,
@@ -36,6 +37,7 @@ import type { ContentPlan, ContentPlanMoment } from './content-plan.model';
     IonSpinner,
     AppBackButtonComponent,
     MomentBlocksComponent,
+    ContentPlanAuthorHeroComponent,
   ],
   templateUrl: './content-plan-moment.page.html',
 })

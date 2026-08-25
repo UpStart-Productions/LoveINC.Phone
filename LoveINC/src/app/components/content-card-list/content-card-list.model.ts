@@ -39,6 +39,9 @@ export interface ContentCardListItem {
   /** Inline author row under title (avatar left of "By {name}"). */
   authorName?: string;
   authorAvatarUrl?: string;
+  authorTitle?: string;
+  /** Bio HTML — when set, author row opens the bio modal instead of navigating the card. */
+  authorBio?: string;
   /** Creation date above the aside avatar, inline with the theme/category row (e.g. "Jan 1"). */
   createdAtLabel?: string;
   /** When true, shows `createdAtLabel` on the author row (right-aligned) instead of the aside. */

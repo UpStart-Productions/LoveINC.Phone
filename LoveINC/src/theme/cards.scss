@@ -441,6 +441,17 @@ ion-card.clickable {
   margin-top: 0.125rem;
 }
 
+.content-card-author--clickable {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
 .content-card-author--with-date {
   width: 100%;
 

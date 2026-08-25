@@ -75,24 +75,48 @@
           }
         }
         @if (authorName) {
-          <div
-            class="content-card-author"
-            [class.content-card-author--with-date]="showAuthorDate"
-          >
-            @if (authorAvatarUrl) {
-              <img class="content-card-author__avatar" [src]="authorAvatarUrl" [alt]="authorName" />
-            } @else {
-              <img
-                class="content-card-author__avatar"
-                src="assets/branding/love-inc-avatar.png"
-                [alt]="authorName"
-              />
-            }
-            <span class="app-body-secondary-xs content-card-author__label">By {{ authorName }}</span>
-            @if (showAuthorDate) {
-              <span class="app-body-secondary-xs content-card-author__date">{{ createdAtLabel }}</span>
-            }
-          </div>
+          @if (hasAuthorBio) {
+            <button
+              type="button"
+              class="content-card-author content-card-author--clickable"
+              [class.content-card-author--with-date]="showAuthorDate"
+              [attr.aria-label]="'About ' + authorName"
+              (click)="onAuthorTap($event)"
+            >
+              @if (authorAvatarUrl) {
+                <img class="content-card-author__avatar" [src]="authorAvatarUrl" [alt]="authorName" />
+              } @else {
+                <img
+                  class="content-card-author__avatar"
+                  src="assets/branding/love-inc-avatar.png"
+                  [alt]="authorName"
+                />
+              }
+              <span class="app-body-secondary-xs content-card-author__label">By {{ authorName }}</span>
+              @if (showAuthorDate) {
+                <span class="app-body-secondary-xs content-card-author__date">{{ createdAtLabel }}</span>
+              }
+            </button>
+          } @else {
+            <div
+              class="content-card-author"
+              [class.content-card-author--with-date]="showAuthorDate"
+            >
+              @if (authorAvatarUrl) {
+                <img class="content-card-author__avatar" [src]="authorAvatarUrl" [alt]="authorName" />
+              } @else {
+                <img
+                  class="content-card-author__avatar"
+                  src="assets/branding/love-inc-avatar.png"
+                  [alt]="authorName"
+                />
+              }
+              <span class="app-body-secondary-xs content-card-author__label">By {{ authorName }}</span>
+              @if (showAuthorDate) {
+                <span class="app-body-secondary-xs content-card-author__date">{{ createdAtLabel }}</span>
+              }
+            </div>
+          }
         }
         @if (detailSegments?.length || detail) {
           <div class="content-card-detail">

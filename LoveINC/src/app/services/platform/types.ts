@@ -406,6 +406,20 @@ export interface PlatformPlanAuthor {
   avatarUrl?: string | null;
   title?: string | null;
   bio?: string | null;
+  notes?: string | null;
+  person?: PlatformPerson | null;
+}
+
+/** GrovLink People record (plan authors, class instructors, etc.). */
+export interface PlatformPerson {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  name?: string;
+  title?: string;
+  bio?: string;
+  notes?: string;
+  photoUrl?: string;
 }
 
 export type PlatformThemeDisplayStyle = 'COVER_CARDS' | 'DETAIL_CARDS' | 'LIST';

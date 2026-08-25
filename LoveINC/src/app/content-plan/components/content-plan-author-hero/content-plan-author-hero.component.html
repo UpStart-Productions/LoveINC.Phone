@@ -1,52 +1,60 @@
 @if (hasAuthor) {
-  @if (hasBio) {
-    <button
-      type="button"
-      class="content-reader-hero__author content-reader-hero__author--clickable"
-      [attr.aria-label]="'About ' + author.name"
-      (click)="openAuthorBio()"
-    >
-      @if (author.avatarUrl) {
-        <img
-          class="content-reader-hero__author-avatar"
-          [src]="author.avatarUrl"
-          [alt]="author.name"
-        />
-      } @else {
-        <img
-          class="content-reader-hero__author-avatar"
-          src="assets/branding/love-inc-avatar.png"
-          [alt]="author.name"
-        />
-      }
-      <span
-        class="content-reader-hero__author-label"
-        [class.content-reader-hero__author-label--compact]="compact"
+  @if (inHero) {
+    @if (hasBio) {
+      <button
+        type="button"
+        class="content-reader-hero__author content-reader-hero__author--clickable"
+        [attr.aria-label]="'About ' + author.name"
+        (click)="openAuthorBio()"
       >
-        By {{ author.name }}
-      </span>
-    </button>
+        <ng-container *ngTemplateOutlet="authorIdentity" />
+      </button>
+    } @else {
+      <div class="content-reader-hero__author">
+        <ng-container *ngTemplateOutlet="authorIdentity" />
+      </div>
+    }
   } @else {
-    <div class="content-reader-hero__author">
-      @if (author.avatarUrl) {
-        <img
-          class="content-reader-hero__author-avatar"
-          [src]="author.avatarUrl"
-          [alt]="author.name"
-        />
+    <div class="content-reader-author">
+      @if (hasBio) {
+        <button
+          type="button"
+          class="content-reader-author-main content-reader-author--clickable"
+          [attr.aria-label]="'About ' + author.name"
+          (click)="openAuthorBio()"
+        >
+          <ng-container *ngTemplateOutlet="authorIdentity" />
+        </button>
       } @else {
-        <img
-          class="content-reader-hero__author-avatar"
-          src="assets/branding/love-inc-avatar.png"
-          [alt]="author.name"
-        />
+        <div class="content-reader-author-main">
+          <ng-container *ngTemplateOutlet="authorIdentity" />
+        </div>
       }
-      <span
-        class="content-reader-hero__author-label"
-        [class.content-reader-hero__author-label--compact]="compact"
-      >
-        By {{ author.name }}
-      </span>
     </div>
   }
 }
+
+<ng-template #authorIdentity>
+  @if (author.avatarUrl) {
+    <img
+      [class.content-reader-hero__author-avatar]="inHero"
+      [class.content-reader-author-avatar]="!inHero"
+      [src]="author.avatarUrl"
+      [alt]="author.name"
+    />
+  } @else {
+    <img
+      [class.content-reader-hero__author-avatar]="inHero"
+      [class.content-reader-author-avatar]="!inHero"
+      src="assets/branding/love-inc-avatar.png"
+      [alt]="author.name"
+    />
+  }
+  <span
+    [class.content-reader-hero__author-label]="inHero"
+    [class.content-reader-hero__author-label--compact]="inHero && compact"
+    [class.app-body-secondary-xs]="!inHero"
+  >
+    By {{ author.name }}
+  </span>
+</ng-template>

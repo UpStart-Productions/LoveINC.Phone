@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ModalController } from '@ionic/angular/standalone';
 import type { ContentPlanAuthor } from '../content-plan/content-plan.model';
+import { hasMeaningfulRichText } from '../content-plan/content-plan-author.util';
 
 export interface AuthorBioModalOptions {
   name: string;
@@ -15,7 +16,7 @@ export class AuthorBioModalService {
 
   async open(options: AuthorBioModalOptions): Promise<void> {
     const notes = options.notes?.trim();
-    if (!notes) {
+    if (!hasMeaningfulRichText(notes)) {
       return;
     }
 

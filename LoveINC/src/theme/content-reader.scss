@@ -283,6 +283,17 @@ ion-header.content-reader-header {
   flex: 1;
 }
 
+.content-reader-author--clickable {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
 .content-reader-author-date {
   flex-shrink: 0;
   margin: 0;

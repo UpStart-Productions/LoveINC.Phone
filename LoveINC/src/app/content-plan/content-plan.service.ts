@@ -1,7 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, map, shareReplay } from 'rxjs';
 import { PlatformApiService } from '../services/platform/platform-api.service';
-import { enrichPlanAuthorFromTeam } from './content-plan-author.util';
+import {
+  enrichPlanAuthorFromPerson,
+  enrichPlanAuthorFromTeam,
+} from './content-plan-author.util';
 import {
   mapPlatformPlanToContentPlan,
   mapPlatformTheme,
@@ -29,15 +32,16 @@ export class ContentPlanService {
         map(({ plans, team }) =>
           sortContentPlansByOrder(
             plans.map((plan) => {
-              const mapped = mapPlatformPlanToContentPlan(plan, (path) =>
-                this.platformApi.resolveUploadUrl(path)
-              );
+              const resolveUploadUrl = (path?: string) =>
+                this.platformApi.resolveUploadUrl(path);
+              const contentPlan = mapPlatformPlanToContentPlan(plan, resolveUploadUrl);
+              const nestedPerson = plan.author?.person ?? null;
               return {
-                ...mapped,
-                author: enrichPlanAuthorFromTeam(
-                  mapped.author,
-                  team,
-                  (path) => this.platformApi.resolveUploadUrl(path)
+                ...contentPlan,
+                author: enrichPlanAuthorFromPerson(
+                  enrichPlanAuthorFromTeam(contentPlan.author, team, resolveUploadUrl),
+                  nestedPerson,
+                  resolveUploadUrl
                 ),
               };
             })

@@ -1,12 +1,13 @@
 import { Component, Input, inject } from '@angular/core';
-import { IonIcon } from '@ionic/angular/standalone';
+import { NgTemplateOutlet } from '@angular/common';
 import { AuthorBioModalService } from '../../../services/author-bio-modal.service';
+import { hasMeaningfulRichText } from '../../content-plan-author.util';
 import type { ContentPlanAuthor } from '../../content-plan.model';
 
 @Component({
   selector: 'app-content-plan-author-hero',
   standalone: true,
-  imports: [IonIcon],
+  imports: [NgTemplateOutlet],
   templateUrl: './content-plan-author-hero.component.html',
 })
 export class ContentPlanAuthorHeroComponent {
@@ -17,12 +18,15 @@ export class ContentPlanAuthorHeroComponent {
   /** Smaller author label (list display style hero). */
   @Input() compact = false;
 
+  /** When false, uses body styles (below title on pages without a cover hero). */
+  @Input() inHero = true;
+
   get hasAuthor(): boolean {
     return !!this.author.name?.trim();
   }
 
   get hasBio(): boolean {
-    return !!this.author.bio?.trim();
+    return hasMeaningfulRichText(this.author.bio);
   }
 
   openAuthorBio(): void {

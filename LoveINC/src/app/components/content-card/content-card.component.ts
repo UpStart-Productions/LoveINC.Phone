@@ -6,6 +6,8 @@ import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
 import { IonBadge, IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
 import { LocationMapModalService } from '../../services/location-map-modal.service';
+import { AuthorBioModalService } from '../../services/author-bio-modal.service';
+import { hasMeaningfulRichText } from '../../content-plan/content-plan-author.util';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 
 /** Optional fragments for coloring numeric parts (e.g. budget amounts). */
@@ -25,6 +27,7 @@ export type ContentCardAsideAvatarSize = 'small' | 'large';
 })
 export class ContentCardComponent {
   private readonly navController = inject(NavController);
+  private readonly authorBioModal = inject(AuthorBioModalService);
   /** Small category label above title (e.g. "Guided Scripture", "Guided Prayer") */
   @Input() category?: string;
 
@@ -119,6 +122,11 @@ export class ContentCardComponent {
 
   @Input() authorAvatarUrl?: string;
 
+  @Input() authorTitle?: string;
+
+  /** Bio HTML — when set, tapping the author row opens the bio modal. */
+  @Input() authorBio?: string;
+
   /** Creation date above the aside avatar, inline with the theme/category row (e.g. "Jan 1"). */
   @Input() createdAtLabel?: string;
 
@@ -151,6 +159,10 @@ export class ContentCardComponent {
 
   get showAuthorDate(): boolean {
     return !!this.createdAtLabel?.trim() && this.createdAtInlineWithAuthor;
+  }
+
+  get hasAuthorBio(): boolean {
+    return hasMeaningfulRichText(this.authorBio);
   }
 
   constructor(
@@ -197,6 +209,20 @@ export class ContentCardComponent {
       address: this.underTitle,
       phone: this.mapPhone?.trim() || null,
       website: this.mapWebsite?.trim() || null,
+    });
+  }
+
+  onAuthorTap(event: Event): void {
+    event.stopPropagation();
+    if (!this.hasAuthorBio || !this.authorName?.trim()) {
+      return;
+    }
+
+    void this.authorBioModal.open({
+      name: this.authorName,
+      jobTitle: this.authorTitle,
+      notes: this.authorBio,
+      photoUrl: this.authorAvatarUrl,
     });
   }
 }
