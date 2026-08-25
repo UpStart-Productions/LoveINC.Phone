@@ -25,6 +25,32 @@ This app targets **iOS/Android devices and simulators**, not the web.
 | **`version:patch`**, **`version:minor`**, **`version:major`**, **`version:build`**, **`version:sync-ios`** | See **App version** above. |
 | **`increment-ios-build`** | Same as **`version:build`** (updates `app-version.json` + Xcode). Used by **`ship:ios`**. |
 | **`ship:ios`** | **App Store / release pipeline:** runs `scripts/ship-ios-app-store.js` — **`version:build`** (increment build + sync Xcode), production `ng build`, `cap sync ios`, **strips any `server` block** from `ios/App/App/capacitor.config.json` (removes live-reload URL), opens `ios/App/App.xcworkspace` in Xcode for **Archive** and upload. |
+| **`ota`** | **OTA bundle for GrovLink admin:** bumps semver (patch), production `ng build`, zips `www` → `dist-ota/loveinc-{version}.zip`, prints SHA-256. Does **not** sync Xcode. Variants: `npm run ota -- minor`, `npm run ota -- 1.0.9`, **`ota:no-bump`**. |
+
+## OTA updates (test on device)
+
+OTA pushes JS/UI (and SQLite migrations) without an App Store release. Upload the zip in **GrovLink admin → affiliate → OTA Updates** (super admin). Set **Active Bundle**, **Rollout 100%**, kill switch off, save rollout.
+
+### One-time setup
+
+1. Install a **bundled** build on the phone — **`npm run cap:run:ios`** (pick device). **Not** `cap:run:ios:live` (dev server breaks OTA).
+2. Note baseline version in **More** (e.g. **v1.0.8**).
+3. In admin, confirm affiliate **`mobileAppId`** is **`org.loveincnewberg.app`**.
+
+### Each test
+
+1. Make a visible change in the app.
+2. **`npm run ota`** — produces `dist-ota/loveinc-{version}.zip` (semver bumped; must differ from what’s on the device).
+3. Admin: upload zip, enter matching version, save rollout (active bundle + 100%).
+4. On phone: **force-quit → reopen** (download), **force-quit → reopen** (apply).
+5. **Pass:** visible change + **More** shows new version.
+
+### If nothing updates
+
+- Rollout not saved, or kill switch on.
+- Uploaded version matches device’s current version.
+- **Minimum Native Build** higher than device build (leave blank for testing).
+- Phone can reach **`https://api.grovlink.com/api/public-ota/update-check`**.
 
 ## Related scripts (not app launch)
 

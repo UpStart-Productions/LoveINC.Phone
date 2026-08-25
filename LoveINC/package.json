@@ -31,6 +31,8 @@
     "ship:ios:build": "node scripts/ship-ios-app-store.js build",
     "ship:ios:minor": "node scripts/ship-ios-app-store.js minor",
     "ship:ios:major": "node scripts/ship-ios-app-store.js major",
+    "ota": "node scripts/deploy-ota.js",
+    "ota:no-bump": "node scripts/deploy-ota.js --no-bump",
     "postinstall": "patch-package"
   },
   "private": true,
