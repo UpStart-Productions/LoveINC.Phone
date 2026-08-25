@@ -1,0 +1,22 @@
+---
+description: Home screen section order — do not reorder without explicit product instruction
+globs:
+  - src/app/home/home.page.html
+  - src/app/home/home.page.ts
+alwaysApply: false
+---
+
+# Home screen section order
+
+Keep this top-to-bottom order in `home.page.html` unless the user explicitly asks to change it:
+
+1. **Static CTAs** — `home-static-cta-card` (Start / Serve / Donate). See `home-static-ctas.mdc`.
+2. **Platform CTAs** — `app-peek-carousel` for DB CTAs only (when any are active).
+3. **Verse of the Day** — `app-verse-of-the-day-widget`
+4. **Simple Budget** — `app-simple-budget-home-widget`
+5. **Goal Tracker** — `app-goal-tracker-home-widget`
+6. **Microlearning** — `@for` `app-microlearning-theme-widget` (Good Grief, Tools for Transformation, etc.)
+7. **Share app card** — `app-home-share-app-card` (when not dismissed)
+8. **Events & classes feed** — `.cards-container` / `app-card`
+
+Do not move microlearning below the event feed or above static CTAs. Do not merge platform CTAs into the static card.

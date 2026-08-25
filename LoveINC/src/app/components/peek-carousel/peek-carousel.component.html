@@ -1,5 +1,7 @@
 <section
-  [ngClass]="['peek-carousel', 'peek-carousel--' + variant]"
+  class="peek-carousel"
+  [ngClass]="'peek-carousel--' + variant"
+  [class.peek-carousel--compact]="compact"
   [style.--peek-carousel-peek]="peekCssValue"
   [style.--peek-carousel-section-title-inset]="sectionTitleInset || null"
 >
@@ -24,7 +26,13 @@
     </p>
   }
 
-  <div class="peek-carousel__track" tabindex="0" role="list">
+  <div
+    #trackEl
+    class="peek-carousel__track"
+    tabindex="0"
+    role="list"
+    (scroll)="onTrackScroll()"
+  >
     @switch (variant) {
       @case ('cover') {
         @for (item of displayCoverItems; track trackCoverItem($index, item)) {
@@ -85,6 +93,7 @@
                   [preserveQueryParams]="row.preserveQueryParams ?? false"
                   [asideBadge]="row.asideBadge"
                   [asideBadgeColor]="row.asideBadgeColor ?? 'success'"
+                  [asideAvatarSize]="row.asideAvatarSize ?? 'small'"
                   [avatarOverlayIcon]="row.avatarOverlayIcon"
                   [avatarOverlayIconColor]="row.avatarOverlayIconColor ?? 'success'"
                   [authorName]="row.authorName"

@@ -33,4 +33,4 @@ export interface PeekCarouselListSlide {
 export type PeekCarouselSlideClick =
   | { variant: 'cover'; item: PeekCarouselCoverItem }
   | { variant: 'media'; item: PeekCarouselMediaItem }
-  | { variant: 'list'; slide: PeekCarouselListSlide };
+  | { variant: 'list'; slide: PeekCarouselListSlide; row: ContentCardListItem };

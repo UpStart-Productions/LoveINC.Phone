@@ -1,4 +1,6 @@
 import type { PlatformCta, PlatformCtaType } from '../../services/platform/types';
+import type { ContentCardListItem } from '../content-card-list/content-card-list.model';
+import type { PeekCarouselListSlide } from '../peek-carousel/peek-carousel.model';
 import {
   formatDateRangeCompact,
   formatEventDatesCompact,
@@ -161,4 +163,37 @@ export function buildVolunteerCtaRow(): HomeCtaRowModel {
     pillColor: 'var(--love-inc-teal)',
     action: { kind: 'route', path: ['/tabs/volunteer-positions'], queryParams: { from: 'home' } },
   };
+}
+
+/** Map a platform-driven home CTA row to a small aside-avatar list card. */
+export function mapHomeCtaRowToListItem(row: HomeCtaRowModel): ContentCardListItem {
+  let detail = row.subtitle;
+  if (row.progress?.goal != null && row.progress.current != null) {
+    const unit = row.progress.unitLabel?.trim() ? ` ${row.progress.unitLabel.trim()}` : '';
+    const progressLine = `${row.progress.current}/${row.progress.goal}${unit}`;
+    detail = detail ? `${detail} · ${progressLine}` : progressLine;
+  }
+
+  const hideAsideBadge = row.pillText === 'Serve' || row.pillText === 'News';
+
+  return {
+    id: row.id,
+    title: row.body,
+    detail,
+    imageUrl: row.photoUrl,
+    iconName: row.photoUrl ? undefined : row.iconName,
+    iconBackgroundColor: row.iconColor,
+    asideBadge: hideAsideBadge ? undefined : row.pillText,
+    compactCategoryLabel: true,
+    clickable: true,
+    asideAvatarSize: 'small',
+  };
+}
+
+/** One small avatar card per horizontal peek slide. */
+export function mapHomeCtaRowsToListSlides(rows: HomeCtaRowModel[]): PeekCarouselListSlide[] {
+  return rows.map((row) => ({
+    id: row.id,
+    rows: [mapHomeCtaRowToListItem(row)],
+  }));
 }

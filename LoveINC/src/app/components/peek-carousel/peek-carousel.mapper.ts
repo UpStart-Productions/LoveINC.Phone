@@ -7,7 +7,8 @@ import {
 } from '../../content-plan/content-plan.mapper';
 import type { PeekCarouselCoverItem, PeekCarouselListSlide, PeekCarouselMediaItem } from './peek-carousel.model';
 
-const LIST_ROWS_PER_SLIDE = 2;
+/** Rows per slide in list-variant peek carousels (matches microlearning list layout). */
+export const PEEK_CAROUSEL_LIST_ROWS_PER_SLIDE = 2;
 
 export function mapContentPlanToCoverItem(plan: ContentPlan): PeekCarouselCoverItem | null {
   const imageUrl = resolvePlanCoverImageUrl(plan);
@@ -51,10 +52,10 @@ export function mapPlansToListSlides(
   }
 
   const slides: PeekCarouselListSlide[] = [];
-  for (let index = 0; index < rows.length; index += LIST_ROWS_PER_SLIDE) {
+  for (let index = 0; index < rows.length; index += PEEK_CAROUSEL_LIST_ROWS_PER_SLIDE) {
     slides.push({
-      id: `list-${index / LIST_ROWS_PER_SLIDE}`,
-      rows: rows.slice(index, index + LIST_ROWS_PER_SLIDE),
+      id: `list-${index / PEEK_CAROUSEL_LIST_ROWS_PER_SLIDE}`,
+      rows: rows.slice(index, index + PEEK_CAROUSEL_LIST_ROWS_PER_SLIDE),
     });
   }
   return slides;

@@ -1,11 +1,15 @@
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
+  ViewChild,
   inject,
 } from '@angular/core';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
@@ -32,7 +36,7 @@ import type {
   templateUrl: './peek-carousel.component.html',
   styleUrl: './peek-carousel.component.scss',
 })
-export class PeekCarouselComponent implements OnInit, OnChanges {
+export class PeekCarouselComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   private readonly contentPlanService = inject(ContentPlanService);
 
   @Input({ required: true }) variant!: PeekCarouselVariant;
@@ -67,7 +71,22 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
    */
   @Input() peek = 0.02;
 
+  /** Shorter slides for dense sections (e.g. home platform CTAs). */
+  @Input() compact = false;
+
+  /** Auto-advance when there is more than one slide. */
+  @Input() autoScroll = false;
+
+  @Input() autoScrollIntervalMs = 5000;
+
   @Output() slideClick = new EventEmitter<PeekCarouselSlideClick>();
+
+  @ViewChild('trackEl') private trackEl?: ElementRef<HTMLElement>;
+
+  private autoScrollTimer: ReturnType<typeof setInterval> | undefined;
+  private autoScrollResumeTimer: ReturnType<typeof setTimeout> | undefined;
+  private autoScrollIndex = 0;
+  private autoScrollPaused = false;
 
   themedCoverItems: PeekCarouselCoverItem[] = [];
   themedMediaItems: PeekCarouselMediaItem[] = [];
@@ -107,6 +126,10 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
     this.loadThemedPlans();
   }
 
+  ngAfterViewInit(): void {
+    this.syncAutoScroll();
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (
       (changes['themeName'] && !changes['themeName'].firstChange) ||
@@ -114,6 +137,30 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
     ) {
       this.loadThemedPlans();
     }
+
+    if (
+      changes['autoScroll'] ||
+      changes['autoScrollIntervalMs'] ||
+      changes['coverItems'] ||
+      changes['mediaItems'] ||
+      changes['listSlides'] ||
+      changes['variant']
+    ) {
+      this.autoScrollIndex = 0;
+      this.syncAutoScroll();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.clearAutoScroll();
+    this.clearAutoScrollResume();
+  }
+
+  onTrackScroll(): void {
+    if (!this.autoScroll || this.getSlideCount() <= 1) {
+      return;
+    }
+    this.pauseAutoScroll(8000);
   }
 
   /** Re-fetch themed plans (e.g. pull-to-refresh on Home). */
@@ -149,7 +196,7 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
 
   onListRowClick(slide: PeekCarouselListSlide, row: ContentCardListItem): void {
     if (row.route) return;
-    this.slideClick.emit({ variant: 'list', slide });
+    this.slideClick.emit({ variant: 'list', slide, row });
   }
 
   private loadThemedPlans(refresh = false): void {
@@ -173,6 +220,8 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
           .filter((item): item is PeekCarouselCoverItem => item !== null);
         this.themedMediaItems = plans.map((plan) => mapContentPlanToMediaItem(plan));
         this.themedListSlides = mapPlansToListSlides(plans);
+        this.autoScrollIndex = 0;
+        this.syncAutoScroll();
       },
       error: () => {
         this.themedCoverItems = [];
@@ -184,5 +233,74 @@ export class PeekCarouselComponent implements OnInit, OnChanges {
 
   private hasThemedPlans(): boolean {
     return !!(this.themeId?.trim() || this.themeName?.trim());
+  }
+
+  private getSlideCount(): number {
+    switch (this.variant) {
+      case 'cover':
+        return this.displayCoverItems.length;
+      case 'media':
+        return this.displayMediaItems.length;
+      case 'list':
+        return this.displayListSlides.length;
+      default:
+        return 0;
+    }
+  }
+
+  private syncAutoScroll(): void {
+    this.clearAutoScroll();
+    if (!this.autoScroll || this.getSlideCount() <= 1 || !this.trackEl?.nativeElement) {
+      return;
+    }
+
+    this.autoScrollTimer = setInterval(() => {
+      if (this.autoScrollPaused) {
+        return;
+      }
+      this.advanceAutoScroll();
+    }, this.autoScrollIntervalMs);
+  }
+
+  private advanceAutoScroll(): void {
+    const track = this.trackEl?.nativeElement;
+    const count = this.getSlideCount();
+    if (!track || count <= 1) {
+      return;
+    }
+
+    this.autoScrollIndex = (this.autoScrollIndex + 1) % count;
+    const slide = track.children.item(this.autoScrollIndex) as HTMLElement | null;
+    if (!slide) {
+      return;
+    }
+
+    // Scroll the track horizontally only — scrollIntoView also moves ion-content vertically.
+    track.scrollTo({
+      left: slide.offsetLeft - track.offsetLeft,
+      behavior: 'smooth',
+    });
+  }
+
+  private pauseAutoScroll(resumeAfterMs: number): void {
+    this.autoScrollPaused = true;
+    this.clearAutoScrollResume();
+    this.autoScrollResumeTimer = setTimeout(() => {
+      this.autoScrollPaused = false;
+    }, resumeAfterMs);
+  }
+
+  private clearAutoScroll(): void {
+    if (this.autoScrollTimer) {
+      clearInterval(this.autoScrollTimer);
+      this.autoScrollTimer = undefined;
+    }
+  }
+
+  private clearAutoScrollResume(): void {
+    if (this.autoScrollResumeTimer) {
+      clearTimeout(this.autoScrollResumeTimer);
+      this.autoScrollResumeTimer = undefined;
+    }
   }
 }

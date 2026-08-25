@@ -18,12 +18,23 @@
   </ion-refresher>
 
   <div class="home-sections">
-    @if (homeCtaRows.length) {
-      <ion-card class="home-cta-card">
-        @for (row of homeCtaRows; track row.id) {
+    <!-- Section order: see .cursor/rules/home-section-order.mdc -->
+    <!-- HOME STATIC CTAs (Start / Serve / Donate) — DO NOT CHANGE without explicit instruction. See .cursor/rules/home-static-ctas.mdc -->
+    @if (homeStaticCtaRows.length) {
+      <ion-card class="home-cta-card home-static-cta-card">
+        @for (row of homeStaticCtaRows; track row.id) {
           <app-home-cta-row [row]="row"></app-home-cta-row>
         }
       </ion-card>
+    }
+
+    @if (platformCtaRows.length) {
+      <app-peek-carousel
+        variant="list"
+        [listSlides]="platformCtaListSlides"
+        [clickable]="true"
+        (slideClick)="onPlatformCtaSlideClick($event)"
+      />
     }
 
     <app-verse-of-the-day-widget></app-verse-of-the-day-widget>

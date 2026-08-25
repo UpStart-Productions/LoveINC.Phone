@@ -7,7 +7,8 @@ import {
   NgZone,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { Capacitor } from '@capacitor/core';
 import { PushNotifications } from '@capacitor/push-notifications';
@@ -169,6 +170,12 @@ export class AppComponent implements OnInit, OnDestroy {
   private appStateListener: { remove: () => Promise<void> } | undefined;
   private lastForegroundHandledAt = 0;
 
+  /** Where the user was standing when the JS context last reloaded (OTA update applying
+   *  live via `autoUpdate: 'always'', or a plain background/foreground resume). Restored
+   *  on boot so a mid-session OTA update never bounces someone back to the home screen -
+   *  see capacitor.config.ts for why this matters here. */
+  private readonly LAST_ROUTE_KEY = 'ota_last_route';
+
   constructor(
     private onboardingService: OnboardingService,
     private userProfileService: UserProfileService,
@@ -219,6 +226,12 @@ export class AppComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.log('Splash screen not available (likely running in browser)');
     }
+
+    // If the JS context just reloaded (OTA update applying live, or a resume that
+    // reset routing) mid-session, send the user back where they were instead of
+    // wherever the app's default start route is.
+    this.restoreLastRouteIfAny();
+    this.trackRouteForRestore();
 
     // Sync onboarding name/email to UserProfileService if profile is empty
     const profile = this.userProfileService.getProfile();
@@ -329,6 +342,35 @@ export class AppComponent implements OnInit, OnDestroy {
     CapacitorUpdater.notifyAppReady().catch((err) => {
       console.warn('CapacitorUpdater.notifyAppReady failed:', err);
     });
+  }
+
+  /** Persist the current route on every navigation so a mid-session reload can restore it. */
+  private trackRouteForRestore(): void {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((event) => {
+        try {
+          localStorage.setItem(this.LAST_ROUTE_KEY, event.urlAfterRedirects);
+        } catch {
+          // localStorage unavailable (e.g. private browsing) - restore just won't fire.
+        }
+      });
+  }
+
+  /** Jump back to the last known route if one was saved and we're not already there
+   *  (e.g. a genuine fresh cold start with no prior navigation this install). */
+  private restoreLastRouteIfAny(): void {
+    try {
+      const lastRoute = localStorage.getItem(this.LAST_ROUTE_KEY);
+      if (lastRoute && lastRoute !== '/' && lastRoute !== this.router.url) {
+        this.router.navigateByUrl(lastRoute).catch(() => {});
+      }
+    } catch {
+      // localStorage unavailable - just skip restore, default routing takes over.
+    }
   }
 
   private async onAppForeground(): Promise<void> {

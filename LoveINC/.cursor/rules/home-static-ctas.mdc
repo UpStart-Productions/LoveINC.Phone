@@ -1,0 +1,26 @@
+---
+description: Home screen static CTA block (Start / Serve / Donate) — hands off unless user explicitly requests changes
+globs:
+  - src/app/home/home.page.html
+  - src/app/home/home.page.ts
+  - src/app/components/home-cta-row/home-cta-row.mapper.ts
+alwaysApply: false
+---
+
+# Home static CTAs (Start / Serve / Donate)
+
+The **first white CTA card** on Home (`home-static-cta-card`) is the fixed **Start / Serve / Donate** block:
+
+- Optional **Start** row (Get Help / Connection Center — intake, vouchers, browse services)
+- **Serve** — Volunteer with Love INC
+- **Donate** — Give to Love INC Newberg
+
+Built via `homeStaticCtaRows` and `app-home-cta-row`. Mappers: `buildGetHelpCtaRow`, `buildConnectionCenterCtaRow`, `buildVolunteerCtaRow`, `buildGiveNowCtaRow`.
+
+## DO NOT CHANGE unless the user explicitly asks
+
+- Do **not** move, restyle, replace, split, or merge this block with platform/DB CTAs.
+- Do **not** put platform CTAs inside this card or between its rows.
+- Platform CTAs from the API live **below** this card in `app-peek-carousel` only.
+
+When changing Home CTAs, edit platform carousel/mapping only unless the user specifically targets the static block.

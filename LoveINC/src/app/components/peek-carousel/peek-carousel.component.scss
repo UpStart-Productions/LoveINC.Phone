@@ -12,6 +12,13 @@
   --peek-carousel-media-card-height: calc(var(--peek-carousel-media-image-height) + 6.375rem);
 }
 
+.peek-carousel--compact {
+  --peek-carousel-inset: var(--app-card-margin);
+  --peek-carousel-cover-height: 7rem;
+  --peek-carousel-media-image-height: 5.5rem;
+  --peek-carousel-media-card-height: calc(var(--peek-carousel-media-image-height) + 4.25rem);
+}
+
 .peek-carousel__section-title {
   margin: 0 0 0.75rem;
   margin-inline-start: var(--peek-carousel-section-title-inset, 0);
@@ -197,4 +204,13 @@
   overflow: hidden;
   background: var(--app-card-background);
   box-shadow: var(--app-card-shadow);
+}
+
+/* Match peek media/cover card body inset (0.875rem), not default ion-card-content 1rem. */
+.peek-carousel-list-shell .content-card.content-card--list-row ion-card-content {
+  padding-top: 0.875rem !important;
+  padding-bottom: 0.875rem !important;
+  padding-left: 0.875rem !important;
+  --padding-start: 0.875rem !important;
+  --padding-left: 0.875rem !important;
 }

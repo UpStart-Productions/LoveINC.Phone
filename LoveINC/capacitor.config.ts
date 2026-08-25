@@ -21,10 +21,12 @@ const config: CapacitorConfig = {
       androidIsEncryption: false,
     },
     CapacitorUpdater: {
-      // Apply a downloaded bundle only at cold start, never mid-session - keeps the
-      // SQLite migration gate (see app.component.ts) simple and never reloads the
-      // webview out from under an active user.
-      autoUpdate: 'onLaunch',
+      // Check on every foreground and apply immediately when an update is found -
+      // this app can stay open for weeks without a cold start, so we don't wait for
+      // one. A reload resets the JS context (router included); app.component.ts
+      // saves/restores the current route across it so users land back where they
+      // were instead of bouncing to the home screen.
+      autoUpdate: 'always',
       updateUrl: 'https://api.grovlink.com/api/public-ota/update-check',
       // For local device testing against a locally-running GrovLink API, temporarily
       // point this at your Mac's LAN IP instead, e.g. 'http://192.168.1.23:3000/api/public-ota/update-check'.

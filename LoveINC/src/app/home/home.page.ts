@@ -33,8 +33,10 @@ import {
   buildGiveNowCtaRow,
   buildVolunteerCtaRow,
   mapPlatformCtaToRow,
+  mapHomeCtaRowsToListSlides,
 } from '../components/home-cta-row/home-cta-row.mapper';
 import type { HomeCtaRowModel } from '../components/home-cta-row/home-cta-row.model';
+import { PeekCarouselComponent } from '../components/peek-carousel/peek-carousel.component';
 import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-widget/verse-of-the-day-widget.component';
 import { SimpleBudgetHomeWidgetComponent } from '../components/simple-budget-home-widget/simple-budget-home-widget.component';
 import { GoalTrackerHomeWidgetComponent } from '../components/goal-tracker-home-widget/goal-tracker-home-widget.component';
@@ -52,7 +54,7 @@ import { MicrolearningThemeWidgetComponent } from '../components/microlearning-t
 import { HomeShareAppCardComponent } from '../components/home-share-app-card/home-share-app-card.component';
 import { ContentPlanService } from '../content-plan/content-plan.service';
 import type { ContentPlanTheme } from '../content-plan/content-plan.model';
-import type { PeekCarouselSlideClick } from '../components/peek-carousel/peek-carousel.model';
+import type { PeekCarouselSlideClick, PeekCarouselListSlide } from '../components/peek-carousel/peek-carousel.model';
 import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 
 const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
@@ -84,6 +86,7 @@ export type ClientSupportCardState =
     IonIcon,
     CardComponent,
     HomeCtaRowComponent,
+    PeekCarouselComponent,
     VerseOfTheDayWidgetComponent,
     SimpleBudgetHomeWidgetComponent,
     GoalTrackerHomeWidgetComponent,
@@ -114,6 +117,7 @@ export class HomePage implements OnInit {
   welcomeTitle = 'Welcome to Love INC';
   giveCtas: PlatformCta[] = [];
   volunteerCtas: PlatformCta[] = [];
+  platformCtaListSlides: PeekCarouselListSlide[] = [];
   showDonateButton = false;
 
   /** Get Help row on Home — intake nudge, vouchers, or browse services. */
@@ -263,6 +267,23 @@ export class HomePage implements OnInit {
     });
   }
 
+  onPlatformCtaSlideClick(event: PeekCarouselSlideClick): void {
+    if (event.variant !== 'list') {
+      return;
+    }
+    const rowId = event.row.id;
+    const ctaRow = this.platformCtaRows.find((item) => item.id === rowId);
+    if (!ctaRow || ctaRow.action.kind !== 'content-detail') {
+      return;
+    }
+    void navigateAppForward(
+      this.navController,
+      this.router,
+      ['/tabs/content-detail', ctaRow.action.contentType, ctaRow.action.id],
+      { queryParams: { from: 'home' } }
+    );
+  }
+
   private applyLoadedCtas(ctas: PlatformCta[]): void {
     const today = startOfDay(new Date()).getTime();
     const active = (c: PlatformCta) => this.isActiveCta(c, today);
@@ -274,6 +295,18 @@ export class HomePage implements OnInit {
       .filter((c) => c.type === 'volunteer_call')
       .filter(active)
       .sort((a, b) => a.sortOrder - b.sortOrder);
+    this.refreshPlatformCtaSlides();
+  }
+
+  private refreshPlatformCtaSlides(): void {
+    const rows: HomeCtaRowModel[] = [];
+    for (const cta of this.volunteerCtas) {
+      rows.push(mapPlatformCtaToRow(cta, 'volunteer'));
+    }
+    for (const cta of this.giveCtas) {
+      rows.push(mapPlatformCtaToRow(cta, 'give'));
+    }
+    this.platformCtaListSlides = mapHomeCtaRowsToListSlides(rows);
   }
 
   private isGiveCtaType(type: string): boolean {
@@ -311,7 +344,13 @@ export class HomePage implements OnInit {
     return 'gap-ministries';
   }
 
-  get homeCtaRows(): HomeCtaRowModel[] {
+  /**
+   * HOME STATIC CTAs (Start / Serve / Donate) — fixed list card at top of Home.
+   * DO NOT CHANGE layout, order, or styling without explicit product instruction.
+   * Platform/DB CTAs are separate (`platformCtaRows` + peek carousel below this block).
+   * See `.cursor/rules/home-static-ctas.mdc`.
+   */
+  get homeStaticCtaRows(): HomeCtaRowModel[] {
     const rows: HomeCtaRowModel[] = [];
 
     if (this.showGetHelpCta && this.clientSupportCardState) {
@@ -328,16 +367,19 @@ export class HomePage implements OnInit {
     }
 
     rows.push(buildVolunteerCtaRow());
+    rows.push(buildGiveNowCtaRow());
+    return rows;
+  }
 
+  /** Platform/DB CTAs only — rendered below the static block in a peek carousel. */
+  get platformCtaRows(): HomeCtaRowModel[] {
+    const rows: HomeCtaRowModel[] = [];
     for (const cta of this.volunteerCtas) {
       rows.push(mapPlatformCtaToRow(cta, 'volunteer'));
     }
-
     for (const cta of this.giveCtas) {
       rows.push(mapPlatformCtaToRow(cta, 'give'));
     }
-
-    rows.push(buildGiveNowCtaRow());
     return rows;
   }
 
