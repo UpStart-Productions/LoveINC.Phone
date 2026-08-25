@@ -88,12 +88,14 @@
         </div>
       }
       @case ('PHOTO') {
-        @if (mediaUrl(block); as url) {
-          <img class="moment-blocks__photo" [src]="url" [alt]="contentString(block, 'caption') || 'Photo'" />
-        }
-        @if (contentString(block, 'caption')) {
-          <p class="app-caption">{{ contentString(block, 'caption') }}</p>
-        }
+        <div class="moment-blocks__photo-block">
+          @if (mediaUrl(block); as url) {
+            <img class="moment-blocks__photo" [src]="url" [alt]="contentString(block, 'caption') || 'Photo'" />
+          }
+          @if (contentString(block, 'caption')) {
+            <p class="app-caption">{{ contentString(block, 'caption') }}</p>
+          }
+        </div>
       }
       @case ('DOCUMENT') {
         <div class="moment-blocks__media">
