@@ -144,19 +144,6 @@
   object-fit: cover;
 }
 
-.peek-carousel-cover__author-avatar--placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(255 255 255 / 0.22);
-  color: #fff;
-
-  ion-icon {
-    width: 0.75rem;
-    height: 0.75rem;
-  }
-}
-
 .peek-carousel-cover__author-label {
   font-size: var(--app-font-size-xs);
   line-height: var(--app-line-height-body);
@@ -235,19 +222,6 @@
   height: 1.25rem;
   border-radius: 50%;
   object-fit: cover;
-}
-
-.peek-carousel-media__author-avatar--placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ion-color-light-shade);
-  color: var(--ion-color-dark);
-
-  ion-icon {
-    width: 0.75rem;
-    height: 0.75rem;
-  }
 }
 
 .peek-carousel-media__author-label {

@@ -82,9 +82,11 @@
             @if (authorAvatarUrl) {
               <img class="content-card-author__avatar" [src]="authorAvatarUrl" [alt]="authorName" />
             } @else {
-              <span class="content-card-author__avatar content-card-author__avatar--placeholder" aria-hidden="true">
-                <ion-icon name="person-outline"></ion-icon>
-              </span>
+              <img
+                class="content-card-author__avatar"
+                src="assets/branding/love-inc-avatar.png"
+                [alt]="authorName"
+              />
             }
             <span class="app-body-secondary-xs content-card-author__label">By {{ authorName }}</span>
             @if (showAuthorDate) {

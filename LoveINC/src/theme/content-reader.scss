@@ -96,19 +96,6 @@
   object-fit: cover;
 }
 
-.content-reader-hero__author-avatar--placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(255 255 255 / 0.22);
-  color: #fff;
-
-  ion-icon {
-    width: 0.75rem;
-    height: 0.75rem;
-  }
-}
-
 .content-reader-hero__author-label {
   font-size: var(--app-font-size-xs);
   line-height: var(--app-line-height-body);
@@ -308,17 +295,4 @@ ion-header.content-reader-header {
   height: 1.5rem;
   border-radius: 50%;
   object-fit: cover;
-}
-
-.content-reader-author-avatar--placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ion-color-light);
-  color: var(--ion-color-dark);
-
-  ion-icon {
-    width: 0.875rem;
-    height: 0.875rem;
-  }
 }

@@ -115,9 +115,11 @@
           [alt]="item.authorName"
         />
       } @else {
-        <span class="peek-carousel-cover__author-avatar peek-carousel-cover__author-avatar--placeholder" aria-hidden="true">
-          <ion-icon name="person-outline"></ion-icon>
-        </span>
+        <img
+          class="peek-carousel-cover__author-avatar"
+          src="assets/branding/love-inc-avatar.png"
+          [alt]="item.authorName"
+        />
       }
       <span class="peek-carousel-cover__author-label">By {{ item.authorName }}</span>
     </span>
@@ -150,9 +152,11 @@
                 [alt]="item.authorName"
               />
             } @else {
-              <span class="peek-carousel-media__author-avatar peek-carousel-media__author-avatar--placeholder" aria-hidden="true">
-                <ion-icon name="person-outline"></ion-icon>
-              </span>
+              <img
+                class="peek-carousel-media__author-avatar"
+                src="assets/branding/love-inc-avatar.png"
+                [alt]="item.authorName"
+              />
             }
             <span class="peek-carousel-media__author-label">By {{ item.authorName }}</span>
           </span>

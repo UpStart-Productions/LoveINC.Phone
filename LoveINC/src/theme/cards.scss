@@ -475,19 +475,6 @@ ion-card.clickable {
   object-fit: cover;
 }
 
-.content-card-author__avatar--placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ion-color-light-shade);
-  color: var(--ion-color-dark);
-
-  ion-icon {
-    width: 0.625rem;
-    height: 0.625rem;
-  }
-}
-
 .content-card-author__label {
   margin: 0;
 }
