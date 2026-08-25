@@ -13,7 +13,7 @@
   @for (block of displayBlocks; track block.id ?? block.blockId) {
     @if (block.type === 'CHECKBOX' || block.type === 'RADIO') {
       @if (options(block).length > 0) {
-        <div class="m-b-24 m-t-18">
+        <div class="moment-blocks__field">
           @if (contentString(block, 'label')) {
             <p class="app-body m-b-6">{{ contentString(block, 'label') }}</p>
           }
@@ -39,7 +39,7 @@
         }
       }
       @case ('TEXT_INPUT') {
-        <div class="m-b-24 m-t-18">
+        <div class="moment-blocks__field">
           <ion-item>
             <ion-label position="stacked">{{ contentString(block, 'label') || 'Response' }}</ion-label>
             <ion-textarea
@@ -56,7 +56,7 @@
       }
       @case ('TEXT') {
         @if (isScriptureBlock(block) && scriptureRefs(block).length) {
-          <div class="accepted-items m-b-18 m-t-18">
+          <div class="moment-blocks__field accepted-items">
             @for (ref of scriptureRefs(block); track ref) {
               <button
                 type="button"

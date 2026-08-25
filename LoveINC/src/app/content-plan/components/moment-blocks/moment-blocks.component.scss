@@ -1,9 +1,50 @@
+.moment-blocks__title {
+  margin: 0 0 0.375rem;
+  line-height: var(--app-line-height-tight);
+
+  p {
+    margin: 0;
+    line-height: inherit;
+  }
+}
+
 .moment-blocks__title + .moment-blocks__subtitle {
   margin-top: 0.25rem;
 }
 
 .moment-blocks__subtitle {
   margin-bottom: 0.75rem;
+}
+
+.moment-blocks__field {
+  margin-top: 12px;
+  margin-bottom: 6px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  ion-list {
+    margin: 0;
+    padding: 0;
+  }
+
+  ion-item {
+    --min-height: 2.25rem;
+    --inner-padding-top: 0.125rem;
+    --inner-padding-bottom: 0.125rem;
+    --padding-start: 0;
+    --padding-end: 0;
+  }
+
+  ion-item:has(ion-textarea) {
+    --inner-padding-top: 0.25rem;
+    --inner-padding-bottom: 0.25rem;
+  }
 }
 
 .moment-blocks__media-caption {

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ContentCardListComponent } from '../../components/content-card-list/content-card-list.component';
 import type { ContentCardListItem } from '../../components/content-card-list/content-card-list.model';
 import { ContentPlanAuthorHeroComponent } from '../components/content-plan-author-hero/content-plan-author-hero.component';
-import { resolveMomentBlockText, resolvePlanCoverImageUrl } from '../content-plan.mapper';
+import { resolveMomentBlockText, resolveMomentFirstPhotoUrl, resolvePlanCoverImageUrl } from '../content-plan.mapper';
 import type { ContentPlan } from '../content-plan.model';
 
 @Component({
@@ -19,12 +19,13 @@ export class ContentPlanListViewComponent {
     const planCoverUrl = resolvePlanCoverImageUrl(this.plan);
     return this.plan.moments.map((moment) => {
       const subtitle = resolveMomentBlockText(moment, 'subtitle');
+      const imageUrl = resolveMomentFirstPhotoUrl(moment) ?? planCoverUrl;
       return {
         id: moment.id,
         title: moment.title,
         detail: subtitle,
-        imageUrl: planCoverUrl,
-        lucideIcon: planCoverUrl ? undefined : 'bookmark',
+        imageUrl,
+        lucideIcon: imageUrl ? undefined : 'bookmark',
         iconBackgroundColor: '#349394',
         route: `/tabs/content-plan/${this.plan.id}/moment/${moment.id}`,
         navigationFrom: this.navigationFrom,

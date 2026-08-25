@@ -13,14 +13,13 @@
   @if (pageIndex === 0 && !plan.coverPhotoUrl) {
     <div class="app-font-crimson m-t-18 m-b-18">
       <p class="app-title">{{ plan.title }}</p>
-      <app-content-plan-author-hero [author]="plan.author" [inHero]="false" />
     </div>
   }
 
   @if (activeMoment) {
     <div class="app-font-crimson">
       @if (activeMoment.title.trim()) {
-        <div class="content-reader-step-header m-t-18 m-b-18">
+        <div class="content-reader-step-header m-t-18 m-b-6">
           <p class="app-title app-uppercase">{{ activeMoment.title }}</p>
         </div>
       }

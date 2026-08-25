@@ -4,6 +4,10 @@
   padding-bottom: 1.5rem;
 }
 
+.content-card-list--flush-top {
+  padding-top: 0;
+}
+
 .content-card-list-shell {
   border-radius: var(--app-card-radius);
   overflow: hidden;

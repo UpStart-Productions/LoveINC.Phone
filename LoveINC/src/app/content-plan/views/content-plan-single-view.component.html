@@ -14,22 +14,18 @@
     <section class="content-reader-section">
       <div class="app-font-crimson m-t-18 m-b-18">
         <p class="app-title">{{ plan.title }}</p>
-        <app-content-plan-author-hero [author]="plan.author" [inHero]="false" />
       </div>
     </section>
   }
 
   @for (moment of plan.moments; track moment.id) {
     <section class="content-reader-section">
-      @if (plan.moments.length > 1) {
-        <div class="app-font-crimson">
-          <div class="content-reader-step-header m-t-18 m-b-18">
+      <div class="app-font-crimson">
+        @if (plan.moments.length > 1) {
+          <div class="content-reader-step-header m-t-18 m-b-6">
             <p class="app-title app-uppercase">{{ moment.title }}</p>
           </div>
-        </div>
-      }
-
-      <div class="app-font-crimson">
+        }
         <ion-card class="content-reader-panel-card">
           <div class="ion-padding app-body">
             <app-moment-blocks

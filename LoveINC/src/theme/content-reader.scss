@@ -207,6 +207,15 @@ ion-header.content-reader-header {
 
 .content-reader-step-header {
   padding-left: 0.75rem;
+
+  .app-title {
+    margin: 0;
+    line-height: 1.15;
+  }
+}
+
+.content-reader-step-header + .content-reader-panel-card {
+  margin-top: 0;
 }
 
 .content-reader-panel-card {

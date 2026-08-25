@@ -182,6 +182,21 @@ function mapPlatformPlanAuthor(
   };
 }
 
+/** First PHOTO block URL on a moment (by block order), when present. */
+export function resolveMomentFirstPhotoUrl(moment: ContentPlanMoment): string | undefined {
+  const blocks = [...moment.blocks].sort((a, b) => a.order - b.order);
+  for (const block of blocks) {
+    if (block.type !== 'PHOTO') {
+      continue;
+    }
+    const url = block.content['url'];
+    if (typeof url === 'string' && url.trim()) {
+      return url.trim();
+    }
+  }
+  return undefined;
+}
+
 /** Plan cover photo, or the first moment photo block when no cover is set. */
 export function resolvePlanCoverImageUrl(plan: ContentPlan): string | undefined {
   const cover = plan.coverPhotoUrl?.trim();

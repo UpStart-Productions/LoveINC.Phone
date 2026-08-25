@@ -11,7 +11,6 @@
   <div class="content-reader-body p-l-18 p-r-18">
     <div class="app-font-crimson m-t-18 m-b-18">
       <p class="app-title">{{ plan.title }}</p>
-      <app-content-plan-author-hero [author]="plan.author" [compact]="true" [inHero]="false" />
     </div>
   </div>
 }
@@ -20,4 +19,6 @@
   [items]="listItems"
   [compactCategoryLabel]="true"
   [defaultNavigationFrom]="navigationFrom"
+  defaultAsideAvatarSize="large"
+  [flushTop]="!!plan.coverPhotoUrl"
 />

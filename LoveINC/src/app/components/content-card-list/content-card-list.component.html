@@ -1,4 +1,4 @@
-<div class="content-card-list">
+<div class="content-card-list" [class.content-card-list--flush-top]="flushTop">
   <div class="content-card-list-shell">
     @for (item of items; track trackItem($index, item); let last = $last) {
       <app-content-card

@@ -17,6 +17,9 @@ export class ContentCardListComponent {
   @Input() defaultIconBackgroundColor = '#8b7355';
   @Input() defaultAsideAvatarSize: 'small' | 'large' = 'small';
 
+  /** When true, removes top padding so the list can sit flush under a hero. */
+  @Input() flushTop = false;
+
   /** Emitted when a row without `route` is tapped. */
   @Output() itemClick = new EventEmitter<ContentCardListItem>();
 
