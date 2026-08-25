@@ -142,6 +142,9 @@
   --app-icon-size-lg: 1.5rem;
   --app-icon-size-xl: 2rem;
 
+  /** Inline author avatar (cards, cover hero, carousel). */
+  --app-author-avatar-size: 1.5rem;
+
   /** Aliases (map to 4-size scale) **/
   --app-icon-size-header: var(--app-icon-size-md);
   --app-icon-size-tab: var(--app-icon-size-lg);

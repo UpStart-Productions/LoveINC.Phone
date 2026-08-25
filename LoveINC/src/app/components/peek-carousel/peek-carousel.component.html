@@ -107,21 +107,14 @@
   <span class="peek-carousel-cover__scrim" aria-hidden="true"></span>
   <span class="peek-carousel-cover__text">
     <span class="peek-carousel-cover__title">{{ item.title }}</span>
-    <span class="peek-carousel-cover__author">
-      @if (item.authorAvatarUrl) {
-        <img
-          class="peek-carousel-cover__author-avatar"
-          [src]="item.authorAvatarUrl"
-          [alt]="item.authorName"
-        />
-      } @else {
-        <img
-          class="peek-carousel-cover__author-avatar"
-          src="assets/branding/love-inc-avatar.png"
-          [alt]="item.authorName"
-        />
-      }
-      <span class="peek-carousel-cover__author-label">By {{ item.authorName }}</span>
+    <span class="app-author-row">
+      <ng-container
+        *ngTemplateOutlet="authorIdentity; context: {
+          name: item.authorName,
+          avatarUrl: item.authorAvatarUrl,
+          overlay: true
+        }"
+      />
     </span>
   </span>
 </ng-template>
@@ -144,21 +137,14 @@
     @if (item.authorName || item.date) {
       <span class="peek-carousel-media__author">
         @if (item.authorName) {
-          <span class="peek-carousel-media__author-identity">
-            @if (item.authorAvatarUrl) {
-              <img
-                class="peek-carousel-media__author-avatar"
-                [src]="item.authorAvatarUrl"
-                [alt]="item.authorName"
-              />
-            } @else {
-              <img
-                class="peek-carousel-media__author-avatar"
-                src="assets/branding/love-inc-avatar.png"
-                [alt]="item.authorName"
-              />
-            }
-            <span class="peek-carousel-media__author-label">By {{ item.authorName }}</span>
+          <span class="app-author-row app-author-row--nested">
+            <ng-container
+              *ngTemplateOutlet="authorIdentity; context: {
+                name: item.authorName,
+                avatarUrl: item.authorAvatarUrl,
+                overlay: false
+              }"
+            />
           </span>
         }
         @if (item.date) {
@@ -167,4 +153,13 @@
       </span>
     }
   </span>
+</ng-template>
+
+<ng-template #authorIdentity let-name="name" let-avatarUrl="avatarUrl" let-overlay="overlay">
+  @if (avatarUrl) {
+    <img class="app-author-avatar" [src]="avatarUrl" [alt]="name" />
+  } @else {
+    <img class="app-author-avatar" src="assets/branding/love-inc-avatar.png" [alt]="name" />
+  }
+  <span class="app-author-label" [class.app-author-label--overlay]="overlay">By {{ name }}</span>
 </ng-template>

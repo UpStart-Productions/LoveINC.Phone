@@ -114,6 +114,75 @@ ion-item ion-label p.app-list-row-title {
   letter-spacing: 0.05rem;
 }
 
+/** Inline author avatar — cards, cover hero, carousel, reader. */
+.app-author-avatar {
+  flex-shrink: 0;
+  width: var(--app-author-avatar-size);
+  height: var(--app-author-avatar-size);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/** Unstyled button reset — tappable author rows, text buttons, etc. */
+.app-unstyled-button {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+/** Inline author row — avatar + "By {name}". */
+.app-author-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.125rem;
+  min-width: 0;
+}
+
+.app-author-row--card {
+  gap: 0.375rem;
+}
+
+.app-author-row--fill {
+  display: flex;
+  width: 100%;
+}
+
+.app-author-row--nested {
+  margin-top: 0;
+}
+
+.app-author-label {
+  margin: 0;
+  font-size: var(--app-font-size-xs);
+  line-height: var(--app-line-height-body);
+  color: var(--app-text-secondary);
+}
+
+.app-author-label.app-author-label--overlay {
+  color: var(--app-text-overlay);
+}
+
+.app-author-label--compact {
+  font-size: 0.625rem;
+}
+
+.app-author-row--fill > .app-author-label {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-author-row__date {
+  flex-shrink: 0;
+  margin-left: auto;
+  text-align: right;
+}
+
 /** Journal / Transformation tools – Crimson Pro body content */
 .app-font-crimson {
   font-family: var(--app-font-family-crimson);

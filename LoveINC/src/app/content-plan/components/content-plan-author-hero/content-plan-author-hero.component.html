@@ -3,14 +3,14 @@
     @if (hasBio) {
       <button
         type="button"
-        class="content-reader-hero__author content-reader-hero__author--clickable"
+        class="app-author-row app-unstyled-button"
         [attr.aria-label]="'About ' + author.name"
         (click)="openAuthorBio()"
       >
         <ng-container *ngTemplateOutlet="authorIdentity" />
       </button>
     } @else {
-      <div class="content-reader-hero__author">
+      <div class="app-author-row">
         <ng-container *ngTemplateOutlet="authorIdentity" />
       </div>
     }
@@ -19,14 +19,14 @@
       @if (hasBio) {
         <button
           type="button"
-          class="content-reader-author-main content-reader-author--clickable"
+          class="app-author-row app-unstyled-button"
           [attr.aria-label]="'About ' + author.name"
           (click)="openAuthorBio()"
         >
           <ng-container *ngTemplateOutlet="authorIdentity" />
         </button>
       } @else {
-        <div class="content-reader-author-main">
+        <div class="app-author-row">
           <ng-container *ngTemplateOutlet="authorIdentity" />
         </div>
       }
@@ -37,23 +37,21 @@
 <ng-template #authorIdentity>
   @if (author.avatarUrl) {
     <img
-      [class.content-reader-hero__author-avatar]="inHero"
-      [class.content-reader-author-avatar]="!inHero"
+      class="app-author-avatar"
       [src]="author.avatarUrl"
       [alt]="author.name"
     />
   } @else {
     <img
-      [class.content-reader-hero__author-avatar]="inHero"
-      [class.content-reader-author-avatar]="!inHero"
+      class="app-author-avatar"
       src="assets/branding/love-inc-avatar.png"
       [alt]="author.name"
     />
   }
   <span
-    [class.content-reader-hero__author-label]="inHero"
-    [class.content-reader-hero__author-label--compact]="inHero && compact"
-    [class.app-body-secondary-xs]="!inHero"
+    class="app-author-label"
+    [class.app-author-label--overlay]="inHero"
+    [class.app-author-label--compact]="inHero && compact"
   >
     By {{ author.name }}
   </span>

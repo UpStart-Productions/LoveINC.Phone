@@ -78,42 +78,42 @@
           @if (hasAuthorBio) {
             <button
               type="button"
-              class="content-card-author content-card-author--clickable"
-              [class.content-card-author--with-date]="showAuthorDate"
+              class="app-author-row app-author-row--card app-unstyled-button"
+              [class.app-author-row--fill]="showAuthorDate"
               [attr.aria-label]="'About ' + authorName"
               (click)="onAuthorTap($event)"
             >
               @if (authorAvatarUrl) {
-                <img class="content-card-author__avatar" [src]="authorAvatarUrl" [alt]="authorName" />
+                <img class="app-author-avatar" [src]="authorAvatarUrl" [alt]="authorName" />
               } @else {
                 <img
-                  class="content-card-author__avatar"
+                  class="app-author-avatar"
                   src="assets/branding/love-inc-avatar.png"
                   [alt]="authorName"
                 />
               }
-              <span class="app-body-secondary-xs content-card-author__label">By {{ authorName }}</span>
+              <span class="app-author-label">By {{ authorName }}</span>
               @if (showAuthorDate) {
-                <span class="app-body-secondary-xs content-card-author__date">{{ createdAtLabel }}</span>
+                <span class="app-body-secondary-xs app-author-row__date">{{ createdAtLabel }}</span>
               }
             </button>
           } @else {
             <div
-              class="content-card-author"
-              [class.content-card-author--with-date]="showAuthorDate"
+              class="app-author-row app-author-row--card"
+              [class.app-author-row--fill]="showAuthorDate"
             >
               @if (authorAvatarUrl) {
-                <img class="content-card-author__avatar" [src]="authorAvatarUrl" [alt]="authorName" />
+                <img class="app-author-avatar" [src]="authorAvatarUrl" [alt]="authorName" />
               } @else {
                 <img
-                  class="content-card-author__avatar"
+                  class="app-author-avatar"
                   src="assets/branding/love-inc-avatar.png"
                   [alt]="authorName"
                 />
               }
-              <span class="app-body-secondary-xs content-card-author__label">By {{ authorName }}</span>
+              <span class="app-author-label">By {{ authorName }}</span>
               @if (showAuthorDate) {
-                <span class="app-body-secondary-xs content-card-author__date">{{ createdAtLabel }}</span>
+                <span class="app-body-secondary-xs app-author-row__date">{{ createdAtLabel }}</span>
               }
             </div>
           }
