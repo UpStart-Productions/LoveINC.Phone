@@ -33,9 +33,10 @@ import {
   buildGiveNowCtaRow,
   buildVolunteerCtaRow,
   mapPlatformCtaToRow,
-  mapHomeCtaRowsToListSlides,
+  mapHomeCtaRowsToMediaItems,
 } from '../components/home-cta-row/home-cta-row.mapper';
 import type { HomeCtaRowModel } from '../components/home-cta-row/home-cta-row.model';
+import type { PeekCarouselMediaItem } from '../components/peek-carousel/peek-carousel.model';
 import { PeekCarouselComponent } from '../components/peek-carousel/peek-carousel.component';
 import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-widget/verse-of-the-day-widget.component';
 import { SimpleBudgetHomeWidgetComponent } from '../components/simple-budget-home-widget/simple-budget-home-widget.component';
@@ -54,7 +55,7 @@ import { MicrolearningThemeWidgetComponent } from '../components/microlearning-t
 import { HomeShareAppCardComponent } from '../components/home-share-app-card/home-share-app-card.component';
 import { ContentPlanService } from '../content-plan/content-plan.service';
 import type { ContentPlanTheme } from '../content-plan/content-plan.model';
-import type { PeekCarouselSlideClick, PeekCarouselListSlide } from '../components/peek-carousel/peek-carousel.model';
+import type { PeekCarouselSlideClick } from '../components/peek-carousel/peek-carousel.model';
 import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 
 const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
@@ -117,7 +118,7 @@ export class HomePage implements OnInit {
   welcomeTitle = 'Welcome to Love INC';
   giveCtas: PlatformCta[] = [];
   volunteerCtas: PlatformCta[] = [];
-  platformCtaListSlides: PeekCarouselListSlide[] = [];
+  platformCtaMediaItems: PeekCarouselMediaItem[] = [];
   showDonateButton = false;
 
   /** Get Help row on Home — intake nudge, vouchers, or browse services. */
@@ -268,10 +269,10 @@ export class HomePage implements OnInit {
   }
 
   onPlatformCtaSlideClick(event: PeekCarouselSlideClick): void {
-    if (event.variant !== 'list') {
+    if (event.variant !== 'media') {
       return;
     }
-    const rowId = event.row.id;
+    const rowId = event.item.id;
     const ctaRow = this.platformCtaRows.find((item) => item.id === rowId);
     if (!ctaRow || ctaRow.action.kind !== 'content-detail') {
       return;
@@ -306,7 +307,7 @@ export class HomePage implements OnInit {
     for (const cta of this.giveCtas) {
       rows.push(mapPlatformCtaToRow(cta, 'give'));
     }
-    this.platformCtaListSlides = mapHomeCtaRowsToListSlides(rows);
+    this.platformCtaMediaItems = mapHomeCtaRowsToMediaItems(rows);
   }
 
   private isGiveCtaType(type: string): boolean {

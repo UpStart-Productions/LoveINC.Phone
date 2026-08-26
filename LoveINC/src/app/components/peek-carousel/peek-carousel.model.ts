@@ -1,7 +1,7 @@
 import type { ContentCardListItem } from '../content-card-list/content-card-list.model';
 
 /** Slide layout used by `app-peek-carousel`. */
-export type PeekCarouselVariant = 'cover' | 'media' | 'list';
+export type PeekCarouselVariant = 'cover' | 'media' | 'list' | 'content-card';
 
 /** Hero slide: fixed-size card with photo and overlay text. */
 export interface PeekCarouselCoverItem {
@@ -33,4 +33,5 @@ export interface PeekCarouselListSlide {
 export type PeekCarouselSlideClick =
   | { variant: 'cover'; item: PeekCarouselCoverItem }
   | { variant: 'media'; item: PeekCarouselMediaItem }
-  | { variant: 'list'; slide: PeekCarouselListSlide; row: ContentCardListItem };
+  | { variant: 'list'; slide: PeekCarouselListSlide; row: ContentCardListItem }
+  | { variant: 'content-card'; item: ContentCardListItem };

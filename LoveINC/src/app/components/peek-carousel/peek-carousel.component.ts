@@ -58,6 +58,7 @@ export class PeekCarouselComponent implements OnInit, OnChanges, AfterViewInit, 
   @Input() coverItems: PeekCarouselCoverItem[] = [];
   @Input() mediaItems: PeekCarouselMediaItem[] = [];
   @Input() listSlides: PeekCarouselListSlide[] = [];
+  @Input() contentCardItems: ContentCardListItem[] = [];
 
   /** When false, cover/media slides are not tappable. List rows keep their own click rules. */
   @Input() clickable = true;
@@ -73,6 +74,9 @@ export class PeekCarouselComponent implements OnInit, OnChanges, AfterViewInit, 
 
   /** Shorter slides for dense sections (e.g. home platform CTAs). */
   @Input() compact = false;
+
+  /** Media slides at cover-card height with smaller type (platform CTAs). */
+  @Input() dense = false;
 
   /** Auto-advance when there is more than one slide. */
   @Input() autoScroll = false;
@@ -144,6 +148,7 @@ export class PeekCarouselComponent implements OnInit, OnChanges, AfterViewInit, 
       changes['coverItems'] ||
       changes['mediaItems'] ||
       changes['listSlides'] ||
+      changes['contentCardItems'] ||
       changes['variant']
     ) {
       this.autoScrollIndex = 0;
@@ -184,6 +189,10 @@ export class PeekCarouselComponent implements OnInit, OnChanges, AfterViewInit, 
     return row.id ?? row.title ?? String(index);
   }
 
+  trackContentCardItem(_index: number, item: ContentCardListItem): string {
+    return item.id ?? item.title ?? String(_index);
+  }
+
   onCoverClick(item: PeekCarouselCoverItem): void {
     if (!this.clickable) return;
     this.slideClick.emit({ variant: 'cover', item });
@@ -197,6 +206,11 @@ export class PeekCarouselComponent implements OnInit, OnChanges, AfterViewInit, 
   onListRowClick(slide: PeekCarouselListSlide, row: ContentCardListItem): void {
     if (row.route) return;
     this.slideClick.emit({ variant: 'list', slide, row });
+  }
+
+  onContentCardClick(item: ContentCardListItem): void {
+    if (item.route || !this.clickable) return;
+    this.slideClick.emit({ variant: 'content-card', item });
   }
 
   private loadThemedPlans(refresh = false): void {
@@ -243,6 +257,8 @@ export class PeekCarouselComponent implements OnInit, OnChanges, AfterViewInit, 
         return this.displayMediaItems.length;
       case 'list':
         return this.displayListSlides.length;
+      case 'content-card':
+        return this.contentCardItems.length;
       default:
         return 0;
     }

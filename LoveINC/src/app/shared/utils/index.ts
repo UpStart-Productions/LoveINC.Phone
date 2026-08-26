@@ -4,6 +4,10 @@
  */
 export { shouldHideMainTabBar } from './route-utils';
 export { isVolunteerPositionOpen, sortVolunteerPositionsOpenFirst } from './volunteer-position.util';
+export {
+  APP_AVATAR_PALETTE,
+  resolveAvatarBackgroundColor,
+} from './avatar-palette.util';
 export { navigateAppBack } from './navigation-back.util';
 export { navigateAppForward } from './navigation-forward.util';
 export { navigateAppFlat } from './navigation-flat.util';

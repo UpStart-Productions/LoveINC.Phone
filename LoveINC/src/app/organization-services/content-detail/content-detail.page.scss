@@ -53,7 +53,7 @@ ion-content.content-detail-page.content-reader-scroll::part(background) {
   flex-direction: row;
   align-items: center;
   gap: 1rem;
-  padding: 0.875rem 1rem;
+  padding: var(--app-card-list-row-padding-block) var(--app-card-content-padding-inline);
   border-radius: var(--app-card-radius);
   background: var(--ion-color-light);
 }

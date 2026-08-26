@@ -189,6 +189,13 @@
   --app-card-background: #ffffff;
   --app-card-margin-bottom: 1.25rem;
 
+  /** Canonical ion-card-content padding (Verse, home widgets, app-content-card). Do not override in pages. */
+  --app-card-content-padding-top: 0.5rem;
+  --app-card-content-padding-inline: 1rem;
+  --app-card-content-padding-bottom: 1rem;
+  /** Vertical padding for stacked list rows inside content-card-list shells. */
+  --app-card-list-row-padding-block: 0.875rem;
+
   /** Vertical gap between Home screen sections (CTA, widgets, carousels, feed). */
   --home-section-gap: calc(0.75rem + 4px);
 

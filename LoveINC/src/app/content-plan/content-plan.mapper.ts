@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import type { ContentCardListItem } from '../components/content-card-list/content-card-list.model';
 import type { PlatformPlan, PlatformPlanMoment, PlatformTheme } from '../services/platform/types';
 import { formatDateRangeCompact } from '../shared/utils/date-time-formatting';
+import { resolveAvatarBackgroundColor } from '../shared/utils/avatar-palette.util';
 import { hasMeaningfulRichText } from './content-plan-author.util';
 import type {
   ContentPlan,
@@ -83,7 +84,7 @@ export function mapContentPlanThemeToLearnListItem(theme: ContentPlanTheme): Con
     category: subtitle || undefined,
     categoryIconSvg: iconSvg || undefined,
     lucideIcon,
-    iconBackgroundColor: '#349394',
+    iconBackgroundColor: resolveAvatarBackgroundColor(theme.id),
     compactCategoryLabel: true,
     route: `/tabs/content-plan-theme/${theme.id}`,
     navigationFrom: 'tools',

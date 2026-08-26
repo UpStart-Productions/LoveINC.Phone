@@ -18,6 +18,8 @@ ion-card {
 
 /* -----------------------------------------------------------------------------
  * Card header / title / subtitle / content (override Ionic defaults)
+ * ion-card-content padding: use --app-card-content-padding-* tokens only.
+ * Do not add page-level ion-card-content padding overrides.
  * ----------------------------------------------------------------------------- */
 ion-card-header {
   padding: 1rem 1rem 0.5rem 1rem;
@@ -75,11 +77,12 @@ ion-card-header ion-card-subtitle {
 }
 
 ion-card-content {
-  padding: 0.5rem 1rem 1rem 1rem !important;
-  --padding-start: 1rem !important;
-  --padding-end: 1rem !important;
-  --padding-left: 1rem !important;
-  --padding-right: 1rem !important;
+  padding: var(--app-card-content-padding-top) var(--app-card-content-padding-inline)
+    var(--app-card-content-padding-bottom) var(--app-card-content-padding-inline) !important;
+  --padding-start: var(--app-card-content-padding-inline) !important;
+  --padding-end: var(--app-card-content-padding-inline) !important;
+  --padding-left: var(--app-card-content-padding-inline) !important;
+  --padding-right: var(--app-card-content-padding-inline) !important;
 
   color: var(--app-text-secondary);
   font-size: var(--app-font-size-body) !important;
@@ -88,8 +91,8 @@ ion-card-content {
 
 /* Target shadow DOM native element */
 ion-card-content::part(native) {
-  padding-left: 1rem !important;
-  padding-right: 1rem !important;
+  padding-left: var(--app-card-content-padding-inline) !important;
+  padding-right: var(--app-card-content-padding-inline) !important;
 }
 
 ion-card-content p,
@@ -566,8 +569,8 @@ ion-card.clickable {
   box-shadow: none;
 
   ion-card-content {
-    padding-top: 0.875rem !important;
-    padding-bottom: 0.875rem !important;
+    padding-top: var(--app-card-list-row-padding-block) !important;
+    padding-bottom: var(--app-card-list-row-padding-block) !important;
   }
 }
 

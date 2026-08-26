@@ -24,6 +24,11 @@ ion-content.home-page .home-sections ion-card {
   margin-inline: var(--app-card-margin);
 }
 
+/* Peek track already applies --app-card-margin inset — no double margin on slide cards. */
+ion-content.home-page .home-sections app-peek-carousel ion-card.content-card {
+  margin-inline: 0;
+}
+
 ion-content.home-page .home-sections .cards-container {
   padding-top: 0;
   padding-bottom: 0;

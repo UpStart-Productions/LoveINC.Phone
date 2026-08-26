@@ -7,7 +7,7 @@
   border-radius: var(--app-card-radius);
   background: var(--app-card-background);
   box-shadow: var(--app-card-shadow);
-  padding: 0.875rem 0.875rem 0;
+  padding: var(--app-card-content-padding-top) var(--app-card-content-padding-inline) 0;
 }
 
 .home-share-app-card__hero {
@@ -30,7 +30,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  padding: 0.75rem 0 1rem;
+  padding: 0 0 var(--app-card-content-padding-bottom);
 
   h3 {
     margin: 0;

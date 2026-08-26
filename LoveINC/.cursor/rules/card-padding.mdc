@@ -1,0 +1,34 @@
+---
+description: Canonical card padding — app-content-card and ion-card-content must not deviate
+globs:
+  - "**/*.scss"
+  - "**/*.html"
+  - "**/*.ts"
+alwaysApply: false
+---
+
+# Card padding (canonical)
+
+**Reference:** Verse of the Day / home widgets — standalone `app-content-card` (`ion-card.content-card`).
+
+## Tokens (`variables.scss`)
+
+- `--app-card-content-padding-top`: 0.5rem
+- `--app-card-content-padding-inline`: 1rem
+- `--app-card-content-padding-bottom`: 1rem
+- `--app-card-list-row-padding-block`: 0.875rem (stacked rows inside `app-content-card-list` only)
+- `--app-card-margin`: 0.75rem (horizontal inset from screen edge on Home)
+
+## Rules
+
+1. **Standalone cards** — use `app-content-card` with default styling. Do **not** add page/component SCSS that overrides `ion-card-content` padding.
+2. **Stacked list rows** — `app-content-card-list` with `[listRow]="true"` only; row padding comes from `cards.scss` list-row rules.
+3. **Home peek carousel platform CTAs** — `variant="content-card"` (normal `app-content-card` per slide), **not** `list` variant / list-shell.
+4. **Peek carousel track inset** — `--peek-carousel-inset: var(--app-card-margin)` (matches home card margin).
+5. **Exceptions** — compact popovers/modals (e.g. map popover) may use tighter padding; note why in a comment.
+
+## Do not
+
+- Wrap standalone cards in `peek-carousel-list-shell`
+- Override `ion-card-content { padding: ... }` in page SCSS for standard cards
+- Invent new padding values — use the tokens above

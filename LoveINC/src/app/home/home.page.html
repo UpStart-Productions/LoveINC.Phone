@@ -30,8 +30,10 @@
 
     @if (platformCtaRows.length) {
       <app-peek-carousel
-        variant="list"
-        [listSlides]="platformCtaListSlides"
+        variant="media"
+        [mediaItems]="platformCtaMediaItems"
+        [peek]="0.30"
+        [dense]="true"
         [clickable]="true"
         (slideClick)="onPlatformCtaSlideClick($event)"
       />

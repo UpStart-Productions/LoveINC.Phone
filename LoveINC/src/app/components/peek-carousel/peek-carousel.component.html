@@ -2,6 +2,7 @@
   class="peek-carousel"
   [ngClass]="'peek-carousel--' + variant"
   [class.peek-carousel--compact]="compact"
+  [class.peek-carousel--dense]="dense"
   [style.--peek-carousel-peek]="peekCssValue"
   [style.--peek-carousel-section-title-inset]="sectionTitleInset || null"
 >
@@ -104,6 +105,42 @@
                 />
               }
             </div>
+          </div>
+        }
+      }
+
+      @case ('content-card') {
+        @for (item of contentCardItems; track trackContentCardItem($index, item)) {
+          <div class="peek-carousel__slide peek-carousel__slide--content-card" role="listitem">
+            <app-content-card
+              [compactCategoryLabel]="item.compactCategoryLabel ?? true"
+              [category]="item.category"
+              [categoryIcon]="item.categoryIcon"
+              [lucideCategoryIcon]="item.lucideCategoryIcon"
+              [categoryExtra]="item.categoryExtra"
+              [title]="item.title"
+              [titleSegments]="item.titleSegments"
+              [underTitle]="item.underTitle"
+              [detail]="item.detail"
+              [detailSegments]="item.detailSegments"
+              [imageUrl]="item.imageUrl"
+              [iconName]="item.iconName"
+              [lucideIcon]="item.lucideIcon"
+              [iconBackgroundColor]="item.iconBackgroundColor ?? defaultIconBackgroundColor"
+              [route]="item.route"
+              [navigationFrom]="item.navigationFrom"
+              [preserveQueryParams]="item.preserveQueryParams ?? false"
+              [asideBadge]="item.asideBadge"
+              [asideBadgeColor]="item.asideBadgeColor ?? 'success'"
+              [asideAvatarSize]="item.asideAvatarSize ?? 'small'"
+              [avatarOverlayIcon]="item.avatarOverlayIcon"
+              [avatarOverlayIconColor]="item.avatarOverlayIconColor ?? 'success'"
+              [authorName]="item.authorName"
+              [authorAvatarUrl]="item.authorAvatarUrl"
+              [createdAtLabel]="item.createdAtLabel"
+              [clickable]="item.route ? true : item.clickable !== false"
+              (cardClick)="onContentCardClick(item)"
+            />
           </div>
         }
       }

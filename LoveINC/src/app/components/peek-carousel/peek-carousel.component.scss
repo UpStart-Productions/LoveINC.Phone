@@ -3,7 +3,7 @@
 }
 
 .peek-carousel {
-  --peek-carousel-inset: 1rem;
+  --peek-carousel-inset: var(--app-card-margin);
   --peek-carousel-gap: 0.75rem;
   --peek-carousel-peek: 8%;
   --peek-carousel-slide-width: calc(100% - var(--peek-carousel-peek));
@@ -122,7 +122,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
-  padding: 0.875rem;
+  padding: var(--app-card-content-padding-inline);
   color: #fff;
   text-shadow:
     0 1px 0 rgb(0 0 0 / 0.82),
@@ -167,7 +167,8 @@
   flex-direction: column;
   gap: 0.25rem;
   min-height: 0;
-  padding: 0.875rem 0.875rem 1rem;
+  padding: var(--app-card-content-padding-top) var(--app-card-content-padding-inline)
+    var(--app-card-content-padding-bottom);
 }
 
 .peek-carousel-media__date {
@@ -199,6 +200,40 @@
   margin-top: 0.125rem;
 }
 
+.peek-carousel--dense.peek-carousel--media {
+  --peek-carousel-media-card-height: var(--peek-carousel-cover-height);
+  --peek-carousel-media-image-height: calc(var(--peek-carousel-media-card-height) * 2 / 3);
+}
+
+.peek-carousel--dense .peek-carousel-media__body {
+  gap: 0.125rem;
+  padding: 0.375rem var(--app-card-content-padding-inline) 0.5rem;
+}
+
+.peek-carousel--dense .peek-carousel-media__title {
+  font-size: var(--app-font-size-body);
+  font-weight: var(--app-font-weight-medium);
+  line-height: var(--app-line-height-body);
+  -webkit-line-clamp: 2;
+}
+
+.peek-carousel--dense .peek-carousel-media__description {
+  font-size: var(--app-font-size-sm);
+  line-height: var(--app-line-height-relaxed);
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.peek-carousel--dense .peek-carousel-media__date {
+  font-size: var(--app-font-size-xs);
+}
+
+.peek-carousel--dense .peek-carousel-media__author {
+  margin-top: 0;
+}
+
 .peek-carousel-list-shell {
   border-radius: var(--app-card-radius);
   overflow: hidden;
@@ -206,11 +241,6 @@
   box-shadow: var(--app-card-shadow);
 }
 
-/* Match peek media/cover card body inset (0.875rem), not default ion-card-content 1rem. */
-.peek-carousel-list-shell .content-card.content-card--list-row ion-card-content {
-  padding-top: 0.875rem !important;
-  padding-bottom: 0.875rem !important;
-  padding-left: 0.875rem !important;
-  --padding-start: 0.875rem !important;
-  --padding-left: 0.875rem !important;
+.peek-carousel__slide--content-card ion-card.content-card {
+  margin: 0;
 }
