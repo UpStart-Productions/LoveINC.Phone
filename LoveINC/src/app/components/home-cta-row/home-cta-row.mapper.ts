@@ -5,6 +5,7 @@ import {
   formatEventDatesCompact,
   formatTimeStringCompact,
 } from '../../shared/utils';
+import { resolvePlatformCtaHomeAction } from '../../shared/utils/cta-navigation.util';
 import type { HomeCtaRowModel } from './home-cta-row.model';
 
 function platformCtaSubtitle(cta: PlatformCta): string {
@@ -67,16 +68,6 @@ function platformCtaAccentColor(type: PlatformCtaType, context: 'give' | 'volunt
   }
 }
 
-function platformContentDetailType(type: PlatformCtaType): string {
-  const map: Record<PlatformCtaType, string> = {
-    donation_drive: 'donation-drive',
-    volunteer_call: 'volunteer',
-    fundraiser: 'fundraiser',
-    awareness: 'awareness',
-  };
-  return map[type] ?? type;
-}
-
 export function mapPlatformCtaToRow(
   cta: PlatformCta,
   context: 'give' | 'volunteer'
@@ -101,11 +92,7 @@ export function mapPlatformCtaToRow(
     pillText: platformCtaPillText(cta.type, context),
     pillColor: accent,
     progress,
-    action: {
-      kind: 'content-detail',
-      contentType: platformContentDetailType(cta.type),
-      id: cta.id,
-    },
+    action: resolvePlatformCtaHomeAction(cta),
   };
 }
 
@@ -164,24 +151,13 @@ export function buildVolunteerCtaRow(): HomeCtaRowModel {
   };
 }
 
-function formatHomeCtaDetail(row: HomeCtaRowModel): string | undefined {
-  let detail = row.subtitle;
-  if (row.progress?.goal != null && row.progress.current != null) {
-    const unit = row.progress.unitLabel?.trim() ? ` ${row.progress.unitLabel.trim()}` : '';
-    const progressLine = `${row.progress.current}/${row.progress.goal}${unit}`;
-    detail = detail ? `${detail} · ${progressLine}` : progressLine;
-  }
-  return detail;
-}
-
-/** Media peek slides for platform CTAs (image on top, title + detail below). */
+/** Media peek slides for platform CTAs (image on top, title only below). */
 export function mapHomeCtaRowToMediaItem(row: HomeCtaRowModel): PeekCarouselMediaItem {
   const hideLabel = row.pillText === 'Serve' || row.pillText === 'News';
 
   return {
     id: row.id,
     title: row.body,
-    description: formatHomeCtaDetail(row),
     imageUrl: row.photoUrl,
     imageColor: row.iconColor,
     date: hideLabel ? undefined : row.pillText,

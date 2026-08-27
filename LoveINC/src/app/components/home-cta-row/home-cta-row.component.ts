@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IonItem, IonLabel, IonIcon, IonProgressBar, NavController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
-import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
+import { executeHomeCtaAction } from '../../shared/utils/home-cta-action.util';
 import type { HomeCtaRowModel } from './home-cta-row.model';
 
 @Component({
@@ -62,43 +62,11 @@ export class HomeCtaRowComponent {
   }
 
   onRowClick(): void {
-    const action = this.row.action;
-    switch (action.kind) {
-      case 'route':
-        void navigateAppForward(this.navController, this.router, action.path, {
-          queryParams: action.queryParams,
-        });
-        break;
-      case 'content-detail':
-        void navigateAppForward(
-          this.navController,
-          this.router,
-          ['/tabs/content-detail', action.contentType, action.id],
-          { queryParams: { from: 'home' } }
-        );
-        break;
-      case 'donate-sheet':
-        void this.donateActionSheetService.openDonateActionSheet();
-        break;
-      case 'get-help':
-        if (action.target === 'connection-center') {
-          void navigateAppForward(this.navController, this.router, ['/tabs/connection-center'], {
-            queryParams: { from: 'home' },
-          });
-        } else if (action.target === 'profile') {
-          void navigateAppForward(this.navController, this.router, ['/tabs/profile'], {
-            queryParams: { from: 'home' },
-          });
-        } else if (action.target === 'gap-ministries') {
-          void navigateAppForward(this.navController, this.router, ['/tabs/gap-ministries'], {
-            queryParams: { from: 'home' },
-          });
-        } else {
-          void navigateAppForward(this.navController, this.router, ['/tabs/services'], {
-            queryParams: { from: 'home' },
-          });
-        }
-        break;
-    }
+    void executeHomeCtaAction(
+      this.row.action,
+      this.navController,
+      this.router,
+      this.donateActionSheetService
+    );
   }
 }

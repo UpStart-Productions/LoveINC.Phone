@@ -36,6 +36,7 @@ import {
   mapHomeCtaRowsToMediaItems,
 } from '../components/home-cta-row/home-cta-row.mapper';
 import type { HomeCtaRowModel } from '../components/home-cta-row/home-cta-row.model';
+import { executeHomeCtaAction } from '../shared/utils/home-cta-action.util';
 import type { PeekCarouselMediaItem } from '../components/peek-carousel/peek-carousel.model';
 import { PeekCarouselComponent } from '../components/peek-carousel/peek-carousel.component';
 import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-widget/verse-of-the-day-widget.component';
@@ -274,14 +275,14 @@ export class HomePage implements OnInit {
     }
     const rowId = event.item.id;
     const ctaRow = this.platformCtaRows.find((item) => item.id === rowId);
-    if (!ctaRow || ctaRow.action.kind !== 'content-detail') {
+    if (!ctaRow) {
       return;
     }
-    void navigateAppForward(
+    void executeHomeCtaAction(
+      ctaRow.action,
       this.navController,
       this.router,
-      ['/tabs/content-detail', ctaRow.action.contentType, ctaRow.action.id],
-      { queryParams: { from: 'home' } }
+      this.donateActionSheetService
     );
   }
 

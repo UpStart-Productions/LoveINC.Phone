@@ -35,6 +35,7 @@ import {
   NavController,
 } from '@ionic/angular/standalone';
 import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
+import { resolvePlatformCtaRedirect } from '../../shared/utils/cta-navigation.util';
 import { handleRichHtmlClick } from '../../shared/utils/rich-html-links';
 import { Browser } from '@capacitor/browser';
 import { AlertController } from '@ionic/angular';
@@ -614,10 +615,17 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
           this.finishContentLoad();
           return;
         }
-        const redirect = this.getCtaRelatedRedirect(c);
+        const redirect = resolvePlatformCtaRedirect(c);
         if (redirect) {
           this.finishContentLoad();
-          this.router.navigate(redirect.commands, { queryParams: redirect.queryParams, replaceUrl: true });
+          if ('kind' in redirect && redirect.kind === 'donate-sheet') {
+            void this.donateActionSheetService.openDonateActionSheet();
+            void this.router.navigate(['/tabs/home'], { replaceUrl: true });
+            return;
+          }
+          if ('commands' in redirect) {
+            this.router.navigate(redirect.commands, { queryParams: redirect.queryParams, replaceUrl: true });
+          }
           return;
         }
         this.contentItem = this.mapPlatformCtaToContentDetail(c);
@@ -627,35 +635,6 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
         console.error('Error loading CTA detail:', err);
         this.finishContentLoad();
       }});
-  }
-
-  private getCtaRelatedRedirect(cta: PlatformCta): { commands: unknown[]; queryParams?: Record<string, string> } | null {
-    if (cta.volunteerPositions?.length === 1) {
-      return { commands: ['/tabs/content-detail', 'volunteer-position', cta.volunteerPositions[0].id], queryParams: { from: 'home' } };
-    }
-    if (cta.events?.length === 1) {
-      return { commands: ['/tabs/content-detail', 'event', cta.events[0].id], queryParams: { from: 'home' } };
-    }
-    if (cta.class?.id) {
-      return { commands: ['/tabs/content-detail', 'class', cta.class.id], queryParams: { from: 'home' } };
-    }
-    if (cta.impactStory?.id) {
-      return { commands: ['/tabs/content-detail', 'impact-story', cta.impactStory.id], queryParams: { from: 'home' } };
-    }
-    if (cta.providerOffering?.id) {
-      return { commands: ['/tabs/content-detail', 'gap-ministry', cta.providerOffering.id], queryParams: { from: 'home' } };
-    }
-    if (cta.service?.id) {
-      return { commands: ['/tabs/content-detail', 'gap-ministry', cta.service.id], queryParams: { from: 'home' } };
-    }
-    // Donation location redirect applies only to drive/fundraiser CTAs, not awareness.
-    if (
-      cta.donation?.id &&
-      (cta.type === 'donation_drive' || cta.type === 'fundraiser')
-    ) {
-      return { commands: ['/tabs/donate-goods'], queryParams: { donationId: cta.donation.id, from: 'home' } };
-    }
-    return null;
   }
 
   private mapPlatformEventToContentDetail(e: PlatformEvent): ContentDetail {
