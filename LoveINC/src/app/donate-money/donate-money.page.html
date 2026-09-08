@@ -3,76 +3,233 @@
     <ion-buttons slot="start">
       <app-back-button></app-back-button>
     </ion-buttons>
-    <ion-title>Give to Love INC</ion-title>
+    <ion-title>Donate</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="content-wrapper">
-  <div class="donation-form-container p-18">
-    <!-- Donation Frequency -->
-    <ion-segment [(ngModel)]="donationFrequency" class="frequency-segment p-3 m-b-24">
-      <ion-segment-button value="one-time">
-        <ion-label>One-time</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="monthly">
-        <ion-label>Monthly</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="quarterly">
-        <ion-label>Quarterly</ion-label>
-      </ion-segment-button>
-    </ion-segment>
+<ion-content [fullscreen]="true" class="givebutter-dummy-content">
+  @if (view !== 'thanks') {
+    <div class="givebutter-dummy">
+      <div class="org-header">
+        <img src="assets/icon-only.png" alt="Love INC" class="org-logo">
+        <div>
+          <h2>Love INC of Newberg</h2>
+          <p class="app-body-secondary">Your gift helps neighbors in Yamhill County.</p>
+        </div>
+      </div>
 
-    <!-- Preset Amount Buttons -->
-    <div class="amount-buttons m-b-24">
+      <div class="frequency-row" role="tablist" aria-label="Donation frequency">
+        @for (freq of frequencies; track freq.id) {
+          <button
+            type="button"
+            class="frequency-chip"
+            [class.selected]="donationFrequency === freq.id"
+            (click)="donationFrequency = freq.id">
+            {{ freq.label }}
+          </button>
+        }
+      </div>
+
+      <div class="amount-grid">
+        @for (amount of presetAmounts; track amount) {
+          <button
+            type="button"
+            class="amount-tile"
+            [class.selected]="selectedAmount === amount && !customAmount"
+            (click)="selectAmount(amount)">
+            <span class="amount-tile-value">${{ amount }}</span>
+            @if (frequencyLabel) {
+              <span class="amount-tile-freq">{{ frequencyLabel }}</span>
+            }
+          </button>
+        }
+      </div>
+
       <button
-        *ngFor="let amount of presetAmounts"
-        class="amount-button app-title p-18"
-        [class.selected]="selectedAmount === amount"
-        (click)="selectAmount(amount)"
-        type="button">
-        ${{ amount }}
+        type="button"
+        class="other-amount"
+        [class.selected]="!!customAmount"
+        (click)="openAmountModal()">
+        <span class="other-prefix">$</span>
+        <span class="other-label">{{ customAmount ? customAmount : 'Other amount' }}</span>
+        <span class="other-suffix">USD</span>
       </button>
-    </div>
 
-    <!-- Other Amount Input -->
-    <div class="other-amount-container m-b-24">
-      <ion-item class="other-amount-item p-12 p-l-18 p-r-18">
-        <ion-label position="stacked" class="m-b-6">$ Other</ion-label>
-        <ion-input
-          type="number"
-          [(ngModel)]="customAmount"
-          (ionInput)="onCustomAmountChange()"
-          placeholder="0.00"
-          class="other-amount-input">
-        </ion-input>
-        <div slot="end" class="currency-label app-body-secondary m-l-6">USD</div>
-      </ion-item>
-    </div>
+      <label class="fee-row">
+        <input type="checkbox" [(ngModel)]="coverFees">
+        <span>
+          Cover transaction fees
+          @if (baseAmount) {
+            <span class="fee-amt">({{ formatMoney(feeAmount) }})</span>
+          }
+        </span>
+      </label>
 
-    <!-- Additional Options -->
-    <div class="options-container m-b-24">
-      <ion-item class="m-b-12">
-        <ion-checkbox [(ngModel)]="addNote" slot="start"></ion-checkbox>
-        <ion-label class="app-body">Add note/comment</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-checkbox [(ngModel)]="giveInHonor" slot="start"></ion-checkbox>
-        <ion-label class="app-body">Give in honor/memory</ion-label>
-      </ion-item>
-    </div>
+      <label class="fee-row">
+        <input type="checkbox" [(ngModel)]="giveInHonor">
+        <span>Give in honor or memory</span>
+      </label>
 
-    <!-- Continue Button -->
-    <ion-button
-      expand="block"
-      class="pill-button m-t-30 m-b-24"
-      [disabled]="!canContinue()"
-      (click)="onContinue()">
-      Continue
-    </ion-button>
+      <div class="donor-fields">
+        <div class="field-row">
+          <label>
+            First name
+            <ion-input type="text" [(ngModel)]="firstName" autocomplete="given-name"></ion-input>
+          </label>
+          <label>
+            Last name
+            <ion-input type="text" [(ngModel)]="lastName" autocomplete="family-name"></ion-input>
+          </label>
+        </div>
+        <label>
+          Email
+          <ion-input type="email" [(ngModel)]="email" autocomplete="email"></ion-input>
+        </label>
+      </div>
 
-    <!-- Powered by Givebutter -->
-    <div class="powered-by app-body-secondary-sm p-l-18 p-r-18">
-      <span class="m-r-3">Powered by Givebutter</span>
+      <p class="pay-heading">Pay securely</p>
+
+      <button
+        type="button"
+        class="apple-pay-official"
+        aria-label="Donate with Apple Pay"
+        [disabled]="!canDonate"
+        (click)="openApplePay()">
+      </button>
+
+      <button
+        type="button"
+        class="google-pay-official"
+        aria-label="Donate with Google Pay"
+        [disabled]="!canDonate"
+        (click)="openGooglePay()">
+        <img src="assets/custom-icons/google-pay-light.svg" alt="Google Pay">
+      </button>
+
+      <div class="or-row"><span>or pay with card</span></div>
+
+      <div class="card-fields">
+        <label>
+          Card number
+          <ion-input type="text" inputmode="numeric" value="4242 4242 4242 4242" readonly="true"></ion-input>
+        </label>
+        <div class="field-row">
+          <label>
+            Expiration
+            <ion-input type="text" value="12 / 28" readonly="true"></ion-input>
+          </label>
+          <label>
+            CVC
+            <ion-input type="text" value="424" readonly="true"></ion-input>
+          </label>
+        </div>
+      </div>
+
+      <ion-button expand="block" class="donate-cta" [disabled]="!canDonate" (click)="donateWithCard()">
+        <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
+        Donate {{ formatMoney(totalAmount) }}
+        @if (frequencyLabel) {
+          {{ frequencyLabel }}
+        }
+      </ion-button>
     </div>
-  </div>
+  } @else {
+    <div class="thanks-panel">
+      <div #checkmarkBurst class="thanks-burst" aria-hidden="true"></div>
+      <h2>Thank you, {{ firstName }}</h2>
+      <p class="app-body-secondary">
+        Your {{ frequencyLabel || 'one-time' }} gift of {{ formatMoney(totalAmount) }} to Love INC of Newberg is confirmed.
+      </p>
+      <ion-button expand="block" class="donate-cta" (click)="closeSheet()">Done</ion-button>
+    </div>
+  }
+
+  @if (view === 'apple-pay' || view === 'google-pay') {
+    <div class="wallet-sheet-backdrop" slot="fixed" (click)="closeSheet()"></div>
+    <div class="wallet-sheet" slot="fixed" role="dialog" aria-modal="true">
+    @if (view === 'apple-pay') {
+      <div class="apple-sheet">
+        <div class="apple-sheet-handle"></div>
+        <div class="apple-sheet-mark">
+          <svg viewBox="0 0 17 20" aria-hidden="true">
+            <path fill="currentColor" d="M13.86 10.63c.02 2.27 1.99 3.03 2.01 3.04-.02.06-.31 1.08-1.04 2.14-.63.91-1.28 1.82-2.31 1.84-1.01.02-1.34-.61-2.5-.61-1.16 0-1.52.59-2.48.63-1 .04-1.76-1-2.4-1.91-1.31-1.86-2.31-5.26-0.97-7.56.67-1.15 1.86-1.88 3.16-1.9 1 .02 1.93.67 2.5.67.57 0 1.64-.83 2.77-.71.47.02 1.8.19 2.65 1.44-.07.04-1.58.93-1.39 2.93zM11.7 4.9c.54-.66.91-1.57.81-2.48-.78.03-1.73.52-2.29 1.18-.5.58-.94 1.51-.82 2.4.87.07 1.76-.44 2.3-1.1z"/>
+          </svg>
+          Pay
+        </div>
+        <p class="apple-merchant">Love INC of Newberg</p>
+        <p class="apple-amount">{{ formatMoney(totalAmount) }}</p>
+        @if (frequencyLabel) {
+          <p class="apple-freq">{{ frequencyLabel }} donation</p>
+        }
+        <div class="apple-row">
+          <span>Card</span>
+          <span>Visa •••• 4242</span>
+        </div>
+        <div class="apple-row">
+          <span>Contact</span>
+          <span>{{ email }}</span>
+        </div>
+        <button type="button" class="apple-confirm" (click)="confirmWalletPay()">
+          Confirm with Face ID
+        </button>
+        <button type="button" class="sheet-cancel" (click)="closeSheet()">Cancel</button>
+      </div>
+    } @else {
+      <div class="google-sheet">
+        <div class="google-sheet-mark">G Pay</div>
+        <p class="apple-merchant">Love INC of Newberg</p>
+        <p class="apple-amount">{{ formatMoney(totalAmount) }}</p>
+        @if (frequencyLabel) {
+          <p class="apple-freq">{{ frequencyLabel }} donation</p>
+        }
+        <div class="apple-row">
+          <span>Account</span>
+          <span>{{ email }}</span>
+        </div>
+        <div class="apple-row">
+          <span>Visa</span>
+          <span>•••• 4242</span>
+        </div>
+        <button type="button" class="google-confirm" (click)="confirmWalletPay()">
+          Pay {{ formatMoney(totalAmount) }}
+        </button>
+        <button type="button" class="sheet-cancel" (click)="closeSheet()">Cancel</button>
+      </div>
+    }
+    </div>
+  }
+
 </ion-content>
+
+@if (amountModalOpen) {
+  <div class="amount-modal" role="dialog" aria-modal="true">
+      <button type="button" class="amount-modal-close" aria-label="Close" (click)="closeAmountModal()">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+
+      <p class="amount-modal-value">{{ amountModalDisplay }}</p>
+
+      <div class="keypad">
+        @for (key of keypadKeys; track key) {
+          <button type="button" class="keypad-key" (click)="pressKeypad(key)">
+            @if (key === 'back') {
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M9.1 5.5 3 12l6.1 6.5h11.4a1.5 1.5 0 0 0 1.5-1.5V7a1.5 1.5 0 0 0-1.5-1.5H9.1zm1.2 3.1 3.2 3.4-3.2 3.4 1.3 1.2 3.2-3.4 3.2 3.4 1.3-1.2-3.2-3.4 3.2-3.4-1.3-1.2-3.2 3.4-3.2-3.4-1.3 1.2z"/>
+              </svg>
+            } @else {
+              {{ key }}
+            }
+          </button>
+        }
+      </div>
+
+      <button
+        type="button"
+        class="amount-modal-cta"
+        [class.enabled]="amountModalValid"
+        [disabled]="!amountModalValid"
+        (click)="confirmAmountModal()">
+        {{ amountModalValid ? 'Donate ' + amountModalDisplay : '$1 minimum' }}
+      </button>
+  </div>
+}

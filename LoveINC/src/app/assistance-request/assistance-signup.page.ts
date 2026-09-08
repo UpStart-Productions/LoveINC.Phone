@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import {
   IonHeader,
   IonToolbar,
@@ -28,22 +27,6 @@ import { ContactAssistanceFormComponent } from '../components/contact-assistance
     AppBackButtonComponent]})
 export class AssistanceSignupPage {
   constructor(private router: Router) {}
-
-  async ionViewWillEnter(): Promise<void> {
-    try {
-      await Keyboard.setResizeMode({ mode: KeyboardResize.Body });
-    } catch {
-      // Keyboard plugin not available (e.g. web)
-    }
-  }
-
-  async ionViewWillLeave(): Promise<void> {
-    try {
-      await Keyboard.setResizeMode({ mode: KeyboardResize.Native });
-    } catch {
-      // Keyboard plugin not available
-    }
-  }
 
   onFormSubmitted() {
     this.router.navigate(['/tabs/assistance/thank-you']);

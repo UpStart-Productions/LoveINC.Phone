@@ -1,85 +1,491 @@
-.donation-form-container {
-  max-width: 100%;
+/* TEMP marketing dummy — Givebutter-style checkout for screen videos. */
+
+ion-modal {
+  --width: 100%;
+  --height: 100%;
+  --border-radius: 0;
+  --box-shadow: none;
+  --backdrop-opacity: 1;
 }
 
-.frequency-segment {
-  --background: var(--ion-color-light);
-  --indicator-color: var(--ion-color-primary);
-  border-radius: 0.5rem;
+.givebutter-dummy-content {
+  --background: #f6f7f9;
 }
 
-.amount-buttons {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
+.givebutter-dummy,
+.thanks-panel {
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 1.25rem 1.25rem 2.5rem;
 }
 
-.amount-button {
-  background-color: var(--ion-color-light);
-  border: 0.0625rem solid var(--ion-color-light-shade);
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-height: 3.5rem;
-  
-  &:hover {
-    background-color: var(--ion-color-light-shade);
-  }
-  
+.org-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.org-logo {
+  width: 3.25rem;
+  height: 3.25rem;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  background: var(--love-inc-primary-dark);
+  box-shadow: 0 0.0625rem 0.25rem rgba(18, 37, 89, 0.08);
+}
+
+.org-header h2 {
+  font-weight: 650;
+}
+
+.frequency-row {
+  display: flex;
+  gap: 0.375rem;
+  padding: 0.25rem;
+  margin-bottom: 1rem;
+  background: #eceff3;
+  border-radius: 999px;
+}
+
+.frequency-chip {
+  flex: 1;
+  margin: 0;
+  padding: 0.5rem 0.25rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--love-inc-neutral-dark);
+  font: inherit;
+  font-size: var(--app-font-size-sm);
+  font-weight: 600;
+
   &.selected {
-    background-color: var(--ion-color-primary);
-    color: var(--ion-color-primary-contrast);
-    border-color: var(--ion-color-primary);
+    background: #fff;
+    color: var(--love-inc-primary-dark);
+    box-shadow: 0 0.0625rem 0.25rem rgba(18, 37, 89, 0.1);
   }
 }
 
-.other-amount-container {
+.amount-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+  margin-bottom: 0.75rem;
 }
 
-.other-amount-item {
-  --background: transparent;
-  --padding-start: 0;
-  --padding-end: 0;
-  --inner-padding-end: 0;
-  --inner-padding-start: 0;
-  --min-height: auto;
-  border: 0.0625rem solid var(--ion-color-light-shade);
-  border-radius: 0.5rem;
-  margin-bottom: 0;
-  
-  ion-input {
-    --padding-start: 0;
-    --padding-end: 0;
-  }
-}
+.amount-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 4.25rem;
+  margin: 0;
+  padding: 0.75rem;
+  border: 0.09375rem solid #d9dee6;
+  border-radius: 0.875rem;
+  background: #fff;
+  color: var(--love-inc-primary-dark);
+  font: inherit;
 
+  &.selected {
+    background: var(--love-inc-primary-light);
+    border-color: var(--love-inc-primary-light);
+    color: #fff;
 
-.options-container {
-  ion-item {
-    --background: transparent;
-    --padding-start: 0;
-    --padding-end: 0;
-    --inner-padding-end: 0;
-    --inner-padding-start: 0;
-    --min-height: auto;
-    
-    &:last-child {
-      margin-bottom: 0;
+    .amount-tile-value,
+    .amount-tile-freq {
+      color: #fff;
     }
   }
 }
 
-.pill-button {
-  &[disabled] {
-    opacity: 0.5;
-  }
-  /* Other styles are handled globally in global.scss */
+.amount-tile-value {
+  font-size: var(--app-font-size-title);
+  font-weight: 700;
+  line-height: 1.1;
+  color: inherit;
 }
 
-.powered-by {
+.amount-tile-freq {
+  margin-top: 0.2rem;
+  font-size: var(--app-font-size-xs);
+  opacity: 0.8;
+  text-transform: capitalize;
+  color: inherit;
+}
+
+.other-amount,
+.donor-fields label,
+.card-fields label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 0.9rem 0.75rem 0.65rem;
+  border: 0.09375rem solid #d9dee6;
+  border-radius: 0.875rem;
+  background: #fff;
+}
+
+.other-amount {
+  font: inherit;
+  text-align: left;
+  color: var(--ion-color-dark);
+
+  &.selected {
+    border-color: var(--love-inc-primary-light);
+  }
+}
+
+.other-label {
+  flex: 1;
+  color: var(--love-inc-neutral-medium);
+}
+
+.other-amount.selected .other-prefix,
+.other-amount.selected .other-label {
+  color: var(--ion-color-dark);
+  font-size: var(--app-font-size-title);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.donor-fields label,
+.card-fields label {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.25rem;
+  font-size: var(--app-font-size-sm);
+  color: var(--love-inc-neutral-dark);
+}
+
+.donor-fields ion-input,
+.card-fields ion-input {
+  width: 100%;
+  margin: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --background: transparent;
+  --color: var(--ion-color-dark);
+  --highlight-color-focused: var(--ion-color-dark);
+  --highlight-color-valid: var(--ion-color-dark);
+  --highlight-color-invalid: var(--ion-color-dark);
+  --highlight-height: 0;
+  --border-width: 0;
+  --border-style: none;
+  min-height: 1.5rem;
+  font-size: var(--app-font-size-body);
+  color: var(--ion-color-dark);
+  caret-color: var(--ion-color-dark);
+}
+
+.donor-fields label,
+.card-fields label,
+.donor-fields ion-input,
+.card-fields ion-input {
+  outline: none;
+  box-shadow: none;
+}
+
+.donor-fields ion-input::part(native),
+.card-fields ion-input::part(native) {
+  outline: none;
+  box-shadow: none;
+  color: var(--ion-color-dark);
+  caret-color: var(--ion-color-dark);
+}
+
+.other-prefix,
+.other-suffix {
+  color: var(--love-inc-neutral-medium);
+  font-weight: 600;
+}
+
+.fee-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin: 0.35rem 0 0.75rem;
+  font-size: var(--app-font-size-sm);
+
+  input {
+    margin-top: 0.15rem;
+    accent-color: var(--love-inc-primary-light);
+  }
+}
+
+.fee-amt {
+  color: var(--love-inc-neutral-medium);
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+}
+
+.pay-heading {
+  margin: 1.25rem 0 0.75rem;
+  font-weight: 650;
+}
+
+.apple-pay-official {
+  display: block;
+  width: 100%;
+  height: 3rem;
+  margin: 0 0 0.625rem;
+  padding: 0;
+  border: none;
+  border-radius: 0.5rem;
+  background: #000;
+  -webkit-appearance: -apple-pay-button;
+  -apple-pay-button-type: donate;
+  -apple-pay-button-style: black;
+
+  &:disabled {
+    opacity: 0.45;
+  }
+}
+
+.google-pay-official {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 3rem;
+  margin: 0 0 0.625rem;
+  padding: 0;
+  border: 0.0625rem solid #dadce0;
+  border-radius: 0.5rem;
+  background: #fff;
+
+  img {
+    height: 1.25rem;
+    width: auto;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+  }
+}
+
+.or-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.35rem 0 0.85rem;
+  color: var(--love-inc-neutral-medium);
+  font-size: var(--app-font-size-sm);
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 0.0625rem;
+    background: #d9dee6;
+  }
+}
+
+.donate-cta {
+  margin-top: 0.5rem;
+  --border-radius: 0.75rem;
+  --background: var(--love-inc-primary-light);
+  font-weight: 650;
+  text-transform: capitalize;
+}
+
+.thanks-panel {
   text-align: center;
-  
-  &::before {
-    content: '😊';
+  padding-top: 2.5rem;
+}
+
+.thanks-burst {
+  width: 10rem;
+  height: 10rem;
+  margin: 0 auto 0.25rem;
+}
+
+.wallet-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.wallet-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 21;
+  padding: 0 0.75rem calc(1.25rem + env(safe-area-inset-bottom));
+}
+
+.apple-sheet,
+.google-sheet {
+  padding: 0.75rem 1.25rem 1rem;
+  border-radius: 1.25rem 1.25rem 0.75rem 0.75rem;
+  background: #fff;
+  box-shadow: 0 -0.5rem 2rem rgba(0, 0, 0, 0.18);
+}
+
+.apple-sheet-handle {
+  width: 2.25rem;
+  height: 0.28rem;
+  margin: 0 auto 0.85rem;
+  border-radius: 999px;
+  background: #d4d4d4;
+}
+
+.apple-sheet-mark,
+.google-sheet-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+
+  svg {
+    width: 1rem;
+    height: 1.2rem;
+  }
+}
+
+.apple-merchant {
+  margin: 0;
+  text-align: center;
+  color: var(--love-inc-neutral-dark);
+}
+
+.apple-amount {
+  margin: 0.15rem 0 0;
+  text-align: center;
+  font-size: var(--app-font-size-display);
+  font-weight: 700;
+}
+
+.apple-freq {
+  margin: 0 0 0.85rem;
+  text-align: center;
+  color: var(--love-inc-neutral-medium);
+  text-transform: capitalize;
+}
+
+.apple-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-top: 0.0625rem solid #eceff3;
+  color: var(--love-inc-neutral-dark);
+}
+
+.apple-confirm,
+.google-confirm {
+  width: 100%;
+  min-height: 3rem;
+  margin-top: 0.85rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: #000;
+  color: #fff;
+  font: inherit;
+  font-weight: 650;
+}
+
+.google-confirm {
+  background: #1a73e8;
+}
+
+.sheet-cancel {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  border: none;
+  background: transparent;
+  color: var(--love-inc-neutral-dark);
+  font: inherit;
+}
+
+.amount-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top) + 0.75rem) 1.25rem calc(env(safe-area-inset-bottom) + 1rem);
+  background: #fff;
+}
+
+.amount-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #111;
+  font-size: 1.75rem;
+}
+
+.amount-modal-value {
+  margin: 1.75rem 0 1.25rem;
+  text-align: center;
+  color: var(--love-inc-primary-light);
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem 0.5rem;
+  margin-top: auto;
+}
+
+.keypad-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.75rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #111;
+  font: inherit;
+  font-size: 1.75rem;
+  font-weight: 400;
+
+  svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+}
+
+.amount-modal-cta {
+  width: 100%;
+  min-height: 3.25rem;
+  margin-top: 0.75rem;
+  border: none;
+  border-radius: 999px;
+  background: #d3d3d3;
+  color: #fff;
+  font: inherit;
+  font-weight: 650;
+
+  &.enabled {
+    background: var(--love-inc-primary-light);
   }
 }

@@ -19,6 +19,7 @@ import {
   AlertController,
 } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
+import { type PluginListenerHandle } from '@capacitor/core';
 import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { MainTabBarService } from '../services/main-tab-bar.service';
@@ -52,6 +53,9 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
   private resizeObserver?: ResizeObserver;
   private highlightPositioned = false;
   private activeTabId: string | null = null;
+  private keyboardOpen = false;
+  private keyboardShowListener?: PluginListenerHandle;
+  private keyboardHideListener?: PluginListenerHandle;
 
   constructor(
     private actionSheetController: ActionSheetController,
@@ -62,6 +66,12 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
   async ngOnInit() {
     try {
       await Keyboard.setResizeMode({ mode: KeyboardResize.None });
+      this.keyboardShowListener = await Keyboard.addListener('keyboardWillShow', () => {
+        this.keyboardOpen = true;
+      });
+      this.keyboardHideListener = await Keyboard.addListener('keyboardWillHide', () => {
+        this.keyboardOpen = false;
+      });
     } catch (error) {
       console.log('Keyboard plugin not available');
     }
@@ -147,6 +157,8 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private updateTabHighlight(animate: boolean): void {
+    if (this.keyboardOpen) return;
+
     const track = this.tabBarTrackRef?.nativeElement;
     if (!track) return;
 
@@ -159,6 +171,19 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
 
     const trackRect = track.getBoundingClientRect();
     const buttonRect = tabButton.getBoundingClientRect();
+    if (
+      buttonRect.width <= 0 ||
+      buttonRect.height <= 0 ||
+      trackRect.width <= 0 ||
+      trackRect.height <= 0 ||
+      buttonRect.right < trackRect.left ||
+      buttonRect.left > trackRect.right ||
+      buttonRect.bottom < trackRect.top ||
+      buttonRect.top > trackRect.bottom
+    ) {
+      return;
+    }
+
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
     const sizePx = 2.75 * rootFontSize;
 
@@ -177,6 +202,8 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
     this.routerEventsSub?.unsubscribe();
     this.tabBarOverrideSub?.unsubscribe();
     this.resizeObserver?.disconnect();
+    void this.keyboardShowListener?.remove();
+    void this.keyboardHideListener?.remove();
     void this.servicesActionSheet?.dismiss();
     try {
       await Keyboard.setResizeMode({ mode: KeyboardResize.Native });

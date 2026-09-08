@@ -275,6 +275,7 @@ const TAB_DRILL_IN_ROUTES: Routes = [
   {
     path: 'donate-money',
     loadComponent: () => import('../donate-money/donate-money.page').then((m) => m.DonateMoneyPage),
+    data: { hideMainTabBar: true },
   },
   {
     path: 'developer-options',

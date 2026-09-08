@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import {
   IonHeader,
   IonToolbar,
@@ -137,22 +136,6 @@ export class SupportRequestPage implements OnInit {
       this.selectedCategories.size > 0 &&
       !this.submitting
     );
-  }
-
-  async ionViewWillEnter(): Promise<void> {
-    try {
-      await Keyboard.setResizeMode({ mode: KeyboardResize.Body });
-    } catch {
-      // Keyboard plugin not available
-    }
-  }
-
-  async ionViewWillLeave(): Promise<void> {
-    try {
-      await Keyboard.setResizeMode({ mode: KeyboardResize.Native });
-    } catch {
-      // Keyboard plugin not available
-    }
   }
 
   async onSubmit(): Promise<void> {
