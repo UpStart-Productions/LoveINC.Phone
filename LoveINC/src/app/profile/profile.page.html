@@ -118,11 +118,13 @@
     </ion-card-header>
     <ion-card-content>
       <ion-item lines="none" class="settings-toggle-row">
-        <ion-icon name="notifications-outline" slot="start" color="primary"></ion-icon>
-        <ion-label>
-          Push Notifications
+        <div class="settings-toggle-copy">
+          <p class="app-body app-font-medium">
+            <ion-icon name="notifications-outline" class="section-icon" color="primary"></ion-icon>
+            Push Notifications
+          </p>
           <p class="app-body-secondary-sm">Get alerts about events, classes, and updates.</p>
-        </ion-label>
+        </div>
         <ion-toggle
           slot="end"
           [checked]="pushNotificationsEnabled"
@@ -135,6 +137,21 @@
           Notifications are turned off in your device settings. Open Settings → Love INC → Notifications to enable them.
         </p>
       }
+
+      <ion-item lines="none" class="settings-toggle-row">
+        <div class="settings-toggle-copy">
+          <p class="app-body app-font-medium">
+            <ion-icon name="school-outline" class="section-icon" color="primary"></ion-icon>
+            Class Tools on Home Screen
+          </p>
+          <p class="app-body-secondary-sm">Show a tool on Home after you start using it. Turn it off to hide it.</p>
+        </div>
+        <ion-toggle
+          slot="end"
+          [checked]="classToolsOnHome"
+          (ionChange)="onClassToolsHomeChange($event)">
+        </ion-toggle>
+      </ion-item>
     </ion-card-content>
   </ion-card>
 

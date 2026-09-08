@@ -103,4 +103,24 @@ ion-item {
 .settings-toggle-row {
   --padding-start: 0;
   --inner-padding-end: 0;
+  align-items: flex-start;
+}
+
+.settings-toggle-row ~ .settings-toggle-row {
+  margin-top: 1rem;
+}
+
+.settings-toggle-copy {
+  flex: 1;
+  min-width: 0;
+  padding-inline-end: 0.75rem;
+
+  p {
+    margin: 0;
+    white-space: normal;
+  }
+
+  p + p {
+    margin-top: 0.25rem;
+  }
 }

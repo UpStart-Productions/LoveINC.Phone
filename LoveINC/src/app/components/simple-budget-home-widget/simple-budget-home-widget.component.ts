@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import {
   SimpleBudgetHomeService,
   SimpleBudgetHomeSnapshot,
@@ -8,6 +9,7 @@ import {
   ContentCardComponent,
   type ContentCardTextSegment,
 } from '../content-card/content-card.component';
+import { HomeClassToolsPreferenceService } from '../../services/home-class-tools-preference.service';
 
 @Component({
   selector: 'app-simple-budget-home-widget',
@@ -16,15 +18,28 @@ import {
   standalone: true,
   imports: [CommonModule, ContentCardComponent],
 })
-export class SimpleBudgetHomeWidgetComponent implements OnInit {
+export class SimpleBudgetHomeWidgetComponent implements OnInit, OnDestroy {
   snapshot: SimpleBudgetHomeSnapshot | null = null;
   loading = true;
+  prefVisible = true;
+  private prefSub?: Subscription;
 
-  constructor(private simpleBudgetHomeService: SimpleBudgetHomeService) {}
+  constructor(
+    private simpleBudgetHomeService: SimpleBudgetHomeService,
+    private homeClassTools: HomeClassToolsPreferenceService
+  ) {}
 
   ngOnInit() {
+    this.prefVisible = this.homeClassTools.isVisible();
+    this.prefSub = this.homeClassTools.visibility$.subscribe((visible) => {
+      this.prefVisible = visible;
+    });
     this.loading = true;
     this.loadSnapshot();
+  }
+
+  ngOnDestroy(): void {
+    this.prefSub?.unsubscribe();
   }
 
   /** Re-fetch from SQLite (e.g. when Home tab is shown after editing Weekly Budget). */
@@ -107,6 +122,6 @@ export class SimpleBudgetHomeWidgetComponent implements OnInit {
   }
 
   get showCard(): boolean {
-    return !this.loading && this.snapshot !== null;
+    return this.prefVisible && !this.loading && this.snapshot !== null;
   }
 }

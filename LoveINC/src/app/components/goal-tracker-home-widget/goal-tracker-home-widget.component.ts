@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import {
   GoalTrackerHomeService,
   type GoalTrackerHomeSnapshot,
@@ -8,6 +9,7 @@ import {
   ContentCardComponent,
   type ContentCardTextSegment,
 } from '../content-card/content-card.component';
+import { HomeClassToolsPreferenceService } from '../../services/home-class-tools-preference.service';
 
 @Component({
   selector: 'app-goal-tracker-home-widget',
@@ -16,15 +18,28 @@ import {
   standalone: true,
   imports: [CommonModule, ContentCardComponent],
 })
-export class GoalTrackerHomeWidgetComponent implements OnInit {
+export class GoalTrackerHomeWidgetComponent implements OnInit, OnDestroy {
   snapshot: GoalTrackerHomeSnapshot | null = null;
   loading = true;
+  prefVisible = true;
+  private prefSub?: Subscription;
 
-  constructor(private goalTrackerHome: GoalTrackerHomeService) {}
+  constructor(
+    private goalTrackerHome: GoalTrackerHomeService,
+    private homeClassTools: HomeClassToolsPreferenceService
+  ) {}
 
   ngOnInit(): void {
+    this.prefVisible = this.homeClassTools.isVisible();
+    this.prefSub = this.homeClassTools.visibility$.subscribe((visible) => {
+      this.prefVisible = visible;
+    });
     this.loading = true;
     this.loadSnapshot();
+  }
+
+  ngOnDestroy(): void {
+    this.prefSub?.unsubscribe();
   }
 
   /** Re-fetch from SQLite (e.g. when Home is shown or pull-to-refresh). */
@@ -87,6 +102,6 @@ export class GoalTrackerHomeWidgetComponent implements OnInit {
   }
 
   get showCard(): boolean {
-    return !this.loading && this.snapshot !== null;
+    return this.prefVisible && !this.loading && this.snapshot !== null;
   }
 }

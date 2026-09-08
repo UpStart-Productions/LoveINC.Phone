@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ActionSheetController, NavController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
+import { AppLauncher } from '@capacitor/app-launcher';
 import { DONATE_ACTION_SHEET_CLASS } from '../shared/action-sheet-classes';
 import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 
-/** TEMP marketing dummy — restore AppLauncher + https://loveincnewberg.org/donate/ when reverting. */
+/** External donation page. In-app dummy form still lives at /tabs/donate-money. */
+const LOVE_INC_ONLINE_DONATE_URL = 'https://loveincnewberg.org/donate/';
 
 @Injectable({
   providedIn: 'root'
@@ -31,9 +33,7 @@ export class DonateActionSheetService {
           text: 'Make a secure online donation.',
           icon: 'card-outline',
           handler: () => {
-            void actionSheet.onDidDismiss().then(() => {
-              this.handleOnlineDonation();
-            });
+            void this.handleOnlineDonation();
           }
         },
         {
@@ -52,7 +52,12 @@ export class DonateActionSheetService {
     void navigateAppForward(this.navController, this.router, ['/tabs/donate-goods']);
   }
 
-  private handleOnlineDonation(): void {
-    void navigateAppForward(this.navController, this.router, ['/tabs/donate-money']);
+  private async handleOnlineDonation(): Promise<void> {
+    try {
+      await AppLauncher.openUrl({ url: LOVE_INC_ONLINE_DONATE_URL });
+    } catch (err) {
+      console.error('DonateActionSheetService.handleOnlineDonation', err);
+      window.open(LOVE_INC_ONLINE_DONATE_URL, '_blank');
+    }
   }
 }

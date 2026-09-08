@@ -36,6 +36,7 @@ import { VoucherModalService } from '../services/voucher-modal.service';
 import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
 import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { PushRegistrationService } from '../services/push-registration.service';
+import { HomeClassToolsPreferenceService } from '../services/home-class-tools-preference.service';
 import { Subscription, firstValueFrom } from 'rxjs';
 
 @Component({
@@ -71,6 +72,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   pushNotificationsEnabled = true;
   pushOsDenied = false;
   pushSettingsBusy = false;
+  classToolsOnHome = true;
 
   userProfile = {
     name: '',
@@ -106,7 +108,8 @@ export class ProfilePage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private alertController: AlertController,
     private serviceUnlock: ServiceUnlockService,
-    private pushRegistration: PushRegistrationService
+    private pushRegistration: PushRegistrationService,
+    private homeClassTools: HomeClassToolsPreferenceService
   ) {}
 
   ngOnInit(): void {
@@ -145,6 +148,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     });
     this.loadProfile();
     void this.loadPushSettings();
+    this.syncClassToolToggles();
   }
 
   ionViewWillEnter(): void {
@@ -153,6 +157,17 @@ export class ProfilePage implements OnInit, OnDestroy {
     });
     this.loadProfile();
     void this.loadPushSettings();
+    this.syncClassToolToggles();
+  }
+
+  private syncClassToolToggles(): void {
+    this.classToolsOnHome = this.homeClassTools.isVisible();
+  }
+
+  async onClassToolsHomeChange(event: CustomEvent): Promise<void> {
+    const visible = event.detail.checked;
+    this.classToolsOnHome = visible;
+    await this.homeClassTools.setVisible(visible);
   }
 
   private async loadPushSettings(): Promise<void> {
