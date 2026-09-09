@@ -9,6 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 const { syncIos } = require('./sync-ios-from-app-version.js');
+const { syncAndroid } = require('./sync-android-from-app-version.js');
 
 const versionFile = path.join(__dirname, '..', 'src/app-version.json');
 
@@ -68,3 +69,4 @@ if (type === 'build') {
 
 saveVersion(versionData);
 syncIos(versionData);
+syncAndroid(versionData);
