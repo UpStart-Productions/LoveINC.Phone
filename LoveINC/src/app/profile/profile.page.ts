@@ -20,7 +20,6 @@ import {
   IonButton,
   IonButtons,
   IonItem,
-  IonLabel,
   IonRefresher,
   IonRefresherContent,
   IonToggle,
@@ -60,7 +59,6 @@ import { Subscription, firstValueFrom } from 'rxjs';
     IonIcon,
     IonButton,
     IonButtons,
-    IonLabel,
     IonItem,
     IonToggle,
     AppBackButtonComponent]})

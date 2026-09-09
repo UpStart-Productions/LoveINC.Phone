@@ -10,43 +10,43 @@
  */
 
 /* -----------------------------------------------------------------------------
- * Ionic Core CSS Imports
+ * Ionic Core CSS
  * ----------------------------------------------------------------------------- */
-@import "@ionic/angular/css/core.css";
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
+@use "@ionic/angular/css/core.css" as ionic-core;
+@use "@ionic/angular/css/normalize.css" as ionic-normalize;
+@use "@ionic/angular/css/structure.css" as ionic-structure;
+@use "@ionic/angular/css/typography.css" as ionic-typography;
+@use "@ionic/angular/css/display.css" as ionic-display;
 
 /* -----------------------------------------------------------------------------
  * Ionic Optional CSS Utils
  * ----------------------------------------------------------------------------- */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
+@use "@ionic/angular/css/padding.css" as ionic-padding;
+@use "@ionic/angular/css/float-elements.css" as ionic-float;
+@use "@ionic/angular/css/text-alignment.css" as ionic-text-align;
+@use "@ionic/angular/css/text-transformation.css" as ionic-text-transform;
+@use "@ionic/angular/css/flex-utils.css" as ionic-flex;
 
 /* -----------------------------------------------------------------------------
  * Ionic Dark Mode
  * ----------------------------------------------------------------------------- */
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* @use "@ionic/angular/css/palettes/dark.always.css"; */
+/* @use "@ionic/angular/css/palettes/dark.class.css"; */
+@use '@ionic/angular/css/palettes/dark.system.css' as ionic-dark-system;
 
 /* -----------------------------------------------------------------------------
- * Theme Imports (must be after Ionic imports for variable overrides)
+ * Theme (must be after Ionic for variable overrides)
  * ----------------------------------------------------------------------------- */
-@import './theme/variables.scss';
-@import './theme/typography.scss';
-@import './theme/cards.scss';
-@import './theme/icons.scss';
-@import './theme/whitespace.scss';
-@import './theme/forms.scss';
-@import './theme/content-reader.scss';
-@import './theme/home.scss';
-@import './theme/goal-tracker-colors.scss';
-@import "quill/dist/quill.snow.css";
+@use './theme/variables.scss' as theme-variables;
+@use './theme/typography.scss' as theme-typography;
+@use './theme/cards.scss' as theme-cards;
+@use './theme/icons.scss' as theme-icons;
+@use './theme/whitespace.scss' as theme-whitespace;
+@use './theme/forms.scss' as theme-forms;
+@use './theme/content-reader.scss' as theme-content-reader;
+@use './theme/home.scss' as theme-home;
+@use './theme/goal-tracker-colors.scss' as theme-goal-tracker;
+@use "quill/dist/quill.snow.css" as quill-snow;
 
 /*
  * Default stack page content background (white drill-ins).
