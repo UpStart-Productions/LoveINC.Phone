@@ -155,6 +155,10 @@ export class GapMinistriesPage implements OnInit {
     this.intakeRequired = this.gapAccess.orgIntakeRequired;
   }
 
+  navigateToConnectionCenter(): void {
+    void navigateAppForward(this.navController, this.router, ['/tabs/connection-center']);
+  }
+
   openDonateMenu() {
     this.donateActionSheetService.openDonateActionSheet();
   }

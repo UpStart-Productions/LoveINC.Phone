@@ -18,6 +18,12 @@
       Love INC connects you to real help through local churches, matching your needs with trusted community resources.
     </p>
     <app-content-card-list [items]="compactListItems" defaultAsideAvatarSize="large" />
+    <div class="ion-padding">
+      <ion-button expand="block" color="primary" (click)="navigateToConnectionCenter()">
+        <ion-icon slot="start" name="people-circle-outline"></ion-icon>
+        Get Assistance
+      </ion-button>
+    </div>
   </div>
 
   <div *ngIf="showFullGapCards" class="content-wrapper">

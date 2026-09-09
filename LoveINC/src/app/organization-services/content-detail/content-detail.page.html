@@ -320,6 +320,13 @@
           Volunteer
         </ion-button>
       </div>
+
+      <div class="action-buttons m-t-24" *ngIf="showGetAssistanceButton()">
+        <ion-button expand="block" color="primary" (click)="navigateToConnectionCenter()">
+          <ion-icon slot="start" name="people-circle-outline"></ion-icon>
+          Get Assistance
+        </ion-button>
+      </div>
     </div>
   </div>
   }

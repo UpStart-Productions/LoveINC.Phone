@@ -1189,6 +1189,18 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
+  /** Get Assistance when this is a Gap Ministry and the user is not a registered client. */
+  showGetAssistanceButton(): boolean {
+    return (
+      this.contentType === 'gap-ministry' &&
+      !!this.contentItem &&
+      !this.loading &&
+      !this.error &&
+      this.intakeRequired &&
+      !this.intakeCompleted
+    );
+  }
+
   /** Get Assistance for users who must complete intake before registering (same rules as Gap list). */
   showClassCompleteIntakeButton(): boolean {
     return (
