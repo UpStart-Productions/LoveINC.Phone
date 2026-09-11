@@ -44,6 +44,15 @@ const sdkDir = getSdkDir();
 const adb = path.join(sdkDir, 'platform-tools', 'adb');
 const emulatorBin = path.join(sdkDir, 'emulator', 'emulator');
 
+// A long-lived adb server (e.g. left over from an earlier session with the
+// emulator already running) tends to go flaky and trigger Capacitor's
+// kill-server-and-retry deploy logic mid-install, which can race the
+// device's reauthorization and fail with "device still authorizing".
+// Restarting the server fresh, every run, avoids that.
+console.log('Restarting adb server...');
+spawnSync(adb, ['kill-server']);
+spawnSync(adb, ['start-server'], { stdio: 'inherit' });
+
 function hasConnectedDevice() {
   const result = spawnSync(adb, ['devices'], { encoding: 'utf8' });
   if (result.status !== 0) return false;

@@ -12,7 +12,10 @@
 
 .floating-tab-bar-shell {
   margin-inline: var(--floating-tab-bar-inline-inset);
-  margin-bottom: calc(var(--floating-tab-bar-bottom-gap) + env(safe-area-inset-bottom) - 1rem);
+  margin-bottom: max(
+    var(--floating-tab-bar-bottom-gap),
+    calc(var(--floating-tab-bar-bottom-gap) + env(safe-area-inset-bottom) - 1rem)
+  );
 }
 
 .custom-tab-bar {
