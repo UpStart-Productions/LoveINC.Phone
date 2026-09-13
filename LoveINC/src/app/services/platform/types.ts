@@ -485,3 +485,18 @@ export interface PlatformPlan {
   createdAt: string;
   updatedAt: string;
 }
+
+/** GET /public/.../job-listings */
+export interface PlatformJobListing {
+  id: string;
+  title: string;
+  companyName: string;
+  locations: string[];
+  tags: string[];
+  salaryMin?: number;
+  salaryMax?: number;
+  salaryIsPredicted: boolean;
+  logoUrl?: string;
+  applyUrl: string;
+  postedAt: string;
+}

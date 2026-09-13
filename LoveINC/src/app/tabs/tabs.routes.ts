@@ -66,6 +66,13 @@ const ROOT_DRILL_IN_REDIRECTS: Routes = [
   { path: 'goal-tracker', redirectTo: '/tabs/goal-tracker', pathMatch: 'full' },
   { path: 'goal-tracker/goals', redirectTo: '/tabs/goal-tracker/goals', pathMatch: 'full' },
   { path: 'goal-tracker/statistics', redirectTo: '/tabs/goal-tracker/statistics', pathMatch: 'full' },
+  { path: 'job-search', redirectTo: '/tabs/job-search', pathMatch: 'full' },
+  { path: 'job-search/saved', redirectTo: '/tabs/job-search/saved', pathMatch: 'full' },
+  {
+    path: 'job-search/company/:companyKey',
+    redirectTo: '/tabs/job-search/company/:companyKey',
+    pathMatch: 'full',
+  },
   { path: 'journal', redirectTo: '/tabs/journal', pathMatch: 'full' },
   { path: 'journal/new', redirectTo: '/tabs/journal/new', pathMatch: 'full' },
   { path: 'journal/:id', redirectTo: '/tabs/journal/:id', pathMatch: 'full' },

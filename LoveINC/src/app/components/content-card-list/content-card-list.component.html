@@ -13,10 +13,14 @@
       [title]="item.title"
       [titleSegments]="item.titleSegments"
       [lucideTitleIcon]="item.lucideTitleIcon"
+      [saveToggle]="item.saveToggle ?? false"
+      [saved]="item.saved ?? false"
+      [tags]="item.tags"
       [underTitle]="item.underTitle"
       [detail]="item.detail"
       [detailSegments]="item.detailSegments"
       [imageUrl]="item.imageUrl"
+      [imageOnMutedBackground]="item.imageOnMutedBackground ?? false"
       [iconName]="item.iconName"
       [lucideIcon]="item.lucideIcon"
       [iconBackgroundColor]="item.iconBackgroundColor ?? defaultIconBackgroundColor"
@@ -35,10 +39,12 @@
       [authorTitle]="item.authorTitle"
       [authorBio]="item.authorBio"
       [createdAtLabel]="item.createdAtLabel"
+      [createdAtLabelDanger]="item.createdAtLabelDanger ?? false"
       [createdAtInlineWithAuthor]="item.createdAtInlineWithAuthor ?? false"
       [asideAvatarSize]="item.asideAvatarSize ?? defaultAsideAvatarSize"
       [clickable]="item.route ? true : item.clickable !== false"
       (cardClick)="onCardClick(item)"
+      (saveClick)="saveClick.emit(item)"
       />
     }
   </div>

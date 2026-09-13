@@ -23,6 +23,8 @@ export class ContentCardListComponent {
   /** Emitted when a row without `route` is tapped. */
   @Output() itemClick = new EventEmitter<ContentCardListItem>();
 
+  @Output() saveClick = new EventEmitter<ContentCardListItem>();
+
   trackItem(index: number, item: ContentCardListItem): string {
     return item.id ?? item.title ?? String(index);
   }

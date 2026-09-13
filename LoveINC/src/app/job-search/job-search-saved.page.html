@@ -1,0 +1,22 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-back-button fallback="/tabs/job-search"></app-back-button>
+    </ion-buttons>
+    <ion-title>Saved jobs</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (!listItems.length) {
+    <p class="app-body-secondary p-l-18 p-r-18 p-t-12">
+      Jobs you save stay on this device. Tap the bookmark on a listing to add one.
+    </p>
+  } @else {
+    <app-content-card-list
+      [items]="listItems"
+      (itemClick)="onJobClick($event)"
+      (saveClick)="onSaveClick($event)"
+    />
+  }
+</ion-content>

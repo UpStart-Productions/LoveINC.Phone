@@ -6,6 +6,7 @@ export type {
   PlatformEvent,
   PlatformHomeFeedItem,
   PlatformImpactStory,
+  PlatformJobListing,
   PlatformOrganization,
   PlatformPartner,
   PlatformService,

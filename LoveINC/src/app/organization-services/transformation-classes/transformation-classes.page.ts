@@ -17,6 +17,7 @@ import { CardComponent, CardActionIcon } from '../../components/card/card.compon
 import { DonateButtonService } from '../../services/donate-button.service';
 import { DonateActionSheetService } from '../../services/donate-action-sheet.service';
 import { SharingService } from '../../services/sharing/sharing.service';
+import { AppBackButtonComponent } from '../../components/app-back-button/app-back-button.component';
 import { NotificationsButtonComponent } from '../../components/notifications-button/notifications-button.component';
 import { PlatformApiService, type PlatformClass, type PlatformHomeFeedItem, type PlatformOffering } from '../../services/platform';
 import { VolunteerActionSheetService } from '../../services/volunteer-action-sheet.service';
@@ -71,6 +72,7 @@ export interface ClassCardItem {
     IonButton,
     IonIcon,
     CardComponent,
+    AppBackButtonComponent,
     NotificationsButtonComponent,
   ],
 })

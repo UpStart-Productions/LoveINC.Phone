@@ -46,6 +46,17 @@ export class ContentCardComponent {
   /** Lucide icon inline before the title (e.g. graduation-cap for learning journal entries). */
   @Input() lucideTitleIcon?: string;
 
+  /** Show a bookmark control on the title row (job cards). */
+  @Input() saveToggle = false;
+
+  /** Whether the bookmark is filled. */
+  @Input() saved = false;
+
+  /** Job benefit/type tags shown as pills. */
+  @Input() tags?: string[];
+
+  @Output() saveClick = new EventEmitter<void>();
+
   /** Main title (bold) */
   @Input() title!: string;
 
@@ -67,8 +78,14 @@ export class ContentCardComponent {
   /** Show play icon before detail when present */
   @Input() showDetailPlayIcon = true;
 
-  /** Image URL for right-side visual. If set, icon/iconBg are ignored. */
+  /** Image URL for right-side visual. If set, icon/iconBg are ignored unless `imageOnMutedBackground`. */
   @Input() imageUrl?: string;
+
+  /**
+   * Sit the image on a grey rounded square (company logos). Default photo
+   * avatars stay cover-fill with no extra tile.
+   */
+  @Input() imageOnMutedBackground = false;
 
   /** Icon name for right-side when no image (e.g. "hand-left-outline") */
   @Input() iconName?: string;
@@ -129,6 +146,9 @@ export class ContentCardComponent {
 
   /** Creation date above the aside avatar, inline with the theme/category row (e.g. "Jan 1"). */
   @Input() createdAtLabel?: string;
+
+  /** Render `createdAtLabel` as bold red text (stale saved job). */
+  @Input() createdAtLabelDanger = false;
 
   /** When true, shows `createdAtLabel` on the author row (right-aligned) instead of the aside. */
   @Input() createdAtInlineWithAuthor = false;
@@ -210,6 +230,11 @@ export class ContentCardComponent {
       phone: this.mapPhone?.trim() || null,
       website: this.mapWebsite?.trim() || null,
     });
+  }
+
+  onSaveTap(event: Event): void {
+    event.stopPropagation();
+    this.saveClick.emit();
   }
 
   onAuthorTap(event: Event): void {

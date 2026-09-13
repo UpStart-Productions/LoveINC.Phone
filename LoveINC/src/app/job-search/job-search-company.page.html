@@ -1,0 +1,45 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-back-button fallback="/tabs/job-search"></app-back-button>
+    </ion-buttons>
+    <ion-title>{{ companyName }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        class="saved-jobs-button"
+        fill="clear"
+        aria-label="Saved jobs"
+        (click)="openSaved()"
+      >
+        <i-lucide
+          slot="icon-only"
+          name="bookmark"
+          [size]="22"
+          color="var(--ion-color-primary-contrast)"
+          [class.saved-jobs-button__icon--filled]="savedCount > 0"
+        ></i-lucide>
+        @if (savedCount > 0) {
+          <span class="saved-jobs-badge">{{ savedBadgeLabel }}</span>
+        }
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (loading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (!listItems.length) {
+    <p class="app-body-secondary p-l-18 p-r-18 p-t-12">
+      No jobs for this company right now.
+    </p>
+  } @else {
+    <app-content-card-list
+      [items]="listItems"
+      (itemClick)="onJobClick($event)"
+      (saveClick)="onSaveClick($event)"
+    />
+  }
+</ion-content>

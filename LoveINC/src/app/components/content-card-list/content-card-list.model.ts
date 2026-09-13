@@ -4,6 +4,9 @@ import type { ContentCardTextSegment } from '../content-card/content-card.compon
 export interface ContentCardListItem {
   id?: string;
   title: string;
+  saveToggle?: boolean;
+  saved?: boolean;
+  tags?: string[];
   category?: string;
   categoryIcon?: string;
   lucideCategoryIcon?: string;
@@ -17,6 +20,8 @@ export interface ContentCardListItem {
   detail?: string;
   detailSegments?: ContentCardTextSegment[];
   imageUrl?: string;
+  /** Sit the image on a grey rounded square (company logos). */
+  imageOnMutedBackground?: boolean;
   iconName?: string;
   lucideIcon?: string;
   iconBackgroundColor?: string;
@@ -44,6 +49,8 @@ export interface ContentCardListItem {
   authorBio?: string;
   /** Creation date above the aside avatar, inline with the theme/category row (e.g. "Jan 1"). */
   createdAtLabel?: string;
+  /** When true, `createdAtLabel` is bold red (stale saved job). */
+  createdAtLabelDanger?: boolean;
   /** When true, shows `createdAtLabel` on the author row (right-aligned) instead of the aside. */
   createdAtInlineWithAuthor?: boolean;
   /** Right-aside avatar size. `large` is 40% bigger than `small`. */

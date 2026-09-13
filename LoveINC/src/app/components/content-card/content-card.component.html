@@ -41,27 +41,45 @@
             }
           </div>
         }
-        <h2 [class.content-card-title-with-icon]="!!lucideTitleIcon">
-          @if (lucideTitleIcon) {
-            <i-lucide
-              [name]="lucideTitleIcon"
-              [size]="16"
-              color="var(--ion-color-dark)"
-              class="content-card-title-icon"
-              aria-hidden="true"
-            ></i-lucide>
+        <div class="content-card-title-row">
+          @if (saveToggle) {
+            <button
+              type="button"
+              class="content-card-save"
+              [class.content-card-save--saved]="saved"
+              [attr.aria-label]="saved ? 'Unsave job' : 'Save job'"
+              (click)="onSaveTap($event)"
+            >
+              <i-lucide
+                name="bookmark"
+                [size]="20"
+                [color]="saved ? 'var(--ion-color-primary)' : 'var(--ion-color-dark)'"
+                aria-hidden="true"
+              ></i-lucide>
+            </button>
           }
-          @if (titleSegments?.length) {
-            @for (seg of titleSegments; track $index) {
-              <span
-                [class.content-card-tone-positive]="seg.tone === 'positive'"
-                [class.content-card-tone-negative]="seg.tone === 'negative'"
-              >{{ seg.text }}</span>
+          <h2 [class.content-card-title-with-icon]="!!lucideTitleIcon">
+            @if (lucideTitleIcon) {
+              <i-lucide
+                [name]="lucideTitleIcon"
+                [size]="16"
+                color="var(--ion-color-dark)"
+                class="content-card-title-icon"
+                aria-hidden="true"
+              ></i-lucide>
             }
-          } @else {
-            {{ title }}
-          }
-        </h2>
+            @if (titleSegments?.length) {
+              @for (seg of titleSegments; track $index) {
+                <span
+                  [class.content-card-tone-positive]="seg.tone === 'positive'"
+                  [class.content-card-tone-negative]="seg.tone === 'negative'"
+                >{{ seg.text }}</span>
+              }
+            } @else {
+              {{ title }}
+            }
+          </h2>
+        </div>
         @if (subtitle) {
           <p class="app-body-secondary">{{ subtitle }}</p>
         }
@@ -134,6 +152,13 @@
             </p>
           </div>
         }
+        @if (tags?.length) {
+          <div class="accepted-items">
+            @for (tag of tags; track tag) {
+              <span class="item-pill">{{ tag }}</span>
+            }
+          </div>
+        }
       </div>
       <div
         class="content-card-aside"
@@ -142,18 +167,33 @@
         [class.content-card-aside--with-date]="showAsideDate"
       >
         @if (showAsideDate) {
-          <span class="app-body-secondary-xs content-card-aside-date">{{ createdAtLabel }}</span>
+          <span class="app-body-secondary-xs content-card-aside-date">
+            @if (createdAtLabelDanger) {
+              <strong class="content-card-tone-negative">{{ createdAtLabel }}</strong>
+            } @else {
+              {{ createdAtLabel }}
+            }
+          </span>
         }
         @if (hasAsideAvatar) {
           <div
             class="content-card-avatar"
             [class.content-card-avatar--with-overlay]="!!imageUrl && !!avatarOverlayIcon"
           >
-            @if (imageUrl) {
+            @if (imageUrl && imageOnMutedBackground) {
+              <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
+                <img [src]="imageUrl" [alt]="title" class="content-card-image content-card-image--contain" />
+              </div>
+            } @else if (imageUrl) {
               <img [src]="imageUrl" [alt]="title" class="content-card-image" />
             } @else if (lucideIcon) {
               <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
-                <i-lucide [name]="lucideIcon" [size]="asideLucideIconSize" color="#ffffff" class="content-card-icon"></i-lucide>
+                <i-lucide
+                  [name]="lucideIcon"
+                  [size]="asideLucideIconSize"
+                  [color]="imageOnMutedBackground ? '#6b6b6b' : '#ffffff'"
+                  class="content-card-icon"
+                ></i-lucide>
               </div>
             } @else if (iconName) {
               <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">

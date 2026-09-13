@@ -296,6 +296,64 @@ ion-card.clickable {
   margin-top: 0;
 }
 
+.content-card-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.content-card-title-row > h2 {
+  flex: 1;
+  min-width: 0;
+}
+
+.content-card-save {
+  position: relative;
+  flex: 0 0 1.5rem;
+  width: 1.5rem;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  line-height: 0;
+  cursor: pointer;
+  contain: layout size;
+}
+
+.content-card-save i-lucide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.content-card-save--saved i-lucide {
+  animation: content-card-save-pop 0.28s ease-out;
+}
+
+.content-card-save--saved i-lucide svg {
+  fill: var(--ion-color-primary);
+  stroke: var(--ion-color-primary);
+}
+
+@keyframes content-card-save-pop {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  45% {
+    transform: translate(-50%, -50%) scale(1.28);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
 .content-card-title-with-icon {
   display: flex;
   align-items: center;
@@ -511,6 +569,10 @@ ion-card.clickable {
   height: 100%;
   object-fit: cover;
   border-radius: var(--content-card-aside-avatar-radius);
+}
+
+.content-card-image--contain {
+  object-fit: contain;
 }
 
 .content-card-icon-wrap {

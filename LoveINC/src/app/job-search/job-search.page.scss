@@ -1,0 +1,12 @@
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+:host ::ng-deep .content-card-title-row > h2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}

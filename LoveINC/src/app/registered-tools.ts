@@ -91,6 +91,21 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
     ],
   },
   {
+    path: 'job-search/saved',
+    loadComponent: () =>
+      import('./job-search/job-search.page').then((m) => m.JobSearchSavedPage),
+  },
+  {
+    path: 'job-search/company/:companyKey',
+    loadComponent: () =>
+      import('./job-search/job-search.page').then((m) => m.JobSearchCompanyPage),
+  },
+  {
+    path: 'job-search',
+    loadComponent: () =>
+      import('./job-search/job-search.page').then((m) => m.JobSearchPage),
+  },
+  {
     path: 'journal',
     loadComponent: () =>
       import('@upstart-productions/journal').then((m) => m.JournalListPage),
@@ -138,6 +153,15 @@ export const REGISTERED_TOOL_CARDS: ToolCard[] = [
     lucideIcon: 'trophy',
     iconBackgroundColor: '#eaa535',
     route: '/tabs/goal-tracker',
+  },
+  {
+    category: 'Employment',
+    lucideCategoryIcon: 'briefcase',
+    title: 'Job Search',
+    detail: 'Local jobs near you',
+    lucideIcon: 'briefcase',
+    iconBackgroundColor: '#349394',
+    route: '/tabs/job-search',
   },
   // {
   //   category: 'Transformation Classes',

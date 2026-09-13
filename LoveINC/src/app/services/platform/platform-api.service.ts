@@ -11,6 +11,7 @@ import type {
   PlatformEvent,
   PlatformHomeFeedItem,
   PlatformImpactStory,
+  PlatformJobListing,
   PlatformNotification,
   PlatformOrganization,
   PlatformPartner,
@@ -31,6 +32,7 @@ export type {
   PlatformEvent,
   PlatformHomeFeedItem,
   PlatformImpactStory,
+  PlatformJobListing,
   PlatformNotification,
   PlatformOffering,
   PlatformOrganization,
@@ -147,6 +149,12 @@ export class PlatformApiService {
   getClasses(): Observable<PlatformClass[]> {
     return this.get<{ classes: PlatformClass[] }>('/classes').pipe(
       map((res) => res?.classes ?? [])
+    );
+  }
+
+  getJobListings(): Observable<{ jobs: PlatformJobListing[]; lastSyncedAt: string | null }> {
+    return this.get<{ jobs: PlatformJobListing[]; lastSyncedAt: string | null }>('/job-listings').pipe(
+      map((res) => ({ jobs: res?.jobs ?? [], lastSyncedAt: res?.lastSyncedAt ?? null }))
     );
   }
 

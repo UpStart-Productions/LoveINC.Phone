@@ -1,0 +1,82 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-back-button fallback="/tabs/tools"></app-back-button>
+    </ion-buttons>
+    <ion-title>Job Search</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        fill="clear"
+        class="job-search-sort-button"
+        aria-label="Sort companies"
+        (click)="openSort()"
+      >
+        <i-lucide
+          slot="icon-only"
+          name="arrow-up-down"
+          [size]="22"
+          color="var(--ion-color-primary-contrast)"
+        ></i-lucide>
+      </ion-button>
+      <ion-select
+        #sortSelect
+        class="job-search-sort-select"
+        interface="action-sheet"
+        [interfaceOptions]="sortSheetOptions"
+        aria-label="Sort companies"
+        [value]="companySort"
+        (ionChange)="onSortChange($event)"
+      >
+        <ion-select-option value="date">Date</ion-select-option>
+        <ion-select-option value="salary">Salary range</ion-select-option>
+        <ion-select-option value="name">Company name</ion-select-option>
+      </ion-select>
+      <ion-button
+        class="saved-jobs-button"
+        fill="clear"
+        aria-label="Saved jobs"
+        (click)="openSaved()"
+      >
+        <i-lucide
+          slot="icon-only"
+          name="bookmark"
+          [size]="22"
+          color="var(--ion-color-primary-contrast)"
+          [class.saved-jobs-button__icon--filled]="savedCount > 0"
+        ></i-lucide>
+        @if (savedCount > 0) {
+          <span class="saved-jobs-badge">{{ savedBadgeLabel }}</span>
+        }
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      class="live-search"
+      placeholder="Search jobs"
+      (ionInput)="onSearchChange($event)"
+      (ionClear)="onSearchClear()"
+      [value]="searchQuery"
+      showClearButton="focus"
+      [debounce]="150"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (loading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (!jobs.length) {
+    <p class="app-body-secondary p-l-18 p-r-18 p-t-12">
+      No job listings right now. Check back soon.
+    </p>
+  } @else if (!listItems.length) {
+    <p class="app-body-secondary p-l-18 p-r-18 p-t-12">
+      No jobs match your search.
+    </p>
+  } @else {
+    <app-content-card-list [items]="listItems" />
+  }
+</ion-content>
