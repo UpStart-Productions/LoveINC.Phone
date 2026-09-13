@@ -118,7 +118,82 @@ export function groupJobsByCompany(jobs: PlatformJobListing[]): JobCompanyGroup[
   return [...groups.values()];
 }
 
-export type CompanySort = 'date' | 'salary' | 'name';
+export type CompanySort = 'date' | 'salary' | 'name' | 'distance';
+
+export type DistanceOrigin = { latitude: number; longitude: number };
+
+const EARTH_MILES = 3958.8;
+
+function toRadians(degrees: number): number {
+  return (degrees * Math.PI) / 180;
+}
+
+export function distanceMiles(a: DistanceOrigin, b: DistanceOrigin): number {
+  const dLat = toRadians(b.latitude - a.latitude);
+  const dLon = toRadians(b.longitude - a.longitude);
+  const lat1 = toRadians(a.latitude);
+  const lat2 = toRadians(b.latitude);
+  const h =
+    Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+  return 2 * EARTH_MILES * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+export function isUsableOrigin(
+  origin?: { latitude?: number | null; longitude?: number | null } | null,
+): origin is DistanceOrigin {
+  return (
+    origin != null &&
+    origin.latitude != null &&
+    origin.longitude != null &&
+    Number.isFinite(origin.latitude) &&
+    Number.isFinite(origin.longitude)
+  );
+}
+
+export function jobDistanceMiles(
+  job: PlatformJobListing,
+  origin: DistanceOrigin,
+): number | undefined {
+  if (job.latitude == null || job.longitude == null) return undefined;
+  if (!Number.isFinite(job.latitude) || !Number.isFinite(job.longitude)) return undefined;
+  return distanceMiles(origin, { latitude: job.latitude, longitude: job.longitude });
+}
+
+export function companyDistanceMiles(
+  jobs: PlatformJobListing[],
+  origin: DistanceOrigin,
+): number | undefined {
+  let nearest: number | undefined;
+  for (const job of jobs) {
+    const miles = jobDistanceMiles(job, origin);
+    if (miles == null) continue;
+    if (nearest == null || miles < nearest) nearest = miles;
+  }
+  return nearest;
+}
+
+export function formatDistanceMiles(miles: number): string {
+  if (miles < 0.1) return '< 0.1 mi';
+  if (miles < 10) return `${miles.toFixed(1)} mi`;
+  return `${Math.round(miles)} mi`;
+}
+
+export function sortJobsByDistance(
+  jobs: PlatformJobListing[],
+  origin: DistanceOrigin,
+): PlatformJobListing[] {
+  return [...jobs].sort((a, b) => {
+    const aMiles = jobDistanceMiles(a, origin);
+    const bMiles = jobDistanceMiles(b, origin);
+    if (aMiles == null && bMiles == null) {
+      return (Date.parse(b.postedAt) || 0) - (Date.parse(a.postedAt) || 0);
+    }
+    if (aMiles == null) return 1;
+    if (bMiles == null) return -1;
+    if (aMiles !== bMiles) return aMiles - bMiles;
+    return (Date.parse(b.postedAt) || 0) - (Date.parse(a.postedAt) || 0);
+  });
+}
 
 function companySalaryHigh(jobs: PlatformJobListing[]): number | undefined {
   const amounts: number[] = [];
@@ -137,6 +212,7 @@ function compareCompanyName(a: JobCompanyGroup, b: JobCompanyGroup): number {
 export function sortCompanyGroups(
   groups: JobCompanyGroup[],
   sort: CompanySort,
+  origin?: DistanceOrigin | null,
 ): JobCompanyGroup[] {
   return [...groups].sort((a, b) => {
     if (sort === 'name') return compareCompanyName(a, b);
@@ -144,6 +220,15 @@ export function sortCompanyGroups(
       const aMax = companySalaryHigh(a.jobs) ?? Number.NEGATIVE_INFINITY;
       const bMax = companySalaryHigh(b.jobs) ?? Number.NEGATIVE_INFINITY;
       if (bMax !== aMax) return bMax - aMax;
+      return compareCompanyName(a, b);
+    }
+    if (sort === 'distance' && origin) {
+      const aMiles = companyDistanceMiles(a.jobs, origin);
+      const bMiles = companyDistanceMiles(b.jobs, origin);
+      if (aMiles == null && bMiles == null) return compareCompanyName(a, b);
+      if (aMiles == null) return 1;
+      if (bMiles == null) return -1;
+      if (aMiles !== bMiles) return aMiles - bMiles;
       return compareCompanyName(a, b);
     }
     const aTs = Date.parse(latestPostedAt(a.jobs) ?? '') || 0;
@@ -166,15 +251,20 @@ function latestPostedAt(jobs: PlatformJobListing[]): string | undefined {
   return latest;
 }
 
-export function mapCompanyToListItem(group: JobCompanyGroup): ContentCardListItem {
+export function mapCompanyToListItem(
+  group: JobCompanyGroup,
+  origin?: DistanceOrigin | null,
+): ContentCardListItem {
   const count = group.jobs.length;
   const latest = latestPostedAt(group.jobs);
   const countLabel = count === 1 ? '1 job' : `${count} jobs`;
   const salary = formatCompanySalaryRange(group.jobs);
+  const miles = origin ? companyDistanceMiles(group.jobs, origin) : undefined;
+  const distance = miles == null ? undefined : formatDistanceMiles(miles);
   return {
     id: companyRouteKey(group.companyName),
     title: group.companyName,
-    detail: [countLabel, salary].filter(Boolean).join(' · '),
+    detail: [countLabel, distance, salary].filter(Boolean).join(' · '),
     imageUrl: group.logoUrl,
     imageOnMutedBackground: true,
     lucideIcon: group.logoUrl ? undefined : 'briefcase',

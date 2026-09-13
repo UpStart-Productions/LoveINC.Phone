@@ -12,6 +12,7 @@ import type {
   PlatformHomeFeedItem,
   PlatformImpactStory,
   PlatformJobListing,
+  PlatformJobListingsOrigin,
   PlatformNotification,
   PlatformOrganization,
   PlatformPartner,
@@ -152,9 +153,21 @@ export class PlatformApiService {
     );
   }
 
-  getJobListings(): Observable<{ jobs: PlatformJobListing[]; lastSyncedAt: string | null }> {
-    return this.get<{ jobs: PlatformJobListing[]; lastSyncedAt: string | null }>('/job-listings').pipe(
-      map((res) => ({ jobs: res?.jobs ?? [], lastSyncedAt: res?.lastSyncedAt ?? null }))
+  getJobListings(): Observable<{
+    jobs: PlatformJobListing[];
+    lastSyncedAt: string | null;
+    origin: PlatformJobListingsOrigin | null;
+  }> {
+    return this.get<{
+      jobs: PlatformJobListing[];
+      lastSyncedAt: string | null;
+      origin: PlatformJobListingsOrigin | null;
+    }>('/job-listings').pipe(
+      map((res) => ({
+        jobs: res?.jobs ?? [],
+        lastSyncedAt: res?.lastSyncedAt ?? null,
+        origin: res?.origin ?? null,
+      }))
     );
   }
 

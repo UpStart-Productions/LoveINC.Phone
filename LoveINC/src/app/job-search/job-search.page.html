@@ -8,7 +8,7 @@
       <ion-button
         fill="clear"
         class="job-search-sort-button"
-        aria-label="Sort companies"
+        aria-label="Sort jobs"
         (click)="openSort()"
       >
         <i-lucide
@@ -18,19 +18,6 @@
           color="var(--ion-color-primary-contrast)"
         ></i-lucide>
       </ion-button>
-      <ion-select
-        #sortSelect
-        class="job-search-sort-select"
-        interface="action-sheet"
-        [interfaceOptions]="sortSheetOptions"
-        aria-label="Sort companies"
-        [value]="companySort"
-        (ionChange)="onSortChange($event)"
-      >
-        <ion-select-option value="date">Date</ion-select-option>
-        <ion-select-option value="salary">Salary range</ion-select-option>
-        <ion-select-option value="name">Company name</ion-select-option>
-      </ion-select>
       <ion-button
         class="saved-jobs-button"
         fill="clear"
@@ -53,7 +40,7 @@
   <ion-toolbar>
     <ion-searchbar
       class="live-search"
-      placeholder="Search jobs"
+      [placeholder]="searchPlaceholder"
       (ionInput)="onSearchChange($event)"
       (ionClear)="onSearchClear()"
       [value]="searchQuery"

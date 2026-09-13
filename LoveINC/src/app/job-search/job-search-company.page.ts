@@ -21,7 +21,7 @@ import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 import type { PlatformJobListing } from '../services/platform/types';
 import { JobListingsStore } from './job-listings.store';
 import { SavedJobsService } from './saved-jobs.service';
-import { mapJobToListItem } from './job-listing.mapper';
+import { mapJobToListItem, sortJobsByDistance } from './job-listing.mapper';
 
 @Component({
   selector: 'app-job-search-company',
@@ -73,9 +73,14 @@ export class JobSearchCompanyPage implements OnInit, OnDestroy {
     });
     this.store.load().subscribe({
       next: (all) => {
-        this.jobs = all
-          .filter((job) => (job.companyName?.trim() || 'Unknown') === this.companyName)
-          .sort((a, b) => Date.parse(b.postedAt) - Date.parse(a.postedAt));
+        const forCompany = all.filter(
+          (job) => (job.companyName?.trim() || 'Unknown') === this.companyName,
+        );
+        const origin = this.store.getDistanceOrigin();
+        this.jobs =
+          this.store.getSort() === 'distance' && origin
+            ? sortJobsByDistance(forCompany, origin)
+            : [...forCompany].sort((a, b) => Date.parse(b.postedAt) - Date.parse(a.postedAt));
         this.refreshList();
         this.loading = false;
       },

@@ -27,6 +27,8 @@ export interface PlatformOrganization {
   city: string;
   state: string;
   zip: string;
+  latitude?: number;
+  longitude?: number;
   website?: string;
   /** Customer name when this org is the affiliate/tenant. Use for Service Access messaging. */
   customerName?: string;
@@ -486,6 +488,13 @@ export interface PlatformPlan {
   updatedAt: string;
 }
 
+/** Affiliate pin used to sort jobs by distance. */
+export interface PlatformJobListingsOrigin {
+  zip: string;
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
 /** GET /public/.../job-listings */
 export interface PlatformJobListing {
   id: string;
@@ -499,4 +508,6 @@ export interface PlatformJobListing {
   logoUrl?: string;
   applyUrl: string;
   postedAt: string;
+  latitude?: number;
+  longitude?: number;
 }

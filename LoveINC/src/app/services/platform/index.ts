@@ -7,6 +7,7 @@ export type {
   PlatformHomeFeedItem,
   PlatformImpactStory,
   PlatformJobListing,
+  PlatformJobListingsOrigin,
   PlatformOrganization,
   PlatformPartner,
   PlatformService,
