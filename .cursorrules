@@ -109,3 +109,11 @@
 - Use `<p class="app-body-secondary">Text</p>` instead of `<p class="intro-text">Text</p>`
 - Use `<span class="app-caption">Date</span>` instead of `<span class="notification-date">Date</span>`
 - Use `<ion-label><p>Description</p></ion-label>` instead of `<ion-label><p class="user-type-description">Description</p></ion-label>`
+
+# Commit messages (Source Control “Generate commit message”)
+
+Keep generated Git commit messages short:
+- One subject line, ideally under 72 characters
+- Focus on why, not a file-by-file restatement of the diff
+- No multi-paragraph essays; add at most 1–2 short body lines only when needed
+- Prefer the style: “Rename GrovSeeds to GrovPods in admin UI and help guide.”
