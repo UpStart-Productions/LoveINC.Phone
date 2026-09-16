@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "463524763099",
+    "project_id": "grovlink-mobile",
+    "storage_bucket": "grovlink-mobile.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463524763099:android:7935c7b7e91b6e964703fe",
+        "android_client_info": {
+          "package_name": "org.loveincnewberg.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpHcDpDmPPH7tAy36cIjHyCvW_0pbdcck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

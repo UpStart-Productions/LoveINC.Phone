@@ -9,7 +9,7 @@
     "build": "ng build",
     "cap:sync": "ng build && npx cap sync",
     "cap:run:ios": "ng build && npx cap sync && npx cap run ios",
-    "cap:run:android": "node scripts/ensure-android-emulator.js && ng build && npx cap sync && npx cap run android",
+    "cap:run:android": "node scripts/run-android-live.js",
     "cap:pod:install": "cd ios/App && pod install",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",

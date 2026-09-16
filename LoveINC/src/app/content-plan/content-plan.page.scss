@@ -73,3 +73,13 @@
     cursor: default;
   }
 }
+
+// This app forces Ionic mode: 'ios' everywhere (see main.ts), so the .md
+// mode class never applies - use Ionic's real platform class (.plt-android,
+// set by the Platform service based on actual OS) instead. Android sits
+// lower here because env(safe-area-inset-bottom) is typically 0 on Android,
+// while iOS gets extra lift from the home-indicator inset baked into that
+// env() value. Raise the pill ~20px on Android only so it visually matches iOS.
+:host-context(.plt-android) .content-plan-multi-footer-shell {
+  margin-bottom: calc(var(--floating-tab-bar-bottom-gap) + env(safe-area-inset-bottom) - 1rem);
+}

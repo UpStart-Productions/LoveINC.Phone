@@ -78,7 +78,11 @@ function waitForBoot(timeoutMs = 180000) {
     process.stdout.write('.');
     spawnSync('sleep', ['2']);
   }
-  console.error('\nensure-android-emulator: timed out waiting for emulator to finish booting.');
+  console.error(
+    '\nensure-android-emulator: timed out waiting for emulator to finish booting.\n' +
+      'Try launching it directly to see what is happening:\n' +
+      `  ${emulatorBin} -avd ${getAvdArg()} -netdelay none -netspeed full`,
+  );
   process.exit(1);
 }
 
@@ -98,10 +102,30 @@ if (!available.includes(avdName)) {
 }
 
 console.log(`No device connected — booting emulator "${avdName}"…`);
+// stdio is piped (not 'ignore') so a launch failure is never silent - if the
+// emulator process dies or errors before adb sees it, we print why and exit
+// immediately instead of hanging in waitForBoot() forever.
 const child = spawn(emulatorBin, ['-avd', avdName, '-netdelay', 'none', '-netspeed', 'full'], {
   detached: true,
-  stdio: 'ignore',
+  stdio: ['ignore', 'pipe', 'pipe'],
 });
+let emulatorDied = false;
+child.on('error', (err) => {
+  emulatorDied = true;
+  console.error(`\nensure-android-emulator: failed to launch the emulator process: ${err.message}`);
+  process.exit(1);
+});
+child.on('exit', (code, signal) => {
+  if (!hasConnectedDevice()) {
+    emulatorDied = true;
+    console.error(
+      `\nensure-android-emulator: emulator process exited early (code=${code}, signal=${signal}) before a device connected.`,
+    );
+    process.exit(1);
+  }
+});
+child.stdout.on('data', (d) => process.stdout.write(`[emulator] ${d}`));
+child.stderr.on('data', (d) => process.stderr.write(`[emulator] ${d}`));
 child.unref();
 
-waitForBoot();
+if (!emulatorDied) waitForBoot();
