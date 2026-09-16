@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map, catchError, of, tap, firstValueFrom, throwError } from 'rxjs';
+import { Observable, map, catchError, of, tap, firstValueFrom, throwError, forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import type {
   PlatformAddress,
@@ -21,9 +21,11 @@ import type {
   PlatformPlanMoment,
   PlatformTheme,
   PlatformService,
+  PlatformServiceCollection,
   PlatformTeamMember,
   PlatformVolunteerPositionWithAffiliate,
 } from './types';
+import { resolveGapPlatformServices } from '../../shared/utils/gap-services.util';
 
 export type {
   PlatformAddress,
@@ -174,6 +176,25 @@ export class PlatformApiService {
   getServices(): Observable<PlatformService[]> {
     return this.get<{ services: PlatformService[] }>('/services').pipe(
       map((res) => res?.services ?? [])
+    );
+  }
+
+  getServiceCollections(): Observable<PlatformServiceCollection[]> {
+    return this.get<{ collections: PlatformServiceCollection[] }>('/service-collections').pipe(
+      map((res) => res?.collections ?? []),
+      catchError(() => of([])),
+    );
+  }
+
+  /** Gap Ministries hub: collections when configured, else slug match on /services. */
+  getGapServices(): Observable<PlatformService[]> {
+    return forkJoin({
+      collections: this.getServiceCollections(),
+      services: this.getServices(),
+    }).pipe(
+      map(({ collections, services }) =>
+        resolveGapPlatformServices(collections, services),
+      ),
     );
   }
 

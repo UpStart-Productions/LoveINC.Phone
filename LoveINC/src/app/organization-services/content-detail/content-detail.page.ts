@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
+import { Subscription, map, of, switchMap } from 'rxjs';
 import { format } from 'date-fns';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
@@ -68,6 +68,10 @@ import {
 } from '../../services/platform';
 import { GrovLinkDatabaseService } from '../../services/grovlink-database.service';
 import { AppBackButtonComponent } from '../../components/app-back-button/app-back-button.component';
+import {
+  findServiceOrOfferingById,
+  serviceAssistanceLabels,
+} from '../../shared/utils/gap-services.util';
 
 @Component({
   selector: 'app-content-detail',
@@ -480,10 +484,21 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private loadServiceFromApi() {
-    this.platformApi.getServices().subscribe({
-        next: (services) => {
-          const { item, service } = this.findServiceOrOfferingById(services ?? [], this.contentId);
-          this.contentItem = item && service ? this.mapPlatformServiceToContentDetail(item, service) : null;
+    this.platformApi
+      .getGapServices()
+      .pipe(
+        switchMap((gapServices) => {
+          const found = findServiceOrOfferingById(gapServices, this.contentId);
+          if (found.item) return of(found);
+          return this.platformApi
+            .getServices()
+            .pipe(map((all) => findServiceOrOfferingById(all ?? [], this.contentId)));
+        }),
+      )
+      .subscribe({
+        next: ({ item, service }) => {
+          this.contentItem =
+            item && service ? this.mapPlatformServiceToContentDetail(item, service) : null;
           if (!this.contentItem) {
             console.error('Gap ministry not found:', this.contentId);
           }
@@ -492,24 +507,8 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
         error: (err) => {
           console.error('Error loading gap ministry detail:', err);
           this.finishContentLoad();
-        }});
-  }
-
-  private findServiceOrOfferingById(
-    services: PlatformService[],
-    id: string
-  ): { item: PlatformOffering | PlatformService | null; service: PlatformService | null } {
-    for (const svc of services) {
-      if (svc.id === id) {
-        return { item: svc, service: svc };
-      }
-      for (const off of svc.offerings ?? []) {
-        if (off.id === id) {
-          return { item: off, service: svc };
-        }
-      }
-    }
-    return { item: null, service: null };
+        },
+      });
   }
 
   private mapPlatformServiceToContentDetail(
@@ -564,8 +563,12 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     } else {
       subtitle = 'By Appointment';
     }
-    const title =
-      off?.items?.length ? off.items.join(', ') : service.title;
+    const assistanceLabels = serviceAssistanceLabels(service);
+    const title = off?.items?.length
+      ? off.items.join(', ')
+      : assistanceLabels.length
+        ? assistanceLabels.join(', ')
+        : service.title;
     const rawPhotoUrl = off?.photoUrl ?? service.photoUrl ?? '';
     const photoUrl = this.platformApi.resolveUploadUrl(rawPhotoUrl) || rawPhotoUrl;
     const description =

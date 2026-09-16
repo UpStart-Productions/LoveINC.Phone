@@ -2,11 +2,23 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import {
+  localGrovLinkApiBaseUrl,
+  localGrovLinkYoutubeEmbedBaseUrl,
+} from './local-grovlink-url';
+
+/** Flip to false when done testing against local GrovLink. */
+const USE_LOCAL_GROVLINK = true;
+
 export const environment = {
   production: false,
-  /** Same as prod GrovLink — use for day-to-day dev without running the API locally. */
-  apiBaseUrl: 'https://api.grovlink.com/api',
-  youtubeEmbedBaseUrl: 'https://api.grovlink.com/embed',
+  apiBaseUrl: USE_LOCAL_GROVLINK
+    ? localGrovLinkApiBaseUrl()
+    : 'https://api.grovlink.com/api',
+  youtubeEmbedBaseUrl: USE_LOCAL_GROVLINK
+    ? localGrovLinkYoutubeEmbedBaseUrl()
+    : 'https://api.grovlink.com/embed',
+  /** Generate in local GrovLink admin if requests fail with 401. */
   apiKey: 'npmp_q-ajDhD2sB4O4yy5e-m3PcXflfrePITRv9EhGiGXYXU',
   /** Customer slug (e.g. loveinc) */
   customerSlug: 'loveinc',

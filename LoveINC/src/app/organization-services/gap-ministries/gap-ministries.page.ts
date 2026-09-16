@@ -33,6 +33,7 @@ import { ScheduleFormattingService } from '../../services/schedule-formatting.se
 import { CalendarService } from '../../services/calendar/calendar.service';
 import { LocationMapModalService } from '../../services/location-map-modal.service';
 import { GapAccessService } from '../../services/gap-access.service';
+import { serviceAssistanceLabels } from '../../shared/utils/gap-services.util';
 import { APP_DOT, joinWithAppDot, apiIsoToDisplayDate, formatIsoTime12hr } from '../../shared/utils';
 
 export interface GapServiceVoucher {
@@ -164,12 +165,9 @@ export class GapMinistriesPage implements OnInit {
   }
 
   loadServices() {
-    this.platformApi.getServices().subscribe({
+    this.platformApi.getGapServices().subscribe({
       next: (platformServices) => {
-        const all = platformServices ?? [];
-        const gapServices = all.filter((s) => s.slug === 'gap-ministries');
-        const toShow = gapServices.length > 0 ? gapServices : all;
-        this.services = this.mapPlatformServicesToGapServices(toShow);
+        this.services = this.mapPlatformServicesToGapServices(platformServices ?? []);
         this.groupServicesBySchedule();
       },
       error: (err) => {
@@ -230,9 +228,10 @@ export class GapMinistriesPage implements OnInit {
               description: (p['longDescription'] ?? p['long_description']) as string | undefined,
               schedule: this.scheduleFormatting.getPositionSchedule(p)}))
           : undefined;
+        const assistanceLabels = serviceAssistanceLabels(svc);
         result.push({
           id: svc.id,
-          service: svc.title,
+          service: assistanceLabels.length ? assistanceLabels.join(', ') : svc.title,
           schedule: 'By Appointment',
           daysTimes: 'By appointment',
           church: '',

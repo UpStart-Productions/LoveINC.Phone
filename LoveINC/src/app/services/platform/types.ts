@@ -137,6 +137,8 @@ export interface PlatformOffering {
   provider: { id: string; name: string; phone?: string; email?: string };
   address?: PlatformAddress;
   items: string[];
+  /** Donation types accepted at this provider site (when configured on service offerings). */
+  donationItemLabels?: string[];
   shortDescription?: string;
   longDescription?: string;
   photoUrl?: string;
@@ -200,6 +202,9 @@ export interface PlatformDonation {
   address?: PlatformAddress;
   photoUrl?: string;
   itemLabels: string[];
+  /** Assistance accepted on this drive (additive public API field). */
+  assistanceItems?: PlatformServiceItem[];
+  assistanceItemLabels?: string[];
   scheduleRule?: PlatformScheduleRule;
   volunteerPositions?: PlatformVolunteerPosition[];
 }
@@ -219,6 +224,18 @@ export interface PlatformVoucher {
   itemLabels?: string[];
 }
 
+/** Public API: GET /public/.../service-collections */
+export interface PlatformServiceCollection {
+  id: string;
+  slug: string;
+  title: string;
+  shortDescription?: string;
+  longDescription?: string;
+  sortOrder: number;
+  serviceIds: string[];
+  services: Array<{ id: string; slug: string; title: string }>;
+}
+
 export interface PlatformService {
   id: string;
   slug?: string;
@@ -227,6 +244,8 @@ export interface PlatformService {
   longDescription?: string;
   photoUrl?: string;
   items: PlatformServiceItem[];
+  /** Donation types linked to this service (additive public API field). */
+  donationItems?: PlatformServiceItem[];
   offerings: PlatformOffering[];
   /** Derived: true when service or any offering has vouchers */
   voucherRequired?: boolean;

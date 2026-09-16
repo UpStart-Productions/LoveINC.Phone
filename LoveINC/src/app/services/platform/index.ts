@@ -11,6 +11,7 @@ export type {
   PlatformOrganization,
   PlatformPartner,
   PlatformService,
+  PlatformServiceCollection,
   PlatformServiceItem,
   PlatformOffering,
   PlatformScheduleRule,

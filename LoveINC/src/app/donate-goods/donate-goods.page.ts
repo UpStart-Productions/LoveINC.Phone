@@ -51,6 +51,8 @@ interface DonationLocation {
   email?: string | null;
   hours: string | null;
   acceptedItems: string[];
+  /** Assistance also accepted (from platform assembly when configured). */
+  assistanceItems: string[];
   notes: string | null;
   contact?: string | null;
   photoUrl?: string | null;
@@ -141,6 +143,11 @@ export class DonateGoodsPage implements OnInit {
     const acceptedItems = (d.itemLabels ?? []).slice().sort((a, b) =>
       a.localeCompare(b, undefined, { sensitivity: 'base' })
     );
+    const assistanceItems = (d.assistanceItemLabels ??
+      d.assistanceItems?.map((i) => i.label) ??
+      [])
+      .slice()
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
     const category = acceptedItems[0] ?? d.title ?? 'Donations';
     const photoUrl = d.photoUrl
       ? this.platformApi.resolveUploadUrl(d.photoUrl) || d.photoUrl
@@ -171,6 +178,7 @@ export class DonateGoodsPage implements OnInit {
       email: d.provider?.email ?? null,
       hours: this.scheduleFormatting.formatScheduleRule(this.scheduleFormatting.normalizeScheduleRule(d.scheduleRule)) ?? null,
       acceptedItems,
+      assistanceItems,
       notes: d.shortDescription ?? d.longDescription ?? null,
       contact: null,
       photoUrl,
@@ -283,7 +291,8 @@ export class DonateGoodsPage implements OnInit {
           location.hours,
           location.notes,
           location.contact,
-          ...(location.acceptedItems || [])
+          ...(location.acceptedItems || []),
+          ...(location.assistanceItems || []),
         ].filter(field => field != null).map(field => String(field).toLowerCase());
 
         return searchFields.some(field => field.includes(query));
@@ -322,6 +331,13 @@ export class DonateGoodsPage implements OnInit {
       parts.push(`<div class="m-t-12"><div class="accepted-items">${
         location.acceptedItems.map((item) => `<span class="item-pill">${esc(item)}</span>`).join('')
       }</div></div>`);
+    }
+    if (location.assistanceItems?.length) {
+      parts.push(
+        `<div class="m-t-8"><p>Also accepts assistance:</p><div class="accepted-items">${location.assistanceItems
+          .map((item) => `<span class="item-pill">${esc(item)}</span>`)
+          .join('')}</div></div>`,
+      );
     }
     parts.push('</div>');
     return parts.join('');

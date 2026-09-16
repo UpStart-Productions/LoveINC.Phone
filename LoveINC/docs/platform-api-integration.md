@@ -51,7 +51,8 @@ Import from `'../../services/platform'` or `'../../services/platform-api.service
 | `GET /classes` | ✅ | `getClasses()` | Transformation Classes page |
 | `GET /plans` | ✅ (platform) | `getPlans()` | Content plans (`/tabs/content-plan/:planKey`) |
 | `GET /moments` | ✅ (platform) | — | Standalone moments catalog (not wired in app yet) |
-| `GET /services` | ✅ | `getServices()` | Gap Ministries, Services |
+| `GET /services` | ✅ | `getServices()` | Full service list (detail fallback) |
+| `GET /service-collections` | ✅ | `getServiceCollections()` | Gap hub assembly (via `getGapServices()`) |
 | `GET /ctas` | ✅ | `getCtas()` | Home, CTAs |
 | `GET /impact-stories` | ✅ | `getImpactStories()` | Impact Stories page |
 | `GET /home-feed` | ✅ | `getHomeFeed()` | Home page |
@@ -71,6 +72,17 @@ The home feed supports two modes:
 3. Update the page to use the service instead of `HttpClient.get('assets/data/...')`
 4. Map API response to existing models
 
+## Gap Ministries assembly
+
+- **`getGapServices()`** loads `/service-collections` and `/services`, then resolves the Gap hub:
+  1. Collection slug `gap-services` or `gap-ministries` → linked active services (ordered)
+  2. Else service slug `gap-services` or `gap-ministries`
+  3. Else empty list (never all services)
+- Prod uses collection/service slug **`gap-services`**. Detail deep links fall back to full `/services` if the id is not in the gap set.
+- **`/donations`** may include `assistanceItems` / `assistanceItemLabels` (additive); Donate Goods shows them when present.
+
 ## Fallback When API Key Missing
 
 If `apiKey` is empty, `PlatformApiService` returns empty arrays/null and logs a console warning. This lets the app run without the platform (e.g. for UI development).
+
+If `/service-collections` is unavailable (pre–Stage 4 API), `getServiceCollections()` returns `[]` and `getGapServices()` falls back to slug matching on `/services`.
