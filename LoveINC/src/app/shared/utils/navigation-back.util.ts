@@ -22,6 +22,11 @@ export async function navigateAppBack(
     return;
   }
 
+  if (explicit) {
+    await navController.navigateBack(destination);
+    return;
+  }
+
   if (await navController.pop()) {
     return;
   }

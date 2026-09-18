@@ -229,6 +229,8 @@ export class GapMinistriesPage implements OnInit {
               schedule: this.scheduleFormatting.getPositionSchedule(p)}))
           : undefined;
         const assistanceLabels = serviceAssistanceLabels(svc);
+        const rawPhoto = svc.photoUrl;
+        const photoUrl = rawPhoto ? this.platformApi.resolveUploadUrl(rawPhoto) || rawPhoto : undefined;
         result.push({
           id: svc.id,
           service: assistanceLabels.length ? assistanceLabels.join(', ') : svc.title,
@@ -240,6 +242,7 @@ export class GapMinistriesPage implements OnInit {
           contactMethod: 'call_loveinc',
           notes: svc.shortDescription ?? null,
           shortDescription: svc.shortDescription ?? null,
+          photoUrl,
           voucherRequired: svc.voucherRequired ?? false,
           serviceId: svc.id,
           vouchers: (svc.vouchers ?? []).map((v) => ({ id: v.id, title: v.title })),

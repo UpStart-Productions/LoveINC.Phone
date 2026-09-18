@@ -53,6 +53,7 @@ interface DonationLocation {
   acceptedItems: string[];
   /** Assistance also accepted (from platform assembly when configured). */
   assistanceItems: string[];
+  shortDescription: string | null;
   notes: string | null;
   contact?: string | null;
   photoUrl?: string | null;
@@ -120,8 +121,7 @@ export class DonateGoodsPage implements OnInit {
       queryParams: { donationId: null },
       queryParamsHandling: 'merge',
     });
-    this.applyDonationFilter();
-    this.groupLocationsByCategory();
+    this.performSearch(this.searchQuery);
   }
 
   loadLocations() {
@@ -130,8 +130,7 @@ export class DonateGoodsPage implements OnInit {
     this.platformApi.getDonations().subscribe({
       next: (data) => {
         this.locations = data.map((d) => this.mapPlatformDonationToLocation(d));
-        this.applyDonationFilter();
-        this.groupLocationsByCategory();
+        this.performSearch(this.searchQuery);
       },
       error: (err) => {
         console.error('Error loading donation locations:', err);
@@ -143,11 +142,10 @@ export class DonateGoodsPage implements OnInit {
     const acceptedItems = (d.itemLabels ?? []).slice().sort((a, b) =>
       a.localeCompare(b, undefined, { sensitivity: 'base' })
     );
-    const assistanceItems = (d.assistanceItemLabels ??
-      d.assistanceItems?.map((i) => i.label) ??
-      [])
-      .slice()
-      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+    const assistanceItems = this.normalizeItemLabels(
+      d.assistanceItemLabels ??
+        d.assistanceItems?.map((i) => (typeof i === 'string' ? i : i?.label)),
+    );
     const category = acceptedItems[0] ?? d.title ?? 'Donations';
     const photoUrl = d.photoUrl
       ? this.platformApi.resolveUploadUrl(d.photoUrl) || d.photoUrl
@@ -179,12 +177,21 @@ export class DonateGoodsPage implements OnInit {
       hours: this.scheduleFormatting.formatScheduleRule(this.scheduleFormatting.normalizeScheduleRule(d.scheduleRule)) ?? null,
       acceptedItems,
       assistanceItems,
-      notes: d.shortDescription ?? d.longDescription ?? null,
+      shortDescription: d.shortDescription?.trim() || null,
+      notes: d.longDescription?.trim() || null,
       contact: null,
       photoUrl,
       badge,
       volunteerPositions: volunteerPositions.length > 0 ? volunteerPositions : undefined,
     };
+  }
+
+  private normalizeItemLabels(labels: unknown): string[] {
+    if (!Array.isArray(labels)) return [];
+    return labels
+      .map((label) => (label == null ? '' : String(label).trim()))
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
   }
 
   private getDonationBadge(category: string, title: string): CardBadge {
@@ -289,6 +296,7 @@ export class DonateGoodsPage implements OnInit {
           location.phone,
           location.email,
           location.hours,
+          location.shortDescription,
           location.notes,
           location.contact,
           ...(location.acceptedItems || []),
@@ -308,6 +316,9 @@ export class DonateGoodsPage implements OnInit {
       (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const parts: string[] = [];
     parts.push(`<div class="location-header"><h2>${esc(location.organization)}</h2></div><div class="donation-details">`);
+    if (location.shortDescription) {
+      parts.push(`<p class="app-body-secondary m-t-8 m-b-0">${esc(location.shortDescription)}</p>`);
+    }
     if (location.address || location.hours) {
       parts.push(`<div class="donation-address-schedule p-t-12 p-b-12">`);
       if (location.address) {

@@ -20,6 +20,7 @@ import type {
   PlatformPlanDisplayStyle,
   PlatformPlanMoment,
   PlatformTheme,
+  PlatformOffering,
   PlatformService,
   PlatformServiceCollection,
   PlatformTeamMember,
@@ -175,7 +176,7 @@ export class PlatformApiService {
 
   getServices(): Observable<PlatformService[]> {
     return this.get<{ services: PlatformService[] }>('/services').pipe(
-      map((res) => res?.services ?? [])
+      map((res) => (res?.services ?? []).map(normalizePlatformService)),
     );
   }
 
@@ -229,8 +230,16 @@ export class PlatformApiService {
   }
 
   getDonations(): Observable<PlatformDonation[]> {
-    return this.get<{ donations: PlatformDonation[] }>('/donations').pipe(
-      map((res) => res?.donations ?? [])
+    return forkJoin({
+      donations: this.get<{ donations: PlatformDonation[] }>('/donations').pipe(
+        map((res) => res?.donations ?? []),
+      ),
+      services: this.getServices(),
+    }).pipe(
+      map(({ donations, services }) => {
+        const serviceById = new Map(services.map((s) => [s.id, s]));
+        return donations.map((d) => enrichDonationFromService(d, serviceById));
+      }),
     );
   }
 
@@ -929,4 +938,31 @@ export class PlatformApiService {
       )
     );
   }
+}
+
+type RawPlatformService = PlatformService & { participations?: PlatformOffering[] };
+
+/** Public API returns participations; app code uses offerings. */
+function normalizePlatformService(raw: RawPlatformService): PlatformService {
+  const offerings =
+    raw.offerings?.length ? raw.offerings : raw.participations ?? [];
+  return {
+    ...raw,
+    offerings,
+    items: raw.items ?? [],
+  };
+}
+
+function enrichDonationFromService(
+  donation: PlatformDonation,
+  serviceById: Map<string, PlatformService>,
+): PlatformDonation {
+  const service = donation.serviceId ? serviceById.get(donation.serviceId) : undefined;
+  const itemPhoto = donation.items?.find((item) => item.photoUrl?.trim())?.photoUrl;
+  return {
+    ...donation,
+    photoUrl: donation.photoUrl ?? itemPhoto ?? service?.photoUrl,
+    shortDescription: donation.shortDescription ?? service?.shortDescription,
+    longDescription: donation.longDescription ?? service?.longDescription,
+  };
 }

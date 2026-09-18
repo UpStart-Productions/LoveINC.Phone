@@ -193,6 +193,14 @@ export interface PlatformPartner {
   photoUrl?: string;
 }
 
+export interface PlatformDonationItem {
+  id: string;
+  label: string;
+  description?: string;
+  sortOrder: number;
+  photoUrl?: string;
+}
+
 export interface PlatformDonation {
   id: string;
   title: string;
@@ -201,7 +209,9 @@ export interface PlatformDonation {
   provider: { id: string; name: string; phone?: string; email?: string };
   address?: PlatformAddress;
   photoUrl?: string;
+  serviceId?: string;
   itemLabels: string[];
+  items?: PlatformDonationItem[];
   /** Assistance accepted on this drive (additive public API field). */
   assistanceItems?: PlatformServiceItem[];
   assistanceItemLabels?: string[];
