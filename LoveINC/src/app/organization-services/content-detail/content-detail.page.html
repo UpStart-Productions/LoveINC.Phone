@@ -240,18 +240,11 @@
       @if (hasRelatedLinks()) {
         <div class="m-t-24">
           <h3 class="app-uppercase-thin m-b-12">Related</h3>
-          <ion-list lines="none" class="info-list">
-            @for (link of navigableRelatedLinks; track link.type + link.id) {
-              <ion-item button detail="false" (click)="onRelatedLinkClick(link)">
-                <ion-icon slot="start" name="link-outline" color="dark"></ion-icon>
-                <ion-label>
-                  <h3 class="app-body">{{ link.title }}</h3>
-                  <p>{{ relatedLinkCategory(link) }}</p>
-                </ion-label>
-                <ion-icon slot="end" class="list-row-chevron" name="chevron-forward-outline"></ion-icon>
-              </ion-item>
-            }
-          </ion-list>
+          <app-content-card-list
+            [items]="relatedLinkCards"
+            [compactCategoryLabel]="true"
+            defaultAsideAvatarSize="large"
+          />
         </div>
       }
 

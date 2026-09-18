@@ -77,6 +77,10 @@ export interface PlatformAppLink {
   title: string;
   collectionContentType?: PlatformAppLinkCollectionContentType;
   slug?: string;
+  subtitle?: string;
+  photoUrl?: string;
+  iconSvg?: string;
+  lucideIcon?: string;
 }
 
 export interface PlatformEvent {

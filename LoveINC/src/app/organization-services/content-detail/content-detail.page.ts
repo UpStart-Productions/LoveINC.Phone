@@ -35,13 +35,10 @@ import {
   NavController,
 } from '@ionic/angular/standalone';
 import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
-import {
-  appLinkCategoryLabel,
-  filterNavigableAppLinks,
-  relatedLinkFromForContentType,
-  resolveAppLinkNavigation,
-} from '../../shared/utils/app-link-navigation.util';
-import type { PlatformAppLink } from '../../services/platform/types';
+import { filterNavigableAppLinks } from '../../shared/utils/app-link-navigation.util';
+import { mapRelatedLinksToListItems } from '../../shared/utils/related-link-card.mapper';
+import type { ContentCardListItem } from '../../components/content-card-list/content-card-list.model';
+import { ContentCardListComponent } from '../../components/content-card-list/content-card-list.component';
 import { resolvePlatformCtaRedirect } from '../../shared/utils/cta-navigation.util';
 import { handleRichHtmlClick } from '../../shared/utils/rich-html-links';
 import { Browser } from '@capacitor/browser';
@@ -99,7 +96,8 @@ import {
   IonLabel,
   IonList,
   SafeHtmlPipe,
-    AppBackButtonComponent],
+    AppBackButtonComponent,
+    ContentCardListComponent],
   providers: [AlertController, ActionSheetController, ToastController]
 })
 export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
@@ -977,25 +975,17 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     return this.contentType === 'impact-story';
   }
 
-  get navigableRelatedLinks(): PlatformAppLink[] {
-    return filterNavigableAppLinks(this.contentItem?.relatedLinks);
+  get relatedLinkCards(): ContentCardListItem[] {
+    const links = filterNavigableAppLinks(this.contentItem?.relatedLinks);
+    return mapRelatedLinksToListItems(
+      links,
+      this.contentType,
+      (path) => this.platformApi.resolveUploadUrl(path),
+    );
   }
 
   hasRelatedLinks(): boolean {
-    return this.navigableRelatedLinks.length > 0;
-  }
-
-  relatedLinkCategory(link: PlatformAppLink): string {
-    return appLinkCategoryLabel(link);
-  }
-
-  async onRelatedLinkClick(link: PlatformAppLink): Promise<void> {
-    const from = relatedLinkFromForContentType(this.contentType);
-    const target = resolveAppLinkNavigation(link, from);
-    if (!target) return;
-    await navigateAppForward(this.navController, this.router, target.commands, {
-      queryParams: target.queryParams,
-    });
+    return this.relatedLinkCards.length > 0;
   }
 
   hasInstructor(): boolean {
