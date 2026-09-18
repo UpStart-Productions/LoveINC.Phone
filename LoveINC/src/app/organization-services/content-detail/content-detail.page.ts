@@ -35,6 +35,13 @@ import {
   NavController,
 } from '@ionic/angular/standalone';
 import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
+import {
+  appLinkCategoryLabel,
+  filterNavigableAppLinks,
+  relatedLinkFromForContentType,
+  resolveAppLinkNavigation,
+} from '../../shared/utils/app-link-navigation.util';
+import type { PlatformAppLink } from '../../services/platform/types';
 import { resolvePlatformCtaRedirect } from '../../shared/utils/cta-navigation.util';
 import { handleRichHtmlClick } from '../../shared/utils/rich-html-links';
 import { Browser } from '@capacitor/browser';
@@ -677,6 +684,7 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       joinUrl: e.joinUrl,
       ...this.mapInstructorFields(e),
       classDocuments: this.mapAttachments(e),
+      relatedLinks: e.relatedLinks,
     };
   }
 
@@ -686,6 +694,7 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       title: s.title,
       description: s.longDescription ?? s.shortDescription ?? '',
       photoUrl: (this.platformApi.resolveUploadUrl(s.photoUrl) || s.photoUrl) ?? '',
+      relatedLinks: s.relatedLinks,
       // Subtitle must never be shortDescription; impact stories have no date/author from API
     };
   }
@@ -778,6 +787,7 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       registrationLink: c.registrationLink,
       remoteAccess: c.remoteAccess,
       joinUrl: c.joinUrl,
+      relatedLinks: c.relatedLinks,
     };
   }
 
@@ -965,6 +975,27 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
 
   isImpactStory(): boolean {
     return this.contentType === 'impact-story';
+  }
+
+  get navigableRelatedLinks(): PlatformAppLink[] {
+    return filterNavigableAppLinks(this.contentItem?.relatedLinks);
+  }
+
+  hasRelatedLinks(): boolean {
+    return this.navigableRelatedLinks.length > 0;
+  }
+
+  relatedLinkCategory(link: PlatformAppLink): string {
+    return appLinkCategoryLabel(link);
+  }
+
+  async onRelatedLinkClick(link: PlatformAppLink): Promise<void> {
+    const from = relatedLinkFromForContentType(this.contentType);
+    const target = resolveAppLinkNavigation(link, from);
+    if (!target) return;
+    await navigateAppForward(this.navController, this.router, target.commands, {
+      queryParams: target.queryParams,
+    });
   }
 
   hasInstructor(): boolean {

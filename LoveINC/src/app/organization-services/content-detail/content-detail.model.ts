@@ -7,6 +7,8 @@ export interface ClassDocument {
   type?: 'handout' | 'worksheet' | 'resource';
 }
 
+import type { PlatformAppLink } from '../../services/platform/types';
+
 /**
  * Unified interface for all content detail types (events, classes, impact stories, etc.)
  */
@@ -79,6 +81,9 @@ export interface ContentDetail {
   affiliateName?: string;
   /** Formatted schedule string for volunteer positions (not class nextSession) */
   volunteerSchedule?: string;
+
+  /** Optional deep links configured in GrovLink admin Related Content. */
+  relatedLinks?: PlatformAppLink[];
 }
 
 export type ContentType =

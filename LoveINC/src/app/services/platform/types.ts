@@ -58,6 +58,27 @@ export interface PlatformTeamMember {
   sortOrder: number;
 }
 
+export type PlatformAppLinkType =
+  | 'microlearning_theme'
+  | 'microlearning_plan'
+  | 'grov_pod'
+  | 'collection';
+
+export type PlatformAppLinkCollectionContentType =
+  | 'service'
+  | 'grov_seed'
+  | 'impact_story'
+  | 'theme'
+  | 'plan';
+
+export interface PlatformAppLink {
+  type: PlatformAppLinkType;
+  id: string;
+  title: string;
+  collectionContentType?: PlatformAppLinkCollectionContentType;
+  slug?: string;
+}
+
 export interface PlatformEvent {
   id: string;
   slug: string;
@@ -77,6 +98,7 @@ export interface PlatformEvent {
   instructorNotes?: string;
   instructorPhotoUrl?: string;
   attachments?: PlatformClassAttachment[];
+  relatedLinks?: PlatformAppLink[];
 }
 
 export interface PlatformClassNextSession {
@@ -121,6 +143,7 @@ export interface PlatformClass {
   /** Alternative: schedule from offerings (scheduleRule + sessions) */
   offerings?: PlatformOffering[];
   volunteerPositions?: PlatformVolunteerPosition[];
+  relatedLinks?: PlatformAppLink[];
 }
 
 export interface PlatformScheduleRule {
@@ -373,6 +396,7 @@ export interface PlatformImpactStory {
   longDescription?: string;
   photoUrl?: string;
   sortOrder: number;
+  relatedLinks?: PlatformAppLink[];
 }
 
 export type HomeFeedItemType =
