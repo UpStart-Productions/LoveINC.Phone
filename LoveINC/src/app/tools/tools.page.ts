@@ -47,6 +47,16 @@ export class ToolsPage implements OnInit {
     navigationFrom: 'tools',
   };
 
+  private readonly compassionListItem: ContentCardListItem = {
+    id: 'redemptive-compassion',
+    title: 'What is Redemptive Compassion',
+    category: 'Transformational Ministry',
+    iconName: 'heart-outline',
+    iconBackgroundColor: '#244d9f',
+    route: '/tabs/redemptive-compassion',
+    navigationFrom: 'tools',
+  };
+
   ngOnInit(): void {
     this.loadItems();
   }
@@ -56,6 +66,7 @@ export class ToolsPage implements OnInit {
   }
 
   private loadItems(refresh = false): void {
+    this.listItems = [this.classesListItem, this.compassionListItem, ...this.staticToolCards.map((card) => this.mapToolCard(card))];
     this.contentPlanService.getThemes(refresh).subscribe({
       next: (themes) => {
         const themeItems = themes.map((theme) =>
@@ -64,11 +75,11 @@ export class ToolsPage implements OnInit {
           ),
         );
         const toolItems = this.staticToolCards.map((card) => this.mapToolCard(card));
-        this.listItems = [this.classesListItem, ...themeItems, ...toolItems];
+        this.listItems = [this.classesListItem, this.compassionListItem, ...themeItems, ...toolItems];
       },
       error: (err) => {
         console.error('Error loading Learn themes:', err);
-        this.listItems = [this.classesListItem, ...this.staticToolCards.map((card) => this.mapToolCard(card))];
+        this.listItems = [this.classesListItem, this.compassionListItem, ...this.staticToolCards.map((card) => this.mapToolCard(card))];
       },
     });
   }

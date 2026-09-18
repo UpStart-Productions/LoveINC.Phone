@@ -54,6 +54,11 @@ const ROOT_DRILL_IN_REDIRECTS: Routes = [
   { path: 'tools', redirectTo: '/tabs/tools', pathMatch: 'full' },
   { path: 'transformation-tools', redirectTo: '/tabs/tools', pathMatch: 'full' },
   {
+    path: 'redemptive-compassion',
+    redirectTo: '/tabs/redemptive-compassion',
+    pathMatch: 'full',
+  },
+  {
     path: 'content-plan-theme/:themeId',
     redirectTo: '/tabs/content-plan-theme/:themeId',
     pathMatch: 'full',
@@ -181,6 +186,11 @@ const TAB_DRILL_IN_ROUTES: Routes = [
   {
     path: 'tools',
     loadComponent: () => import('../tools/tools.page').then((m) => m.ToolsPage),
+  },
+  {
+    path: 'redemptive-compassion',
+    loadComponent: () =>
+      import('../redemptive-compassion/redemptive-compassion.page').then((m) => m.RedemptiveCompassionPage),
   },
   {
     path: 'content-plan-theme/:themeId',

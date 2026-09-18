@@ -14,3 +14,13 @@
   background: var(--app-card-background);
   box-shadow: var(--app-card-shadow);
 }
+
+.content-card-list--light-shell {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.content-card-list-shell--light {
+  background: var(--ion-color-light);
+  box-shadow: none;
+}

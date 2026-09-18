@@ -37,6 +37,7 @@ import {
 import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
 import { filterNavigableAppLinks } from '../../shared/utils/app-link-navigation.util';
 import { mapRelatedLinksToListItems } from '../../shared/utils/related-link-card.mapper';
+import { resolveAvatarBackgroundColor } from '../../shared/utils/avatar-palette.util';
 import type { ContentCardListItem } from '../../components/content-card-list/content-card-list.model';
 import { ContentCardListComponent } from '../../components/content-card-list/content-card-list.component';
 import { resolvePlatformCtaRedirect } from '../../shared/utils/cta-navigation.util';
@@ -1021,6 +1022,29 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
 
   hasInstructorNotes(): boolean {
     return !!this.contentItem?.instructorNotes?.trim();
+  }
+
+  get instructorCards(): ContentCardListItem[] {
+    if (!this.hasInstructor() || !this.contentItem) return [];
+    const item = this.contentItem;
+    const name = this.instructorDisplayName;
+    const jobTitle = this.instructorTitleDisplay;
+    const hasBio = this.hasInstructorNotes();
+    return [
+      {
+        id: 'instructor',
+        uppercaseLabel: this.personSectionTitle,
+        title: name || jobTitle || this.personSectionTitle,
+        detail: name && jobTitle ? jobTitle : undefined,
+        imageUrl: item.instructorPhotoUrl || undefined,
+        iconName: item.instructorPhotoUrl ? undefined : 'person-outline',
+        iconBackgroundColor: resolveAvatarBackgroundColor('instructor'),
+        asideAvatarSize: 'xl',
+        clickable: hasBio,
+        asideBadge: hasBio ? 'Bio' : undefined,
+        asideBadgeColor: 'success',
+      },
+    ];
   }
 
   async openInstructorNotesModal(): Promise<void> {

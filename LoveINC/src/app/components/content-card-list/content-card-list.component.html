@@ -1,10 +1,15 @@
-<div class="content-card-list" [class.content-card-list--flush-top]="flushTop">
-  <div class="content-card-list-shell">
+<div
+  class="content-card-list"
+  [class.content-card-list--flush-top]="flushTop"
+  [class.content-card-list--light-shell]="lightShell"
+>
+  <div class="content-card-list-shell" [class.content-card-list-shell--light]="lightShell">
     @for (item of items; track trackItem($index, item); let last = $last) {
       <app-content-card
         [listRow]="true"
         [listDivider]="!last"
       [compactCategoryLabel]="item.compactCategoryLabel ?? compactCategoryLabel"
+      [uppercaseLabel]="item.uppercaseLabel"
       [category]="item.category"
       [categoryIcon]="item.categoryIcon"
       [lucideCategoryIcon]="item.lucideCategoryIcon"

@@ -256,6 +256,17 @@ ion-card.clickable {
   --content-card-aside-avatar-radius: calc(0.5rem * 1.4);
 }
 
+.content-card-aside-avatar-xl {
+  --content-card-aside-avatar-size: calc(2.75rem * 1.4 * 1.4);
+  --content-card-aside-avatar-radius: calc(0.5rem * 1.4 * 1.4);
+}
+
+.content-card--aside-avatar-xl {
+  --content-card-aside-avatar-size: calc(2.75rem * 1.4 * 1.4);
+  --content-card-aside-width: calc(4.5rem * 1.4 * 1.4);
+  --content-card-aside-avatar-radius: calc(0.5rem * 1.4 * 1.4);
+}
+
 .content-card ion-card-content {
   --padding-end: 0 !important;
   padding-right: 0 !important;
@@ -378,6 +389,10 @@ ion-card.clickable {
   justify-content: flex-start;
   gap: 0.25rem;
 
+  .content-card-uppercase-label {
+    margin: 0;
+  }
+
   h2 {
     margin: 0;
     font-size: var(--app-font-size-body);
@@ -472,6 +487,19 @@ ion-card.clickable {
 
 .content-card--aside-avatar-large .content-card-icon {
   font-size: calc(var(--app-icon-size-lg) * 1.4);
+}
+
+.content-card--aside-avatar-xl .content-card-avatar-overlay {
+  width: calc(var(--app-icon-size-sm) * 1.68 * 1.4);
+  height: calc(var(--app-icon-size-sm) * 1.68 * 1.4);
+
+  ion-icon {
+    font-size: calc(var(--app-icon-size-sm) * 1.68 * 1.4);
+  }
+}
+
+.content-card--aside-avatar-xl .content-card-icon {
+  font-size: calc(var(--app-icon-size-lg) * 1.4 * 1.4);
 }
 
 .content-card-tone-positive {
@@ -638,6 +666,11 @@ ion-card.clickable {
 
 .content-card.content-card--list-row.content-card--list-divider {
   border-bottom: 1px solid var(--content-card-list-divider-color);
+}
+
+.content-card-list-shell--light .content-card.content-card--list-row {
+  --background: transparent;
+  background: transparent;
 }
 
 /* -----------------------------------------------------------------------------

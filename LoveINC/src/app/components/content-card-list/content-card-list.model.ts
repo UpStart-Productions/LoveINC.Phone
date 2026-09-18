@@ -1,4 +1,7 @@
-import type { ContentCardTextSegment } from '../content-card/content-card.component';
+import type {
+  ContentCardAsideAvatarSize,
+  ContentCardTextSegment,
+} from '../content-card/content-card.component';
 
 /** Row model for `app-content-card-list` — maps to `app-content-card` inputs. */
 export interface ContentCardListItem {
@@ -7,6 +10,8 @@ export interface ContentCardListItem {
   saveToggle?: boolean;
   saved?: boolean;
   tags?: string[];
+  /** All-caps label above the title (styled with `app-uppercase-thin`). */
+  uppercaseLabel?: string;
   category?: string;
   categoryIcon?: string;
   lucideCategoryIcon?: string;
@@ -53,6 +58,6 @@ export interface ContentCardListItem {
   createdAtLabelDanger?: boolean;
   /** When true, shows `createdAtLabel` on the author row (right-aligned) instead of the aside. */
   createdAtInlineWithAuthor?: boolean;
-  /** Right-aside avatar size. `large` is 40% bigger than `small`. */
-  asideAvatarSize?: 'small' | 'large';
+  /** Right-aside avatar size. Each step is 40% bigger than the previous. */
+  asideAvatarSize?: ContentCardAsideAvatarSize;
 }

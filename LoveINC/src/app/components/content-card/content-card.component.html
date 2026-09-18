@@ -4,6 +4,7 @@
   [class.content-card--list-row]="listRow"
   [class.content-card--list-divider]="listDivider"
   [class.content-card--aside-avatar-large]="asideAvatarSize === 'large'"
+  [class.content-card--aside-avatar-xl]="asideAvatarSize === 'xl'"
   [class.clickable]="clickable"
   (click)="clickable && handleClick()"
 >
@@ -15,6 +16,9 @@
       [class.content-card-layout--badge-aside-only]="badgeAsideOnly"
     >
       <div class="content-card-main">
+        @if (uppercaseLabel) {
+          <p class="app-uppercase-thin content-card-uppercase-label">{{ uppercaseLabel }}</p>
+        }
         @if (category || categoryExtra || categoryIconSvg) {
           <div class="category-row">
             @if (categoryIconSvg) {

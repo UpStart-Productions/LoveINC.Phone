@@ -1,0 +1,205 @@
+ion-content {
+  --background: #fff;
+}
+
+.compassion {
+  color: #193b58;
+  font-family: var(--ion-font-family);
+}
+
+.compassion * {
+  box-sizing: border-box;
+}
+
+.compassion .intro {
+  background: #f1e83b;
+  padding: 30px 26px 28px;
+  position: relative;
+}
+
+.compassion h1 {
+  font-size: var(--app-font-size-display);
+  line-height: var(--app-line-height-tight);
+  font-weight: var(--app-font-weight-bold);
+  margin: 0 0 20px;
+  color: #183b50;
+}
+
+.compassion .intro p {
+  font-size: var(--app-font-size-body);
+  line-height: var(--app-line-height-relaxed);
+  margin: 0;
+  font-weight: var(--app-font-weight-normal);
+}
+
+.compassion .journey {
+  position: relative;
+  padding: 18px 19px 25px 14px;
+}
+
+.compassion .road {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.compassion .principle {
+  position: relative;
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 14px;
+  align-items: center;
+  min-height: 250px;
+  padding: 30px 0;
+}
+
+.compassion .number {
+  width: 61px;
+  height: 61px;
+  border-radius: 50%;
+  background: var(--stop);
+  color: #fff;
+  font-size: var(--app-font-size-display);
+  font-weight: var(--app-font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  box-shadow: 0 0 0 7px white;
+  position: relative;
+}
+
+.compassion .copy {
+  position: relative;
+  padding-right: 3px;
+}
+
+.compassion h2 {
+  font-size: var(--app-font-size-title);
+  line-height: var(--app-line-height-tight);
+  font-weight: var(--app-font-weight-bold);
+  margin: 0 0 12px;
+  color: #193b58;
+}
+
+.compassion .copy p {
+  font-size: var(--app-font-size-body);
+  line-height: var(--app-line-height-relaxed);
+  margin: 0;
+  color: #34516b;
+}
+
+.compassion .principle.waiting .number,.compassion .principle.waiting .copy {
+  opacity: 0;
+  transform: translateY(28px) scale(.7);
+}
+
+.compassion .principle.arrive .number {
+  animation: rc-pop 760ms both;
+}
+
+.compassion .principle.arrive .copy {
+  animation: rc-copy 650ms 130ms both;
+}
+
+.compassion blockquote {
+  margin: 0;
+  background: #f1e83b;
+  padding: 28px 25px 32px;
+  font-size: var(--app-font-size-body);
+  line-height: var(--app-line-height-relaxed);
+  color: #193b58;
+}
+
+.compassion blockquote p {
+  margin: 0 0 16px;
+}
+
+.compassion cite {
+  font-style: normal;
+  font-weight: var(--app-font-weight-bold);
+}
+
+@keyframes rc-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(32px) scale(.45);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(-7px) scale(1.12);
+  }
+  78% {
+    transform: translateY(3px) scale(.96);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rc-copy {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .compassion .principle .number,.compassion .principle .copy {
+    animation: none!important;
+    transform: none!important;
+    opacity: 1!important;
+  }
+}
+
+@media(max-width:350px) {
+  .compassion .intro {
+    padding: 26px 20px;
+  }
+  .compassion .principle {
+    grid-template-columns: 96px 1fr;
+    gap: 10px;
+  }
+  .compassion .number {
+    width: 54px;
+    height: 54px;
+  }
+  .compassion .journey {
+    padding-left: 9px;
+    padding-right: 15px;
+  }
+  .compassion h2 {
+    font-size: var(--app-font-size-title);
+  }
+}
+
+.compassion .intro,.compassion blockquote {
+  position: relative;
+  z-index: 2;
+}
+
+.compassion .journey {
+  z-index: 1;
+}
+
+// Optical alignment for Ilisarniq numerals; the circle and road stay fixed.
+.compassion .number span {
+  position: relative;
+  top: -3px;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}

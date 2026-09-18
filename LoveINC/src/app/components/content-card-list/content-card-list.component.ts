@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ContentCardComponent } from '../content-card/content-card.component';
+import {
+  ContentCardComponent,
+  type ContentCardAsideAvatarSize,
+} from '../content-card/content-card.component';
 import type { ContentCardListItem } from './content-card-list.model';
 
 @Component({
@@ -15,10 +18,13 @@ export class ContentCardListComponent {
   @Input() compactCategoryLabel = false;
   @Input() defaultNavigationFrom?: string;
   @Input() defaultIconBackgroundColor = '#8b7355';
-  @Input() defaultAsideAvatarSize: 'small' | 'large' = 'small';
+  @Input() defaultAsideAvatarSize: ContentCardAsideAvatarSize = 'small';
 
   /** When true, removes top padding so the list can sit flush under a hero. */
   @Input() flushTop = false;
+
+  /** Light grey inset panel (e.g. content-detail related links, instructor-style). */
+  @Input() lightShell = false;
 
   /** Emitted when a row without `route` is tapped. */
   @Output() itemClick = new EventEmitter<ContentCardListItem>();

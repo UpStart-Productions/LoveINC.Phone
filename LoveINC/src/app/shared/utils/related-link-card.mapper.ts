@@ -54,7 +54,7 @@ export function mapRelatedLinkToListItem(
     detail: subtitle,
     route,
     navigationFrom: from,
-    asideAvatarSize: 'large',
+    asideAvatarSize: 'small',
   };
 
   switch (link.type) {

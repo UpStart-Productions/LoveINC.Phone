@@ -16,7 +16,7 @@ export type ContentCardTextSegment = {
   tone?: 'positive' | 'negative';
 };
 
-export type ContentCardAsideAvatarSize = 'small' | 'large';
+export type ContentCardAsideAvatarSize = 'small' | 'large' | 'xl';
 
 @Component({
   selector: 'app-content-card',
@@ -28,6 +28,9 @@ export type ContentCardAsideAvatarSize = 'small' | 'large';
 export class ContentCardComponent {
   private readonly navController = inject(NavController);
   private readonly authorBioModal = inject(AuthorBioModalService);
+  /** Optional all-caps label above the title (e.g. "Instructor", "Contact"). */
+  @Input() uppercaseLabel?: string;
+
   /** Small category label above title (e.g. "Guided Scripture", "Guided Prayer") */
   @Input() category?: string;
 
@@ -153,11 +156,18 @@ export class ContentCardComponent {
   /** When true, shows `createdAtLabel` on the author row (right-aligned) instead of the aside. */
   @Input() createdAtInlineWithAuthor = false;
 
-  /** Right-aside avatar size. `large` is 40% bigger than `small`. */
+  /** Right-aside avatar size. Each step is 40% bigger than the previous (`large`, `xl`). */
   @Input() asideAvatarSize: ContentCardAsideAvatarSize = 'small';
 
   get asideLucideIconSize(): number {
-    return this.asideAvatarSize === 'large' ? 34 : 24;
+    switch (this.asideAvatarSize) {
+      case 'xl':
+        return 48;
+      case 'large':
+        return 34;
+      default:
+        return 24;
+    }
   }
 
   get hasAsideAvatar(): boolean {
