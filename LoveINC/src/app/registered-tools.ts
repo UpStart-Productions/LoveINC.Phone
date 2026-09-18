@@ -189,3 +189,33 @@ export const REGISTERED_TOOL_CARDS: ToolCard[] = [
     route: '/tabs/journal',
   },
 ];
+
+function buildNavigableGrovPodSlugs(): Set<string> {
+  const slugs = new Set<string>();
+  for (const route of REGISTERED_TOOL_ROUTES) {
+    const path = route.path?.trim();
+    if (path) {
+      slugs.add(path.split('/')[0]);
+    }
+  }
+  for (const card of REGISTERED_TOOL_CARDS) {
+    const route = card.route?.trim();
+    if (!route) continue;
+    const match = route.match(/^\/tabs\/([^/]+)/);
+    if (match?.[1]) {
+      slugs.add(match[1]);
+    }
+  }
+  return slugs;
+}
+
+const NAVIGABLE_GROV_POD_SLUGS = buildNavigableGrovPodSlugs();
+
+/** Map a GrovPod slug from the platform API to a tab route, or null when unknown. */
+export function resolveRegisteredToolTabRoute(slug: string | undefined): string | null {
+  const normalized = slug?.trim();
+  if (!normalized || !NAVIGABLE_GROV_POD_SLUGS.has(normalized)) {
+    return null;
+  }
+  return `/tabs/${normalized}`;
+}

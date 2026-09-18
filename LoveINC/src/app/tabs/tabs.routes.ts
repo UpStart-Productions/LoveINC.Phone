@@ -58,6 +58,11 @@ const ROOT_DRILL_IN_REDIRECTS: Routes = [
     redirectTo: '/tabs/content-plan-theme/:themeId',
     pathMatch: 'full',
   },
+  {
+    path: 'collection/:collectionId',
+    redirectTo: '/tabs/collection/:collectionId',
+    pathMatch: 'full',
+  },
   { path: 'simple-budget', redirectTo: '/tabs/simple-budget', pathMatch: 'full' },
   { path: 'simple-budget/weekly', redirectTo: '/tabs/simple-budget/weekly', pathMatch: 'full' },
   { path: 'simple-budget/review', redirectTo: '/tabs/simple-budget/review', pathMatch: 'full' },
@@ -181,6 +186,11 @@ const TAB_DRILL_IN_ROUTES: Routes = [
     path: 'content-plan-theme/:themeId',
     loadComponent: () =>
       import('../content-plan-theme/content-plan-theme.page').then((m) => m.ContentPlanThemePage),
+  },
+  {
+    path: 'collection/:collectionId',
+    loadComponent: () =>
+      import('../collection/collection.page').then((m) => m.CollectionPage),
   },
   {
     path: 'transformation-tools',

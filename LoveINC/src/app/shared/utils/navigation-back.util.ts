@@ -22,11 +22,8 @@ export async function navigateAppBack(
     return;
   }
 
-  if (explicit) {
-    await navController.navigateBack(destination);
-    return;
-  }
-
+  // Prefer Ionic stack pop so drill-in chains (list → detail → related) return one level.
+  // `from` / `returnUrl` are fallbacks when there is no prior stack entry (deep link, refresh).
   if (await navController.pop()) {
     return;
   }
@@ -34,6 +31,11 @@ export async function navigateAppBack(
   const stackParent = resolveStackParentUrl(router.url);
   if (stackParent) {
     await navController.navigateBack(stackParent);
+    return;
+  }
+
+  if (explicit) {
+    await navController.navigateBack(destination);
     return;
   }
 

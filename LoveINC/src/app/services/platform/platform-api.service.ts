@@ -23,6 +23,7 @@ import type {
   PlatformOffering,
   PlatformService,
   PlatformServiceCollection,
+  PlatformServiceCollectionDetail,
   PlatformTeamMember,
   PlatformVolunteerPositionWithAffiliate,
 } from './types';
@@ -184,6 +185,19 @@ export class PlatformApiService {
     return this.get<{ collections: PlatformServiceCollection[] }>('/service-collections').pipe(
       map((res) => res?.collections ?? []),
       catchError(() => of([])),
+    );
+  }
+
+  getServiceCollectionById(collectionId: string): Observable<PlatformServiceCollectionDetail | null> {
+    const id = collectionId?.trim();
+    if (!id) {
+      return of(null);
+    }
+    return this.get<{ collection: PlatformServiceCollectionDetail }>(
+      `/service-collections/${encodeURIComponent(id)}`,
+    ).pipe(
+      map((res) => res?.collection ?? null),
+      catchError(() => of(null)),
     );
   }
 

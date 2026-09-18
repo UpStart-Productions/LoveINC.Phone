@@ -257,6 +257,22 @@ export interface PlatformVoucher {
   itemLabels?: string[];
 }
 
+export type PlatformServiceCollectionContentType =
+  | 'service'
+  | 'grov_seed'
+  | 'impact_story'
+  | 'theme'
+  | 'plan';
+
+export interface PlatformServiceCollectionMember {
+  id: string;
+  title: string;
+  slug?: string;
+  shortDescription?: string;
+  photoUrl?: string;
+  iconSvg?: string;
+}
+
 /** Public API: GET /public/.../service-collections */
 export interface PlatformServiceCollection {
   id: string;
@@ -267,6 +283,18 @@ export interface PlatformServiceCollection {
   sortOrder: number;
   serviceIds: string[];
   services: Array<{ id: string; slug: string; title: string }>;
+}
+
+/** Public API: GET /public/.../service-collections/:id */
+export interface PlatformServiceCollectionDetail {
+  id: string;
+  slug: string;
+  title: string;
+  contentType: PlatformServiceCollectionContentType;
+  shortDescription?: string;
+  longDescription?: string;
+  sortOrder: number;
+  members: PlatformServiceCollectionMember[];
 }
 
 export interface PlatformService {

@@ -1,3 +1,4 @@
+import { resolveRegisteredToolTabRoute } from '../../registered-tools';
 import type { PlatformAppLink } from '../../services/platform/types';
 
 export function appLinkCategoryLabel(link: PlatformAppLink): string {
@@ -15,7 +16,6 @@ export function appLinkCategoryLabel(link: PlatformAppLink): string {
   }
 }
 
-/** Phase 2: theme and path only. Returns null for types handled in later phases. */
 export function resolveAppLinkNavigation(
   link: PlatformAppLink,
   from: string,
@@ -29,6 +29,25 @@ export function resolveAppLinkNavigation(
     case 'microlearning_plan':
       return {
         commands: ['/tabs/content-plan', link.id],
+        queryParams: { from },
+      };
+    case 'grov_pod': {
+      const tabRoute = resolveRegisteredToolTabRoute(link.slug);
+      if (!tabRoute) return null;
+      return {
+        commands: [tabRoute],
+        queryParams: { from },
+      };
+    }
+    case 'collection':
+      if (link.collectionContentType === 'theme') {
+        return {
+          commands: ['/tabs/content-plan-theme', link.id],
+          queryParams: { from },
+        };
+      }
+      return {
+        commands: ['/tabs/collection', link.id],
         queryParams: { from },
       };
     default:

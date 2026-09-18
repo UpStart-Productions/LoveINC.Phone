@@ -26,11 +26,61 @@ describe('app-link-navigation', () => {
     });
   });
 
+  it('resolves grov pod routes by slug', () => {
+    expect(
+      resolveAppLinkNavigation(
+        { type: 'grov_pod', id: 'g1', title: 'Job Search', slug: 'job-search' },
+        'updates',
+      ),
+    ).toEqual({
+      commands: ['/tabs/job-search'],
+      queryParams: { from: 'updates' },
+    });
+    expect(
+      resolveAppLinkNavigation(
+        { type: 'grov_pod', id: 'g2', title: 'Unknown', slug: 'not-a-tool' },
+        'home',
+      ),
+    ).toBeNull();
+  });
+
+  it('resolves collection routes', () => {
+    expect(
+      resolveAppLinkNavigation(
+        {
+          type: 'collection',
+          id: 'theme1',
+          title: 'Theme collection',
+          collectionContentType: 'theme',
+        },
+        'impact-stories',
+      ),
+    ).toEqual({
+      commands: ['/tabs/content-plan-theme', 'theme1'],
+      queryParams: { from: 'impact-stories' },
+    });
+    expect(
+      resolveAppLinkNavigation(
+        {
+          type: 'collection',
+          id: 'col1',
+          title: 'Services hub',
+          collectionContentType: 'service',
+        },
+        'updates',
+      ),
+    ).toEqual({
+      commands: ['/tabs/collection', 'col1'],
+      queryParams: { from: 'updates' },
+    });
+  });
+
   it('filters to navigable links only', () => {
     const links: PlatformAppLink[] = [
       { type: 'microlearning_theme', id: 't1', title: 'Theme' },
       { type: 'grov_pod', id: 'g1', title: 'Tool', slug: 'job-search' },
+      { type: 'grov_pod', id: 'g2', title: 'Missing', slug: 'unknown-tool' },
     ];
-    expect(filterNavigableAppLinks(links)).toEqual([links[0]]);
+    expect(filterNavigableAppLinks(links)).toEqual([links[0], links[1]]);
   });
 });
