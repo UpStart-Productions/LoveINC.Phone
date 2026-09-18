@@ -72,12 +72,16 @@ function mapCollectionMemberToListItem(
     }
     case 'theme': {
       const iconSvg = member.iconSvg?.trim();
+      const themePhoto = member.photoUrl
+        ? resolveUploadUrl(member.photoUrl) || member.photoUrl
+        : undefined;
       return {
         id: member.id,
         title: member.title,
         category: detail,
-        categoryIconSvg: iconSvg || undefined,
-        lucideIcon: parseLucideIconNameFromIconSvg(iconSvg),
+        categoryIconSvg: !themePhoto && iconSvg ? iconSvg : undefined,
+        imageUrl: themePhoto,
+        lucideIcon: themePhoto ? undefined : parseLucideIconNameFromIconSvg(iconSvg),
         iconBackgroundColor: resolveAvatarBackgroundColor(member.id),
         compactCategoryLabel: true,
         route: `/tabs/content-plan-theme/${member.id}`,

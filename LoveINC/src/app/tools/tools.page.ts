@@ -10,6 +10,7 @@ import { ContentCardListComponent } from '../components/content-card-list/conten
 import type { ContentCardListItem } from '../components/content-card-list/content-card-list.model';
 import { ContentPlanService } from '../content-plan/content-plan.service';
 import { mapContentPlanThemeToLearnListItem } from '../content-plan/content-plan.mapper';
+import { PlatformApiService } from '../services/platform';
 import { REGISTERED_TOOL_CARDS, type ToolCard } from '../registered-tools';
 import { resolveAvatarBackgroundColor } from '../shared/utils/avatar-palette.util';
 
@@ -28,6 +29,7 @@ import { resolveAvatarBackgroundColor } from '../shared/utils/avatar-palette.uti
 })
 export class ToolsPage implements OnInit {
   private readonly contentPlanService = inject(ContentPlanService);
+  private readonly platformApi = inject(PlatformApiService);
 
   listItems: ContentCardListItem[] = [];
   private readonly staticToolCards: ToolCard[] = REGISTERED_TOOL_CARDS;
@@ -56,7 +58,11 @@ export class ToolsPage implements OnInit {
   private loadItems(refresh = false): void {
     this.contentPlanService.getThemes(refresh).subscribe({
       next: (themes) => {
-        const themeItems = themes.map((theme) => mapContentPlanThemeToLearnListItem(theme));
+        const themeItems = themes.map((theme) =>
+          mapContentPlanThemeToLearnListItem(theme, (path) =>
+            this.platformApi.resolveUploadUrl(path),
+          ),
+        );
         const toolItems = this.staticToolCards.map((card) => this.mapToolCard(card));
         this.listItems = [this.classesListItem, ...themeItems, ...toolItems];
       },

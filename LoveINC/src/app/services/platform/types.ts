@@ -526,6 +526,7 @@ export interface PlatformTheme {
   name: string;
   subtitle?: string;
   iconSvg?: string;
+  photoUrl?: string;
   isActive: boolean;
   showOnHome: boolean;
   displayStyle: PlatformThemeDisplayStyle;

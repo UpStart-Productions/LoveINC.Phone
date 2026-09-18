@@ -73,17 +73,25 @@ export function parseLucideIconNameFromIconSvg(iconSvg: string | undefined): str
   return match?.[1];
 }
 
-export function mapContentPlanThemeToLearnListItem(theme: ContentPlanTheme): ContentCardListItem {
+export function mapContentPlanThemeToLearnListItem(
+  theme: ContentPlanTheme,
+  resolveUploadUrl?: (path?: string) => string,
+): ContentCardListItem {
   const subtitle = theme.subtitle?.trim();
   const iconSvg = theme.iconSvg?.trim();
   const lucideIcon = parseLucideIconNameFromIconSvg(iconSvg);
+  const rawPhoto = theme.photoUrl?.trim();
+  const imageUrl = rawPhoto
+    ? (resolveUploadUrl ? resolveUploadUrl(rawPhoto) : rawPhoto) || rawPhoto
+    : undefined;
 
   return {
     id: theme.id,
     title: theme.name,
     category: subtitle || undefined,
-    categoryIconSvg: iconSvg || undefined,
-    lucideIcon,
+    categoryIconSvg: !imageUrl && iconSvg ? iconSvg : undefined,
+    lucideIcon: imageUrl ? undefined : lucideIcon,
+    imageUrl,
     iconBackgroundColor: resolveAvatarBackgroundColor(theme.id),
     compactCategoryLabel: true,
     route: `/tabs/content-plan-theme/${theme.id}`,
@@ -152,12 +160,14 @@ export function mapPlatformTheme(
 ): ContentPlanTheme {
   const subtitle = theme?.subtitle?.trim();
   const iconSvg = theme?.iconSvg?.trim();
+  const photoUrl = theme?.photoUrl?.trim();
 
   return {
     id: theme?.id?.trim() ?? '',
     name: theme?.name?.trim() ?? '',
     subtitle: subtitle || undefined,
     iconSvg: iconSvg || undefined,
+    photoUrl: photoUrl || undefined,
     isActive: theme?.isActive ?? false,
     showOnHome: theme?.showOnHome ?? false,
     displayStyle: theme?.displayStyle ?? 'COVER_CARDS',

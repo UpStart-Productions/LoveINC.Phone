@@ -63,7 +63,8 @@ export function mapRelatedLinkToListItem(
       const lucideIcon = parseLucideIconNameFromIconSvg(iconSvg);
       return {
         ...base,
-        lucideIcon,
+        imageUrl: photoUrl,
+        lucideIcon: photoUrl ? undefined : lucideIcon,
         iconBackgroundColor: resolveAvatarBackgroundColor(link.id),
       };
     }
@@ -85,7 +86,8 @@ export function mapRelatedLinkToListItem(
         const iconSvg = link.iconSvg?.trim();
         return {
           ...base,
-          lucideIcon: parseLucideIconNameFromIconSvg(iconSvg),
+          imageUrl: photoUrl,
+          lucideIcon: photoUrl ? undefined : parseLucideIconNameFromIconSvg(iconSvg),
           iconBackgroundColor: resolveAvatarBackgroundColor(link.id),
         };
       }
