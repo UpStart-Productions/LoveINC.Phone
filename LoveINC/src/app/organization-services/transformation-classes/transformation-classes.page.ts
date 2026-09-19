@@ -114,6 +114,8 @@ export class TransformationClassesPage implements OnInit {
         };
         const list = data ?? [];
         this.activeClassCards = list
+          .slice()
+          .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
           .filter((c) => this.isActiveClass(c, todayMs))
           .map(toCard);
         this.loaded = true;

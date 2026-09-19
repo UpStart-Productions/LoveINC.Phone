@@ -142,6 +142,7 @@ export interface PlatformClass {
   registrationLink?: string;
   remoteAccess?: boolean;
   joinUrl?: string;
+  sortOrder?: number;
   /** Attachments from API (handouts, PDFs, etc.) */
   attachments?: PlatformClassAttachment[];
   /** Alternative: schedule from offerings (scheduleRule + sessions) */
