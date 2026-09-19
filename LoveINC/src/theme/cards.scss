@@ -772,6 +772,11 @@ ion-card.clickable {
   }
 }
 
+.card-badge--standalone {
+  padding: 0;
+  background: transparent;
+}
+
 .card-actions-popover { --offset-y: 14px; --offset-x: 10px; }
 .card-badge { font-size: 0.65rem; }
 /* Verse typography uses the same serif family as journal reading. */

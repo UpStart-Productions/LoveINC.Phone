@@ -13,6 +13,7 @@
       [imageUrl]="getPhotoUrl(story)"
       [title]="story.title"
       [description]="story.shortDescription ?? story.longDescription ?? ''"
+      [badgeActions]="true"
       [clickable]="true"
       (cardClick)="navigateToDetail(story)"
       (shareClick)="onShareStory(story)">

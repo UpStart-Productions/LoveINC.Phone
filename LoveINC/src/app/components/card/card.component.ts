@@ -6,7 +6,6 @@ import {
   IonCardTitle,
   IonCardSubtitle,
   IonCardContent,
-  IonBadge,
   IonIcon,
   IonButton, IonPopover, IonList, IonItem, IonLabel,
 } from '@ionic/angular/standalone';
@@ -40,7 +39,6 @@ export interface CardBadge {
     IonCardTitle,
     IonCardSubtitle,
     IonCardContent,
-    IonBadge,
     IonIcon,
     IonButton, IonPopover, IonList, IonItem, IonLabel,
     LucideAngularModule,
@@ -74,7 +72,7 @@ export class CardComponent {
   actionsEvent?: Event;
 
   get useBadgeActions(): boolean {
-    return this.badgeActions && !!this.badge && !!this.imageUrl && this.imagePosition === 'banner';
+    return this.badgeActions && !!this.imageUrl && this.imagePosition === 'banner';
   }
 
   openActions(event: Event): void {

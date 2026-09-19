@@ -9,3 +9,5 @@
 - Photo-detail chrome in content-reader.scss also uses the shared header tokens. Use app-card-page on card/list ion-content surfaces. Main navigation headers reuse HeaderActionsComponent for Notifications and Donate. Notifications uses a native sheet with zero top safe-area inset, not manually positioned modal content.
 
 - Preserve photo-detail scroll reveal: transparent header with white icons over the photo at the top; after scrolling, reveal the light surface, charcoal icons, and serif title. Reuse the existing edgeHeaderScrolled state in both detail and content-plan readers.
+
+- Photo-detail hero titles use Crimson Pro Light. Classes and Impact Stories lists use the shared photo More circle without a category pill; Home and Updates retain their category pills.

@@ -6,16 +6,18 @@
   @if (imageUrl && imagePosition === 'banner') {
     <div class="card-image-container">
       <img [src]="imageUrl" [alt]="title ?? ''" class="card-image" />
-      @if (badge) {
-        <ion-badge class="card-badge" [class.card-badge--actions]="useBadgeActions" [style.background-color]="badge.color">
-          <ion-icon [name]="badge.icon"></ion-icon>
-          {{ badge.label }}
+      @if (badge || (useBadgeActions && hasActionIcons)) {
+        <div class="card-badge" [class.card-badge--actions]="useBadgeActions" [class.card-badge--standalone]="!badge" [style.background-color]="badge?.color">
+          @if (badge) {
+            <ion-icon [name]="badge.icon"></ion-icon>
+            {{ badge.label }}
+          }
           @if (useBadgeActions && hasActionIcons) {
             <button type="button" class="card-badge-more" [attr.aria-label]="'More options for ' + title" aria-haspopup="dialog" [attr.aria-expanded]="actionsOpen" (click)="openActions($event)">
               <span aria-hidden="true">•••</span>
             </button>
           }
-        </ion-badge>
+        </div>
       }
     </div>
   }
