@@ -7,3 +7,5 @@
 - Keep route behavior, conditional actions, content, and bottom navigation intact. Verify narrow and standard phone widths after shared changes.
 
 - Photo-detail chrome in content-reader.scss also uses the shared header tokens. Use app-card-page on card/list ion-content surfaces. Main navigation headers reuse HeaderActionsComponent for Notifications and Donate. Notifications uses a native sheet with zero top safe-area inset, not manually positioned modal content.
+
+- Preserve photo-detail scroll reveal: transparent header with white icons over the photo at the top; after scrolling, reveal the light surface, charcoal icons, and serif title. Reuse the existing edgeHeaderScrolled state in both detail and content-plan readers.

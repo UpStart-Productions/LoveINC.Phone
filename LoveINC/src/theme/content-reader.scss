@@ -77,6 +77,10 @@
   z-index: 10;
   padding-top: env(safe-area-inset-top, 0px);
   padding-inline: 0.25rem;
+  background: transparent;
+  transition: background 0.6s ease;
+}
+.content-reader-edge-chrome--scrolled {
   background: var(--app-header-background);
 }
 .content-reader-edge-chrome__bar {
@@ -98,15 +102,23 @@
   font-weight: 300;
   line-height: var(--app-line-height-title);
   color: var(--app-header-color);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
 }
+.content-reader-edge-chrome--scrolled .content-reader-edge-chrome__title { opacity: 1; }
 .content-reader-edge-chrome app-back-button { flex-shrink: 0; }
 .content-reader-edge-chrome ion-button,
 .content-reader-edge-chrome ion-icon {
+  --color: var(--app-text-overlay);
+  color: var(--app-text-overlay);
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.75));
+}
+.content-reader-edge-chrome--scrolled ion-button,
+.content-reader-edge-chrome--scrolled ion-icon {
   --color: var(--app-header-color);
   color: var(--app-header-color);
-}
-ion-content.content-reader-scroll--edge-hero {
-  --padding-top: calc(64px + env(safe-area-inset-top, 0px));
+  filter: none;
 }
 
 ion-content.content-reader-scroll {
