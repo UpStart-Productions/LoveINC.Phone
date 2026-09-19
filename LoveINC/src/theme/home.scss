@@ -4,7 +4,7 @@
  */
 
 ion-content.home-page .home-sections {
-  padding-top: var(--home-section-gap);
+  padding-top: 0.5rem;
   padding-bottom: 6.25rem;
 }
 
@@ -42,3 +42,25 @@ ion-content.home-page .home-sections .cards-container > app-card {
 ion-content.home-page .home-sections .cards-container > app-card + app-card {
   margin-top: var(--home-section-gap);
 }
+
+.home-static-cta-card {
+  .home-cta-row-item ion-label p.app-title {
+    font-size: var(--app-font-size-body) !important;
+    font-weight: 400 !important;
+    color: var(--app-text-primary);
+    line-height: 1.45 !important;
+  }
+}
+.home-share-app-card__body h3 {
+  font-family: var(--app-font-family-crimson);
+  font-size: 1.35rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.home-share-app-card__description { font-size: var(--app-font-size-sm); line-height: 1.5; }
+.home-share-app-card__actions button { min-height: 44px; }
+ion-content.home-page .home-sections > app-microlearning-theme-widget { margin-top: 1.5rem; }
+
+ion-content.home-page { --background: var(--ion-color-light); }
+.home-cta-card { padding: 0.875rem 1rem; }
+.home-cta-card app-home-cta-row { display: block; }

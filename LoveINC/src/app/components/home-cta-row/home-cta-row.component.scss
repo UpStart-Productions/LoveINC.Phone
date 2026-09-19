@@ -3,9 +3,9 @@
 }
 
 :host:not(:last-child) {
-  border-bottom: 1px solid rgba(var(--ion-color-dark-rgb), 0.08);
-  padding-bottom: 0.75rem;
-  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(var(--ion-color-dark-rgb), 0.055);
+  padding-bottom: 0.625rem;
+  margin-bottom: 0.625rem;
 }
 
 :host:last-child .home-cta-row-item {
@@ -17,7 +17,7 @@
   --padding-end: 0;
   --inner-padding-end: 0;
   --inner-padding-start: 0;
-  --min-height: 0;
+  --min-height: 44px;
   --background-activated: transparent;
   --background-focused: transparent;
   --background-hover: transparent;

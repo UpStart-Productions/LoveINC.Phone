@@ -40,6 +40,8 @@
         [subtitle]="item.subtitle"
         [description]="item.shortDescription || item.description"
         [clickable]="true"
+        [inlineSchedule]="true"
+        [badgeActions]="true"
         [actionIcons]="getActionIcons(item)"
         (cardClick)="navigateToDetail(item)"
         (shareClick)="onShareItem(item)">

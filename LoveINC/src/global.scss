@@ -45,6 +45,8 @@
 @use './theme/forms.scss' as theme-forms;
 @use './theme/content-reader.scss' as theme-content-reader;
 @use './theme/home.scss' as theme-home;
+@use './theme/headers.scss';
+@use './theme/carousels.scss';
 @use './theme/goal-tracker-colors.scss' as theme-goal-tracker;
 @use "quill/dist/quill.snow.css" as quill-snow;
 
@@ -274,66 +276,10 @@ ion-button[fill="clear"][color="primary"] {
   }
 }
 
-/* Header Styling - Global */
-ion-header ion-toolbar {
-  --background: var(--love-inc-header-dark);
-  --color: var(--ion-color-primary-contrast);
-  --opacity: 1;
-  background: var(--love-inc-header-dark);
-  opacity: 1;
-}
-
-ion-header ion-title {
-  --color: var(--ion-color-primary-contrast);
-  color: var(--ion-color-primary-contrast);
-  font-size: var(--app-header-title-font-size);
-
-  &::part(native) {
-    font-size: var(--app-header-title-font-size);
-  }
-}
-
-ion-header ion-buttons ion-button {
-  --color: var(--ion-color-primary-contrast);
-  color: var(--ion-color-primary-contrast);
-}
-
-ion-header ion-buttons ion-button ion-icon {
-  color: var(--ion-color-primary-contrast);
-}
-
-ion-header ion-toolbar ion-buttons[slot='end'] app-notifications-button {
-  display: inline-flex;
-}
-
-ion-header ion-back-button {
-  --color: var(--ion-color-primary-contrast);
-  color: var(--ion-color-primary-contrast);
-}
-
-/* Goal Tracker / Simple Budget: white toolbars need dark chrome (overrides global dark header) */
-ion-header ion-toolbar.custom-toolbar {
-  --background: #ffffff !important;
-  --color: var(--ion-color-dark) !important;
-  background: #ffffff !important;
-
-  ion-title {
-    --color: var(--ion-color-dark) !important;
-    color: var(--ion-color-dark) !important;
-  }
-
-  ion-back-button,
-  ion-buttons ion-button,
-  ion-buttons ion-button ion-icon {
-    --color: var(--ion-color-dark) !important;
-    color: var(--ion-color-dark) !important;
-  }
-}
-
 /* Global Donate Header Button Styling */
 .donate-header-button {
   --background: transparent;
-  --color: white;
+  --color: var(--app-header-color);
   --padding-start: 0.25rem;
   --padding-end: 0.25rem;
   --padding-top: 0;
@@ -348,7 +294,7 @@ ion-header ion-toolbar.custom-toolbar {
   }
 
   ion-icon {
-    color: white;
+    color: inherit;
   }
 }
 
@@ -376,7 +322,7 @@ ion-header ion-toolbar.custom-toolbar {
     height: calc(0.75rem - 1px);
     background-color: var(--love-inc-notification-dot);
     border-radius: 50%;
-    border: 0.0625rem solid var(--love-inc-header-dark);
+    border: 0.0625rem solid var(--app-header-background);
   }
 }
 
@@ -419,7 +365,7 @@ ion-header ion-toolbar.custom-toolbar {
     background-color: var(--love-inc-notification-dot);
     color: #fff;
     border-radius: 999px;
-    border: 0.0625rem solid var(--love-inc-header-dark);
+    border: 0.0625rem solid var(--app-header-background);
     font-size: 0.625rem;
     line-height: 1;
     font-weight: 600;
@@ -784,12 +730,6 @@ ion-modal.alerts-modal-sheet {
   &::part(backdrop) {
     background: var(--app-scrim-backdrop);
   }
-}
-
-/* ion-title vs ion-padding body: ~10px nudge (entry-notes / add-category sheet already pad title) */
-ion-modal.alerts-modal-sheet ion-header ion-toolbar ion-title,
-ion-modal.date-picker-modal-sheet ion-header ion-toolbar ion-title {
-  padding-inline-start: 0.625rem !important;
 }
 
 /* Global Pill Styling (typography in theme/typography.scss) */

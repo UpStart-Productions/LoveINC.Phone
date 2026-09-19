@@ -257,11 +257,13 @@ export class TransformationClassesPage implements OnInit {
     return [
       {
         lucideIcon: 'heart-handshake',
+        label: 'Volunteer',
         handler: () => this.onVolunteerClick(item.class),
         show: !!item.class.volunteerPositions?.length,
         buttonClass: 'volunteer-button'},
       {
         icon: 'calendar-outline',
+        label: 'Calendar',
         handler: () => this.onCalendarClick(item.class),
         show: canCalendar,
         buttonClass: 'calendar-button'}];

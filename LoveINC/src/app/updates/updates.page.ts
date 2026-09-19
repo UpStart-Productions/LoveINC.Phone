@@ -233,12 +233,14 @@ export class UpdatesPage implements OnInit {
     return [
       {
         lucideIcon: 'heart-handshake',
+        label: 'Volunteer',
         handler: () => this.onVolunteerClick(item),
         show: !!item.volunteerPositions?.length,
         buttonClass: 'volunteer-button',
       },
       {
         icon: 'calendar-outline',
+        label: 'Calendar',
         handler: () => this.onCalendarClick(item),
         show: true,
         buttonClass: 'calendar-button',

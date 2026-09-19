@@ -3,6 +3,7 @@
   [ngClass]="'peek-carousel--' + variant"
   [class.peek-carousel--compact]="compact"
   [class.peek-carousel--dense]="dense"
+  [class.peek-carousel--editorial]="!!themeId || !!themeName"
   [style.--peek-carousel-peek]="peekCssValue"
   [style.--peek-carousel-section-title-inset]="sectionTitleInset || null"
 >

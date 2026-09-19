@@ -122,7 +122,10 @@
   --app-font-size-body: 0.9rem;
   --app-font-size-title: 1.25rem;
   --app-font-size-display: 1.5rem;
-  --app-header-title-font-size: 1rem;
+  --app-header-title-font-size: 1.5rem;
+  --app-header-background: var(--ion-color-light);
+  --app-header-color: var(--ion-color-dark);
+  --app-verse-font-size: 1.14rem;
 
   /** Aliases (map to scale) **/
   --app-font-size-small: var(--app-font-size-sm);
@@ -183,16 +186,16 @@
   --app-page-padding-x: 0.75rem;
 
   /** Cards – overrides beyond Ionic defaults (https://ionicframework.com/docs/api/card) **/
-  --app-card-margin: 0.75rem;
-  --app-card-radius: 0.75rem;
+  --app-card-margin: 1rem;
+  --app-card-radius: 1rem;
   --app-card-shadow: none;
   --app-card-background: #ffffff;
   --app-card-margin-bottom: 1.25rem;
 
   /** Canonical ion-card-content padding (Verse, home widgets, app-content-card). Do not override in pages. */
-  --app-card-content-padding-top: 0.5rem;
+  --app-card-content-padding-top: 0.875rem;
   --app-card-content-padding-inline: 1rem;
-  --app-card-content-padding-bottom: 1rem;
+  --app-card-content-padding-bottom: 0.875rem;
   /** Vertical padding for stacked list rows inside content-card-list shells. */
   --app-card-list-row-padding-block: 0.875rem;
 

@@ -58,7 +58,7 @@ export class CardComponent {
   @Input() badge?: CardBadge;
   @Input() title?: string;
   @Input() subtitle?: string;
-  /** Home experiment: place the schedule's time opposite its date. */
+  /** Place the schedule's time opposite its date. */
   @Input() inlineSchedule = false;
 
   get scheduleDate(): string { return this.subtitle?.split('\n')[0] ?? ''; }

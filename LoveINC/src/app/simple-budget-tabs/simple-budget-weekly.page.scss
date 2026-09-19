@@ -1,26 +1,4 @@
-ion-header {
-  --background: #ffffff;
-  background: #ffffff;
-}
-
 ion-toolbar.custom-toolbar {
-  --background: #ffffff;
-  background: #ffffff;
-  --color: var(--ion-color-dark);
-  color: var(--ion-color-dark);
-
-  ion-title {
-    --color: var(--ion-color-dark);
-    color: var(--ion-color-dark);
-    font-size: 1rem;
-    font-weight: 500;
-  }
-
-  ion-back-button {
-    --color: var(--ion-color-dark);
-    color: var(--ion-color-dark);
-  }
-
   .remaining-badge {
     padding: 0.25rem 0.5rem;
     border-radius: 0.5rem;

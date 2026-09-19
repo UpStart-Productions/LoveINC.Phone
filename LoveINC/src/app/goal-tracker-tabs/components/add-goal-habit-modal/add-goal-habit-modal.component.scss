@@ -3,28 +3,6 @@
   --ion-color-secondary: #5433c6;
 }
 
-:host ion-header {
-  --background: #ffffff !important;
-  background: #ffffff !important;
-
-  ion-toolbar {
-    --background: #ffffff !important;
-    background: #ffffff !important;
-    --color: var(--ion-color-dark, #222428);
-
-    ion-title {
-      color: var(--ion-color-dark, #222428) !important;
-      --color: var(--ion-color-dark, #222428) !important;
-    }
-
-    ion-button,
-    ion-button ion-icon {
-      --color: var(--ion-color-dark, #222428) !important;
-      color: var(--ion-color-dark, #222428) !important;
-    }
-  }
-}
-
 /* SuperSimpleWorkout-style segment – white background, light grey border, purple selected */
 .add-mode-segment {
   margin-top: 1rem;

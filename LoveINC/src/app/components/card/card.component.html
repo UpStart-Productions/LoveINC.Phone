@@ -103,7 +103,7 @@
 </ion-card>
 
 @if (useBadgeActions) {
-  <ion-popover class="home-card-actions-popover" style="--offset-y: 14px; --offset-x: 10px" [arrow]="false" #actionsPopover [isOpen]="actionsOpen" [event]="actionsEvent" (didDismiss)="actionsOpen = false" side="bottom" alignment="end" [showBackdrop]="true" aria-label="Card options">
+  <ion-popover class="card-actions-popover" [arrow]="false" #actionsPopover [isOpen]="actionsOpen" [event]="actionsEvent" (didDismiss)="actionsOpen = false" side="bottom" alignment="end" [showBackdrop]="true" aria-label="Card options">
     <ng-template>
       <ion-list>
         @for (action of visibleActionIcons; track action.icon || action.lucideIcon) {

@@ -3,29 +3,6 @@
   --ion-color-secondary: #5433c6;
 }
 
-/* Goal Tracker header – white background, dark text and icons */
-ion-header {
-  --background: #ffffff !important;
-  background: #ffffff !important;
-
-  ion-toolbar {
-    --background: #ffffff !important;
-    background: #ffffff !important;
-    --color: var(--ion-color-dark, #222428);
-    --border-color: rgba(var(--ion-color-dark-rgb), 0.1);
-
-    ion-title {
-      color: var(--ion-color-dark, #222428) !important;
-      --color: var(--ion-color-dark, #222428) !important;
-    }
-
-    ion-back-button {
-      --color: var(--ion-color-dark, #222428) !important;
-      color: var(--ion-color-dark, #222428) !important;
-    }
-  }
-}
-
 /* Date scroller toolbar – allow horizontal scroll */
 ion-toolbar:has(app-date-scroller) {
   --padding-start: 0.75rem;
