@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import {
@@ -19,6 +19,8 @@ import { HomeClassToolsPreferenceService } from '../../services/home-class-tools
   imports: [CommonModule, ContentCardComponent],
 })
 export class GoalTrackerHomeWidgetComponent implements OnInit, OnDestroy {
+  @Output() visibleChange = new EventEmitter<boolean>();
+
   snapshot: GoalTrackerHomeSnapshot | null = null;
   loading = true;
   prefVisible = true;
@@ -26,15 +28,19 @@ export class GoalTrackerHomeWidgetComponent implements OnInit, OnDestroy {
 
   constructor(
     private goalTrackerHome: GoalTrackerHomeService,
-    private homeClassTools: HomeClassToolsPreferenceService
+    private homeClassTools: HomeClassToolsPreferenceService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.prefVisible = this.homeClassTools.isVisible();
     this.prefSub = this.homeClassTools.visibility$.subscribe((visible) => {
       this.prefVisible = visible;
+      this.emitVisible();
+      this.cdr.markForCheck();
     });
     this.loading = true;
+    this.emitVisible();
     this.loadSnapshot();
   }
 
@@ -52,10 +58,12 @@ export class GoalTrackerHomeWidgetComponent implements OnInit, OnDestroy {
       next: (s) => {
         this.snapshot = s;
         this.loading = false;
+        this.emitVisible();
       },
       error: () => {
         this.loading = false;
         this.snapshot = null;
+        this.emitVisible();
       },
     });
   }
@@ -93,7 +101,7 @@ export class GoalTrackerHomeWidgetComponent implements OnInit, OnDestroy {
       return '';
     }
     if (this.snapshot.scheduledTotal === 0) {
-      return 'Tap to open Goal Tracker';
+      return '';
     }
     if (this.snapshot.completedTotal >= this.snapshot.scheduledTotal) {
       return 'Tap to log or review your progress';
@@ -103,5 +111,9 @@ export class GoalTrackerHomeWidgetComponent implements OnInit, OnDestroy {
 
   get showCard(): boolean {
     return this.prefVisible && !this.loading && this.snapshot !== null;
+  }
+
+  private emitVisible(): void {
+    this.visibleChange.emit(this.showCard);
   }
 }

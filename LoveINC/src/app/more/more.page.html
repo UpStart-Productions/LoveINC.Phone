@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="more-page-content" [fullscreen]="true">
+<ion-content class="app-card-page more-page-content" [fullscreen]="true">
   <ng-container *ngFor="let section of moreSections">
     <div class="more-section">
       <p class="more-section-title app-body-secondary-sm app-uppercase">{{ section.title }}</p>
@@ -34,6 +34,12 @@
                 [style.color]="item.iconColor || 'var(--ion-color-primary)'"></ion-icon>
             </div>
             <ion-label>{{ item.name }}</ion-label>
+            <ion-icon
+              class="list-row-chevron"
+              name="chevron-forward-outline"
+              slot="end"
+              aria-hidden="true"
+            ></ion-icon>
           </ion-item>
         </ion-list>
       </div>

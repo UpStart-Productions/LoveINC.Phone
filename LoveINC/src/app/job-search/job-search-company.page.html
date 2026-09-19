@@ -15,7 +15,7 @@
           slot="icon-only"
           name="bookmark"
           [size]="22"
-          color="var(--ion-color-primary-contrast)"
+          color="var(--app-header-color)"
           [class.saved-jobs-button__icon--filled]="savedCount > 0"
         ></i-lucide>
         @if (savedCount > 0) {
@@ -38,6 +38,7 @@
   } @else {
     <app-content-card-list
       [items]="listItems"
+      [flushTop]="true"
       (itemClick)="onJobClick($event)"
       (saveClick)="onSaveClick($event)"
     />

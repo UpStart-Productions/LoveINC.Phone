@@ -13,6 +13,11 @@ ion-content.home-page .home-sections > * {
   display: block;
 }
 
+/* Must beat the rule above — otherwise empty carousel keeps a blank section gap. */
+ion-content.home-page .home-sections > app-home-tools-carousel.home-tools-carousel--empty {
+  display: none;
+}
+
 /* Space between adjacent sections (empty :host { display: none } widgets are skipped). */
 ion-content.home-page .home-sections > * + * {
   margin-top: var(--home-section-gap);
@@ -25,8 +30,23 @@ ion-content.home-page .home-sections ion-card {
 }
 
 /* Peek track already applies --app-card-margin inset — no double margin on slide cards. */
-ion-content.home-page .home-sections app-peek-carousel ion-card.content-card {
+ion-content.home-page .home-sections app-peek-carousel ion-card.content-card,
+ion-content.home-page .home-sections app-home-tools-carousel ion-card.content-card {
   margin-inline: 0;
+}
+
+ion-content.home-page .home-sections app-home-tools-carousel.home-tools-carousel--multiple ion-card.content-card.content-card--tool-header {
+  height: 100%;
+  min-height: var(--app-tool-card-height);
+}
+
+/* Verse of the Day — home-only special case (not GrovPods carousel height). */
+ion-content.home-page .home-sections > app-verse-of-the-day-widget ion-card.content-card--tool-header {
+  height: var(--app-verse-tool-card-height);
+
+  ion-card-content {
+    padding-bottom: calc(var(--app-card-content-padding-bottom) + 0.375rem) !important;
+  }
 }
 
 ion-content.home-page .home-sections .cards-container {
@@ -61,6 +81,5 @@ ion-content.home-page .home-sections .cards-container > app-card + app-card {
 .home-share-app-card__actions button { min-height: 44px; }
 ion-content.home-page .home-sections > app-microlearning-theme-widget { margin-top: 1.5rem; }
 
-ion-content.home-page { --background: var(--ion-color-light); }
 .home-cta-card { padding: 0.875rem 1rem; }
 .home-cta-card app-home-cta-row { display: block; }

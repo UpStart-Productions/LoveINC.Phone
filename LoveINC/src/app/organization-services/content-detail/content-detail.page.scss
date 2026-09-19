@@ -12,6 +12,10 @@
 
 .content-subtitle {
   white-space: pre-line;
+
+  &.inline-schedule {
+    white-space: normal;
+  }
 }
 
 .class-registered-pill {

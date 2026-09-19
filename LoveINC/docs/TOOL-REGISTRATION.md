@@ -100,6 +100,7 @@ When creating a new npm package for a tool:
    ```
 
 4. **Tab bar layout** – If the tool has its own tabs, create a tabs shell (e.g. `goal-tracker-tabs.page`) with `ion-tabs`, `ion-tab-bar`, and `ion-router-outlet`. Style it to match the main app tab bar pattern (see `goal-tracker-tabs.page.scss`).
+5. **Home widget (optional)** – If the tool can appear on Home, add its widget to `app-home-tools-carousel`. One visible tool stays full width; two or more scroll sideways like the CTA carousel. Do not stack a new home widget as a sibling under `.home-sections`. Current data gates: Simple Budget (week has budget data), Goal Tracker (has goals), Job Search (has saved jobs), Journal (has entries).
 
 ## ToolCard Interface
 

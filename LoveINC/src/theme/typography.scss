@@ -53,7 +53,7 @@ span {
   color: var(--app-text-primary);
 }
 
-/* Typography utility classes (4-size scale) */
+/* Typography utility classes (shared text scale) */
 .app-title {
   font-size: var(--app-font-size-title);
   font-weight: var(--app-font-weight-medium);
@@ -168,10 +168,6 @@ ion-item ion-label p.app-list-row-title {
   color: var(--app-text-overlay);
 }
 
-.app-author-label--compact {
-  font-size: 0.625rem;
-}
-
 .app-author-row--fill > .app-author-label {
   flex: 1;
   min-width: 0;
@@ -263,7 +259,7 @@ ion-item ion-label p.app-list-row-title {
 /** All-caps thin (Ilisarniq Light) – field labels, instructor, etc. */
 .app-uppercase-thin {
   font-family: var(--app-font-family-ilisarniq);
-  font-size: var(--app-font-size-sm);
+  font-size: var(--app-font-size-xs);
   font-weight: 300;
   color: var(--app-text-secondary);
   text-transform: uppercase;
@@ -560,3 +556,6 @@ ion-header ion-back-button ion-icon,
 .budget-action-sheet .action-sheet-cancel .action-sheet-icon {
   color: var(--app-text-secondary) !important;
 }
+
+/* Color-only utility, preserving the element’s type size. */
+.app-text-secondary { color: var(--app-text-secondary); }

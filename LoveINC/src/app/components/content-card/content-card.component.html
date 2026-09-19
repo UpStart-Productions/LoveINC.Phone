@@ -1,6 +1,7 @@
 <ion-card
   class="content-card"
   [class.content-card--compact-category-label]="compactCategoryLabel"
+  [class.content-card--tool-header]="toolHeaderLayoutActive"
   [class.content-card--list-row]="listRow"
   [class.content-card--list-divider]="listDivider"
   [class.content-card--aside-avatar-large]="asideAvatarSize === 'large'"
@@ -9,216 +10,320 @@
   (click)="clickable && handleClick()"
 >
   <ion-card-content>
-    <div
-      class="content-card-layout"
-      [class.content-card-layout--with-aside]="showAside"
-      [class.content-card-layout--with-aside-date]="showAsideDate"
-      [class.content-card-layout--badge-aside-only]="badgeAsideOnly"
-    >
-      <div class="content-card-main">
-        @if (uppercaseLabel) {
-          <p class="app-uppercase-thin content-card-uppercase-label">{{ uppercaseLabel }}</p>
-        }
-        @if (category || categoryExtra || categoryIconSvg) {
-          <div class="category-row">
-            @if (categoryIconSvg) {
-              <span
-                class="icon category-icon-svg"
-                [innerHTML]="categoryIconSvg | safeHtml"
-                aria-hidden="true"
-              ></span>
-            } @else if (lucideCategoryIcon) {
-              <i-lucide
-                [name]="lucideCategoryIcon"
-                [size]="showAside || compactCategoryLabel ? 12 : 16"
-                color="var(--ion-color-dark)"
-                class="icon"
-              ></i-lucide>
-            } @else if (categoryIcon) {
-              <ion-icon [name]="categoryIcon" class="icon"></ion-icon>
+    @if (toolHeaderLayoutActive) {
+      <div class="content-card-tool-layout">
+        <div class="content-card-tool-header">
+          <div class="content-card-tool-header__text">
+            @if (category || categoryExtra || categoryIconSvg) {
+              <div class="category-row">
+                @if (categoryIconSvg) {
+                  <span
+                    class="icon category-icon-svg"
+                    [innerHTML]="categoryIconSvg | safeHtml"
+                    aria-hidden="true"
+                  ></span>
+                } @else if (lucideCategoryIcon) {
+                  <i-lucide
+                    [name]="lucideCategoryIcon"
+                    [size]="12"
+                    color="var(--ion-color-dark)"
+                    class="icon"
+                  ></i-lucide>
+                } @else if (categoryIcon) {
+                  <ion-icon [name]="categoryIcon" class="icon"></ion-icon>
+                }
+                @if (categoryExtra) {
+                  <span class="app-body-secondary-xs">{{ categoryExtra }}</span>
+                }
+                @if (category) {
+                  <span class="app-body-secondary-xs">{{ category }}</span>
+                }
+              </div>
             }
-            @if (categoryExtra) {
-              <span [class]="compactCategoryLabel ? 'app-body-secondary-xs' : 'app-body-secondary'">{{ categoryExtra }}</span>
-            }
-            @if (category) {
-              <span [class]="compactCategoryLabel ? 'app-body-secondary-xs' : 'app-body-secondary'">{{ category }}</span>
-            }
+            <div class="content-card-title-row">
+              <h2 [class.content-card-title-with-icon]="!!lucideTitleIcon">
+                @if (lucideTitleIcon) {
+                  <i-lucide
+                    [name]="lucideTitleIcon"
+                    [size]="16"
+                    color="var(--ion-color-dark)"
+                    class="content-card-title-icon"
+                    aria-hidden="true"
+                  ></i-lucide>
+                }
+                @if (titleSegments?.length) {
+                  @for (seg of titleSegments; track $index) {
+                    <span
+                      [class.content-card-tone-positive]="seg.tone === 'positive'"
+                      [class.content-card-tone-negative]="seg.tone === 'negative'"
+                    >{{ seg.text }}</span>
+                  }
+                } @else {
+                  {{ title }}
+                }
+              </h2>
+            </div>
           </div>
-        }
-        <div class="content-card-title-row">
-          @if (saveToggle) {
-            <button
-              type="button"
-              class="content-card-save"
-              [class.content-card-save--saved]="saved"
-              [attr.aria-label]="saved ? 'Unsave job' : 'Save job'"
-              (click)="onSaveTap($event)"
-            >
-              <i-lucide
-                name="bookmark"
-                [size]="20"
-                [color]="saved ? 'var(--ion-color-primary)' : 'var(--ion-color-dark)'"
-                aria-hidden="true"
-              ></i-lucide>
-            </button>
+          @if (hasAsideAvatar) {
+            <div class="content-card-tool-header__icon">
+              <ng-container *ngTemplateOutlet="asideAvatarTemplate" />
+            </div>
           }
-          <h2 [class.content-card-title-with-icon]="!!lucideTitleIcon">
-            @if (lucideTitleIcon) {
-              <i-lucide
-                [name]="lucideTitleIcon"
-                [size]="16"
-                color="var(--ion-color-dark)"
-                class="content-card-title-icon"
-                aria-hidden="true"
-              ></i-lucide>
-            }
-            @if (titleSegments?.length) {
-              @for (seg of titleSegments; track $index) {
-                <span
-                  [class.content-card-tone-positive]="seg.tone === 'positive'"
-                  [class.content-card-tone-negative]="seg.tone === 'negative'"
-                >{{ seg.text }}</span>
-              }
-            } @else {
-              {{ title }}
-            }
-          </h2>
         </div>
-        @if (subtitle) {
-          <p class="app-body-secondary">{{ subtitle }}</p>
-        }
-        @if (underTitle) {
-          @if (tapUnderTitleToOpenMap) {
-            <button type="button" class="content-card-under-title-map" (click)="onUnderTitleMapTap($event)">
-              <span class="app-body-secondary">{{ underTitle }}</span>
-            </button>
-          } @else {
-            <p class="app-body-secondary">{{ underTitle }}</p>
+        <div class="content-card-tool-body">
+          @if (subtitle) {
+            <p class="app-body-secondary">{{ subtitle }}</p>
           }
-        }
-        @if (authorName) {
-          @if (hasAuthorBio) {
-            <button
-              type="button"
-              class="app-author-row app-author-row--card app-unstyled-button"
-              [class.app-author-row--fill]="showAuthorDate"
-              [attr.aria-label]="'About ' + authorName"
-              (click)="onAuthorTap($event)"
-            >
-              @if (authorAvatarUrl) {
-                <img class="app-author-avatar" [src]="authorAvatarUrl" [alt]="authorName" />
-              } @else {
-                <img
-                  class="app-author-avatar"
-                  src="assets/branding/love-inc-avatar.png"
-                  [alt]="authorName"
-                />
-              }
-              <span class="app-author-label">By {{ authorName }}</span>
-              @if (showAuthorDate) {
-                <span class="app-body-secondary-xs app-author-row__date">{{ createdAtLabel }}</span>
-              }
-            </button>
-          } @else {
-            <div
-              class="app-author-row app-author-row--card"
-              [class.app-author-row--fill]="showAuthorDate"
-            >
-              @if (authorAvatarUrl) {
-                <img class="app-author-avatar" [src]="authorAvatarUrl" [alt]="authorName" />
-              } @else {
-                <img
-                  class="app-author-avatar"
-                  src="assets/branding/love-inc-avatar.png"
-                  [alt]="authorName"
-                />
-              }
-              <span class="app-author-label">By {{ authorName }}</span>
-              @if (showAuthorDate) {
-                <span class="app-body-secondary-xs app-author-row__date">{{ createdAtLabel }}</span>
+          @if (underTitle) {
+            @if (tapUnderTitleToOpenMap) {
+              <button type="button" class="content-card-under-title-map" (click)="onUnderTitleMapTap($event)">
+                <span class="app-body-secondary">{{ underTitle }}</span>
+              </button>
+            } @else {
+              <p class="app-body-secondary">{{ underTitle }}</p>
+            }
+          }
+          @if (detailSegments?.length || detail) {
+            <div class="content-card-detail">
+              <p>
+                @if (detailSegments?.length) {
+                  @for (seg of detailSegments; track $index) {
+                    <span
+                      [class.content-card-tone-positive]="seg.tone === 'positive'"
+                      [class.content-card-tone-negative]="seg.tone === 'negative'"
+                    >{{ seg.text }}</span>
+                  }
+                } @else {
+                  {{ detail }}
+                }
+              </p>
+            </div>
+          }
+          @if (tags?.length) {
+            <div class="accepted-items">
+              @for (tag of tags; track tag) {
+                <span class="item-pill">{{ tag }}</span>
               }
             </div>
           }
-        }
-        @if (detailSegments?.length || detail) {
-          <div class="content-card-detail">
-            <p>
-              @if (detailSegments?.length) {
-                @for (seg of detailSegments; track $index) {
+        </div>
+      </div>
+    } @else {
+      <div
+        class="content-card-layout"
+        [class.content-card-layout--with-aside]="showAside"
+        [class.content-card-layout--with-aside-date]="showAsideDate"
+        [class.content-card-layout--badge-aside-only]="badgeAsideOnly"
+      >
+        <div class="content-card-main">
+          @if (uppercaseLabel) {
+            <p class="app-uppercase-thin content-card-uppercase-label">{{ uppercaseLabel }}</p>
+          }
+          @if (category || categoryExtra || categoryIconSvg) {
+            <div class="category-row">
+              @if (categoryIconSvg) {
+                <span
+                  class="icon category-icon-svg"
+                  [innerHTML]="categoryIconSvg | safeHtml"
+                  aria-hidden="true"
+                ></span>
+              } @else if (lucideCategoryIcon) {
+                <i-lucide
+                  [name]="lucideCategoryIcon"
+                  [size]="showAside || compactCategoryLabel ? 12 : 16"
+                  color="var(--ion-color-dark)"
+                  class="icon"
+                ></i-lucide>
+              } @else if (categoryIcon) {
+                <ion-icon [name]="categoryIcon" class="icon"></ion-icon>
+              }
+              @if (categoryExtra) {
+                <span class="app-body-secondary-xs">{{ categoryExtra }}</span>
+              }
+              @if (category) {
+                <span class="app-body-secondary-xs">{{ category }}</span>
+              }
+            </div>
+          }
+          <div class="content-card-title-row">
+            @if (saveToggle) {
+              <button
+                type="button"
+                class="content-card-save"
+                [class.content-card-save--saved]="saved"
+                [attr.aria-label]="saved ? 'Unsave job' : 'Save job'"
+                (click)="onSaveTap($event)"
+              >
+                <i-lucide
+                  name="bookmark"
+                  [size]="20"
+                  [color]="saved ? 'var(--ion-color-primary)' : 'var(--ion-color-dark)'"
+                  aria-hidden="true"
+                ></i-lucide>
+              </button>
+            }
+            <h2 [class.content-card-title-with-icon]="!!lucideTitleIcon">
+              @if (lucideTitleIcon) {
+                <i-lucide
+                  [name]="lucideTitleIcon"
+                  [size]="16"
+                  color="var(--ion-color-dark)"
+                  class="content-card-title-icon"
+                  aria-hidden="true"
+                ></i-lucide>
+              }
+              @if (titleSegments?.length) {
+                @for (seg of titleSegments; track $index) {
                   <span
                     [class.content-card-tone-positive]="seg.tone === 'positive'"
                     [class.content-card-tone-negative]="seg.tone === 'negative'"
                   >{{ seg.text }}</span>
                 }
               } @else {
-                {{ detail }}
+                {{ title }}
               }
-            </p>
+            </h2>
           </div>
-        }
-        @if (tags?.length) {
-          <div class="accepted-items">
-            @for (tag of tags; track tag) {
-              <span class="item-pill">{{ tag }}</span>
-            }
-          </div>
-        }
-      </div>
-      <div
-        class="content-card-aside"
-        *ngIf="showAside"
-        [class.content-card-aside--extra-only]="!hasAsideAvatar && !!asideBadge"
-        [class.content-card-aside--with-date]="showAsideDate"
-      >
-        @if (showAsideDate) {
-          <span class="app-body-secondary-xs content-card-aside-date">
-            @if (createdAtLabelDanger) {
-              <strong class="content-card-tone-negative">{{ createdAtLabel }}</strong>
+          @if (subtitle) {
+            <p class="app-body-secondary">{{ subtitle }}</p>
+          }
+          @if (underTitle) {
+            @if (tapUnderTitleToOpenMap) {
+              <button type="button" class="content-card-under-title-map" (click)="onUnderTitleMapTap($event)">
+                <span class="app-body-secondary">{{ underTitle }}</span>
+              </button>
             } @else {
-              {{ createdAtLabel }}
+              <p class="app-body-secondary">{{ underTitle }}</p>
             }
-          </span>
-        }
-        @if (hasAsideAvatar) {
-          <div
-            class="content-card-avatar"
-            [class.content-card-avatar--with-overlay]="!!imageUrl && !!avatarOverlayIcon"
-          >
-            @if (imageUrl && imageOnMutedBackground) {
-              <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
-                <img [src]="imageUrl" [alt]="title" class="content-card-image content-card-image--contain" />
-              </div>
-            } @else if (imageUrl) {
-              <img [src]="imageUrl" [alt]="title" class="content-card-image" />
-            } @else if (lucideIcon) {
-              <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
-                <i-lucide
-                  [name]="lucideIcon"
-                  [size]="asideLucideIconSize"
-                  [color]="imageOnMutedBackground ? '#6b6b6b' : '#ffffff'"
-                  class="content-card-icon"
-                ></i-lucide>
-              </div>
-            } @else if (iconName) {
-              <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
-                <ion-icon [name]="iconName" class="content-card-icon"></ion-icon>
+          }
+          @if (authorName) {
+            @if (hasAuthorBio) {
+              <button
+                type="button"
+                class="app-author-row app-author-row--card app-unstyled-button"
+                [class.app-author-row--fill]="showAuthorDate"
+                [attr.aria-label]="'About ' + authorName"
+                (click)="onAuthorTap($event)"
+              >
+                @if (authorAvatarUrl) {
+                  <img class="app-author-avatar" [src]="authorAvatarUrl" [alt]="authorName" />
+                } @else {
+                  <img
+                    class="app-author-avatar"
+                    src="assets/branding/love-inc-avatar.png"
+                    [alt]="authorName"
+                  />
+                }
+                <span class="app-author-label">By {{ authorName }}</span>
+                @if (showAuthorDate) {
+                  <span class="app-body-secondary-xs app-author-row__date">{{ createdAtLabel }}</span>
+                }
+              </button>
+            } @else {
+              <div
+                class="app-author-row app-author-row--card"
+                [class.app-author-row--fill]="showAuthorDate"
+              >
+                @if (authorAvatarUrl) {
+                  <img class="app-author-avatar" [src]="authorAvatarUrl" [alt]="authorName" />
+                } @else {
+                  <img
+                    class="app-author-avatar"
+                    src="assets/branding/love-inc-avatar.png"
+                    [alt]="authorName"
+                  />
+                }
+                <span class="app-author-label">By {{ authorName }}</span>
+                @if (showAuthorDate) {
+                  <span class="app-body-secondary-xs app-author-row__date">{{ createdAtLabel }}</span>
+                }
               </div>
             }
-            @if (imageUrl && avatarOverlayIcon) {
-              <span class="content-card-avatar-overlay" aria-hidden="true">
-                <ion-icon
-                  [name]="avatarOverlayIcon"
-                  [color]="avatarOverlayIconColor"
-                ></ion-icon>
-              </span>
-            }
-          </div>
-        }
-        @if (asideBadge) {
-          <ion-badge class="app-status-pill content-card-aside-badge" [color]="asideBadgeColor">{{ asideBadge }}</ion-badge>
-        }
-        <ng-content select="[content-card-aside-extra]"></ng-content>
+          }
+          @if (detailSegments?.length || detail) {
+            <div class="content-card-detail">
+              <p>
+                @if (detailSegments?.length) {
+                  @for (seg of detailSegments; track $index) {
+                    <span
+                      [class.content-card-tone-positive]="seg.tone === 'positive'"
+                      [class.content-card-tone-negative]="seg.tone === 'negative'"
+                    >{{ seg.text }}</span>
+                  }
+                } @else {
+                  {{ detail }}
+                }
+              </p>
+            </div>
+          }
+          @if (tags?.length) {
+            <div class="accepted-items">
+              @for (tag of tags; track tag) {
+                <span class="item-pill">{{ tag }}</span>
+              }
+            </div>
+          }
+        </div>
+        <div
+          class="content-card-aside"
+          *ngIf="showAside"
+          [class.content-card-aside--extra-only]="!hasAsideAvatar && !!asideBadge"
+          [class.content-card-aside--with-date]="showAsideDate"
+        >
+          @if (showAsideDate) {
+            <span class="app-body-secondary-xs content-card-aside-date">
+              @if (createdAtLabelDanger) {
+                <strong class="content-card-tone-negative">{{ createdAtLabel }}</strong>
+              } @else {
+                {{ createdAtLabel }}
+              }
+            </span>
+          }
+          @if (hasAsideAvatar) {
+            <ng-container *ngTemplateOutlet="asideAvatarTemplate" />
+          }
+          @if (asideBadge) {
+            <ion-badge class="app-status-pill content-card-aside-badge" [color]="asideBadgeColor">{{ asideBadge }}</ion-badge>
+          }
+          <ng-content select="[content-card-aside-extra]"></ng-content>
+        </div>
       </div>
-    </div>
+    }
   </ion-card-content>
 </ion-card>
+
+<ng-template #asideAvatarTemplate>
+  <div
+    class="content-card-avatar"
+    [class.content-card-avatar--with-overlay]="!!imageUrl && !!avatarOverlayIcon"
+  >
+    @if (imageUrl && imageOnMutedBackground) {
+      <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
+        <img [src]="imageUrl" [alt]="title" class="content-card-image content-card-image--contain" />
+      </div>
+    } @else if (imageUrl) {
+      <img [src]="imageUrl" [alt]="title" class="content-card-image" />
+    } @else if (lucideIcon) {
+      <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
+        <i-lucide
+          [name]="lucideIcon"
+          [size]="asideLucideIconSize"
+          [color]="imageOnMutedBackground ? '#6b6b6b' : '#ffffff'"
+          class="content-card-icon"
+        ></i-lucide>
+      </div>
+    } @else if (iconName) {
+      <div class="content-card-icon-wrap" [style.background-color]="iconBackgroundColor">
+        <ion-icon [name]="iconName" class="content-card-icon"></ion-icon>
+      </div>
+    }
+    @if (imageUrl && avatarOverlayIcon) {
+      <span class="content-card-avatar-overlay" aria-hidden="true">
+        <ion-icon
+          [name]="avatarOverlayIcon"
+          [color]="avatarOverlayIconColor"
+        ></ion-icon>
+      </span>
+    }
+  </div>
+</ng-template>

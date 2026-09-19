@@ -1,0 +1,45 @@
+<section
+  class="peek-carousel"
+  [style.--peek-carousel-peek]="peekCssValue"
+  [style.--peek-carousel-section-title-inset]="sectionTitleInset"
+>
+  @if (hasTools) {
+    <p class="app-body-secondary-sm app-uppercase peek-carousel__section-title">
+      <i-lucide
+        name="wrench"
+        [size]="14"
+        color="var(--ion-color-dark)"
+        class="peek-carousel__section-title-icon peek-carousel__section-title-icon--lucide"
+        aria-hidden="true"
+      ></i-lucide>
+      <span>Your Tools</span>
+    </p>
+  }
+
+  <div class="peek-carousel__track">
+    <div
+      class="peek-carousel__slide"
+      [class.home-tools-carousel__slide--hidden]="!budgetVisible"
+    >
+      <app-simple-budget-home-widget (visibleChange)="onBudgetVisible($event)" />
+    </div>
+    <div
+      class="peek-carousel__slide"
+      [class.home-tools-carousel__slide--hidden]="!goalsVisible"
+    >
+      <app-goal-tracker-home-widget (visibleChange)="onGoalsVisible($event)" />
+    </div>
+    <div
+      class="peek-carousel__slide"
+      [class.home-tools-carousel__slide--hidden]="!jobSearchVisible"
+    >
+      <app-job-search-home-widget (visibleChange)="onJobSearchVisible($event)" />
+    </div>
+    <div
+      class="peek-carousel__slide"
+      [class.home-tools-carousel__slide--hidden]="!journalVisible"
+    >
+      <app-journal-home-widget (visibleChange)="onJournalVisible($event)" />
+    </div>
+  </div>
+</section>

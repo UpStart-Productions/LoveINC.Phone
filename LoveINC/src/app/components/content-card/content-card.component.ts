@@ -119,6 +119,12 @@ export class ContentCardComponent {
    */
   @Input() compactCategoryLabel = false;
 
+  /**
+   * Tool promo layout: eyebrow + title left, icon right on one row; detail full-width below.
+   * When unset, auto-applies for compact promo cards (home tools, Learn GrovPods).
+   */
+  @Input() toolHeaderLayout?: boolean;
+
   /** Flush stacked row inside `app-content-card-list` (divider lines, no card shadow). */
   @Input() listRow = false;
 
@@ -172,6 +178,24 @@ export class ContentCardComponent {
 
   get hasAsideAvatar(): boolean {
     return !!(this.imageUrl || this.iconName || this.lucideIcon);
+  }
+
+  get toolHeaderLayoutActive(): boolean {
+    if (this.toolHeaderLayout === true) {
+      return true;
+    }
+    if (this.toolHeaderLayout === false) {
+      return false;
+    }
+    return (
+      this.compactCategoryLabel &&
+      this.hasAsideAvatar &&
+      !this.saveToggle &&
+      !this.authorName?.trim() &&
+      !this.asideBadge?.trim() &&
+      !this.showAsideDate &&
+      !this.uppercaseLabel?.trim()
+    );
   }
 
   get showAside(): boolean {

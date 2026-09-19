@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import {
@@ -19,6 +19,8 @@ import { HomeClassToolsPreferenceService } from '../../services/home-class-tools
   imports: [CommonModule, ContentCardComponent],
 })
 export class SimpleBudgetHomeWidgetComponent implements OnInit, OnDestroy {
+  @Output() visibleChange = new EventEmitter<boolean>();
+
   snapshot: SimpleBudgetHomeSnapshot | null = null;
   loading = true;
   prefVisible = true;
@@ -26,15 +28,19 @@ export class SimpleBudgetHomeWidgetComponent implements OnInit, OnDestroy {
 
   constructor(
     private simpleBudgetHomeService: SimpleBudgetHomeService,
-    private homeClassTools: HomeClassToolsPreferenceService
+    private homeClassTools: HomeClassToolsPreferenceService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.prefVisible = this.homeClassTools.isVisible();
     this.prefSub = this.homeClassTools.visibility$.subscribe((visible) => {
       this.prefVisible = visible;
+      this.emitVisible();
+      this.cdr.markForCheck();
     });
     this.loading = true;
+    this.emitVisible();
     this.loadSnapshot();
   }
 
@@ -52,9 +58,11 @@ export class SimpleBudgetHomeWidgetComponent implements OnInit, OnDestroy {
       next: (s) => {
         this.snapshot = s;
         this.loading = false;
+        this.emitVisible();
       },
       error: () => {
         this.loading = false;
+        this.emitVisible();
       },
     });
   }
@@ -93,9 +101,9 @@ export class SimpleBudgetHomeWidgetComponent implements OnInit, OnDestroy {
     const daily = this.formatCurrency(summary.safeToSpendPerDay);
     const days = summary.daysLeftInWeek;
     if (days > 0) {
-      return `About ${daily}/day to spend · Tap to update your budget`;
+      return `About ${daily}/day to spend`;
     }
-    return 'Tap to update your budget';
+    return '';
   }
 
   /** Colored per-day amount when mid-week. */
@@ -108,7 +116,7 @@ export class SimpleBudgetHomeWidgetComponent implements OnInit, OnDestroy {
     return [
       { text: 'About ' },
       { text: daily, tone },
-      { text: '/day to spend · Tap to update your budget' },
+      { text: '/day to spend' },
     ];
   }
 
@@ -123,5 +131,9 @@ export class SimpleBudgetHomeWidgetComponent implements OnInit, OnDestroy {
 
   get showCard(): boolean {
     return this.prefVisible && !this.loading && this.snapshot !== null;
+  }
+
+  private emitVisible(): void {
+    this.visibleChange.emit(this.showCard);
   }
 }

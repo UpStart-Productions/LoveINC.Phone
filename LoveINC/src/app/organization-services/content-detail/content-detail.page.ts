@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription, map, of, switchMap } from 'rxjs';
-import { format } from 'date-fns';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   formatEventSubtitle,
@@ -9,15 +8,13 @@ import {
   formatDateRangeCompact,
   formatTimeStringFull,
   formatSessionTime,
-  formatTimeRangeFull,
-  dayTo2Letter,
-  dayNumberTo2Letter,
-  uppercaseMonth,
+  dayTo3Letter,
+  dayNumberTo3Letter,
+  splitScheduleLabel,
   APP_DOT,
   joinWithAppDot,
   apiIsoToDisplayDate,
   formatIsoTime12hr,
-  isUtcDateOnlyIso,
 } from '../../shared/utils';
 import { HttpClient } from '@angular/common/http';
 import { 
@@ -655,18 +652,10 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
         `${e.address.city}, ${e.address.state} ${e.address.zip}`].filter(Boolean);
       location = parts.join('\n');
     }
-    const start = apiIsoToDisplayDate(e.startDate, { remoteAccess: e.remoteAccess });
-    const end = apiIsoToDisplayDate(e.endDate, { remoteAccess: e.remoteAccess });
-    const showTime = !isUtcDateOnlyIso(e.startDate) || !isUtcDateOnlyIso(e.endDate);
-    const eventDate = uppercaseMonth(format(start, 'EEEE, MMMM d, yyyy'));
-    const eventTime = showTime
-      ? start.getTime() !== end.getTime()
-        ? formatTimeRangeFull(format(start, 'h:mm a'), format(end, 'h:mm a'))
-        : format(start, 'h:mm a')
-      : '';
     const subtitle = formatEventSubtitle(e.startDate, e.endDate, {
       remoteAccess: e.remoteAccess,
     });
+    const { date: eventDate, time: eventTime } = splitScheduleLabel(subtitle);
     return {
       id: e.id,
       title: e.title,
@@ -760,7 +749,7 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     if (nextSession) {
       nextSession = {
         ...nextSession,
-        dayOfWeek: dayTo2Letter(nextSession.dayOfWeek),
+        dayOfWeek: dayTo3Letter(nextSession.dayOfWeek),
         time: nextSession.time
           ? formatSessionTime(nextSession.time, nextSession.startDate, {
               remoteAccess: c.remoteAccess,
@@ -871,7 +860,7 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
     if (!startDate || !endDate) return undefined;
     const dayOfWeek =
       rule?.daysOfWeek?.length
-        ? rule.daysOfWeek.map((n) => dayNumberTo2Letter(n)).join(', ')
+        ? rule.daysOfWeek.map((n) => dayNumberTo3Letter(n)).join(', ')
         : '';
     const rawTime = joinWithAppDot(rule?.startTime, rule?.endTime) || '';
     const time = formatTimeStringFull(rawTime) || rawTime;
@@ -1175,6 +1164,15 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       return this.contentItem.subtitle;
     }
     return null;
+  }
+
+  /** Header date on the left, time on the right (same split as cards). */
+  get headerSchedule(): { date: string; time: string } {
+    const label = this.getHeaderDateLabel();
+    if (this.contentType === 'event' || this.contentType === 'class') {
+      return splitScheduleLabel(label);
+    }
+    return { date: label ?? '', time: '' };
   }
 
   get externalRegistrationUrl(): string {

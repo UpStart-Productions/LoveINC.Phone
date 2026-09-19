@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { format, addDays, startOfDay } from 'date-fns';
+import { startOfDay } from 'date-fns';
 import { Router, RouterLink } from '@angular/router';
 import { 
   IonHeader, 
@@ -24,7 +24,7 @@ import { VolunteerActionSheetService } from '../../services/volunteer-action-she
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 import { CardFormattingService, type FormattedCard } from '../../services/card-formatting.service';
 import { CalendarService } from '../../services/calendar/calendar.service';
-import { formatClassListDateRange, joinWithAppDot, apiIsoToDisplayDate } from '../../shared/utils';
+import { formatClassListDateRange, joinWithAppDot, apiIsoToDisplayDate, dayTo3Letter, dayNumberTo3Letter } from '../../shared/utils';
 
 export interface ClassDocument {
   title: string;
@@ -158,7 +158,7 @@ export class TransformationClassesPage implements OnInit {
   private mapPlatformClassToTransformationClass(c: PlatformClass): TransformationClass {
     let nextSession = c.nextSession ?? this.deriveNextSessionFromOfferings(c.offerings);
     if (nextSession) {
-      nextSession = { ...nextSession, dayOfWeek: this.dayTo2Letter(nextSession.dayOfWeek) };
+      nextSession = { ...nextSession, dayOfWeek: dayTo3Letter(nextSession.dayOfWeek) };
     }
     const rawPositions = (c.volunteerPositions ?? (c as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as Array<Record<string, unknown>>;
     const volunteerPositions = rawPositions.length
@@ -207,14 +207,6 @@ export class TransformationClassesPage implements OnInit {
     return { startDate, endDate, dayOfWeek, time };
   }
 
-  private dayTo2Letter(day: string): string {
-    return day
-      .split(',')
-      .map((d) => d.trim().replace(/s$/, '').slice(0, 2))
-      .filter(Boolean)
-      .join(', ');
-  }
-
   private deriveNextSessionFromOfferings(offerings?: PlatformOffering[]): TransformationClass['nextSession'] | undefined {
     if (!offerings?.length) return undefined;
     const offering = offerings[0];
@@ -227,15 +219,10 @@ export class TransformationClassesPage implements OnInit {
     if (!startDate || !endDate) return undefined;
     const dayOfWeek =
       rule?.daysOfWeek?.length
-        ? rule.daysOfWeek.map((n) => this.dayNumberToName(n)).join(', ')
+        ? rule.daysOfWeek.map((n) => dayNumberTo3Letter(n)).join(', ')
         : '';
     const time = joinWithAppDot(rule?.startTime, rule?.endTime) || '';
     return { startDate, endDate, dayOfWeek, time };
-  }
-
-  private dayNumberToName(n: number): string {
-    const sun = new Date(2024, 0, 7);
-    return format(addDays(sun, n), 'EEE').slice(0, 2);
   }
 
   navigateToClassDetail(classItem: TransformationClass) {

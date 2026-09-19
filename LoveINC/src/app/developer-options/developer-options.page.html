@@ -19,7 +19,7 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p class="m-b-18" style="color: var(--ion-color-medium);">
+      <p class="m-b-18 app-text-secondary">
         Reset the welcome splash so it appears again on next launch.
       </p>
       <ion-button expand="block" fill="outline" (click)="resetOnboarding()">
@@ -38,14 +38,14 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p class="m-b-18" style="color: var(--ion-color-medium);">
+      <p class="m-b-18 app-text-secondary">
         Clear intake unlock state to test the QR scan flow again.
       </p>
       <ion-button expand="block" fill="outline" (click)="clearAccess()">
         <ion-icon slot="start" name="key-outline"></ion-icon>
         Clear Access
       </ion-button>
-      <p class="m-b-18 m-t-18" style="color: var(--ion-color-medium);">
+      <p class="m-b-18 m-t-18 app-text-secondary">
         Clear vouchers to test the voucher flow from scratch.
       </p>
       <ion-button expand="block" fill="outline" (click)="clearVouchers()">
@@ -64,14 +64,14 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p class="m-b-18" style="color: var(--ion-color-medium);">
+      <p class="m-b-18 app-text-secondary">
         Seed sample weeks from Sun Mar 1 through Sun Apr 5, 2026 (covers ~1 month before the week of Apr 5–7). Overwrites existing weeks in that range.
       </p>
       <ion-button expand="block" fill="outline" (click)="seedSimpleBudget()" [disabled]="seedingBudget">
         <ion-icon slot="start" name="add-outline"></ion-icon>
         {{ seedingBudget ? 'Seeding...' : 'Seed Simple Budget' }}
       </ion-button>
-      <p class="m-b-18 m-t-18" style="color: var(--ion-color-medium);">
+      <p class="m-b-18 m-t-18 app-text-secondary">
         Clear all Simple Budget data (week plans, categories). Use for testing or reset.
       </p>
       <ion-button expand="block" fill="outline" (click)="clearSimpleBudget()">
@@ -90,7 +90,7 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p class="m-b-18" style="color: var(--ion-color-medium);">
+      <p class="m-b-18 app-text-secondary">
         Seed the goal tracker with 6 months of dummy data (5 goals, 2–3 habits each, Sept 2025 – Sept 2026). Resets existing data.
       </p>
       <ion-button expand="block" fill="outline" (click)="seedGoalTracker()" [disabled]="seeding">
@@ -109,7 +109,7 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p class="m-b-18" style="color: var(--ion-color-medium);">
+      <p class="m-b-18 app-text-secondary">
         Test local push notifications on your device.
       </p>
       <ion-button expand="block" fill="outline" (click)="testLocalNotification()">

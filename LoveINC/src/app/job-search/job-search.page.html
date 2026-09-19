@@ -15,7 +15,7 @@
           slot="icon-only"
           name="arrow-up-down"
           [size]="22"
-          color="var(--ion-color-primary-contrast)"
+          color="var(--app-header-color)"
         ></i-lucide>
       </ion-button>
       <ion-button
@@ -28,7 +28,7 @@
           slot="icon-only"
           name="bookmark"
           [size]="22"
-          color="var(--ion-color-primary-contrast)"
+          color="var(--app-header-color)"
           [class.saved-jobs-button__icon--filled]="savedCount > 0"
         ></i-lucide>
         @if (savedCount > 0) {
@@ -64,6 +64,6 @@
       No jobs match your search.
     </p>
   } @else {
-    <app-content-card-list [items]="listItems" />
+    <app-content-card-list [items]="listItems" [flushTop]="true" />
   }
 </ion-content>

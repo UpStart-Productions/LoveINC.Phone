@@ -48,7 +48,8 @@ export {
   formatSessionTime,
   formatTimeRangeFull,
   formatClassSessionSubtitle,
-  dayTo2Letter,
-  dayNumberTo2Letter,
+  dayTo3Letter,
+  dayNumberTo3Letter,
+  splitScheduleLabel,
   uppercaseMonth,
 } from './date-time-formatting';

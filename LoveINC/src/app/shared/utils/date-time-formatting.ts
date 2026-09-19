@@ -132,10 +132,13 @@ export function joinWithAppDot(...parts: (string | null | undefined)[]): string 
 }
 
 /**
- * "May 21 · May 30, 2026" for class/schedule list rows (month/day on left, month/day + year on right).
+ * Class/schedule list rows: single day keeps the year; multi-day drops it.
  */
 export function formatClassListDateRange(start: Date, end: Date): string {
-  return `${format(start, 'MMM d')}${APP_DOT}${format(end, 'MMM d, yyyy')}`;
+  if (isSameDay(start, end)) {
+    return `${format(start, 'MMM d, yyyy')}`;
+  }
+  return `${format(start, 'MMM d')}${APP_DOT}${format(end, 'MMM d')}`;
 }
 
 function isSameDay(a: Date, b: Date): boolean {
@@ -265,8 +268,8 @@ export function formatTimeStringCompact(timeStr: string): string {
 
 /**
  * Format a date range without times (e.g. for class nextSession when no time).
- * Single day: "May 21, 2026" (never "May 21 · May 21, 2026").
- * Multi-day: "May 21 · May 22, 2026".
+ * Single day: "MAY 21, 2026" (never "May 21 · May 21").
+ * Multi-day: "MAY 21 · MAY 22" (no year).
  */
 export function formatDateRangeCompact(
   startDate: string,
@@ -281,7 +284,7 @@ export function formatDateRangeCompact(
     return uppercaseMonth(format(start, 'MMM d, yyyy'));
   }
   return start && end
-    ? uppercaseMonth(`${format(start, 'MMM d')}${APP_DOT}${format(end, 'MMM d, yyyy')}`)
+    ? uppercaseMonth(`${format(start, 'MMM d')}${APP_DOT}${format(end, 'MMM d')}`)
     : start
       ? uppercaseMonth(format(start, 'MMM d, yyyy'))
       : end
@@ -292,8 +295,8 @@ export function formatDateRangeCompact(
 /**
  * Format event dates for card/detail subtitle.
  * Line 1: weekday + date (or date range). Line 2: time range (when time applies).
- * Single day: "FRIDAY, MARCH 16, 2026\n6:00 · 8:00 PM"
- * Multi-day: "FRIDAY, MARCH 16 · MARCH 17, 2026\n6:00 · 8:00 PM"
+ * Single day: "FRI, MAR 16, 2026\n6:00 · 8:00 PM"
+ * Multi-day: "FRI, MAR 16 · MAR 17\n6:00 · 8:00 PM"
  */
 export function formatEventSubtitle(
   startDate?: string,
@@ -306,16 +309,16 @@ export function formatEventSubtitle(
   if (!start && !end) return '';
   const showTime = isoHasWallClockTime(startDate) || isoHasWallClockTime(endDate);
 
-  const dayStr = start ? format(start, 'EEEE').toUpperCase() : '';
+  const dayStr = start ? format(start, 'EEE').toUpperCase() : '';
   const dateStr = uppercaseMonth(
     start && end && isSameDay(start, end)
-      ? format(start, 'MMMM d, yyyy')
+      ? format(start, 'MMM d, yyyy')
       : start && end
-        ? `${format(start, 'MMM d')}${APP_DOT}${format(end, 'MMM d, yyyy')}`
+        ? `${format(start, 'MMM d')}${APP_DOT}${format(end, 'MMM d')}`
         : start
-          ? format(start, 'MMMM d, yyyy')
+          ? format(start, 'MMM d, yyyy')
           : end
-            ? format(end, 'MMMM d, yyyy')
+            ? format(end, 'MMM d, yyyy')
             : ''
   );
 
@@ -384,19 +387,30 @@ export function uppercaseMonth(str: string): string {
   );
 }
 
-/** "Friday" or "Fri" -> "FR". "Fr, Sa" -> "FR, SA". */
-export function dayTo2Letter(day: string): string {
+/** "Friday" or "Fri" -> "FRI". "Fr, Sa" -> "FRI, SAT". */
+export function dayTo3Letter(day: string): string {
   return day
     .split(',')
-    .map((d) => d.trim().replace(/s$/, '').slice(0, 2).toUpperCase())
+    .map((d) => d.trim().replace(/s$/, '').slice(0, 3).toUpperCase())
     .filter(Boolean)
     .join(', ');
 }
 
-/** Day number (0=Sunday) -> 2-letter abbrev "SU", "FR", etc. */
-export function dayNumberTo2Letter(n: number): string {
+/** Day number (0=Sunday) -> 3-letter abbrev "SUN", "FRI", etc. */
+export function dayNumberTo3Letter(n: number): string {
   const sun = new Date(2024, 0, 7);
-  return format(addDays(sun, n), 'EEE').slice(0, 2).toUpperCase();
+  return format(addDays(sun, n), 'EEE').toUpperCase();
+}
+
+/** Split a two-line schedule label into date (left) and time (right). */
+export function splitScheduleLabel(label: string | null | undefined): {
+  date: string;
+  time: string;
+} {
+  const text = (label ?? '').trim();
+  if (!text) return { date: '', time: '' };
+  const [date = '', ...rest] = text.split('\n');
+  return { date: date.trim(), time: rest.join(' ').trim() };
 }
 
 function wallClockInTimeZoneToUtc(
@@ -456,7 +470,7 @@ export function formatSessionTime(
 /**
  * Format class session for card/detail subtitle.
  * Line 1: date range. Line 2: day + time (when time is present).
- * "May 21, 2026\nFR 6:00 · 8:00 PM" or "May 21 · May 22, 2026\nFR 6:00 · 8:00 PM"
+ * "MAR 21, 2026\nFRI 6:00 · 8:00 PM" or "MAR 21 · MAR 22\nFRI 6:00 · 8:00 PM"
  */
 export function formatClassSessionSubtitle(
   session: {
@@ -473,6 +487,6 @@ export function formatClassSessionSubtitle(
       ? formatClockStringForViewer(session.time, session.startDate)
       : formatTimeStringFull(session.time)
     : '';
-  const dayAbbr = dayTo2Letter(session.dayOfWeek);
+  const dayAbbr = dayTo3Letter(session.dayOfWeek);
   return time12hr ? `${dateRange}\n${dayAbbr} ${time12hr}` : dateRange;
 }

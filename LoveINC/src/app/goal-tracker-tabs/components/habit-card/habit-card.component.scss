@@ -115,7 +115,7 @@ button.card-checkbox {
   text-align: right;
   font-weight: normal;
   white-space: nowrap;
-  font-size: 0.7rem;
+  font-size: var(--app-font-size-xs);
   color: var(--ion-color-medium);
   text-transform: uppercase;
 }
@@ -136,6 +136,6 @@ button.card-more {
 }
 
 .txt-small {
-  font-size: 0.85rem;
+  font-size: var(--app-font-size-sm);
   color: var(--ion-color-dark-gray);
 }

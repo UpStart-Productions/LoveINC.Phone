@@ -32,7 +32,7 @@
         <h2 class="schedule-header app-caption app-uppercase">{{ schedule }}</h2>
         <app-card
           *ngFor="let service of groupedServices[schedule]"
-          class="app-card-compact"
+          class="app-card-compact gap-ministry-card"
           [title]="service.service"
           [subtitle]="service.daysTimes"
           [description]="getServiceDescription(service)"
@@ -40,7 +40,6 @@
           [imageUrl]="service.photoUrl"
           imagePosition="right"
           [thumbnailPlaceholderIcon]="service.photoUrl ? undefined : 'people-outline'"
-          [style.--app-card-margin-bottom]="'0.75rem'"
           [clickable]="true"
           (cardClick)="onCardClick(service)"
           (contentAreaClick)="onGapCardContentAreaClick($event, service)"

@@ -40,6 +40,7 @@
 @use './theme/variables.scss' as theme-variables;
 @use './theme/typography.scss' as theme-typography;
 @use './theme/cards.scss' as theme-cards;
+@use './theme/sheets.scss';
 @use './theme/icons.scss' as theme-icons;
 @use './theme/whitespace.scss' as theme-whitespace;
 @use './theme/forms.scss' as theme-forms;
@@ -325,6 +326,7 @@ ion-button[fill="clear"][color="primary"] {
 
 .job-search-sort-button {
   --background: transparent;
+  --color: var(--app-header-color);
   --padding-start: 0.25rem;
   --padding-end: 0.25rem;
   --padding-top: 0;
@@ -334,6 +336,7 @@ ion-button[fill="clear"][color="primary"] {
 
 .saved-jobs-button {
   --background: transparent;
+  --color: var(--app-header-color);
   --padding-start: 0.75rem;
   --padding-end: 0.75rem;
   --padding-top: 0;
@@ -369,8 +372,8 @@ ion-button[fill="clear"][color="primary"] {
   }
 
   .saved-jobs-button__icon--filled svg {
-    fill: var(--ion-color-primary-contrast);
-    stroke: var(--ion-color-primary-contrast);
+    fill: var(--app-header-color);
+    stroke: var(--app-header-color);
   }
 }
 
@@ -528,53 +531,6 @@ ion-modal.date-picker-modal-sheet {
   }
 }
 
-/* Entry notes modal (Simple Budget – half-screen, also used for adjust strategies) */
-ion-modal.entry-notes-modal {
-  --width: 100%;
-  --border-radius: 0;
-  --box-shadow: 0 -0.25rem 1rem rgba(var(--app-scrim-rgb), 0.1);
-  --background: #ffffff;
-
-  &::part(content) {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    border-radius: 0 !important;
-    background: #ffffff;
-  }
-
-  &::part(backdrop) {
-    background: var(--app-scrim-backdrop);
-  }
-
-  ion-header,
-  ion-toolbar {
-    --background: #ffffff !important;
-    --border-width: 0;
-  }
-
-  /* Global app header forces white title text; sheet has white toolbar — use dark text. */
-  ion-title {
-    --color: var(--ion-color-dark);
-    color: var(--ion-color-dark);
-  }
-
-  ion-buttons ion-button {
-    --color: var(--ion-color-dark);
-    color: var(--ion-color-dark);
-  }
-
-  ion-buttons ion-button ion-icon {
-    color: var(--ion-color-dark);
-  }
-
-  ion-content {
-    --background: #ffffff !important;
-  }
-}
-
 /* Scripture verse sheet (Transformation tools – ~2/3 height, swipe to dismiss) */
 ion-modal.scripture-verse-modal-sheet {
   --width: 100%;
@@ -661,49 +617,6 @@ ion-modal.scripture-verse-modal-sheet {
   ion-icon {
     font-size: 1.25rem;
     font-weight: 700;
-  }
-}
-
-/* Add category sheet (Simple Budget – matches date-picker-modal-sheet pattern) */
-ion-modal.budget-add-category-sheet {
-  --width: 100%;
-  --border-radius: 0;
-  --box-shadow: 0 -0.25rem 1rem rgba(var(--app-scrim-rgb), 0.1);
-  --background: #ffffff;
-
-  &::part(content) {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    border-radius: 0 !important;
-    background: #ffffff;
-  }
-
-  &::part(backdrop) {
-    background: var(--app-scrim-backdrop);
-  }
-
-  ion-header,
-  ion-toolbar {
-    --background: #ffffff !important;
-    --border-width: 0;
-    --min-height: 1.75rem;
-    --padding-top: 0.25rem;
-    --padding-bottom: 0.25rem;
-  }
-
-  ion-title {
-    --color: var(--ion-color-dark);
-  }
-
-  ion-button {
-    --color: var(--ion-color-dark);
-  }
-
-  ion-content {
-    --background: #ffffff !important;
   }
 }
 

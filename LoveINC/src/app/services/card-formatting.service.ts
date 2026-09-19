@@ -8,7 +8,7 @@ import {
 import {
   formatEventSubtitle,
   formatClassSessionSubtitle,
-  dayNumberTo2Letter,
+  dayNumberTo3Letter,
   formatTimeStringFull,
   joinWithAppDot,
 } from '../shared/utils';
@@ -200,7 +200,7 @@ export class CardFormattingService {
     if (!startDate || !endDate) return null;
     const dayOfWeek =
       rule?.daysOfWeek?.length
-        ? rule.daysOfWeek.map((n) => dayNumberTo2Letter(n)).join(', ')
+        ? rule.daysOfWeek.map((n) => dayNumberTo3Letter(n)).join(', ')
         : '';
     const rawTime = joinWithAppDot(rule?.startTime, rule?.endTime) || '';
     const time = formatTimeStringFull(rawTime) || rawTime;

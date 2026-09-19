@@ -1,1 +1,5 @@
 /* Content card layout/styles live in src/theme/cards.scss */
+
+:host {
+  display: block;
+}

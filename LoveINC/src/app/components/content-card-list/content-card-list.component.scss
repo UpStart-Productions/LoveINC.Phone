@@ -8,6 +8,10 @@
   padding-top: 0;
 }
 
+.content-card-list--flush-top:not(.content-card-list--light-shell) .content-card-list-shell {
+  border-radius: 0;
+}
+
 .content-card-list-shell {
   border-radius: var(--app-card-radius);
   overflow: hidden;

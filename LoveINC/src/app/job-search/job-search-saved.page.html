@@ -15,6 +15,7 @@
   } @else {
     <app-content-card-list
       [items]="listItems"
+      [flushTop]="true"
       (itemClick)="onJobClick($event)"
       (saveClick)="onSaveClick($event)"
     />

@@ -22,8 +22,18 @@
     }
 
     <div class="class-registration-intro">
-      @if (classScheduleLabel) {
-        <p class="app-body-secondary-sm content-subtitle m-b-12">{{ classScheduleLabel }}</p>
+      @if (headerSchedule.date) {
+        <p
+          class="app-body-secondary-sm content-subtitle m-b-12"
+          [class.inline-schedule]="!!headerSchedule.time"
+        >
+          @if (headerSchedule.time) {
+            <span class="schedule-date">{{ headerSchedule.date }}</span>
+            <span class="schedule-time">{{ headerSchedule.time }}</span>
+          } @else {
+            {{ headerSchedule.date }}
+          }
+        </p>
       }
       @if (classTitle) {
         <h2 class="app-body m-b-18">{{ classTitle }}</h2>

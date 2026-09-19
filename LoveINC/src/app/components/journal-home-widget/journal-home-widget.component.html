@@ -1,0 +1,13 @@
+@if (showCard) {
+  <app-content-card
+    [compactCategoryLabel]="true"
+    [category]="'Your Journal'"
+    [lucideCategoryIcon]="'sprout'"
+    [title]="cardTitle"
+    [detail]="cardDetail"
+    [lucideIcon]="'sprout'"
+    [iconBackgroundColor]="'#2c5f7d'"
+    [route]="'/tabs/journal'"
+    [navigationFrom]="'home'"
+  />
+}

@@ -130,19 +130,19 @@ ion-item:has(ion-checkbox) ion-checkbox {
   padding: 0;
 }
 
-/* Live search searchbar styling */
+/* Live search searchbar styling (light header toolbar) */
 ion-searchbar.live-search {
-  --background: rgba(var(--ion-color-primary-contrast-rgb), 0.1);
+  --background: var(--ion-background-color);
   --box-shadow: none;
-  --placeholder-color: rgba(var(--ion-color-primary-contrast-rgb), 0.6);
+  --placeholder-color: var(--app-text-secondary);
   --placeholder-opacity: 1;
-  --color: var(--ion-color-primary-contrast);
-  --icon-color: rgba(var(--ion-color-primary-contrast-rgb), 0.6);
-  --clear-button-color: rgba(var(--ion-color-primary-contrast-rgb), 0.6);
+  --color: var(--ion-color-dark);
+  --icon-color: var(--app-text-secondary);
+  --clear-button-color: var(--app-text-secondary);
   
   .searchbar-input {
     font-size: var(--app-font-size-body) !important;
-    color: white;
+    color: var(--ion-color-dark);
   }
   
   .searchbar-search-icon {

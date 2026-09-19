@@ -42,7 +42,7 @@
 
 .bar-label {
   margin-top: 0.5rem;
-  font-size: 0.7rem;
+  font-size: var(--app-font-size-xs);
   color: var(--ion-color-dark);
   text-align: center;
   white-space: nowrap;

@@ -1,0 +1,30 @@
+:host {
+  display: block;
+}
+
+:host.home-tools-carousel--empty {
+  display: none;
+}
+
+.home-tools-carousel__slide--hidden {
+  display: none;
+}
+
+:host.home-tools-carousel--multiple .peek-carousel__track {
+  align-items: stretch;
+}
+
+:host.home-tools-carousel--multiple .peek-carousel__slide:not(.home-tools-carousel__slide--hidden) {
+  display: flex;
+}
+
+:host.home-tools-carousel--multiple .peek-carousel__slide:not(.home-tools-carousel__slide--hidden) > * {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+
+:host.home-tools-carousel--multiple .peek-carousel__slide:not(.home-tools-carousel__slide--hidden) app-content-card {
+  display: block;
+  height: 100%;
+}

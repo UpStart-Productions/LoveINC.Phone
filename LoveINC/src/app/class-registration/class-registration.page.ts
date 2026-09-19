@@ -14,6 +14,7 @@ import { ToastController } from '@ionic/angular/standalone';
 import { ClassRegistrationFormComponent } from '../components/class-registration-form/class-registration-form.component';
 import { PlatformApiService } from '../services/platform/platform-api.service';
 import { CardFormattingService } from '../services/card-formatting.service';
+import { splitScheduleLabel } from '../shared/utils';
 
 @Component({
   selector: 'app-class-registration',
@@ -35,6 +36,10 @@ export class ClassRegistrationPage implements OnInit {
   classTitle = '';
   /** Same pattern as class details: session line above title (may include newlines). */
   classScheduleLabel = '';
+
+  get headerSchedule(): { date: string; time: string } {
+    return splitScheduleLabel(this.classScheduleLabel);
+  }
   classPhotoUrl = '';
   backHref = '/tabs/transformation-classes';
   loadingClass = true;

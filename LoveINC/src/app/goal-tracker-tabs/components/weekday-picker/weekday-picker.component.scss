@@ -14,7 +14,7 @@
   padding-left: 2px;
   justify-content: space-between;
   color: #626262;
-  font-size: 0.85rem;
+  font-size: var(--app-font-size-sm);
 }
 
 .button-container {
@@ -27,7 +27,7 @@
   height: 26px;
   border-radius: 50%;
   text-align: center;
-  font-size: 0.75rem;
+  font-size: var(--app-font-size-xs);
   font-weight: 500;
   border: 1px solid var(--ion-color-secondary);
   color: var(--ion-color-secondary);
@@ -45,7 +45,7 @@
   margin-right: 5px;
   border-radius: 8px;
   display: inline-block;
-  font-size: 0.75rem;
+  font-size: var(--app-font-size-xs);
   border: 1px solid var(--ion-color-secondary);
   color: var(--ion-color-secondary);
   background-color: var(--ion-color-white);

@@ -29,7 +29,7 @@
 }
 
 .date-scroller .date span {
-  font-size: 0.77rem;
+  font-size: var(--app-font-size-xs);
 }
 
 .date-scroller .date.today {
@@ -56,7 +56,7 @@ button span.selected {
 
 .txt-small-caps {
   text-transform: uppercase;
-  font-size: 0.7rem;
+  font-size: var(--app-font-size-xs);
 }
 .txt-normal-bold {
   font-weight: 600;

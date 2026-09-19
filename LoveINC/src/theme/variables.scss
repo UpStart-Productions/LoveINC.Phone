@@ -129,15 +129,6 @@
   --app-header-color: var(--ion-color-dark);
   --app-verse-font-size: 1.14rem;
 
-  /** Aliases (map to scale) **/
-  --app-font-size-small: var(--app-font-size-sm);
-  --app-font-size-large: var(--app-font-size-title);
-  --app-font-size-caption: var(--app-font-size-sm);
-  --app-font-size-body-sm: var(--app-font-size-sm);
-  --app-font-size-display-lg: var(--app-font-size-display);
-  --app-font-size-input: var(--app-font-size-body);
-  --app-font-size-tab-label: var(--app-font-size-sm);
-
   /** Detail line under title on app-content-card (list rows + home promo cards). */
   --app-content-card-detail-font-size: var(--app-font-size-sm);
 
@@ -203,6 +194,12 @@
 
   /** Vertical gap between Home screen sections (CTA, widgets, carousels, feed). */
   --home-section-gap: calc(0.75rem + 4px);
+
+  /** Fixed height for home GrovPod promo cards (carousel). */
+  --app-tool-card-height: 7.25rem;
+
+  /** Home Verse of the Day only — taller card with extra bottom breathing room. */
+  --app-verse-tool-card-height: 8.25rem;
 
   /** Goal Tracker – themeable colors (override via host app) **/
   --goal-tracker-primary: var(--ion-text-color);

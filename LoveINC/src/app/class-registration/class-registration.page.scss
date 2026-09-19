@@ -23,6 +23,10 @@ ion-content.class-registration-page {
 
 .content-subtitle {
   white-space: pre-line;
+
+  &.inline-schedule {
+    white-space: normal;
+  }
 }
 
 .class-registration-loading {

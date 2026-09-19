@@ -40,8 +40,7 @@ import { executeHomeCtaAction } from '../shared/utils/home-cta-action.util';
 import type { PeekCarouselMediaItem } from '../components/peek-carousel/peek-carousel.model';
 import { PeekCarouselComponent } from '../components/peek-carousel/peek-carousel.component';
 import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-widget/verse-of-the-day-widget.component';
-import { SimpleBudgetHomeWidgetComponent } from '../components/simple-budget-home-widget/simple-budget-home-widget.component';
-import { GoalTrackerHomeWidgetComponent } from '../components/goal-tracker-home-widget/goal-tracker-home-widget.component';
+import { HomeToolsCarouselComponent } from '../components/home-tools-carousel/home-tools-carousel.component';
 import { HeaderActionsComponent } from '../components/header-actions/header-actions.component';
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
@@ -90,8 +89,7 @@ export type ClientSupportCardState =
     HomeCtaRowComponent,
     PeekCarouselComponent,
     VerseOfTheDayWidgetComponent,
-    SimpleBudgetHomeWidgetComponent,
-    GoalTrackerHomeWidgetComponent,
+    HomeToolsCarouselComponent,
     HeaderActionsComponent,
     MicrolearningThemeWidgetComponent,
     HomeShareAppCardComponent,
@@ -101,11 +99,8 @@ export class HomePage implements OnInit {
   /** Matches home widget category labels (card margin + ion-card-content padding). */
   readonly microlearningSectionTitleInset = 'calc(var(--app-card-margin) + 1rem)';
 
-  @ViewChild(SimpleBudgetHomeWidgetComponent)
-  private budgetHomeWidget?: SimpleBudgetHomeWidgetComponent;
-
-  @ViewChild(GoalTrackerHomeWidgetComponent)
-  private goalTrackerHomeWidget?: GoalTrackerHomeWidgetComponent;
+  @ViewChild(HomeToolsCarouselComponent)
+  private homeToolsCarousel?: HomeToolsCarouselComponent;
 
   @ViewChild(VerseOfTheDayWidgetComponent)
   private verseHomeWidget?: VerseOfTheDayWidgetComponent;
@@ -150,8 +145,7 @@ export class HomePage implements OnInit {
   ) {}
 
   ionViewDidEnter() {
-    this.budgetHomeWidget?.refresh();
-    this.goalTrackerHomeWidget?.refresh();
+    this.homeToolsCarousel?.refresh();
     void this.reloadClientContext(false);
   }
 
@@ -180,8 +174,7 @@ export class HomePage implements OnInit {
     const refresher = (event as CustomEvent).target as HTMLIonRefresherElement;
     try {
       this.refreshWelcomeTitle();
-      this.budgetHomeWidget?.refresh();
-      this.goalTrackerHomeWidget?.refresh();
+      this.homeToolsCarousel?.refresh();
       this.verseHomeWidget?.refresh();
       this.microlearningThemeWidgets?.forEach((widget) => widget.refresh());
 

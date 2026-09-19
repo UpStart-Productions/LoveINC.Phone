@@ -85,14 +85,15 @@ Types and constants for home screen cards:
 
 - **`formatTimeRangeCompact(start, end)`** – Compact time range: `8:30-9:30 PM`, `6 PM` (omits `:00` on the hour)
 - **`formatEventDatesCompact(startDate, endDate)`** – Event dates (compact): `Thu, May 21, 6-8pm` or `Thu, May 21 – Fri, May 22, 6-8pm`
-- **`formatEventSubtitle(startDate, endDate)`** – Event dates (card/detail): `FRIDAY, March 16, 2026 • 6:00 – 8:00 PM` (single day: no "May 21 – May 21")
-- **`formatDateRangeCompact(startDate, endDate)`** – Date range without times: `May 21, 2026` (single day) or `May 21 – May 22, 2026` (multi-day)
-- **`formatClassSessionSubtitle(session)`** – Class session: `FR 6:00 – 8:00 PM\nMay 21, 2026`
+- **`formatEventSubtitle(startDate, endDate)`** – Event dates (card/detail): `FRI, MAR 16, 2026` then time on the next line (single day: no "May 21 – May 21")
+- **`formatDateRangeCompact(startDate, endDate)`** – Date range without times: `MAY 21, 2026` (single day) or `MAY 21 · MAY 22` (multi-day, no year)
+- **`formatClassSessionSubtitle(session)`** – Class session: `MAR 21, 2026` then `FRI 6:00 · 8:00 PM` on the next line
 - **`formatTimeStringCompact(timeStr)`** – Parses API time strings to compact form: `10-12pm`
 - **`formatTimeStringFull(timeStr)`** – Parses API time strings to full form: `6:00 – 8:00 PM`
 - **`formatTimeRangeFull(start, end)`** – Two time strings to `6:00 – 8:00 PM` (drops redundant AM/PM)
-- **`dayTo2Letter(day)`** – `"Friday"` → `"FR"`
-- **`dayNumberTo2Letter(n)`** – Day number (0=Sunday) → `"SU"`, `"FR"`, etc.
+- **`dayTo3Letter(day)`** – `"Friday"` → `"FRI"`
+- **`dayNumberTo3Letter(n)`** – Day number (0=Sunday) → `"SUN"`, `"FRI"`, etc.
+- **`splitScheduleLabel(label)`** – Two-line schedule → `{ date, time }` for left/right layout
 
 ### Route Utils (`route-utils.ts`)
 

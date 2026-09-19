@@ -53,7 +53,7 @@ button:nth-child(1n + 2) {
   display: flex;
   justify-content: space-between;
   color: #626262;
-  font-size: 0.85rem;
+  font-size: var(--app-font-size-sm);
 }
 .label.show,
 .btn-color-picker span.selected.show {
