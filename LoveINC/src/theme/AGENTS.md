@@ -5,3 +5,5 @@
 - Header titles use Crimson Pro Light, charcoal, left alignment, and normal toolbar flow to reserve leading and trailing controls. Do not add typography utility classes to ion-title.
 - Preserve small/large/xl content-card icons. Editorial carousel image-overlay and image-above cards share dimensions, with distinct text treatments. Verse preview is Crimson Pro Light at 1.14rem.
 - Keep route behavior, conditional actions, content, and bottom navigation intact. Verify narrow and standard phone widths after shared changes.
+
+- Photo-detail chrome in content-reader.scss also uses the shared header tokens. Use app-card-page on card/list ion-content surfaces. Main navigation headers reuse HeaderActionsComponent for Notifications and Donate. Notifications uses a native sheet with zero top safe-area inset, not manually positioned modal content.

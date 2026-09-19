@@ -31,5 +31,7 @@ ion-header {
   ion-toolbar ion-buttons[slot='end'] app-notifications-button { display: inline-flex; }
 }
 @media (max-width: 350px) {
-  ion-header { --app-header-title-font-size: 1.25rem; }
+  ion-header, .content-reader-edge-chrome { --app-header-title-font-size: 1.25rem; }
 }
+
+app-header-actions { display: inline-flex; align-items: center; }

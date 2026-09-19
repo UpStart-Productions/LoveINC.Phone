@@ -19,7 +19,7 @@ import { CardComponent, CardActionIcon, type CardBadge } from '../components/car
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { SharingService } from '../services/sharing/sharing.service';
-import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
+import { HeaderActionsComponent } from '../components/header-actions/header-actions.component';
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 import { CalendarService } from '../services/calendar/calendar.service';
@@ -65,7 +65,7 @@ export interface UpdateItem {
     IonButtons,
     IonIcon,
     CardComponent,
-    NotificationsButtonComponent,
+    HeaderActionsComponent,
   ],
 })
 export class UpdatesPage implements OnInit {

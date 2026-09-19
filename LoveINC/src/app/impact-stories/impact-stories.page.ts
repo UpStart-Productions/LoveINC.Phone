@@ -1,7 +1,9 @@
+import { HeaderActionsComponent } from '../components/header-actions/header-actions.component';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
+  IonButtons,
   IonHeader,
   IonToolbar,
   IonTitle,
@@ -20,6 +22,7 @@ import { navigateAppForward } from '../shared/utils/navigation-forward.util';
   styleUrls: ['./impact-stories.page.scss'],
   standalone: true,
   imports: [
+    IonButtons, HeaderActionsComponent,
     CommonModule,
     IonHeader,
     IonToolbar,

@@ -70,87 +70,43 @@
   color: inherit;
 }
 
+/* Cover-photo detail pages share the app header tokens and flow layout. */
 .content-reader-edge-chrome {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0 0 auto;
   z-index: 10;
   padding-top: env(safe-area-inset-top, 0px);
   padding-inline: 0.25rem;
-  pointer-events: none;
-  background: transparent;
-  box-shadow: none;
-  transition:
-    background 0.6s ease,
-    box-shadow 0.6s ease;
+  background: var(--app-header-background);
 }
-
-.content-reader-edge-chrome--scrolled {
-  background: color-mix(in srgb, var(--love-inc-header-dark) 95%, transparent);
-  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
 .content-reader-edge-chrome__bar {
-  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  min-height: 2.75rem;
+  min-height: 64px;
+  gap: 0.25rem;
 }
-
 .content-reader-edge-chrome__title {
-  position: absolute;
-  left: 50%;
-  right: auto;
-  width: calc(100% - 7rem);
-  max-width: calc(100% - 7rem);
+  flex: 1;
+  min-width: 0;
   margin: 0;
-  padding-inline: 0.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-align: center;
-  transform: translateX(-50%);
-  color: var(--ion-color-primary-contrast);
+  text-align: start;
+  font-family: var(--app-font-family-crimson);
   font-size: var(--app-header-title-font-size);
-  font-weight: var(--app-font-weight-semibold);
+  font-weight: 300;
   line-height: var(--app-line-height-title);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.6s ease;
+  color: var(--app-header-color);
 }
-
-.content-reader-edge-chrome--scrolled .content-reader-edge-chrome__title {
-  opacity: 1;
-}
-
-.content-reader-edge-chrome app-back-button,
-.content-reader-edge-chrome ion-button {
-  pointer-events: auto;
-}
-
-.content-reader-edge-chrome app-back-button ion-button,
-.content-reader-edge-chrome app-back-button ion-button ion-icon,
+.content-reader-edge-chrome app-back-button { flex-shrink: 0; }
 .content-reader-edge-chrome ion-button,
-.content-reader-edge-chrome ion-button ion-icon {
-  --background: transparent;
-  --background-hover: transparent;
-  --background-focused: transparent;
-  --background-activated: transparent;
-  --ripple-color: transparent;
-  --color: #fff;
-  color: #fff;
-  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.75));
+.content-reader-edge-chrome ion-icon {
+  --color: var(--app-header-color);
+  color: var(--app-header-color);
 }
-
-.content-reader-edge-chrome--scrolled app-back-button ion-button,
-.content-reader-edge-chrome--scrolled app-back-button ion-button ion-icon,
-.content-reader-edge-chrome--scrolled ion-button,
-.content-reader-edge-chrome--scrolled ion-button ion-icon {
-  filter: none;
+ion-content.content-reader-scroll--edge-hero {
+  --padding-top: calc(64px + env(safe-area-inset-top, 0px));
 }
 
 ion-content.content-reader-scroll {

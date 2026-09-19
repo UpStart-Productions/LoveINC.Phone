@@ -1,6 +1,8 @@
+import { HeaderActionsComponent } from '../components/header-actions/header-actions.component';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  IonButtons,
   IonHeader,
   IonToolbar,
   IonTitle,
@@ -19,6 +21,7 @@ import { resolveAvatarBackgroundColor } from '../shared/utils/avatar-palette.uti
   templateUrl: './tools.page.html',
   standalone: true,
   imports: [
+    IonButtons, HeaderActionsComponent,
     CommonModule,
     IonHeader,
     IonToolbar,

@@ -5,7 +5,7 @@ import { AppLauncher } from '@capacitor/app-launcher';
 import { LucideAngularModule } from 'lucide-angular';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
-import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
+import { HeaderActionsComponent } from '../components/header-actions/header-actions.component';
 import { UserProfileService } from '../services/user-profile.service';
 import { ShareAppService } from '../services/share-app.service';
 import {
@@ -65,7 +65,7 @@ interface MoreSection {
     IonLabel,
     IonIcon,
     IonButton,
-    NotificationsButtonComponent,
+    HeaderActionsComponent,
   ],
 })
 export class MorePage implements OnInit {

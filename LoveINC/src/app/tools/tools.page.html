@@ -1,10 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Learn</ion-title>
+    <ion-buttons slot="end"><app-header-actions /></ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content class="app-card-page" [fullscreen]="true">
   @if (listItems.length) {
     <app-content-card-list
       [items]="listItems"

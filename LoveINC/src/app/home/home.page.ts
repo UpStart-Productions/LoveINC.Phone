@@ -42,7 +42,7 @@ import { PeekCarouselComponent } from '../components/peek-carousel/peek-carousel
 import { VerseOfTheDayWidgetComponent } from '../components/verse-of-the-day-widget/verse-of-the-day-widget.component';
 import { SimpleBudgetHomeWidgetComponent } from '../components/simple-budget-home-widget/simple-budget-home-widget.component';
 import { GoalTrackerHomeWidgetComponent } from '../components/goal-tracker-home-widget/goal-tracker-home-widget.component';
-import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
+import { HeaderActionsComponent } from '../components/header-actions/header-actions.component';
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 import { UserProfileService } from '../services/user-profile.service';
@@ -92,7 +92,7 @@ export type ClientSupportCardState =
     VerseOfTheDayWidgetComponent,
     SimpleBudgetHomeWidgetComponent,
     GoalTrackerHomeWidgetComponent,
-    NotificationsButtonComponent,
+    HeaderActionsComponent,
     MicrolearningThemeWidgetComponent,
     HomeShareAppCardComponent,
   ],

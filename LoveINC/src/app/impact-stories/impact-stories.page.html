@@ -1,10 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Impact Stories</ion-title>
+    <ion-buttons slot="end"><app-header-actions /></ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="impact-stories-page">
+<ion-content [fullscreen]="true" class="app-card-page impact-stories-page">
   <div class="cards-container">
     <app-card
       *ngFor="let story of stories"

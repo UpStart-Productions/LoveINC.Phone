@@ -3,16 +3,11 @@
     <ion-title>
       {{ welcomeTitle }}
     </ion-title>
-    <ion-buttons slot="end">
-      <app-notifications-button></app-notifications-button>
-      <ion-button *ngIf="showDonateButton" (click)="openDonateMenu()" class="donate-header-button">
-        <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <ion-buttons slot="end"><app-header-actions /></ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="false" class="home-page">
+<ion-content [fullscreen]="false" class="app-card-page home-page">
   <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>

@@ -7,20 +7,30 @@ import { NotificationsService } from './notifications.service';
   providedIn: 'root',
 })
 export class AlertsModalService {
+  private isOpen = false;
   constructor(
     private modalController: ModalController,
     private notificationsService: NotificationsService
   ) {}
 
   async openAlertsModal(): Promise<void> {
-    this.notificationsService.refresh();
-    const modal = await this.modalController.create({
-      component: AlertsModalComponent,
-      cssClass: 'alerts-modal-sheet',
-      presentingElement: await this.modalController.getTop(),
-      showBackdrop: true,
-      backdropDismiss: true,
-    });
-    await modal.present();
+    if (this.isOpen) return;
+    this.isOpen = true;
+    try {
+      this.notificationsService.refresh();
+      const modal = await this.modalController.create({
+        component: AlertsModalComponent,
+        cssClass: 'alerts-modal-sheet',
+        breakpoints: [0, 1],
+        initialBreakpoint: 1,
+        handle: false,
+        showBackdrop: true,
+        backdropDismiss: true,
+      });
+      await modal.present();
+      await modal.onDidDismiss();
+    } finally {
+      this.isOpen = false;
+    }
   }
 }

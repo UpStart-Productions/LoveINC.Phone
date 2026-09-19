@@ -53,13 +53,10 @@
 /*
  * Default stack page content background (white drill-ins).
  */
-ion-router-outlet > .ion-page ion-content {
+ion-router-outlet > .ion-page ion-content:not(.app-card-page) {
   --background: var(--ion-background-color);
 }
 
-ion-router-outlet > .ion-page ion-content::part(background) {
-  background: var(--ion-background-color);
-}
 
 /* Journal / ngx-quill: hide built-in toolbar (floating toolbar handles format) */
 .ql-toolbar {
@@ -719,14 +716,10 @@ ion-modal.alerts-modal-sheet {
   --border-radius: 1.5rem 1.5rem 0 0;
   --box-shadow: 0 -0.25rem 1rem rgba(var(--app-scrim-rgb), 0.1);
   
-  &::part(content) {
-    position: absolute;
-    bottom: 0;
-    left: 0.5rem;
-    right: 0.5rem;
-    margin: 0 auto;
-  }
-  
+  --ion-safe-area-top: 0px;
+  ion-header ion-toolbar { --min-height: 48px; --padding-top: 0; --padding-bottom: 0; }
+  &::part(content) { border-radius: var(--border-radius); overflow: hidden; }
+
   &::part(backdrop) {
     background: var(--app-scrim-backdrop);
   }

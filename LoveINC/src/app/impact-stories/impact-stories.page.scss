@@ -1,7 +1,1 @@
-:host ion-content.impact-stories-page {
-  --background: var(--ion-color-light);
-}
-
-:host ion-content.impact-stories-page::part(background) {
-  background: var(--ion-color-light);
-}
+/* Card-screen surface is shared in theme/cards.scss. */

@@ -3,16 +3,11 @@
     <ion-title>
       Updates & News
     </ion-title>
-    <ion-buttons slot="end">
-      <app-notifications-button></app-notifications-button>
-      <ion-button *ngIf="showDonateButton" (click)="openDonateMenu()" class="donate-header-button">
-        <ion-icon slot="icon-only" name="gift-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <ion-buttons slot="end"><app-header-actions /></ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="updates-page">
+<ion-content [fullscreen]="true" class="app-card-page updates-page">
   @if (loaded && items.length === 0) {
     <div class="updates-empty-photo">
       <img

@@ -830,3 +830,8 @@ app-verse-of-the-day-widget .content-card {
 .app-card-impact .card-image {
   object-position: top;
 }
+
+/* Card feeds and list screens share a quiet surface behind their white panels. */
+ion-content.app-card-page {
+  --background: var(--ion-color-light);
+}
