@@ -624,12 +624,14 @@ export class HomePage implements OnInit {
       (card.type === 'event' || card.type === 'class') && !!card.startDate && !!card.endDate;
     return [
       {
+        label: 'Volunteer',
         lucideIcon: 'heart-handshake',
         handler: () => this.onVolunteerClick(card),
         show: showVolunteer,
         buttonClass: 'volunteer-button',
       },
       {
+        label: 'Calendar',
         icon: 'calendar-outline',
         handler: () => this.onCalendarClick(card),
         show: canAddToCalendar,

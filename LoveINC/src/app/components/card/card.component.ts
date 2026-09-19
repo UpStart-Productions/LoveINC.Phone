@@ -8,12 +8,13 @@ import {
   IonCardContent,
   IonBadge,
   IonIcon,
-  IonButton,
+  IonButton, IonPopover, IonList, IonItem, IonLabel,
 } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 
 export interface CardActionIcon {
+  label?: string;
   icon?: string;
   lucideIcon?: string;
   handler: (e?: Event) => void;
@@ -41,7 +42,7 @@ export interface CardBadge {
     IonCardContent,
     IonBadge,
     IonIcon,
-    IonButton,
+    IonButton, IonPopover, IonList, IonItem, IonLabel,
     LucideAngularModule,
     SafeHtmlPipe,
   ],
@@ -57,12 +58,37 @@ export class CardComponent {
   @Input() badge?: CardBadge;
   @Input() title?: string;
   @Input() subtitle?: string;
+  /** Home experiment: place the schedule's time opposite its date. */
+  @Input() inlineSchedule = false;
+
+  get scheduleDate(): string { return this.subtitle?.split('\n')[0] ?? ''; }
+  get scheduleTime(): string { return this.subtitle?.split('\n').slice(1).join(' ') ?? ''; }
   /** Short description for card body. Never use long description. */
   @Input() description?: string;
   /** Custom HTML content when description is not sufficient. Use sparingly. */
   @Input() contentHtml?: string;
   @Input() actionIcons?: CardActionIcon[];
   @Input() clickable = false;
+  @Input() badgeActions = false;
+  actionsOpen = false;
+  actionsEvent?: Event;
+
+  get useBadgeActions(): boolean {
+    return this.badgeActions && !!this.badge && !!this.imageUrl && this.imagePosition === 'banner';
+  }
+
+  openActions(event: Event): void {
+    event.stopPropagation();
+    this.actionsEvent = event;
+    this.actionsOpen = true;
+  }
+
+  async selectAction(event: Event, action: CardActionIcon, popover: IonPopover): Promise<void> {
+    event.stopPropagation();
+    await popover.dismiss();
+    this.actionsOpen = false;
+    action.handler?.(event);
+  }
   @Input() showShareIcon: boolean = true;
 
   @Output() cardClick = new EventEmitter<Event>();
@@ -76,6 +102,7 @@ export class CardComponent {
     // Automatically append share icon if enabled
     if (this.showShareIcon) {
       icons.push({
+        label: 'Share',
         icon: 'share-outline',
         handler: (e?: Event) => {
           if (e) {

@@ -7,9 +7,14 @@
     <div class="card-image-container">
       <img [src]="imageUrl" [alt]="title ?? ''" class="card-image" />
       @if (badge) {
-        <ion-badge class="card-badge" [style.background-color]="badge.color">
+        <ion-badge class="card-badge" [class.card-badge--actions]="useBadgeActions" [style.background-color]="badge.color">
           <ion-icon [name]="badge.icon"></ion-icon>
           {{ badge.label }}
+          @if (useBadgeActions && hasActionIcons) {
+            <button type="button" class="card-badge-more" [attr.aria-label]="'More options for ' + title" aria-haspopup="dialog" [attr.aria-expanded]="actionsOpen" (click)="openActions($event)">
+              <span aria-hidden="true">•••</span>
+            </button>
+          }
         </ion-badge>
       }
     </div>
@@ -21,12 +26,19 @@
         <ion-card-title>{{ title }}</ion-card-title>
       }
       @if (subtitle) {
-        <ion-card-subtitle>{{ subtitle }}</ion-card-subtitle>
+        <ion-card-subtitle [class.inline-schedule]="inlineSchedule">
+          @if (inlineSchedule && scheduleTime) {
+            <span class="schedule-date">{{ scheduleDate }}</span>
+            <span class="schedule-time">{{ scheduleTime }}</span>
+          } @else {
+            {{ subtitle }}
+          }
+        </ion-card-subtitle>
       }
     </ion-card-header>
   }
 
-  <ion-card-content [class.has-action-icons]="hasActionIcons">
+  <ion-card-content [class.has-action-icons]="hasActionIcons && !useBadgeActions">
     @if (imagePosition === 'right' && (imageUrl || thumbnailPlaceholderIcon)) {
       <div class="card-content-inner">
         <div class="card-content-left">
@@ -46,7 +58,7 @@
           }
         </div>
       </div>
-      @if (hasActionIcons) {
+      @if (hasActionIcons && !useBadgeActions) {
         <div class="action-icons p-t-12">
           @for (action of visibleActionIcons; track action.icon || action.lucideIcon) {
             <ion-button
@@ -69,7 +81,7 @@
       } @else if (contentHtml) {
         <div class="rich-html" [innerHTML]="contentHtml | safeHtml" (click)="onContentAreaClick($event)"></div>
       }
-      @if (hasActionIcons) {
+      @if (hasActionIcons && !useBadgeActions) {
         <div class="action-icons p-t-12">
           @for (action of visibleActionIcons; track action.icon || action.lucideIcon) {
             <ion-button
@@ -89,3 +101,22 @@
     }
   </ion-card-content>
 </ion-card>
+
+@if (useBadgeActions) {
+  <ion-popover class="home-card-actions-popover" style="--offset-y: 14px; --offset-x: 10px" [arrow]="false" #actionsPopover [isOpen]="actionsOpen" [event]="actionsEvent" (didDismiss)="actionsOpen = false" side="bottom" alignment="end" [showBackdrop]="true" aria-label="Card options">
+    <ng-template>
+      <ion-list>
+        @for (action of visibleActionIcons; track action.icon || action.lucideIcon) {
+          <ion-item button detail="false" lines="none" (click)="selectAction($event, action, actionsPopover)">
+            @if (action.lucideIcon) {
+              <i-lucide slot="start" [name]="action.lucideIcon" [size]="20" />
+            } @else {
+              <ion-icon slot="start" [name]="action.icon" />
+            }
+            <ion-label>{{ action.label || 'Open action' }}</ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    </ng-template>
+  </ion-popover>
+}

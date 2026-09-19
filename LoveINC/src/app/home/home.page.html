@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="false" class="home-experiment-header">
   <ion-toolbar>
     <ion-title>
       {{ welcomeTitle }}
@@ -12,7 +12,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="home-page">
+<ion-content [fullscreen]="false" class="home-page">
   <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -68,6 +68,8 @@
         [badge]="card.badge"
         [title]="card.title"
         [subtitle]="card.subtitle"
+        [inlineSchedule]="true"
+        [badgeActions]="card.type === 'event' || card.type === 'class'"
         [description]="card.shortDescription"
         [actionIcons]="getActionIcons(card)"
         [clickable]="true"
