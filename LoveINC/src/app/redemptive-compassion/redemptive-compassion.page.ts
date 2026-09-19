@@ -12,9 +12,18 @@ import { AppBackButtonComponent } from '../components/app-back-button/app-back-b
 export class RedemptiveCompassionPage implements OnDestroy {
   @ViewChild('content', { static: true }) private content!: IonContent;
   @ViewChild('journey', { static: true }) private journey!: ElementRef<HTMLElement>;
-  private revealObserver?: IntersectionObserver;
+  private firstRevealTimer?: ReturnType<typeof setTimeout>;
+  private removeScrollListener?: () => void;
   private resizeObserver?: ResizeObserver;
   private active = false;
+
+  ionViewWillEnter(): void {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.journey.nativeElement.querySelectorAll('.principle').forEach(section => {
+      section.classList.remove('arrive');
+      section.classList.toggle('waiting', !reducedMotion);
+    });
+  }
 
   async ionViewDidEnter(): Promise<void> {
     this.active = true;
@@ -27,15 +36,21 @@ export class RedemptiveCompassionPage implements OnDestroy {
     sections.forEach(section => section.classList.remove('waiting', 'arrive'));
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       sections.forEach(section => section.classList.add('waiting'));
-      this.revealObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.remove('waiting');
-          entry.target.classList.add('arrive');
-          this.revealObserver?.unobserve(entry.target);
+      this.firstRevealTimer = setTimeout(() => {
+        if (this.active && sections[0]) this.reveal(sections[0]);
+      }, 1000);
+      const revealNearMiddle = () => {
+        // Use untransformed layout positions: the spring must not move its own trigger.
+        const triggerY = scroll.scrollTop + scroll.clientHeight * 0.58;
+        sections.slice(1).forEach(section => {
+          const number = section.querySelector<HTMLElement>('.number')!;
+          const centerY = this.journey.nativeElement.offsetTop + section.offsetTop
+            + number.offsetTop + number.offsetHeight / 2;
+          if (centerY <= triggerY) this.reveal(section);
         });
-      }, { root: scroll, threshold: 0.22, rootMargin: '0px 0px -24px 0px' });
-      sections.forEach(section => this.revealObserver!.observe(section));
+      };
+      scroll.addEventListener('scroll', revealNearMiddle, { passive: true });
+      this.removeScrollListener = () => scroll.removeEventListener('scroll', revealNearMiddle);
     }
     this.resizeObserver = new ResizeObserver(() => this.drawRoad(sections));
     this.resizeObserver.observe(this.journey.nativeElement);
@@ -53,8 +68,15 @@ export class RedemptiveCompassionPage implements OnDestroy {
   }
 
   private disconnect(): void {
-    this.revealObserver?.disconnect();
+    clearTimeout(this.firstRevealTimer);
+    this.removeScrollListener?.();
+    this.removeScrollListener = undefined;
     this.resizeObserver?.disconnect();
+  }
+
+  private reveal(section: HTMLElement): void {
+    section.classList.remove('waiting');
+    section.classList.add('arrive');
   }
 
   private drawRoad(sections: HTMLElement[]): void {
