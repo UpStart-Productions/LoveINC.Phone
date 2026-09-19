@@ -62,7 +62,8 @@ export function mapNotificationMetaToContentType(meta: NotificationMeta | null |
 export function getNotificationRoute(meta: NotificationMeta | null | undefined): string[] | null {
   if (!meta?.itemType || !meta?.itemId) return null;
   if (meta.itemType === 'transformation_tool') {
-    return ['/tabs/content-plan', meta.itemId];
+    // transformation_tool notifications carry a theme ID, not a lesson ID.
+    return ['/tabs/content-plan-theme', meta.itemId];
   }
   const routeType = mapNotificationMetaToContentType(meta);
   if (!routeType) return null;

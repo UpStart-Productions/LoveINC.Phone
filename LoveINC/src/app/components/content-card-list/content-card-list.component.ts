@@ -20,7 +20,10 @@ export class ContentCardListComponent {
   @Input() defaultIconBackgroundColor = '#8b7355';
   @Input() defaultAsideAvatarSize: ContentCardAsideAvatarSize = 'small';
 
-  /** When true, removes top padding so the list can sit flush under a hero. */
+  /**
+   * When true, removes top padding and square shell corners at the top.
+   * Also applied globally for lists placed directly under `ion-content.app-card-page`.
+   */
   @Input() flushTop = false;
 
   /** Light grey inset panel (e.g. content-detail related links, instructor-style). */

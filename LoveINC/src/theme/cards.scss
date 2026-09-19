@@ -909,6 +909,15 @@ ion-content.app-card-page {
   --background: var(--ion-color-light);
 }
 
+/* Full-bleed list under header — Learn, TfT theme, collection, job search, etc. */
+ion-content.app-card-page > app-content-card-list .content-card-list:not(.content-card-list--light-shell) {
+  padding-top: 0;
+
+  .content-card-list-shell {
+    border-radius: 0;
+  }
+}
+
 app-job-search .content-card-title-row > h2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;

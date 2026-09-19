@@ -24,6 +24,9 @@ export interface AppNotification extends PlatformNotification {
   source?: 'content' | 'user';
 }
 
+/** Notifications older than this are hidden from the panel and unread counts. */
+const NOTIFICATION_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -133,9 +136,11 @@ export class NotificationsService {
       return combineLatest([content$, user$]).pipe(
         map(([content, user]) => {
           const merged = [...content, ...user];
-          return merged.sort(
-            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
+          return merged
+            .filter((n) => this.isWithinDisplayWindow(n))
+            .sort(
+              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
         })
       );
     }),
@@ -163,6 +168,14 @@ export class NotificationsService {
 
   refresh(): void {
     this.refresh$.next();
+  }
+
+  private isWithinDisplayWindow(n: AppNotification): boolean {
+    const created = new Date(n.createdAt).getTime();
+    if (Number.isNaN(created)) {
+      return false;
+    }
+    return created >= Date.now() - NOTIFICATION_MAX_AGE_MS;
   }
 
   private normalizeContentNotificationId(id: unknown): string {

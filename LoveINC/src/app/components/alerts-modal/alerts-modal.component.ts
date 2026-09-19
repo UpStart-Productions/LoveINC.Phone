@@ -99,10 +99,8 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
     refresher?.complete?.();
   }
 
-  /** Unread and created in the last 7 days (rolling window). */
+  /** Created in the last 7 days (rolling window). Read/tapped state does not affect the badge. */
   isNewNotification(n: AppNotification): boolean {
-    if (SHOW_ALL_NOTIFICATIONS_IN_PANEL) return true;
-    if (n.read) return false;
     const created = new Date(n.createdAt).getTime();
     if (Number.isNaN(created)) return false;
     const weekMs = 7 * 24 * 60 * 60 * 1000;
@@ -111,9 +109,11 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
 
   formatDate(dateStr: string): string {
     const d = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - d.getTime();
+    if (Number.isNaN(d.getTime())) {
+      return '';
+    }
 
+    const diffMs = Math.max(0, Date.now() - d.getTime());
     if (diffMs < 60000) {
       return 'Now';
     }
@@ -127,17 +127,23 @@ export class AlertsModalComponent implements OnInit, OnDestroy {
 
     if (diffMinutes < 60) {
       return `${diffMinutes} min`;
-    } else if (diffHours < 24) {
-      return `${diffHours} hr`;
-    } else if (diffDays < 7) {
-      return `${diffDays} day${diffDays !== 1 ? 's' : ''}`;
-    } else if (diffWeeks < 4) {
-      return `${diffWeeks} week${diffWeeks !== 1 ? 's' : ''}`;
-    } else if (diffMonths < 12) {
-      return `${diffMonths} month${diffMonths !== 1 ? 's' : ''}`;
-    } else {
-      return `${diffYears} year${diffYears !== 1 ? 's' : ''}`;
     }
+    if (diffHours < 24) {
+      return `${diffHours} hr`;
+    }
+    if (diffDays < 7) {
+      return `${diffDays} day${diffDays !== 1 ? 's' : ''}`;
+    }
+    if (diffMonths < 1) {
+      const weeks = Math.max(1, diffWeeks);
+      return `${weeks} week${weeks !== 1 ? 's' : ''}`;
+    }
+    if (diffYears < 1) {
+      const months = Math.max(1, diffMonths);
+      return `${months} month${months !== 1 ? 's' : ''}`;
+    }
+    const years = Math.max(1, diffYears);
+    return `${years} year${years !== 1 ? 's' : ''}`;
   }
 
   async onNotificationTap(notification: AppNotification): Promise<void> {
