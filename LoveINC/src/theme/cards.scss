@@ -683,13 +683,30 @@ ion-card.clickable {
   border-radius: 1rem;
 }
 
+/* Date left / time right — cards, detail headers, and schedule rows */
+.inline-schedule {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 0;
+  white-space: normal;
+
+  .schedule-time {
+    margin-left: auto;
+    text-align: right;
+  }
+}
+
 /* Editorial feed cards */
 .app-card {
   ion-card-header { padding: 0.875rem 1rem 0; }
   ion-card-title, ion-card-title::part(native) {
     font-family: var(--app-font-family-crimson) !important;
-    font-size: 1.5rem !important;
-    font-weight: 500 !important;
+    font-size: var(--app-content-title-font-size) !important;
+    font-weight: var(--app-content-title-font-weight) !important;
     line-height: 1.15 !important;
     margin-bottom: 0;
   }
@@ -705,16 +722,9 @@ ion-card.clickable {
   }
   .rich-html p { margin: 0; }
   ion-card-subtitle.inline-schedule {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.25rem 0.75rem;
-    flex-wrap: wrap;
-    white-space: normal;
     font-size: 0.625rem;
     letter-spacing: 0;
     span { font-size: inherit; line-height: inherit; }
-    .schedule-time { margin-left: auto; text-align: right; }
   }
   ion-card-content.has-action-icons { --app-card-content-padding-bottom: 0.25rem; }
 }

@@ -10,4 +10,4 @@
 
 - Preserve photo-detail scroll reveal: transparent header with white icons over the photo at the top; after scrolling, reveal the light surface, charcoal icons, and serif title. Reuse the existing edgeHeaderScrolled state in both detail and content-plan readers.
 
-- Photo-detail hero titles use Crimson Pro Light. Classes and Impact Stories lists use the shared photo More circle without a category pill; Home and Updates retain their category pills.
+- Photo-detail hero titles and list-card titles share Crimson Pro at 1.5rem, weight 500, via the app-content-title tokens. Classes and Impact Stories lists use the shared photo More circle without a category pill; Home and Updates retain their category pills.

@@ -38,7 +38,8 @@
 
 .content-reader-hero__title {
   font-family: var(--app-font-family-crimson);
-  font-weight: 300;
+  font-size: var(--app-content-title-font-size);
+  font-weight: var(--app-content-title-font-weight);
   position: absolute;
   left: 0;
   right: 0;
