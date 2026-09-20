@@ -57,7 +57,7 @@ import {
   GraduationCap,
   BookMarked,
   Menu,
-  Wrench,
+  ToolCase,
 } from 'lucide-angular';
 
 import { routes } from './app/app.routes';
@@ -176,7 +176,7 @@ bootstrapApplication(AppComponent, {
         GraduationCap,
         BookMarked,
         Menu,
-        Wrench,
+        ToolCase,
       })
     ),
   ],
