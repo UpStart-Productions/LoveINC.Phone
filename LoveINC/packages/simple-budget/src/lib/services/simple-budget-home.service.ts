@@ -7,8 +7,8 @@ import { weekPlanHasBudgetContent } from '../utils/week-plan-has-content';
 import type { WeekPlan, WeekSummary } from '../types/week-plan.types';
 
 /**
- * Snapshot of current week budget data for home page widget.
- * Returned when the current week has entered budget data.
+ * Snapshot of budget data for the home page widget.
+ * Uses the current week when it has entries; otherwise the most recent week with data.
  */
 export interface SimpleBudgetHomeSnapshot {
   plan: WeekPlan;
@@ -17,7 +17,7 @@ export interface SimpleBudgetHomeSnapshot {
 
 /**
  * Service for exposing Simple Budget data to the host app (e.g. home page widget).
- * Returns current week snapshot only when the week has budget entries; null otherwise.
+ * Returns null only when the user has no entered budget data in any week.
  */
 @Injectable({
   providedIn: 'root',
@@ -26,8 +26,8 @@ export class SimpleBudgetHomeService {
   constructor(private weekPlanService: WeekPlanService) {}
 
   /**
-   * Gets the current week's budget snapshot for display on the home page.
-   * Returns null if the current week has no entered budget data.
+   * Gets a budget snapshot for the home page widget.
+   * Prefers the current week; falls back to the latest week with entered budget data.
    */
   getCurrentWeekSnapshot(): Observable<SimpleBudgetHomeSnapshot | null> {
     return from(this.fetchSnapshot()).pipe(
@@ -36,11 +36,20 @@ export class SimpleBudgetHomeService {
   }
 
   private async fetchSnapshot(): Promise<SimpleBudgetHomeSnapshot | null> {
+    const plan = await this.resolveHomeWeekPlan();
+    if (!plan) return null;
+    return { plan, summary: calculateWeekSummary(plan) };
+  }
+
+  private async resolveHomeWeekPlan(): Promise<WeekPlan | null> {
     // Use Sunday (0) to match the weekly budget page
     const weekStart = this.weekPlanService.getWeekStartForDate(new Date(), 0);
-    const plan = await this.weekPlanService.getWeekByDate(weekStart);
-    if (!plan || !weekPlanHasBudgetContent(plan)) return null;
-    const summary = calculateWeekSummary(plan);
-    return { plan, summary };
+    const currentPlan = await this.weekPlanService.getWeekByDate(weekStart);
+    if (currentPlan && weekPlanHasBudgetContent(currentPlan)) {
+      return currentPlan;
+    }
+
+    const weeks = await this.weekPlanService.listWeeks();
+    return weeks.find((week) => weekPlanHasBudgetContent(week)) ?? null;
   }
 }
