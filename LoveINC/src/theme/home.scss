@@ -36,8 +36,8 @@ ion-content.home-page .home-sections app-home-tools-carousel ion-card.content-ca
 }
 
 ion-content.home-page .home-sections app-home-tools-carousel.home-tools-carousel--multiple ion-card.content-card.content-card--tool-header {
-  height: 100%;
   min-height: var(--app-tool-card-height);
+  height: auto;
 }
 
 /* Verse of the Day — home-only special case (not GrovPods carousel height). */

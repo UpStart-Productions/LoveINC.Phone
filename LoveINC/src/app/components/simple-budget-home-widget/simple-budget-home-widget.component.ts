@@ -95,24 +95,25 @@ export class SimpleBudgetHomeWidgetComponent implements OnInit, OnDestroy {
     ];
   }
 
-  get cardDetail(): string {
-    if (!this.snapshot) return '';
-    const { summary } = this.snapshot;
-    const daily = this.formatCurrency(summary.safeToSpendPerDay);
-    const days = summary.daysLeftInWeek;
-    if (days > 0) {
-      return `About ${daily}/day to spend`;
+  /** Per-day spend for the detail line — uses days left in-week, or spreads over 7 when the week ended. */
+  get dailySpendAmount(): number {
+    const summary = this.snapshot!.summary;
+    if (summary.daysLeftInWeek > 0) {
+      return summary.safeToSpendPerDay;
     }
-    return '';
+    return Math.round((summary.remaining / 7) * 100) / 100;
   }
 
-  /** Colored per-day amount when mid-week. */
-  get detailSegments(): ContentCardTextSegment[] | null {
-    if (!this.snapshot) return null;
-    const { summary } = this.snapshot;
-    if (summary.daysLeftInWeek <= 0) return null;
-    const daily = this.formatCurrency(summary.safeToSpendPerDay);
-    const tone = summary.safeToSpendPerDay >= 0 ? 'positive' : 'negative';
+  get cardDetail(): string {
+    if (!this.snapshot) return '';
+    return `About ${this.formatCurrency(this.dailySpendAmount)}/day to spend`;
+  }
+
+  /** Colored per-day amount below the balance. */
+  get detailSegments(): ContentCardTextSegment[] {
+    if (!this.snapshot) return [];
+    const daily = this.formatCurrency(this.dailySpendAmount);
+    const tone = this.dailySpendAmount >= 0 ? 'positive' : 'negative';
     return [
       { text: 'About ' },
       { text: daily, tone },

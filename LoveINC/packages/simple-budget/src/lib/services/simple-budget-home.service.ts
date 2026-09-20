@@ -38,6 +38,7 @@ export class SimpleBudgetHomeService {
   private async fetchSnapshot(): Promise<SimpleBudgetHomeSnapshot | null> {
     const plan = await this.resolveHomeWeekPlan();
     if (!plan) return null;
+
     return { plan, summary: calculateWeekSummary(plan) };
   }
 
