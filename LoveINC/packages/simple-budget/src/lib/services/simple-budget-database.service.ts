@@ -39,10 +39,17 @@ export class SimpleBudgetDatabaseService {
     } catch {
       // Plugin may not be ready on web before jeep-sqlite init
     }
-    try {
-      await this.sqlite.checkConnectionsConsistency();
-    } catch {
-      // Ignore
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const { result } = await this.sqlite.checkConnectionsConsistency();
+        if (result === false) {
+          this.resetConnection();
+          SimpleBudgetDatabaseService.initPromise = null;
+        }
+      } catch {
+        this.resetConnection();
+        SimpleBudgetDatabaseService.initPromise = null;
+      }
     }
     return true;
   }
@@ -93,7 +100,7 @@ export class SimpleBudgetDatabaseService {
         SimpleBudgetDatabaseService.sharedDb = this.db;
         return;
       } catch {
-        // No existing connection
+        this.db = null;
       }
 
       if (this.platform === 'web') {
@@ -120,6 +127,10 @@ export class SimpleBudgetDatabaseService {
       await this.db.open();
       SimpleBudgetDatabaseService.sharedDb = this.db;
       await this.createTables();
+    } catch (err) {
+      this.resetConnection();
+      SimpleBudgetDatabaseService.initPromise = null;
+      throw err;
     } finally {
       SimpleBudgetDatabaseService.initPromise = null;
     }
@@ -195,11 +206,29 @@ export class SimpleBudgetDatabaseService {
     if (!this.db) {
       throw new Error('Failed to establish database connection');
     }
-    if (typeof this.db.isDBOpen === 'function') {
-      const isOpen = await this.db.isDBOpen();
-      if (!isOpen) await this.db.open();
+    try {
+      await this.ensureDbOpen(this.db);
+      return this.db;
+    } catch {
+      this.resetConnection();
+      SimpleBudgetDatabaseService.initPromise = null;
+      await this.openDatabase();
+      if (!this.db) {
+        throw new Error('Failed to establish database connection');
+      }
+      await this.ensureDbOpen(this.db);
+      return this.db;
     }
-    return this.db;
+  }
+
+  private async ensureDbOpen(db: SQLiteDBConnection): Promise<void> {
+    if (typeof db.isDBOpen !== 'function') {
+      return;
+    }
+    const isOpen = await db.isDBOpen();
+    if (!isOpen) {
+      await db.open();
+    }
   }
 
   async wipeAll(): Promise<void> {

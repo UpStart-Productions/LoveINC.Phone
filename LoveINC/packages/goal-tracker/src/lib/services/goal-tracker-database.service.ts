@@ -39,11 +39,17 @@ export class GoalTrackerDatabaseService {
     } catch {
       // Plugin may not be ready on web before jeep-sqlite init
     }
-    // Sync JS/native connection state (matches NephoPhone - no dbNames arg, does not close connections)
-    try {
-      await this.sqlite.checkConnectionsConsistency();
-    } catch {
-      // Ignore
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const { result } = await this.sqlite.checkConnectionsConsistency();
+        if (result === false) {
+          this.resetConnection();
+          GoalTrackerDatabaseService.initPromise = null;
+        }
+      } catch {
+        this.resetConnection();
+        GoalTrackerDatabaseService.initPromise = null;
+      }
     }
     return true;
   }
@@ -94,7 +100,7 @@ export class GoalTrackerDatabaseService {
         GoalTrackerDatabaseService.sharedDb = this.db;
         return;
       } catch {
-        // No existing connection
+        this.db = null;
       }
 
       if (this.platform === 'web') {
@@ -121,6 +127,10 @@ export class GoalTrackerDatabaseService {
       await this.db.open();
       GoalTrackerDatabaseService.sharedDb = this.db;
       await this.createTables();
+    } catch (err) {
+      this.resetConnection();
+      GoalTrackerDatabaseService.initPromise = null;
+      throw err;
     } finally {
       GoalTrackerDatabaseService.initPromise = null;
     }
@@ -206,11 +216,29 @@ export class GoalTrackerDatabaseService {
     if (!this.db) {
       throw new Error('Failed to establish database connection');
     }
-    if (typeof this.db.isDBOpen === 'function') {
-      const isOpen = await this.db.isDBOpen();
-      if (!isOpen) await this.db.open();
+    try {
+      await this.ensureDbOpen(this.db);
+      return this.db;
+    } catch {
+      this.resetConnection();
+      GoalTrackerDatabaseService.initPromise = null;
+      await this.openDatabase();
+      if (!this.db) {
+        throw new Error('Failed to establish database connection');
+      }
+      await this.ensureDbOpen(this.db);
+      return this.db;
     }
-    return this.db;
+  }
+
+  private async ensureDbOpen(db: SQLiteDBConnection): Promise<void> {
+    if (typeof db.isDBOpen !== 'function') {
+      return;
+    }
+    const isOpen = await db.isDBOpen();
+    if (!isOpen) {
+      await db.open();
+    }
   }
 
   async resetDatabase(): Promise<void> {

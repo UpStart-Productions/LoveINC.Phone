@@ -26,9 +26,7 @@ export class OrganizationContextService {
   constructor(
     private readonly grovLinkDb: GrovLinkDatabaseService,
     private readonly platformApi: PlatformApiService,
-  ) {
-    void this.loadFromCache();
-  }
+  ) {}
 
   get organization(): PlatformOrganization | null {
     return this.orgSubject.value;
@@ -86,9 +84,14 @@ export class OrganizationContextService {
   /** Load cached org/customer from SQLite, then refresh from API (idempotent per session). */
   initialize(): Promise<void> {
     if (!this.refreshPromise) {
-      this.refreshPromise = this.refreshFromApi();
+      this.refreshPromise = this.boot();
     }
     return this.refreshPromise;
+  }
+
+  private async boot(): Promise<void> {
+    await this.loadFromCache();
+    await this.refreshFromApi();
   }
 
   private async loadFromCache(): Promise<void> {

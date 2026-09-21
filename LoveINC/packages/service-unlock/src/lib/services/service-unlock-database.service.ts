@@ -102,7 +102,7 @@ export class ServiceUnlockDatabaseService {
         ServiceUnlockDatabaseService.sharedDb = this.db;
         return;
       } catch {
-        // No existing connection
+        this.db = null;
       }
 
       if (this.platform === 'web') {
@@ -129,6 +129,11 @@ export class ServiceUnlockDatabaseService {
       await this.db.open();
       ServiceUnlockDatabaseService.sharedDb = this.db;
       await this.createTables();
+    } catch (err) {
+      ServiceUnlockDatabaseService.sharedDb = null;
+      this.db = null;
+      ServiceUnlockDatabaseService.initPromise = null;
+      throw err;
     } finally {
       ServiceUnlockDatabaseService.initPromise = null;
     }
@@ -153,11 +158,30 @@ export class ServiceUnlockDatabaseService {
     if (!this.db) {
       throw new Error('Failed to establish database connection');
     }
-    if (typeof this.db.isDBOpen === 'function') {
-      const isOpen = await this.db.isDBOpen();
-      if (!isOpen) await this.db.open();
+    try {
+      await this.ensureDbOpen(this.db);
+      return this.db;
+    } catch {
+      ServiceUnlockDatabaseService.sharedDb = null;
+      this.db = null;
+      ServiceUnlockDatabaseService.initPromise = null;
+      await this.openDatabase();
+      if (!this.db) {
+        throw new Error('Failed to establish database connection');
+      }
+      await this.ensureDbOpen(this.db);
+      return this.db;
     }
-    return this.db;
+  }
+
+  private async ensureDbOpen(db: SQLiteDBConnection): Promise<void> {
+    if (typeof db.isDBOpen !== 'function') {
+      return;
+    }
+    const isOpen = await db.isDBOpen();
+    if (!isOpen) {
+      await db.open();
+    }
   }
 
   async getUnlockState(): Promise<UnlockState | null> {

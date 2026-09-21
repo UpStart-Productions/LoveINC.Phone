@@ -249,7 +249,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Fetch app user data from API (deviceId + email if available) for UI config
     this.syncAppUserFromApi();
-    void this.organizationContext.initialize();
 
     this.initDatabasesInBackground();
 
@@ -310,10 +309,14 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private initDatabasesInBackground(): void {
+    const grovLinkInit = this.grovlinkDb.getDbConnection().catch((err) => {
+      console.warn('GrovLink DB init deferred:', err);
+    });
+
+    void grovLinkInit.then(() => this.organizationContext.initialize());
+
     void Promise.all([
-      this.grovlinkDb.getDbConnection().catch((err) => {
-        console.warn('GrovLink DB init deferred:', err);
-      }),
+      grovLinkInit,
       this.goalTrackerDb.getDbConnection().catch((err) => {
         console.warn('Goal Tracker DB init deferred:', err);
       }),
