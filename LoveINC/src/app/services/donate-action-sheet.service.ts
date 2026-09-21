@@ -22,17 +22,17 @@ export class DonateActionSheetService {
       header: `Donate to ${this.organizationContext.publicName}`,
       buttons: [
         {
-          text: 'Goods, clothing, household items.',
-          icon: 'shirt-outline',
-          handler: () => {
-            this.handleGoodsDonation();
-          }
-        },
-        {
           text: 'Make a secure online donation.',
           icon: 'card-outline',
           handler: () => {
             void this.handleOnlineDonation();
+          }
+        },
+        {
+          text: 'Goods, clothing, household items.',
+          icon: 'shirt-outline',
+          handler: () => {
+            this.handleGoodsDonation();
           }
         },
         {

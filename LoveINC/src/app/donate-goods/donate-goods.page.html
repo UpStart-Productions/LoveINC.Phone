@@ -24,11 +24,13 @@
       <div *ngIf="groupedLocations[category]?.length" class="category-section">
         <app-card
           *ngFor="let location of groupedLocations[category]"
-          class="location-card"
+          class="app-card-compact location-card"
           [imageUrl]="location.photoUrl ?? undefined"
           [imagePosition]="'banner'"
           [badge]="location.badge"
+          [title]="location.organization"
           [contentHtml]="getLocationContentHtml(location)"
+          [badgeActions]="true"
           [actionIcons]="getActionIcons(location)"
           (contentAreaClick)="onDonationCardContentAreaClick($event, location)"
           (shareClick)="onShareLocation(location)">

@@ -34,4 +34,14 @@ ion-header {
   ion-header, .content-reader-edge-chrome { --app-header-title-font-size: 1.25rem; }
 }
 
-app-header-actions { display: inline-flex; align-items: center; }
+app-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+ion-header ion-toolbar ion-buttons[slot='end']:has(app-notifications-button) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}

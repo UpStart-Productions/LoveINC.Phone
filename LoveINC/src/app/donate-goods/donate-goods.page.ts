@@ -315,7 +315,7 @@ export class DonateGoodsPage implements OnInit {
     const esc = (s: string | null | undefined) =>
       (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const parts: string[] = [];
-    parts.push(`<div class="location-header"><h2>${esc(location.organization)}</h2></div><div class="donation-details">`);
+    parts.push(`<div class="donation-details">`);
     if (location.shortDescription) {
       parts.push(`<p class="app-body-secondary m-t-8 m-b-0">${esc(location.shortDescription)}</p>`);
     }
@@ -358,6 +358,7 @@ export class DonateGoodsPage implements OnInit {
     return [
       {
         icon: 'location-outline',
+        label: 'Map',
         handler: () => this.onMapPinClick(location),
         show:
           !!location.address?.trim() ||
@@ -367,10 +368,23 @@ export class DonateGoodsPage implements OnInit {
             Number.isFinite(location.longitude)),
         buttonClass: 'map-button',
       },
-      { icon: 'call-outline', handler: () => this.onPhoneClick(location), show: !!location.phone, buttonClass: 'phone-button' },
-      { icon: 'mail-outline', handler: () => this.onEmailClick(location), show: !!location.email, buttonClass: 'email-button' },
+      {
+        icon: 'call-outline',
+        label: 'Call',
+        handler: () => this.onPhoneClick(location),
+        show: !!location.phone,
+        buttonClass: 'phone-button',
+      },
+      {
+        icon: 'mail-outline',
+        label: 'Email',
+        handler: () => this.onEmailClick(location),
+        show: !!location.email,
+        buttonClass: 'email-button',
+      },
       {
         lucideIcon: 'heart-handshake',
+        label: 'Volunteer',
         handler: () => this.onVolunteerClick(location),
         show: !!location.volunteerPositions?.length,
         buttonClass: 'volunteer-button',
