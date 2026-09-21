@@ -290,6 +290,16 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
             });
           },
         },
+        {
+          text: `Donate to ${this.organizationContext.publicName}`,
+          icon: 'gift-outline',
+          cssClass: 'services-donate-button',
+          handler: () => {
+            void actionSheet.onDidDismiss().then(() => {
+              void this.donateActionSheetService.openDonateActionSheet();
+            });
+          },
+        },
       ],
     });
 

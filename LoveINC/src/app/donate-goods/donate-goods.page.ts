@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { 
   IonHeader, 
-  IonToolbar, 
+  IonToolbar,
+  IonTitle,
   IonContent,
   IonButtons,
   IonButton,
@@ -31,6 +33,8 @@ interface VolunteerPosition {
 interface DonationLocation {
   id: string;
   category: string;
+  /** Donation drive title from the platform API (`title`). */
+  donationTitle: string;
   serviceTitle: string;
   providerName: string;
   locationName: string | null;
@@ -59,8 +63,10 @@ interface DonationLocation {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     IonHeader, 
-    IonToolbar, 
+    IonToolbar,
+    IonTitle,
     IonContent,
     IonButtons,
     IonButton,
@@ -82,6 +88,12 @@ export class DonateGoodsPage implements OnInit {
 
   get isFilteredByDonation(): boolean {
     return !!this.donationIdFilter;
+  }
+
+  get searchPlaceholder(): string {
+    const count = this.locations.length;
+    if (!count) return 'Search donation options';
+    return count === 1 ? 'Search 1 donation option' : `Search ${count} donation options`;
   }
 
   constructor(
@@ -130,9 +142,7 @@ export class DonateGoodsPage implements OnInit {
   }
 
   private mapPlatformDonationToLocation(d: PlatformDonation): DonationLocation {
-    const acceptedItems = (d.itemLabels ?? []).slice().sort((a, b) =>
-      a.localeCompare(b, undefined, { sensitivity: 'base' })
-    );
+    const acceptedItems = this.extractDonationItemLabels(d);
     const assistanceItems = this.normalizeItemLabels(
       d.assistanceItemLabels ??
         d.assistanceItems?.map((i) => (typeof i === 'string' ? i : i?.label)),
@@ -162,6 +172,7 @@ export class DonateGoodsPage implements OnInit {
     return {
       id: d.id,
       category,
+      donationTitle: d.title?.trim() || '',
       serviceTitle: d.serviceTitle?.trim() || d.title?.trim() || 'Donation',
       providerName,
       locationName,
@@ -187,6 +198,19 @@ export class DonateGoodsPage implements OnInit {
       .map((label) => (label == null ? '' : String(label).trim()))
       .filter(Boolean)
       .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+  }
+
+  /** Item labels from API `itemLabels` or nested `items[].label`. */
+  private extractDonationItemLabels(d: PlatformDonation): string[] {
+    const raw = d as PlatformDonation & { item_labels?: string[] };
+    const fromLabels = this.normalizeItemLabels(d.itemLabels ?? raw.item_labels);
+    if (fromLabels.length) return fromLabels;
+    return this.normalizeItemLabels(
+      d.items?.map((item) => {
+        const row = item as { label?: string; name?: string };
+        return row.label ?? row.name;
+      }),
+    );
   }
 
   /** Street + city/state/zip for card display (excludes locationName). */
@@ -248,19 +272,13 @@ export class DonateGoodsPage implements OnInit {
   }
 
   onSearchChange(event: CustomEvent | Event) {
-    let value: string | null | undefined = '';
     const customEvent = event as CustomEvent<{ value?: string }>;
-    if (customEvent?.detail?.value !== undefined) {
-      value = customEvent.detail.value;
-    } else {
-      const target = event?.target as HTMLIonSearchbarElement | undefined;
-      if (target?.value !== undefined && target?.value !== null) {
-        value = target.value;
-      }
-    }
-    const query = String(value ?? '').toLowerCase().trim();
-    this.searchQuery = query;
-    this.performSearch(query);
+    const value =
+      customEvent?.detail?.value ??
+      (event?.target as HTMLIonSearchbarElement | undefined)?.value ??
+      this.searchQuery;
+    this.searchQuery = String(value ?? '');
+    this.performSearch(this.searchQuery);
   }
 
   onSearchClear() {
@@ -281,35 +299,40 @@ export class DonateGoodsPage implements OnInit {
   }
 
   private performSearch(query: string) {
-    if (!query) {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) {
       this.applyDonationFilter();
     } else {
-      this.filteredLocations = this.locations.filter(location => {
-        // Search across all fields
-        const searchFields = [
-          location.category,
-          location.serviceTitle,
-          location.providerName,
-          location.locationName,
-          location.streetAddress,
-          location.address,
-          location.phone,
-          location.email,
-          location.hours,
-          location.shortDescription,
-          location.notes,
-          location.contact,
-          ...(location.acceptedItems || []),
-          ...(location.assistanceItems || []),
-        ].filter(field => field != null).map(field => String(field).toLowerCase());
-
-        return searchFields.some(field => field.includes(query));
-      });
+      this.filteredLocations = this.locations.filter((location) =>
+        this.locationMatchesSearch(location, normalized),
+      );
     }
 
     this.groupLocationsByCategory();
   }
 
+  private locationMatchesSearch(location: DonationLocation, query: string): boolean {
+    const fields = [
+      location.donationTitle,
+      location.serviceTitle,
+      ...location.acceptedItems,
+    ]
+      .filter(Boolean)
+      .map((field) => String(field).toLowerCase());
+
+    return fields.some((field) => field.includes(query));
+  }
+
+
+  /** Quill HTML from the API, or plain text with line breaks converted for rich-html. */
+  private descriptionToHtml(text: string | null | undefined): string {
+    const raw = text?.trim();
+    if (!raw) return '';
+    if (/<[a-z][\s\S]*>/i.test(raw)) return raw;
+    const esc = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return `<p class="app-body-secondary m-b-0">${esc(raw).replace(/\n/g, '<br>')}</p>`;
+  }
 
   getLocationContentHtml(location: DonationLocation): string {
     const esc = (s: string | null | undefined) =>
@@ -337,10 +360,12 @@ export class DonateGoodsPage implements OnInit {
       parts.push(`</div>`);
     }
     if (location.shortDescription) {
-      parts.push(`<p class="app-body-secondary m-b-0">${esc(location.shortDescription)}</p>`);
+      parts.push(`<div class="rich-html">${this.descriptionToHtml(location.shortDescription)}</div>`);
     }
     if (location.contact) parts.push(`<div class="donation-detail-row"><span>${esc(location.contact)}</span></div>`);
-    if (location.notes) parts.push(`<div class="donation-detail-row"><span class="app-body-secondary notes-value">${esc(location.notes)}</span></div>`);
+    if (location.notes) {
+      parts.push(`<div class="rich-html notes-value m-t-8">${this.descriptionToHtml(location.notes)}</div>`);
+    }
     if (location.acceptedItems?.length) {
       parts.push(`<div class="m-t-12"><div class="accepted-items">${
         location.acceptedItems.map((item) => `<span class="item-pill">${esc(item)}</span>`).join('')

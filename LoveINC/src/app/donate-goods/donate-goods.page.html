@@ -1,14 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-searchbar
-      class="live-search"
-      placeholder="Search Donation Options"
-      (ionInput)="onSearchChange($event)"
-      (ionClear)="onSearchClear()"
-      [value]="searchQuery"
-      showClearButton="always"
-      [debounce]="150">
-    </ion-searchbar>
+    <ion-title>Donate Goods</ion-title>
     <ion-buttons slot="end">
       <app-notifications-button></app-notifications-button>
       <ion-button *ngIf="showDonateButton" (click)="openDonateMenu()" class="donate-header-button">
@@ -16,32 +8,49 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      class="live-search"
+      [placeholder]="searchPlaceholder"
+      [(ngModel)]="searchQuery"
+      (ionInput)="onSearchChange($event)"
+      (ionClear)="onSearchClear()"
+      showClearButton="focus"
+      [debounce]="150">
+    </ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="app-card-page">
-  <div class="content-wrapper">
-    <div *ngFor="let category of categoryOrder">
-      <div *ngIf="groupedLocations[category]?.length" class="category-section">
-        <app-card
-          *ngFor="let location of groupedLocations[category]"
-          class="app-card-compact location-card"
-          [imageUrl]="location.photoUrl ?? undefined"
-          [imagePosition]="'banner'"
-          [title]="location.serviceTitle"
-          [contentHtml]="getLocationContentHtml(location)"
-          [badgeActions]="true"
-          [actionIcons]="getActionIcons(location)"
-          (contentAreaClick)="onDonationCardContentAreaClick($event, location)"
-          (shareClick)="onShareLocation(location)">
-        </app-card>
+  @if (locations.length && !filteredLocations.length && searchQuery.trim()) {
+    <p class="app-body-secondary p-l-18 p-r-18 p-t-12">
+      No donation options match your search.
+    </p>
+  } @else {
+    <div class="content-wrapper">
+      <div *ngFor="let category of categoryOrder">
+        <div *ngIf="groupedLocations[category]?.length" class="category-section">
+          <app-card
+            *ngFor="let location of groupedLocations[category]"
+            class="app-card-compact location-card"
+            [imageUrl]="location.photoUrl ?? undefined"
+            [imagePosition]="'banner'"
+            [title]="location.serviceTitle"
+            [contentHtml]="getLocationContentHtml(location)"
+            [badgeActions]="true"
+            [actionIcons]="getActionIcons(location)"
+            (contentAreaClick)="onDonationCardContentAreaClick($event, location)"
+            (shareClick)="onShareLocation(location)">
+          </app-card>
+        </div>
       </div>
+      @if (isFilteredByDonation) {
+        <div class="all-donation-options-wrap">
+          <ion-button expand="block" color="primary" (click)="clearDonationFilter()" class="all-donation-options-button">
+            All Donation Options
+          </ion-button>
+        </div>
+      }
     </div>
-    @if (isFilteredByDonation) {
-      <div class="all-donation-options-wrap">
-        <ion-button expand="block" color="primary" (click)="clearDonationFilter()" class="all-donation-options-button">
-          All Donation Options
-        </ion-button>
-      </div>
-    }
-  </div>
+  }
 </ion-content>

@@ -794,6 +794,25 @@ button.action-pill.action-pill--scripture {
   .action-sheet-button-inner {
     padding-left: 5px !important;
   }
+
+  &.services-donate-button {
+    background-color: var(--love-inc-primary-dark) !important;
+    color: #ffffff !important;
+    margin: 0.5rem 0.75rem 0.5rem 0.75rem !important;
+    border-radius: 0.5rem !important;
+    width: calc(100% - 1.5rem) !important;
+    box-sizing: border-box !important;
+
+    span,
+    .action-sheet-button-inner {
+      color: #ffffff !important;
+      font-weight: var(--app-font-weight-medium) !important;
+    }
+
+    .action-sheet-icon {
+      color: #ffffff !important;
+    }
+  }
 }
 
 .share-action-sheet .action-sheet-button .action-sheet-icon,
