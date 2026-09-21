@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { startOfDay } from 'date-fns';
@@ -25,6 +25,7 @@ import { ScheduleFormattingService } from '../services/schedule-formatting.servi
 import { CalendarService } from '../services/calendar/calendar.service';
 import { CardFormattingService } from '../services/card-formatting.service';
 import { formatEventSubtitle, joinWithAppDot } from '../shared/utils';
+import { OrganizationContextService } from '../services/organization-context.service';
 import {
   PlatformApiService,
   type PlatformClass,
@@ -69,9 +70,15 @@ export interface UpdateItem {
   ],
 })
 export class UpdatesPage implements OnInit {
+  private readonly organizationContext = inject(OrganizationContextService);
+
   items: UpdateItem[] = [];
   loaded = false;
   showDonateButton: boolean = false;
+
+  get affiliateName(): string {
+    return this.organizationContext.publicName;
+  }
 
   constructor(
     private router: Router,

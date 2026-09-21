@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { OnboardingService } from '../services/onboarding.service';
 import { UserProfileService } from '../services/user-profile.service';
-import { LOVE_INC_OFFICE_TEL } from '../shared/love-inc-contact.constants';
+import { OrganizationContextService } from '../services/organization-context.service';
 import {
   IonHeader,
   IonToolbar,
@@ -27,6 +27,8 @@ import {
   ],
 })
 export class AssistanceThankYouPage {
+  private readonly organizationContext = inject(OrganizationContextService);
+
   constructor(
     private router: Router,
     private userProfile: UserProfileService,
@@ -47,7 +49,7 @@ export class AssistanceThankYouPage {
   }
 
   callConnectionCenter(): void {
-    window.open(`tel:${LOVE_INC_OFFICE_TEL}`, '_self');
+    window.open(`tel:${this.organizationContext.officeTel}`, '_self');
   }
 
   onDone() {

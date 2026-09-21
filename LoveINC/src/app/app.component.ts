@@ -20,6 +20,7 @@ import { UserProfileService } from './services/user-profile.service';
 import { AppUserDataService } from './services/app-user-data.service';
 import { DeviceIdService } from './services/device-id.service';
 import { PlatformApiService } from './services/platform/platform-api.service';
+import { OrganizationContextService } from './services/organization-context.service';
 import { GrovLinkDatabaseService } from './services/grovlink-database.service';
 import { GoalTrackerDatabaseService } from '@upstart-productions/goal-tracker';
 import {
@@ -31,7 +32,6 @@ import { GoalTrackerRefreshService } from './goal-tracker-tabs/services/goal-tra
 import { PushRegistrationService } from './services/push-registration.service';
 import { ServiceUnlockService, ServiceUnlockDatabaseService } from '@upstart-productions/service-unlock';
 import { getNotificationRoute } from './shared/utils/notification-deeplink';
-import { setDisplayTimeZone } from './shared/utils';
 import { addIcons } from 'ionicons';
 import {
   // Tab Bar Icons
@@ -182,6 +182,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private appUserData: AppUserDataService,
     private deviceId: DeviceIdService,
     private platformApi: PlatformApiService,
+    private organizationContext: OrganizationContextService,
     private platform: Platform,
     private grovlinkDb: GrovLinkDatabaseService,
     private goalTrackerDb: GoalTrackerDatabaseService,
@@ -248,7 +249,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Fetch app user data from API (deviceId + email if available) for UI config
     this.syncAppUserFromApi();
-    this.loadAffiliateTimeZone();
+    void this.organizationContext.initialize();
 
     this.initDatabasesInBackground();
 
@@ -402,14 +403,6 @@ export class AppComponent implements OnInit, OnDestroy {
     document.body.classList.add('app-resume-repaint');
     void document.body.offsetHeight;
     document.body.classList.remove('app-resume-repaint');
-  }
-
-  private loadAffiliateTimeZone(): void {
-    this.platformApi.getOrganization().subscribe({
-      next: (org) => {
-        if (org?.timezone) setDisplayTimeZone(org.timezone);
-      },
-    });
   }
 
   private syncAppUserFromApi(): void {

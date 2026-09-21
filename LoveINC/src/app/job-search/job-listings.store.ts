@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, forkJoin, from, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { AddressGeocodingService } from '../services/address-geocoding.service';
+import { OrganizationContextService } from '../services/organization-context.service';
 import { PlatformApiService } from '../services/platform';
 import type {
   PlatformJobListing,
@@ -14,6 +15,7 @@ import { isUsableOrigin, type CompanySort, type DistanceOrigin } from './job-lis
 export class JobListingsStore {
   private readonly api = inject(PlatformApiService);
   private readonly geocoder = inject(AddressGeocodingService);
+  private readonly organizationContext = inject(OrganizationContextService);
   private jobs: PlatformJobListing[] = [];
   private loaded = false;
   private origin: PlatformJobListingsOrigin | null = null;
@@ -26,11 +28,14 @@ export class JobListingsStore {
     if (this.loaded && !force) {
       return of(this.jobs);
     }
-    return forkJoin({
-      listings: this.api.getJobListings(),
-      org: this.api.getOrganization().pipe(catchError(() => of(null))),
-    }).pipe(
-      map(({ listings, org }) => {
+    return from(this.organizationContext.initialize()).pipe(
+      switchMap(() =>
+        forkJoin({
+          listings: this.api.getJobListings(),
+        }),
+      ),
+      map(({ listings }) => {
+        const org = this.organizationContext.organization;
         this.jobs = listings.jobs ?? [];
         this.applyOrigin(listings.origin ?? null, org);
         this.loaded = true;

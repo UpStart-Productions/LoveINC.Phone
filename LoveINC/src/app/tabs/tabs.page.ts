@@ -26,6 +26,7 @@ import { MainTabBarService } from '../services/main-tab-bar.service';
 import { shouldHideMainTabBar } from '../shared/utils';
 import { SERVICES_ACTION_SHEET_CLASS } from '../shared/action-sheet-classes';
 import { navigateAppFlat } from '../shared/utils/navigation-flat.util';
+import { OrganizationContextService } from '../services/organization-context.service';
 
 @Component({
   selector: 'app-tabs',
@@ -37,6 +38,7 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
   public environmentInjector = inject(EnvironmentInjector);
   private router = inject(Router);
   private mainTabBarService = inject(MainTabBarService);
+  private organizationContext = inject(OrganizationContextService);
 
   @ViewChild('tabBarTrack', { read: ElementRef }) private tabBarTrackRef?: ElementRef<HTMLElement>;
 
@@ -219,7 +221,7 @@ export class TabsPage implements OnInit, AfterViewInit, OnDestroy {
     }
 
     const actionSheet = await this.actionSheetController.create({
-      header: 'Services at Love INC Newberg',
+      header: `Services at ${this.organizationContext.publicName}`,
       cssClass: SERVICES_ACTION_SHEET_CLASS,
       buttons: [
         {

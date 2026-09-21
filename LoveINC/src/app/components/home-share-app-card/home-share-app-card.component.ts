@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output, inject } from '@angular/core';
-import { LOVE_INC_PUBLIC_NAME, SHARE_APP_BLURB } from '../../shared/love-inc-contact.constants';
+import { SHARE_APP_BLURB } from '../../shared/love-inc-contact.constants';
 import { ShareAppService } from '../../services/share-app.service';
+import { OrganizationContextService } from '../../services/organization-context.service';
 
 @Component({
   selector: 'app-home-share-app-card',
@@ -10,12 +11,16 @@ import { ShareAppService } from '../../services/share-app.service';
 })
 export class HomeShareAppCardComponent {
   private readonly shareAppService = inject(ShareAppService);
+  private readonly organizationContext = inject(OrganizationContextService);
 
   @Output() dismiss = new EventEmitter<void>();
 
   readonly photoUrl = 'assets/photos/share-app-header.png';
-  readonly title = `Share the ${LOVE_INC_PUBLIC_NAME} App`;
   readonly blurb = SHARE_APP_BLURB;
+
+  get title(): string {
+    return `Share the ${this.organizationContext.publicName} App`;
+  }
 
   async onShareNow(): Promise<void> {
     try {

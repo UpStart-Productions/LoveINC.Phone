@@ -1,8 +1,11 @@
-/** Main Love INC / Connection Center line (Newberg) — use with tel: links. */
+/** Fallback office tel when org API/cache is unavailable — use with tel: links. */
 export const LOVE_INC_OFFICE_TEL = '5035373999';
 
-/** Short public name for in-app UI (Rate/Share, etc.). */
+/** Fallback affiliate name when org API/cache is unavailable. */
 export const LOVE_INC_PUBLIC_NAME = 'Love INC Newberg';
+
+/** Fallback online donate URL when org website is unavailable. */
+export const LOVE_INC_ONLINE_DONATE_URL_FALLBACK = 'https://loveincnewberg.org/donate/';
 
 /** Home share card + share sheet title. */
 export const SHARE_APP_SHEET_TITLE = 'Share the Love INC App';

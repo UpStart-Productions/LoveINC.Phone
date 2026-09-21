@@ -13,7 +13,7 @@
       <div class="org-header">
         <img src="assets/icon-only.png" alt="Love INC" class="org-logo">
         <div>
-          <h2>Love INC of Newberg</h2>
+          <h2>{{ affiliateName }}</h2>
           <p class="app-body-secondary">Your gift helps neighbors in Yamhill County.</p>
         </div>
       </div>
@@ -138,7 +138,7 @@
       <div #checkmarkBurst class="thanks-burst" aria-hidden="true"></div>
       <h2>Thank you, {{ firstName }}</h2>
       <p class="app-body-secondary">
-        Your {{ frequencyLabel || 'one-time' }} gift of {{ formatMoney(totalAmount) }} to Love INC of Newberg is confirmed.
+        Your {{ frequencyLabel || 'one-time' }} gift of {{ formatMoney(totalAmount) }} to {{ affiliateName }} is confirmed.
       </p>
       <ion-button expand="block" class="donate-cta" (click)="closeSheet()">Done</ion-button>
     </div>
@@ -156,7 +156,7 @@
           </svg>
           Pay
         </div>
-        <p class="apple-merchant">Love INC of Newberg</p>
+        <p class="apple-merchant">{{ affiliateName }}</p>
         <p class="apple-amount">{{ formatMoney(totalAmount) }}</p>
         @if (frequencyLabel) {
           <p class="apple-freq">{{ frequencyLabel }} donation</p>
@@ -177,7 +177,7 @@
     } @else {
       <div class="google-sheet">
         <div class="google-sheet-mark">G Pay</div>
-        <p class="apple-merchant">Love INC of Newberg</p>
+        <p class="apple-merchant">{{ affiliateName }}</p>
         <p class="apple-amount">{{ formatMoney(totalAmount) }}</p>
         @if (frequencyLabel) {
           <p class="apple-freq">{{ frequencyLabel }} donation</p>

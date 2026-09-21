@@ -4,9 +4,7 @@ import { Router } from '@angular/router';
 import { AppLauncher } from '@capacitor/app-launcher';
 import { DONATE_ACTION_SHEET_CLASS } from '../shared/action-sheet-classes';
 import { navigateAppForward } from '../shared/utils/navigation-forward.util';
-
-/** External donation page. In-app dummy form still lives at /tabs/donate-money. */
-const LOVE_INC_ONLINE_DONATE_URL = 'https://loveincnewberg.org/donate/';
+import { OrganizationContextService } from './organization-context.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +13,13 @@ export class DonateActionSheetService {
   constructor(
     private actionSheetController: ActionSheetController,
     private router: Router,
-    private navController: NavController
+    private navController: NavController,
+    private organizationContext: OrganizationContextService,
   ) {}
 
   async openDonateActionSheet(): Promise<void> {
     const actionSheet = await this.actionSheetController.create({
-      header: 'Donate to Love INC Newberg',
+      header: `Donate to ${this.organizationContext.publicName}`,
       buttons: [
         {
           text: 'Goods, clothing, household items.',
@@ -53,11 +52,12 @@ export class DonateActionSheetService {
   }
 
   private async handleOnlineDonation(): Promise<void> {
+    const url = this.organizationContext.donateUrl;
     try {
-      await AppLauncher.openUrl({ url: LOVE_INC_ONLINE_DONATE_URL });
+      await AppLauncher.openUrl({ url });
     } catch (err) {
       console.error('DonateActionSheetService.handleOnlineDonation', err);
-      window.open(LOVE_INC_ONLINE_DONATE_URL, '_blank');
+      window.open(url, '_blank');
     }
   }
 }

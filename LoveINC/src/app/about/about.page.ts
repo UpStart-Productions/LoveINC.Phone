@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { PlatformApiService } from '../services/platform';
+import { OrganizationContextService } from '../services/organization-context.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { 
@@ -44,9 +45,15 @@ import {
   ],
 })
 export class AboutPage implements OnInit {
+  private readonly organizationContext = inject(OrganizationContextService);
+
   showDonateButton: boolean = false;
   /** Shown when GET /team returns at least one member. */
   showMeetStaffButton = false;
+
+  get affiliateName(): string {
+    return this.organizationContext.publicName;
+  }
 
   constructor(
     private donateButtonService: DonateButtonService,

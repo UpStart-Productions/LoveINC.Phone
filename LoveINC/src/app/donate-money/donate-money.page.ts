@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -15,6 +15,7 @@ import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import lottie, { type AnimationItem } from 'lottie-web';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { UserProfileService } from '../services/user-profile.service';
+import { OrganizationContextService } from '../services/organization-context.service';
 
 /** TEMP marketing dummy — revert donate-money + action-sheet wiring after screen videos. */
 export type DonationFrequency = 'one-time' | 'monthly' | 'quarterly';
@@ -40,6 +41,8 @@ type CheckoutView = 'form' | 'apple-pay' | 'google-pay' | 'thanks';
   ],
 })
 export class DonateMoneyPage implements OnInit, AfterViewChecked, OnDestroy {
+  private readonly organizationContext = inject(OrganizationContextService);
+
   @ViewChild('checkmarkBurst') private burstRef?: ElementRef<HTMLDivElement>;
   private burstAnim?: AnimationItem;
   private burstPlayed = false;
@@ -64,6 +67,10 @@ export class DonateMoneyPage implements OnInit, AfterViewChecked, OnDestroy {
   ];
 
   readonly presetAmounts = [25, 50, 100, 250];
+
+  get affiliateName(): string {
+    return this.organizationContext.publicName;
+  }
 
   constructor(private userProfile: UserProfileService) {}
 

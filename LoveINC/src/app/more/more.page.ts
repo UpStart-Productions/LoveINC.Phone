@@ -11,8 +11,8 @@ import { ShareAppService } from '../services/share-app.service';
 import {
   LOVE_INC_PRIVACY_POLICY_URL,
   LOVE_INC_TERMS_OF_USE_URL,
-  LOVE_INC_PUBLIC_NAME,
 } from '../shared/love-inc-contact.constants';
+import { OrganizationContextService } from '../services/organization-context.service';
 import { AppVersionService } from '../services/app-version.service';
 import { AppRateService } from '../services/app-rate.service';
 import {
@@ -83,7 +83,8 @@ export class MorePage implements OnInit {
     private userProfileService: UserProfileService,
     private shareAppService: ShareAppService,
     readonly appVersion: AppVersionService,
-    private appRate: AppRateService
+    private appRate: AppRateService,
+    private organizationContext: OrganizationContextService,
   ) {}
 
   ngOnInit() {
@@ -95,14 +96,18 @@ export class MorePage implements OnInit {
       this.userFirstInitial = firstName.charAt(0).toUpperCase();
     }
     this.moreSections = this.buildMoreSections();
+    this.organizationContext.organization$.subscribe(() => {
+      this.moreSections = this.buildMoreSections();
+    });
   }
 
   private buildMoreSections(): MoreSection[] {
+    const affiliateName = this.organizationContext.publicName;
     const explore: MoreSection = {
       title: 'Explore',
       items: [
         {
-          name: 'About Love INC Newberg',
+          name: `About ${affiliateName}`,
           icon: 'information-circle-outline',
           iconColor: 'var(--ion-color-secondary)',
           route: '/tabs/about',
@@ -127,13 +132,13 @@ export class MorePage implements OnInit {
       title: 'Feedback',
       items: [
         {
-          name: `Share ${LOVE_INC_PUBLIC_NAME}`,
+          name: `Share ${affiliateName}`,
           icon: 'share-outline',
           iconColor: 'var(--ion-color-primary)',
           handler: () => this.openShareApp(),
         },
         {
-          name: `Rate ${LOVE_INC_PUBLIC_NAME}`,
+          name: `Rate ${affiliateName}`,
           icon: 'star-outline',
           iconColor: 'var(--love-inc-gold)',
           handler: () => this.openRateApp(),

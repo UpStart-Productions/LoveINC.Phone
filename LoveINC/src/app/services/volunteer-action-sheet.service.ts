@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ModalController } from '@ionic/angular/standalone';
-import { firstValueFrom, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { VolunteerModalComponent } from '../components/volunteer-modal/volunteer-modal.component';
-import { LOVE_INC_PUBLIC_NAME } from '../shared/love-inc-contact.constants';
 import { GapAccessService } from './gap-access.service';
-import { PlatformApiService } from './platform/platform-api.service';
+import { OrganizationContextService } from './organization-context.service';
 
 /** Minimal volunteer position – usable from donations, services, content, etc. */
 export interface VolunteerPositionInfo {
@@ -36,19 +33,18 @@ export class VolunteerActionSheetService {
   constructor(
     private modalController: ModalController,
     private gapAccess: GapAccessService,
-    private platformApi: PlatformApiService
+    private organizationContext: OrganizationContextService,
   ) {}
 
   /** Home CTA — generic interest signup, not tied to a specific open position. */
   async openGeneralVolunteerSignup(): Promise<void> {
-    const org = await firstValueFrom(
-      this.platformApi.getOrganization().pipe(catchError(() => of(null)))
-    );
+    await this.organizationContext.initialize();
+    const org = this.organizationContext.organization;
 
     const modal = await this.modalController.create({
       component: VolunteerModalComponent,
       componentProps: {
-        organizationName: LOVE_INC_PUBLIC_NAME,
+        organizationName: this.organizationContext.publicName,
         affiliateId: org?.id ?? environment.tenantSlug,
         genericSignup: true,
       },

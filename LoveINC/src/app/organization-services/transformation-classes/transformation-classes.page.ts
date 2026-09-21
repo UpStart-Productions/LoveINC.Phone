@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { startOfDay } from 'date-fns';
 import { Router, RouterLink } from '@angular/router';
@@ -20,6 +20,7 @@ import { SharingService } from '../../services/sharing/sharing.service';
 import { AppBackButtonComponent } from '../../components/app-back-button/app-back-button.component';
 import { NotificationsButtonComponent } from '../../components/notifications-button/notifications-button.component';
 import { PlatformApiService, type PlatformClass, type PlatformHomeFeedItem, type PlatformOffering } from '../../services/platform';
+import { OrganizationContextService } from '../../services/organization-context.service';
 import { VolunteerActionSheetService } from '../../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../../services/schedule-formatting.service';
 import { CardFormattingService, type FormattedCard } from '../../services/card-formatting.service';
@@ -77,9 +78,15 @@ export interface ClassCardItem {
   ],
 })
 export class TransformationClassesPage implements OnInit {
+  private readonly organizationContext = inject(OrganizationContextService);
+
   activeClassCards: ClassCardItem[] = [];
   loaded = false;
   showDonateButton: boolean = false;
+
+  get affiliateName(): string {
+    return this.organizationContext.publicName;
+  }
 
   constructor(
     private platformApi: PlatformApiService,

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalController, NavController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
@@ -9,6 +9,7 @@ import {
   type NotificationMeta,
 } from '../../shared/utils/notification-deeplink';
 import { navigateAppForward } from '../../shared/utils/navigation-forward.util';
+import { OrganizationContextService } from '../../services/organization-context.service';
 import {
   IonHeader,
   IonToolbar,
@@ -53,9 +54,15 @@ const SHOW_ALL_NOTIFICATIONS_IN_PANEL = true;
   ],
 })
 export class AlertsModalComponent implements OnInit, OnDestroy {
+  private readonly organizationContext = inject(OrganizationContextService);
+
   notifications: AppNotification[] = [];
   loading = true;
   private destroy$ = new Subject<void>();
+
+  get affiliateName(): string {
+    return this.organizationContext.publicName;
+  }
 
   constructor(
     private modalController: ModalController,

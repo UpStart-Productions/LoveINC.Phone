@@ -57,6 +57,7 @@ import { ContentPlanService } from '../content-plan/content-plan.service';
 import type { ContentPlanTheme } from '../content-plan/content-plan.model';
 import type { PeekCarouselSlideClick } from '../components/peek-carousel/peek-carousel.model';
 import { navigateAppForward } from '../shared/utils/navigation-forward.util';
+import { OrganizationContextService } from '../services/organization-context.service';
 
 const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
 const BROWSE_SERVICES_MAX_DISPLAYS = 3;
@@ -122,6 +123,7 @@ export class HomePage implements OnInit {
   clientSupportVoucherCount = 0;
 
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly organizationContext = inject(OrganizationContextService);
 
   constructor(
     private onboardingService: OnboardingService,
@@ -362,7 +364,7 @@ export class HomePage implements OnInit {
     }
 
     rows.push(buildVolunteerCtaRow());
-    rows.push(buildGiveNowCtaRow());
+    rows.push(buildGiveNowCtaRow(this.organizationContext.publicName));
     return rows;
   }
 

@@ -7,6 +7,7 @@ import {
 } from '../../shared/utils';
 import { resolvePlatformCtaHomeAction } from '../../shared/utils/cta-navigation.util';
 import type { HomeCtaRowModel } from './home-cta-row.model';
+import { LOVE_INC_PUBLIC_NAME } from '../../shared/love-inc-contact.constants';
 
 function platformCtaSubtitle(cta: PlatformCta): string {
   if (cta.events?.length === 1) {
@@ -127,10 +128,10 @@ export function buildGetHelpCtaRow(
   };
 }
 
-export function buildGiveNowCtaRow(): HomeCtaRowModel {
+export function buildGiveNowCtaRow(publicName = LOVE_INC_PUBLIC_NAME): HomeCtaRowModel {
   return {
     id: 'give-now',
-    body: 'Give to Love INC Newberg',
+    body: `Give to ${publicName}`,
     iconName: 'gift-outline',
     iconColor: 'var(--love-inc-gold)',
     pillText: 'Donate',

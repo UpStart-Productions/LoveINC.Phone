@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { CapacitorHttp } from '@capacitor/core';
 import { GoogleMapsLoaderService } from './google-maps-loader.service';
+import { OrganizationContextService } from './organization-context.service';
 
 declare var google: any;
-
-/** Improves geocode hits for this affiliate when street-only or ambiguous strings are used. */
-const TENANT_GEOCODE_SUFFIX = ', Newberg, OR, USA';
 
 /**
  * Shared geocoding used by donation/partner location map modals and the partner churches map.
@@ -13,7 +11,10 @@ const TENANT_GEOCODE_SUFFIX = ', Newberg, OR, USA';
  */
 @Injectable({ providedIn: 'root' })
 export class AddressGeocodingService {
-  constructor(private readonly googleMapsLoader: GoogleMapsLoaderService) {}
+  constructor(
+    private readonly googleMapsLoader: GoogleMapsLoaderService,
+    private readonly organizationContext: OrganizationContextService,
+  ) {}
 
   /** Strips HTML and normalizes newlines (CMS/API may include markup). */
   normalizeForGeocode(raw: string): string {
@@ -85,16 +86,17 @@ export class AddressGeocodingService {
       console.warn('AddressGeocoding: Google Maps failed to load', err);
     }
 
+    const geocodeSuffix = this.organizationContext.geocodeSuffix;
     let pos = await this.geocodeGooglePromise(normalized);
     if (pos) return pos;
-    if (!/\b(OR|Oregon|97132)\b/i.test(normalized) && !normalized.includes(TENANT_GEOCODE_SUFFIX)) {
-      pos = await this.geocodeGooglePromise(normalized + TENANT_GEOCODE_SUFFIX);
+    if (!/\b(OR|Oregon|97132)\b/i.test(normalized) && !normalized.includes(geocodeSuffix)) {
+      pos = await this.geocodeGooglePromise(normalized + geocodeSuffix);
       if (pos) return pos;
     }
     let osm = await this.geocodeNominatimUs(normalized);
     if (osm) return osm;
-    if (!/\b(OR|Oregon|97132)\b/i.test(normalized) && !normalized.includes(TENANT_GEOCODE_SUFFIX)) {
-      osm = await this.geocodeNominatimUs(normalized + TENANT_GEOCODE_SUFFIX);
+    if (!/\b(OR|Oregon|97132)\b/i.test(normalized) && !normalized.includes(geocodeSuffix)) {
+      osm = await this.geocodeNominatimUs(normalized + geocodeSuffix);
     }
     return osm;
   }

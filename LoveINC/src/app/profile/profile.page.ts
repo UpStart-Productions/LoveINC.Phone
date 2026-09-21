@@ -5,6 +5,7 @@ import { OnboardingService } from '../services/onboarding.service';
 import { UserProfileService } from '../services/user-profile.service';
 import { AppUserDataService } from '../services/app-user-data.service';
 import { PlatformApiService } from '../services/platform/platform-api.service';
+import { OrganizationContextService } from '../services/organization-context.service';
 import { DeviceIdService } from '../services/device-id.service';
 import { DeviceInfoService } from '../services/device-info.service';
 import {
@@ -101,6 +102,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     private userProfileService: UserProfileService,
     private appUserData: AppUserDataService,
     private platformApi: PlatformApiService,
+    private organizationContext: OrganizationContextService,
     private deviceId: DeviceIdService,
     private deviceInfo: DeviceInfoService,
     private modalController: ModalController,
@@ -115,18 +117,15 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.dismissedSub = this.dismissedVouchers.getDismissed$().subscribe((ids) => {
       this.dismissedIds = ids;
     });
-    this.platformApi.getOrganization().subscribe({
-      next: (org) => {
-        if (org?.name) this.organizationName = org.name;
-        const customerFromOrg = org?.customerName ?? org?.customer?.name;
-        if (customerFromOrg) this.customerName = customerFromOrg;
-      },
-      error: () => {}});
-    this.platformApi.getCustomer().subscribe({
-      next: (customer) => {
-        if (customer?.name) this.customerName = customer.name;
-      },
-      error: () => {}});
+    void this.organizationContext.initialize();
+    this.organizationContext.organization$.subscribe((org) => {
+      if (org?.name) this.organizationName = org.name;
+      const customerFromOrg = org?.customerName ?? org?.customer?.name;
+      if (customerFromOrg) this.customerName = customerFromOrg;
+    });
+    this.organizationContext.customer$.subscribe((customer) => {
+      if (customer?.name) this.customerName = customer.name;
+    });
     const p = this.userProfileService.getProfile();
     this.profileInfo = { email: p.email ?? '', firstName: p.firstName ?? '', lastName: p.lastName ?? '' };
     this.profileSub = this.userProfileService.getProfile$().subscribe((prof) => {

@@ -21,7 +21,7 @@
   <div *ngIf="!loading && notifications.length === 0" class="no-alerts p-48 p-l-24 p-r-24">
     <ion-icon name="notifications-outline" class="m-b-18 no-alerts-icon"></ion-icon>
     <h2 class="app-title m-b-6">No Notifications</h2>
-    <p class="app-body-secondary">You're all caught up. Check back later for updates from Love INC Newberg.</p>
+    <p class="app-body-secondary">You're all caught up. Check back later for updates from {{ affiliateName }}.</p>
   </div>
 
   <div *ngIf="!loading && notifications.length > 0" class="notifications-wrapper">

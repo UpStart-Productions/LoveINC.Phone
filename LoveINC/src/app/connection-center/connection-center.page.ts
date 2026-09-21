@@ -12,7 +12,7 @@ import { DonateButtonService } from '../services/donate-button.service';
 import { DonateActionSheetService } from '../services/donate-action-sheet.service';
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
-import { LOVE_INC_OFFICE_TEL } from '../shared/love-inc-contact.constants';
+import { OrganizationContextService } from '../services/organization-context.service';
 import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 import { resolveReturnUrl } from '../shared/utils/navigation-origin.util';
 import { isMainTabSegment } from '../shared/utils/navigation-tab-prefix.util';
@@ -41,6 +41,7 @@ export class ConnectionCenterPage implements OnInit, AfterViewInit, OnDestroy {
   private readonly donateButtonService = inject(DonateButtonService);
   private readonly donateActionSheetService = inject(DonateActionSheetService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly organizationContext = inject(OrganizationContextService);
 
   private edgeScrollEl: HTMLElement | null = null;
   private edgeScrollListener: (() => void) | null = null;
@@ -84,7 +85,7 @@ export class ConnectionCenterPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   callConnectionCenter(): void {
-    window.open(`tel:${LOVE_INC_OFFICE_TEL}`, '_self');
+    window.open(`tel:${this.organizationContext.officeTel}`, '_self');
   }
 
   onGetStarted() {

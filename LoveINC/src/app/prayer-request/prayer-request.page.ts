@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -21,6 +21,7 @@ import { DonateActionSheetService } from '../services/donate-action-sheet.servic
 import { NotificationsButtonComponent } from '../components/notifications-button/notifications-button.component';
 import { UserProfileService } from '../services/user-profile.service';
 import { OnboardingService } from '../services/onboarding.service';
+import { OrganizationContextService } from '../services/organization-context.service';
 
 @Component({
   selector: 'app-prayer-request',
@@ -46,7 +47,13 @@ import { OnboardingService } from '../services/onboarding.service';
   ],
 })
 export class PrayerRequestPage implements OnInit {
+  private readonly organizationContext = inject(OrganizationContextService);
+
   showDonateButton = false;
+
+  get affiliateName(): string {
+    return this.organizationContext.publicName;
+  }
 
   form = {
     firstName: '',
