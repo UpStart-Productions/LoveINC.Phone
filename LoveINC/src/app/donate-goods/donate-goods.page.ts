@@ -316,7 +316,7 @@ export class DonateGoodsPage implements OnInit {
       (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const parts: string[] = [];
     parts.push(`<div class="donation-details">`);
-    if (location.providerName || location.locationName || location.streetAddress) {
+    if (location.providerName || location.locationName || location.streetAddress || location.hours) {
       parts.push(`<div class="donation-provider-location p-b-12">`);
       if (location.providerName) {
         parts.push(`<div class="donation-detail-row"><span>${esc(location.providerName)}</span></div>`);
@@ -329,22 +329,15 @@ export class DonateGoodsPage implements OnInit {
           `<div class="donation-detail-row map-address-tappable"><ion-icon name="location-outline"></ion-icon><span>${esc(location.streetAddress)}</span></div>`,
         );
       }
+      if (location.hours) {
+        parts.push(
+          `<div class="donation-detail-row"><ion-icon name="time-outline"></ion-icon><span>${esc(location.hours)}</span></div>`,
+        );
+      }
       parts.push(`</div>`);
     }
     if (location.shortDescription) {
       parts.push(`<p class="app-body-secondary m-b-0">${esc(location.shortDescription)}</p>`);
-    }
-    if (location.hours) {
-      parts.push(`<div class="donation-address-schedule p-t-12 p-b-12">`);
-      parts.push(`<div class="donation-detail-row"><ion-icon name="time-outline"></ion-icon><span>${esc(location.hours)}</span></div>`);
-      parts.push(`</div>`);
-    }
-    if (location.phone) {
-      const phone = location.phone.trim();
-      const telHref = phone.replace(/"/g, '&quot;');
-      parts.push(
-        `<div class="donation-detail-row"><span><a class="app-link" href="tel:${telHref}">${esc(location.phone)}</a></span></div>`
-      );
     }
     if (location.contact) parts.push(`<div class="donation-detail-row"><span>${esc(location.contact)}</span></div>`);
     if (location.notes) parts.push(`<div class="donation-detail-row"><span class="app-body-secondary notes-value">${esc(location.notes)}</span></div>`);
