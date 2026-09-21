@@ -232,12 +232,16 @@ export interface PlatformDonationItem {
 export interface PlatformDonation {
   id: string;
   title: string;
+  /** Linked Gap/service name when enriched from serviceId (distinct from donation item title). */
+  serviceTitle?: string;
   shortDescription?: string;
   longDescription?: string;
   provider: { id: string; name: string; phone?: string; email?: string };
   address?: PlatformAddress;
   photoUrl?: string;
   serviceId?: string;
+  /** Service participation id on /donations (matches offering/participation id on /services). */
+  participationId?: string;
   itemLabels: string[];
   items?: PlatformDonationItem[];
   /** Assistance accepted on this drive (additive public API field). */

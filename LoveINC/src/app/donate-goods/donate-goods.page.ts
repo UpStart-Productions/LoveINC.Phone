@@ -20,17 +20,6 @@ import { PlatformApiService } from '../services/platform/platform-api.service';
 import type { PlatformAddress, PlatformDonation, PlatformVolunteerPosition } from '../services/platform/types';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 import { LocationMapModalService } from '../services/location-map-modal.service';
-import type { CardBadge } from '../components/card/card.component';
-
-/** Category → icon + color for donation badges (matches home card style) */
-const DONATION_CATEGORY_STYLE: Record<string, { icon: string; color: string }> = {
-  clothing: { icon: 'shirt-outline', color: '#10b981' },
-  diapers: { icon: 'heart-outline', color: '#f59e0b' },
-  food: { icon: 'restaurant-outline', color: '#eaa535' },
-  furniture: { icon: 'cube-outline', color: '#8b7355' },
-  bikes: { icon: 'bicycle-outline', color: '#349394' },
-};
-
 interface VolunteerPosition {
   id: string;
   title?: string;
@@ -42,7 +31,10 @@ interface VolunteerPosition {
 interface DonationLocation {
   id: string;
   category: string;
-  organization: string;
+  serviceTitle: string;
+  providerName: string;
+  locationName: string | null;
+  streetAddress: string | null;
   address: string | null;
   /** From platform when provided; avoids geocoding. */
   latitude?: number;
@@ -57,7 +49,6 @@ interface DonationLocation {
   notes: string | null;
   contact?: string | null;
   photoUrl?: string | null;
-  badge?: CardBadge;
   volunteerPositions?: VolunteerPosition[];
 }
 
@@ -150,7 +141,6 @@ export class DonateGoodsPage implements OnInit {
     const photoUrl = d.photoUrl
       ? this.platformApi.resolveUploadUrl(d.photoUrl) || d.photoUrl
       : null;
-    const badge = this.getDonationBadge(category, d.title);
     const positions = (d.volunteerPositions ?? (d as unknown as Record<string, unknown>)['volunteer_positions'] ?? []) as PlatformVolunteerPosition[];
     const volunteerPositions = positions.map((v) => {
       const raw = v as Record<string, unknown>;
@@ -166,10 +156,16 @@ export class DonateGoodsPage implements OnInit {
       };
     });
     const coords = this.coordinatesFromPlatformAddress(d.address);
+    const providerName = d.provider?.name?.trim() ?? '';
+    const locationName = d.address?.locationName?.trim() || null;
+    const streetAddress = this.formatStreetAddress(d.address);
     return {
       id: d.id,
       category,
-      organization: d.provider?.name ?? d.title ?? '',
+      serviceTitle: d.serviceTitle?.trim() || d.title?.trim() || 'Donation',
+      providerName,
+      locationName,
+      streetAddress,
       address: this.formatAddress(d.address),
       ...(coords ? { latitude: coords.lat, longitude: coords.lng } : {}),
       phone: d.provider?.phone ?? null,
@@ -181,7 +177,6 @@ export class DonateGoodsPage implements OnInit {
       notes: d.longDescription?.trim() || null,
       contact: null,
       photoUrl,
-      badge,
       volunteerPositions: volunteerPositions.length > 0 ? volunteerPositions : undefined,
     };
   }
@@ -194,13 +189,15 @@ export class DonateGoodsPage implements OnInit {
       .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
   }
 
-  private getDonationBadge(category: string, title: string): CardBadge {
-    const label = title || category || 'Donation';
-    const key = category.toLowerCase();
-    const match = DONATION_CATEGORY_STYLE[key] ??
-      Object.entries(DONATION_CATEGORY_STYLE).find(([k]) => key.includes(k))?.[1];
-    const { icon, color } = match ?? { icon: 'gift-outline', color: '#eaa535' };
-    return { icon, label, color };
+  /** Street + city/state/zip for card display (excludes locationName). */
+  private formatStreetAddress(addr: PlatformAddress | undefined): string | null {
+    if (!addr) return null;
+    const line = (v: string | undefined | null) =>
+      v != null && String(v).trim() !== '' ? String(v).trim() : null;
+    const parts = [line(addr.address), line(addr.city), line(addr.state), line(addr.zip)].filter(
+      (p): p is string => !!p,
+    );
+    return parts.length ? parts.join(', ') : null;
   }
 
   /**
@@ -291,7 +288,10 @@ export class DonateGoodsPage implements OnInit {
         // Search across all fields
         const searchFields = [
           location.category,
-          location.organization,
+          location.serviceTitle,
+          location.providerName,
+          location.locationName,
+          location.streetAddress,
           location.address,
           location.phone,
           location.email,
@@ -316,17 +316,27 @@ export class DonateGoodsPage implements OnInit {
       (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const parts: string[] = [];
     parts.push(`<div class="donation-details">`);
-    if (location.shortDescription) {
-      parts.push(`<p class="app-body-secondary m-t-8 m-b-0">${esc(location.shortDescription)}</p>`);
-    }
-    if (location.address || location.hours) {
-      parts.push(`<div class="donation-address-schedule p-t-12 p-b-12">`);
-      if (location.address) {
+    if (location.providerName || location.locationName || location.streetAddress) {
+      parts.push(`<div class="donation-provider-location p-b-12">`);
+      if (location.providerName) {
+        parts.push(`<div class="donation-detail-row"><span>${esc(location.providerName)}</span></div>`);
+      }
+      if (location.locationName && location.locationName !== location.providerName) {
+        parts.push(`<div class="donation-detail-row"><span>${esc(location.locationName)}</span></div>`);
+      }
+      if (location.streetAddress) {
         parts.push(
-          `<div class="donation-detail-row map-address-tappable"><ion-icon name="location-outline"></ion-icon><span>${esc(location.address)}</span></div>`
+          `<div class="donation-detail-row map-address-tappable"><ion-icon name="location-outline"></ion-icon><span>${esc(location.streetAddress)}</span></div>`,
         );
       }
-      if (location.hours) parts.push(`<div class="donation-detail-row"><ion-icon name="time-outline"></ion-icon><span>${esc(location.hours)}</span></div>`);
+      parts.push(`</div>`);
+    }
+    if (location.shortDescription) {
+      parts.push(`<p class="app-body-secondary m-b-0">${esc(location.shortDescription)}</p>`);
+    }
+    if (location.hours) {
+      parts.push(`<div class="donation-address-schedule p-t-12 p-b-12">`);
+      parts.push(`<div class="donation-detail-row"><ion-icon name="time-outline"></ion-icon><span>${esc(location.hours)}</span></div>`);
       parts.push(`</div>`);
     }
     if (location.phone) {
@@ -394,13 +404,13 @@ export class DonateGoodsPage implements OnInit {
 
   onDonationCardContentAreaClick(ev: Event, location: DonationLocation): void {
     const t = (ev.target as HTMLElement).closest('.map-address-tappable');
-    if (!t || !location.address?.trim()) return;
+    if (!t || !(location.streetAddress?.trim() || location.address?.trim())) return;
     ev.stopPropagation();
     void this.openDonationLocationMap(location);
   }
 
   private async openDonationLocationMap(location: DonationLocation): Promise<void> {
-    const hasAddr = !!location.address?.trim();
+    const hasAddr = !!(location.streetAddress?.trim() || location.address?.trim());
     const hasCoords =
       location.latitude != null &&
       location.longitude != null &&
@@ -408,8 +418,8 @@ export class DonateGoodsPage implements OnInit {
       Number.isFinite(location.longitude);
     if (!hasAddr && !hasCoords) return;
     await this.locationMapModal.present({
-      title: location.organization,
-      address: location.address ?? '',
+      title: location.locationName || location.providerName || location.serviceTitle,
+      address: location.streetAddress ?? location.address ?? '',
       latitude: location.latitude,
       longitude: location.longitude,
       hours: location.hours ?? null,
@@ -430,8 +440,8 @@ export class DonateGoodsPage implements OnInit {
   async onVolunteerClick(location: DonationLocation) {
     if (!location.volunteerPositions?.length) return;
     await this.volunteerActionSheetService.openVolunteerActionSheet({
-      organizationName: location.organization,
-      address: location.address,
+      organizationName: location.providerName || location.serviceTitle,
+      address: location.streetAddress ?? location.address,
       positions: location.volunteerPositions,
       scheduleFallback: location.hours ?? undefined,
     });
@@ -444,9 +454,11 @@ export class DonateGoodsPage implements OnInit {
   }
 
   async onShareLocation(location: DonationLocation) {
+    const providerLocationName = location.locationName || location.providerName;
     const htmlContent = `
-      <h2>${location.organization}</h2>
-      ${location.address ? `<p><strong>Address:</strong> ${location.address}</p>` : ''}
+      <h2>${location.serviceTitle}</h2>
+      ${providerLocationName ? `<p><strong>Location:</strong> ${providerLocationName}</p>` : ''}
+      ${location.streetAddress ? `<p><strong>Address:</strong> ${location.streetAddress}</p>` : ''}
       ${location.hours ? `<p><strong>Hours:</strong> ${location.hours}</p>` : ''}
       ${location.phone ? `<p><strong>Phone:</strong> ${location.phone}</p>` : ''}
       ${location.email ? `<p><strong>Email:</strong> ${location.email}</p>` : ''}
@@ -461,8 +473,8 @@ export class DonateGoodsPage implements OnInit {
     `;
     
     await this.sharingService.shareContent({
-      title: location.organization,
-      subject: `Love INC Donation Location: ${location.organization}`,
+      title: location.serviceTitle,
+      subject: `Love INC Donation: ${location.serviceTitle}`,
       htmlContent: htmlContent
     });
   }

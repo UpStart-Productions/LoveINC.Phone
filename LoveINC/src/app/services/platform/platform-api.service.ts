@@ -249,10 +249,18 @@ export class PlatformApiService {
         map((res) => res?.donations ?? []),
       ),
       services: this.getServices(),
+      partners: this.getOrganizationPartners().pipe(catchError(() => of([] as PlatformPartner[]))),
     }).pipe(
-      map(({ donations, services }) => {
+      map(({ donations, services, partners }) => {
         const serviceById = new Map(services.map((s) => [s.id, s]));
-        return donations.map((d) => enrichDonationFromService(d, serviceById));
+        const partnerAddressById = new Map(
+          partners
+            .filter((p) => p.address)
+            .map((p) => [p.id, p.address as PlatformAddress]),
+        );
+        return donations.map((d) =>
+          enrichDonationFromService(d, serviceById, partnerAddressById),
+        );
       }),
     );
   }
@@ -967,14 +975,46 @@ function normalizePlatformService(raw: RawPlatformService): PlatformService {
   };
 }
 
+function findOfferingAddress(
+  service: PlatformService | undefined,
+  participationId: string | undefined,
+  providerId: string | undefined,
+): PlatformAddress | undefined {
+  if (!service?.offerings?.length) return undefined;
+  if (participationId) {
+    const byParticipation = service.offerings.find((o) => o.id === participationId);
+    if (byParticipation?.address) return byParticipation.address;
+  }
+  if (providerId) {
+    const byProvider = service.offerings.find((o) => o.provider?.id === providerId);
+    if (byProvider?.address) return byProvider.address;
+  }
+  return undefined;
+}
+
 function enrichDonationFromService(
   donation: PlatformDonation,
   serviceById: Map<string, PlatformService>,
+  partnerAddressById: Map<string, PlatformAddress>,
 ): PlatformDonation {
-  const service = donation.serviceId ? serviceById.get(donation.serviceId) : undefined;
+  const raw = donation as PlatformDonation & {
+    service_id?: string;
+    participationId?: string;
+    participation_id?: string;
+  };
+  const serviceId = donation.serviceId ?? raw.service_id;
+  const participationId = donation.participationId ?? raw.participationId ?? raw.participation_id;
+  const service = serviceId ? serviceById.get(serviceId) : undefined;
+  const providerId = donation.provider?.id;
+  const offeringAddress = findOfferingAddress(service, participationId, providerId);
+  const partnerAddress = providerId ? partnerAddressById.get(providerId) : undefined;
   const itemPhoto = donation.items?.find((item) => item.photoUrl?.trim())?.photoUrl;
   return {
     ...donation,
+    serviceId,
+    participationId,
+    serviceTitle: service?.title?.trim() || undefined,
+    address: donation.address ?? offeringAddress ?? partnerAddress,
     photoUrl: donation.photoUrl ?? itemPhoto ?? service?.photoUrl,
     shortDescription: donation.shortDescription ?? service?.shortDescription,
     longDescription: donation.longDescription ?? service?.longDescription,

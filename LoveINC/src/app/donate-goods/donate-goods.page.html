@@ -18,7 +18,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="app-card-page">
   <div class="content-wrapper">
     <div *ngFor="let category of categoryOrder">
       <div *ngIf="groupedLocations[category]?.length" class="category-section">
@@ -27,8 +27,7 @@
           class="app-card-compact location-card"
           [imageUrl]="location.photoUrl ?? undefined"
           [imagePosition]="'banner'"
-          [badge]="location.badge"
-          [title]="location.organization"
+          [title]="location.serviceTitle"
           [contentHtml]="getLocationContentHtml(location)"
           [badgeActions]="true"
           [actionIcons]="getActionIcons(location)"
