@@ -718,7 +718,9 @@ export class ContentDetailPage implements OnInit, OnDestroy, AfterViewInit {
       donation: c.donation,
       startDate: c.startDate,
       endDate: c.endDate,
-      showDateRangeInApp: c.showDateRangeInApp === true};
+      showDateRangeInApp: c.showDateRangeInApp === true,
+      relatedLinks: c.relatedLinks,
+    };
   }
 
   private loadClassFromApi() {

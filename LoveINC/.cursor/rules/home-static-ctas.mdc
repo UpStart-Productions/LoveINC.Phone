@@ -11,7 +11,7 @@ alwaysApply: false
 
 The **first white CTA card** on Home (`home-static-cta-card`) is the fixed **Start / Serve / Donate** block:
 
-- Optional **Start** row (Get Help / Connection Center — intake, vouchers, browse services)
+- **Start** row (Connection Center) — always shown; conditional hide logic disabled until further notice
 - **Serve** — Volunteer with Love INC
 - **Donate** — Give to Love INC Newberg
 

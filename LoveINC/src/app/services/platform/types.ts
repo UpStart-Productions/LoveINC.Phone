@@ -380,6 +380,7 @@ export interface PlatformCta {
   /** Volunteer positions linked to CTA; may include affiliate name for card context */
   volunteerPositions?: Array<PlatformVolunteerPosition & { affiliate?: string }>;
   address?: PlatformAddress;
+  relatedLinks?: PlatformAppLink[];
 }
 
 export interface PlatformTransformationToolAuthor {

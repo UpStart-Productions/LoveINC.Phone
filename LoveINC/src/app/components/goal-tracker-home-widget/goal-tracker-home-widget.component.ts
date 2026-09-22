@@ -104,9 +104,9 @@ export class GoalTrackerHomeWidgetComponent implements OnInit, OnDestroy {
       return '';
     }
     if (this.snapshot.completedTotal >= this.snapshot.scheduledTotal) {
-      return 'Tap to log or review your progress';
+      return 'Log or review your progress';
     }
-    return 'Tap to check off tasks for today';
+    return 'Check off tasks for today';
   }
 
   get showCard(): boolean {

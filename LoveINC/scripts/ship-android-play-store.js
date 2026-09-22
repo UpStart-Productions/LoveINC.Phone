@@ -12,16 +12,19 @@
  *
  * Unlike ship-ios-app-store.js, this does NOT open an IDE — Android's CLI tooling
  * (Gradle) builds and signs the release artifact directly. Upload the resulting
- * .aab to Play Console → your release track manually (or wire up the Play
- * Developer API later for full automation).
+ * Copies the signed .aab to dist-play/loveinc-{version}-build{build}-release.aab
+ * for upload (Gradle still writes android/.../app-release.aab).
+ * Upload the versioned file to Play Console → your release track manually.
  */
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
 const root = path.join(__dirname, '..');
+const versionFile = path.join(root, 'src/app-version.json');
 const androidCapConfig = path.join(root, 'android/app/src/main/assets/capacitor.config.json');
 const aabOutputPath = path.join(root, 'android/app/build/outputs/bundle/release/app-release.aab');
+const distPlayDir = path.join(root, 'dist-play');
 
 const bumpArg = process.argv[2] || 'patch';
 const allowedBumps = ['major', 'minor', 'patch', 'build'];
@@ -70,6 +73,27 @@ function assertNoLiveReloadServerInNativeConfig(filePath) {
   }
 }
 
+function loadVersion() {
+  try {
+    return JSON.parse(fs.readFileSync(versionFile, 'utf8'));
+  } catch (e) {
+    console.error('ship-android-play-store: cannot read', versionFile, e);
+    process.exit(1);
+  }
+}
+
+function copyVersionedReleaseBundle() {
+  const { version, build } = loadVersion();
+  const versionedName = `loveinc-${version}-build${build}-release.aab`;
+  fs.mkdirSync(distPlayDir, { recursive: true });
+  const versionedPath = path.join(distPlayDir, versionedName);
+  if (fs.existsSync(versionedPath)) {
+    fs.unlinkSync(versionedPath);
+  }
+  fs.copyFileSync(aabOutputPath, versionedPath);
+  return versionedPath;
+}
+
 run(`node scripts/bump-version.js ${bumpArg}`);
 run('npx ng build --configuration production');
 run('npx cap sync android');
@@ -82,5 +106,15 @@ if (!fs.existsSync(aabOutputPath)) {
   console.error('ship-android-play-store: expected output not found at', aabOutputPath);
   process.exit(1);
 }
-console.log(`\nSigned release bundle ready: ${aabOutputPath}`);
-console.log('Upload this .aab to Play Console → your release track.');
+
+const versionedAabPath = copyVersionedReleaseBundle();
+console.log(`\nSigned release bundle ready:`);
+console.log(`  Gradle:   ${aabOutputPath}`);
+console.log(`  Upload:   ${versionedAabPath}`);
+console.log('Upload the versioned .aab to Play Console → your release track.');
+
+try {
+  execSync(`open "${distPlayDir}"`, { stdio: 'ignore' });
+} catch {
+  // Non-macOS or headless — ignore.
+}

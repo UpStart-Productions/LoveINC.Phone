@@ -26,6 +26,7 @@ log.txt
 # Compiled output
 /dist
 /dist-ota
+/dist-play
 /tmp
 /out-tsc
 /bazel-out

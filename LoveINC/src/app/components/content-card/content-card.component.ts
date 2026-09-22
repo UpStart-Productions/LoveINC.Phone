@@ -75,6 +75,9 @@ export class ContentCardComponent {
   /** Detail text below title (e.g. "2-5 min", "4-6 min") */
   @Input() detail?: string;
 
+  /** Clamp detail to one line (ellipsis if overflow). */
+  @Input() detailSingleLine = false;
+
   /** When set, detail is built from segments; overrides plain `detail` display. */
   @Input() detailSegments?: ContentCardTextSegment[];
 

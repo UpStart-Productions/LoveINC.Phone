@@ -84,7 +84,7 @@
             }
           }
           @if (detailSegments?.length || detail) {
-            <div class="content-card-detail">
+            <div class="content-card-detail" [class.content-card-detail--single-line]="detailSingleLine">
               <p>
                 @if (detailSegments?.length) {
                   @for (seg of detailSegments; track $index) {
@@ -241,7 +241,7 @@
             }
           }
           @if (detailSegments?.length || detail) {
-            <div class="content-card-detail">
+            <div class="content-card-detail" [class.content-card-detail--single-line]="detailSingleLine">
               <p>
                 @if (detailSegments?.length) {
                   @for (seg of detailSegments; track $index) {

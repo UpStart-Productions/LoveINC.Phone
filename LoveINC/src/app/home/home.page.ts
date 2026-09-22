@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, ViewChildren, QueryList, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren, QueryList, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { forkJoin, combineLatest, firstValueFrom, of, type Observable } from 'rxjs';
-import { catchError, map, take, tap } from 'rxjs/operators';
+import { forkJoin, firstValueFrom, type Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { startOfDay } from 'date-fns';
 import {
   IonHeader,
@@ -28,7 +28,6 @@ import { PlatformApiService } from '../services/platform/platform-api.service';
 import type { PlatformCta, PlatformClass, PlatformEvent, PlatformHomeFeedItem, PlatformImpactStory } from '../services/platform/types';
 import { HomeCtaRowComponent } from '../components/home-cta-row/home-cta-row.component';
 import {
-  buildGetHelpCtaRow,
   buildConnectionCenterCtaRow,
   buildGiveNowCtaRow,
   buildVolunteerCtaRow,
@@ -45,11 +44,7 @@ import { HeaderActionsComponent } from '../components/header-actions/header-acti
 import { VolunteerActionSheetService } from '../services/volunteer-action-sheet.service';
 import { ScheduleFormattingService } from '../services/schedule-formatting.service';
 import { UserProfileService } from '../services/user-profile.service';
-import { DeviceIdService } from '../services/device-id.service';
-import { AppUserDataService } from '../services/app-user-data.service';
-import { DismissedVouchersService } from '../services/dismissed-vouchers.service';
 import { DismissedShareAppCardService } from '../services/dismissed-share-app-card.service';
-import { ServiceUnlockService } from '@upstart-productions/service-unlock';
 import { CalendarService } from '../services/calendar/calendar.service';
 import { MicrolearningThemeWidgetComponent } from '../components/microlearning-theme-widget/microlearning-theme-widget.component';
 import { HomeShareAppCardComponent } from '../components/home-share-app-card/home-share-app-card.component';
@@ -59,16 +54,8 @@ import type { PeekCarouselSlideClick } from '../components/peek-carousel/peek-ca
 import { navigateAppForward } from '../shared/utils/navigation-forward.util';
 import { OrganizationContextService } from '../services/organization-context.service';
 
-const CLIENT_SUPPORT_CARD_STORAGE_KEY = 'client_support_card_displays';
-const BROWSE_SERVICES_MAX_DISPLAYS = 3;
 /** When Home has no active events or classes, show up to this many impact stories. */
 const HOME_MAX_IMPACT_STORIES = 3;
-
-export type ClientSupportCardState =
-  | 'intake_required'
-  | 'has_vouchers'
-  | 'browse_services'
-  | 'browse_services_hidden';
 
 @Component({
   selector: 'app-home',
@@ -118,11 +105,6 @@ export class HomePage implements OnInit {
   platformCtaMediaItems: PeekCarouselMediaItem[] = [];
   showDonateButton = false;
 
-  /** Get Help row on Home — intake nudge, vouchers, or browse services. */
-  clientSupportCardState: ClientSupportCardState | null = null;
-  clientSupportVoucherCount = 0;
-
-  private readonly cdr = inject(ChangeDetectorRef);
   private readonly organizationContext = inject(OrganizationContextService);
 
   constructor(
@@ -137,18 +119,13 @@ export class HomePage implements OnInit {
     private volunteerActionSheetService: VolunteerActionSheetService,
     private scheduleFormatting: ScheduleFormattingService,
     private userProfileService: UserProfileService,
-    private deviceIdService: DeviceIdService,
-    private appUserDataService: AppUserDataService,
-    private dismissedVouchersService: DismissedVouchersService,
     private dismissedShareAppCardService: DismissedShareAppCardService,
-    private serviceUnlock: ServiceUnlockService,
     private calendarService: CalendarService,
     private contentPlanService: ContentPlanService
   ) {}
 
   ionViewDidEnter() {
     this.homeToolsCarousel?.refresh();
-    void this.reloadClientContext(false);
   }
 
   ngOnInit() {
@@ -158,7 +135,6 @@ export class HomePage implements OnInit {
     this.loadCtas();
     this.refreshWelcomeTitle();
     this.showDonateButton = this.donateButtonService.shouldShowDonateButton();
-    void this.reloadClientContext(false);
 
     (window as any).clearOnboarding = () => {
       this.onboardingService.clearOnboarding();
@@ -188,7 +164,6 @@ export class HomePage implements OnInit {
         firstValueFrom(this.fetchHomeMicrolearningThemes$(true)).then((themes) => {
           this.homeMicrolearningThemes = themes;
         }),
-        this.reloadClientContext(true),
       ]);
     } catch {
       // ignore
@@ -316,31 +291,6 @@ export class HomePage implements OnInit {
     return true;
   }
 
-  get showGetHelpCta(): boolean {
-    return (
-      this.clientSupportCardState === 'intake_required' ||
-      this.clientSupportCardState === 'has_vouchers' ||
-      this.clientSupportCardState === 'browse_services'
-    );
-  }
-
-  get clientSupportCardDescription(): string {
-    switch (this.clientSupportCardState) {
-      case 'has_vouchers':
-        return `You have ${this.clientSupportVoucherCount} active voucher${this.clientSupportVoucherCount === 1 ? '' : 's'}.`;
-      case 'browse_services':
-        return 'Browse Gap Ministries and classes.';
-      default:
-        return '';
-    }
-  }
-
-  get clientSupportCardAction(): 'profile' | 'gap-ministries' | 'connection-center' {
-    if (this.clientSupportCardState === 'intake_required') return 'connection-center';
-    if (this.clientSupportCardState === 'has_vouchers') return 'profile';
-    return 'gap-ministries';
-  }
-
   /**
    * HOME STATIC CTAs (Start / Serve / Donate) — fixed list card at top of Home.
    * DO NOT CHANGE layout, order, or styling without explicit product instruction.
@@ -348,24 +298,11 @@ export class HomePage implements OnInit {
    * See `.cursor/rules/home-static-ctas.mdc`.
    */
   get homeStaticCtaRows(): HomeCtaRowModel[] {
-    const rows: HomeCtaRowModel[] = [];
-
-    if (this.showGetHelpCta && this.clientSupportCardState) {
-      if (this.clientSupportCardState === 'intake_required') {
-        rows.push(buildConnectionCenterCtaRow());
-      } else {
-        rows.push(
-          buildGetHelpCtaRow(
-            this.clientSupportCardDescription,
-            this.clientSupportCardAction
-          )
-        );
-      }
-    }
-
-    rows.push(buildVolunteerCtaRow());
-    rows.push(buildGiveNowCtaRow(this.organizationContext.publicName));
-    return rows;
+    return [
+      buildConnectionCenterCtaRow(),
+      buildVolunteerCtaRow(),
+      buildGiveNowCtaRow(this.organizationContext.publicName),
+    ];
   }
 
   /** Platform/DB CTAs only — rendered below the static block in a peek carousel. */
@@ -378,99 +315,6 @@ export class HomePage implements OnInit {
       rows.push(mapPlatformCtaToRow(cta, 'give'));
     }
     return rows;
-  }
-
-  private async reloadClientContext(fromRefresh: boolean): Promise<void> {
-    await this.serviceUnlock.ensureInitialized();
-    const deviceId = this.deviceIdService.getDeviceId();
-    const profile = this.userProfileService.getProfile();
-    const onboarding = this.onboardingService.getOnboardingData();
-    const email = (profile.email ?? onboarding?.email)?.trim();
-    if (!deviceId && !email) {
-      if (fromRefresh) {
-        return;
-      }
-      const count = this.getBrowseServicesDisplayCount();
-      if (count >= BROWSE_SERVICES_MAX_DISPLAYS) {
-        this.clientSupportCardState = 'browse_services_hidden';
-      } else {
-        this.clientSupportCardState = 'browse_services';
-        this.incrementBrowseServicesDisplayCount();
-      }
-      return;
-    }
-
-    try {
-      const { clientAccess, appUserProfile } = await firstValueFrom(
-        combineLatest({
-          clientAccess: this.platformApi.getClientAccess(),
-          appUserProfile: this.platformApi.getAppUserProfile({
-            deviceId: deviceId || undefined,
-            email: email || undefined,
-          }),
-        }).pipe(take(1))
-      );
-      const intakeRequired = clientAccess?.intakeRequired ?? true;
-      const profileIntakeCompleted = appUserProfile?.profile?.intakeCompleted ?? false;
-      const apiIntakeCompleted =
-        profileIntakeCompleted ||
-        this.appUserDataService.hasIntakeCompleted() ||
-        this.serviceUnlock.isUnlocked;
-
-      const voucherRequests = appUserProfile?.profile?.voucherRequests ?? [];
-      const dismissedIds = this.dismissedVouchersService.getDismissed();
-      const validVouchers = voucherRequests.filter((vr) => {
-        if (dismissedIds.has(vr.id)) return false;
-        if (vr.status !== 'approved') return false;
-        if (vr.deniedAt) return false;
-        const expiresAt = vr.expiresAt ?? vr.createdAt;
-        return new Date(expiresAt) > new Date();
-      });
-      this.clientSupportVoucherCount = validVouchers.length;
-
-      if (intakeRequired && !apiIntakeCompleted) {
-        this.clientSupportCardState = 'intake_required';
-        return;
-      }
-      if (this.clientSupportVoucherCount > 0) {
-        this.clientSupportCardState = 'has_vouchers';
-        return;
-      }
-
-      const count = this.getBrowseServicesDisplayCount();
-      if (count >= BROWSE_SERVICES_MAX_DISPLAYS) {
-        this.clientSupportCardState = 'browse_services_hidden';
-      } else {
-        this.clientSupportCardState = 'browse_services';
-        if (!fromRefresh) {
-          this.incrementBrowseServicesDisplayCount();
-        }
-      }
-    } catch {
-      this.clientSupportCardState = 'browse_services';
-    }
-  }
-
-  private getBrowseServicesDisplayCount(): number {
-    try {
-      const raw = localStorage.getItem(CLIENT_SUPPORT_CARD_STORAGE_KEY);
-      if (raw) {
-        const n = parseInt(raw, 10);
-        return Number.isNaN(n) ? 0 : Math.max(0, n);
-      }
-    } catch {
-      // ignore
-    }
-    return 0;
-  }
-
-  private incrementBrowseServicesDisplayCount(): void {
-    try {
-      const count = this.getBrowseServicesDisplayCount();
-      localStorage.setItem(CLIENT_SUPPORT_CARD_STORAGE_KEY, String(count + 1));
-    } catch {
-      // ignore
-    }
   }
 
   onShareAppCardDismiss(): void {
