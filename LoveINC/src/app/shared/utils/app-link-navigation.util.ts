@@ -11,6 +11,12 @@ export function appLinkCategoryLabel(link: PlatformAppLink): string {
       return 'GrovPod';
     case 'collection':
       return 'Collection';
+    case 'event':
+      return 'Event';
+    case 'class':
+      return 'Class';
+    case 'impact_story':
+      return 'Impact story';
     default:
       return 'Related';
   }
@@ -48,6 +54,21 @@ export function resolveAppLinkNavigation(
       }
       return {
         commands: ['/tabs/collection', link.id],
+        queryParams: { from },
+      };
+    case 'event':
+      return {
+        commands: ['/tabs/content-detail/event', link.id],
+        queryParams: { from },
+      };
+    case 'class':
+      return {
+        commands: ['/tabs/content-detail/class', link.id],
+        queryParams: { from },
+      };
+    case 'impact_story':
+      return {
+        commands: ['/tabs/content-detail/impact-story', link.id],
         queryParams: { from },
       };
     default:

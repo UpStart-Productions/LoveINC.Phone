@@ -62,7 +62,10 @@ export type PlatformAppLinkType =
   | 'microlearning_theme'
   | 'microlearning_plan'
   | 'grov_pod'
-  | 'collection';
+  | 'collection'
+  | 'event'
+  | 'class'
+  | 'impact_story';
 
 export type PlatformAppLinkCollectionContentType =
   | 'service'

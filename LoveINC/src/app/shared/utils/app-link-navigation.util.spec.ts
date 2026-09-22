@@ -75,6 +75,36 @@ describe('app-link-navigation', () => {
     });
   });
 
+  it('resolves event, class, and impact story routes', () => {
+    expect(
+      resolveAppLinkNavigation(
+        { type: 'event', id: 'e1', title: 'Community Dinner' },
+        'updates',
+      ),
+    ).toEqual({
+      commands: ['/tabs/content-detail/event', 'e1'],
+      queryParams: { from: 'updates' },
+    });
+    expect(
+      resolveAppLinkNavigation(
+        { type: 'class', id: 'c1', title: 'Budget Basics' },
+        'transformation-classes',
+      ),
+    ).toEqual({
+      commands: ['/tabs/content-detail/class', 'c1'],
+      queryParams: { from: 'transformation-classes' },
+    });
+    expect(
+      resolveAppLinkNavigation(
+        { type: 'impact_story', id: 's1', title: 'A new start' },
+        'impact-stories',
+      ),
+    ).toEqual({
+      commands: ['/tabs/content-detail/impact-story', 's1'],
+      queryParams: { from: 'impact-stories' },
+    });
+  });
+
   it('filters to navigable links only', () => {
     const links: PlatformAppLink[] = [
       { type: 'microlearning_theme', id: 't1', title: 'Theme' },

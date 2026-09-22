@@ -97,6 +97,27 @@ export function mapRelatedLinkToListItem(
         iconName: photoUrl ? undefined : 'layers-outline',
         iconBackgroundColor: resolveAvatarBackgroundColor(link.id),
       };
+    case 'event':
+      return {
+        ...base,
+        imageUrl: photoUrl,
+        iconName: photoUrl ? undefined : 'calendar-outline',
+        iconBackgroundColor: resolveAvatarBackgroundColor(link.id),
+      };
+    case 'class':
+      return {
+        ...base,
+        imageUrl: photoUrl,
+        iconName: photoUrl ? undefined : 'school-outline',
+        iconBackgroundColor: resolveAvatarBackgroundColor(link.id),
+      };
+    case 'impact_story':
+      return {
+        ...base,
+        imageUrl: photoUrl,
+        iconName: photoUrl ? undefined : 'heart-outline',
+        iconBackgroundColor: resolveAvatarBackgroundColor(link.id),
+      };
     default:
       return null;
   }
