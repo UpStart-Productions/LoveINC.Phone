@@ -1,0 +1,56 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-back-button></app-back-button>
+    </ion-buttons>
+    <ion-title>Weekly Summary</ion-title>
+  </ion-toolbar>
+  <div class="container-week-scroller">
+    <app-meal-week-scroller
+      [initialWeekStart]="selectedWeekStart"
+      [earliestWeekStart]="earliestWeekStart"
+      (weekSelectedEvent)="onWeekSelected($event)"
+    ></app-meal-week-scroller>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (loading) {
+    <div class="page-shell"></div>
+  } @else if (!summary?.mealsPlanned) {
+    <div class="empty-state ion-padding">
+      <h2>No summary yet</h2>
+      <p class="app-body-secondary">Plan and cook meals for {{ weekLabel }} to see your summary.</p>
+    </div>
+  } @else {
+    <div class="ion-padding">
+      <h2>{{ weekLabel }}</h2>
+      <p class="app-body-secondary">
+        {{ summary!.mealsCooked }}/{{ summary!.mealsPlanned }} meals cooked
+      </p>
+      @if (summary!.averageReadyMinutes) {
+        <p class="app-body-secondary">Average recipe time: {{ summary!.averageReadyMinutes }} min</p>
+      }
+      @if (summary!.favoriteReaction) {
+        <p class="app-body-secondary">Top reaction: {{ summary!.favoriteReaction }}</p>
+      }
+
+      <ion-list>
+        @for (meal of meals; track meal.id) {
+          <ion-item>
+            <ion-label>
+              <h3>{{ meal.recipe?.title }}</h3>
+              @if (meal.isCooked) {
+                <p class="app-body-secondary">
+                  {{ meal.reactionEmoji }} · {{ cookTimeLabel(meal.cookTimeBucket) }}
+                </p>
+              } @else {
+                <p class="app-body-secondary">Not cooked yet</p>
+              }
+            </ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    </div>
+  }
+</ion-content>

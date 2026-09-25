@@ -64,6 +64,43 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
     ],
   },
   {
+    path: 'meal-planner',
+    data: { hideMainTabBar: true },
+    loadComponent: () =>
+      import('@app/meal-planner-tabs/meal-planner-tabs.page').then((m) => m.MealPlannerTabsPage),
+    children: [
+      {
+        path: 'plan',
+        loadComponent: () =>
+          import('@app/meal-planner-tabs/meal-planner-plan.page').then((m) => m.MealPlannerPlanPage),
+      },
+      {
+        path: 'grocery',
+        loadComponent: () =>
+          import('@app/meal-planner-tabs/meal-planner-grocery.page').then(
+            (m) => m.MealPlannerGroceryPage
+          ),
+      },
+      {
+        path: 'cook',
+        loadComponent: () =>
+          import('@app/meal-planner-tabs/meal-planner-cook.page').then((m) => m.MealPlannerCookPage),
+      },
+      {
+        path: 'summary',
+        loadComponent: () =>
+          import('@app/meal-planner-tabs/meal-planner-summary.page').then(
+            (m) => m.MealPlannerSummaryPage
+          ),
+      },
+      {
+        path: '',
+        redirectTo: 'plan',
+        pathMatch: 'full',
+      },
+    ],
+  },
+  {
     path: 'goal-tracker',
     data: { hideMainTabBar: true },
     loadComponent: () =>
@@ -169,14 +206,15 @@ export const REGISTERED_TOOL_CARDS: ToolCard[] = [
   //   iconName: 'people-circle-outline',
   //   iconBackgroundColor: '#349394',
   // },
-  // {
-  //   category: 'Life Skills',
-  //   categoryIcon: 'restaurant-outline',
-  //   title: 'Meal Planning Tool',
-  //   detail: 'Plan meals and save money',
-  //   iconName: 'restaurant-outline',
-  //   iconBackgroundColor: '#d56132',
-  // },
+  {
+    category: 'Life Skills',
+    lucideCategoryIcon: 'utensils-crossed',
+    title: 'Meal Planner',
+    detail: 'Plan meals, shop, and cook',
+    lucideIcon: 'utensils-crossed',
+    iconBackgroundColor: '#d56132',
+    route: '/tabs/meal-planner',
+  },
   {
     category: 'Personal Growth',
     lucideCategoryIcon: 'sprout',

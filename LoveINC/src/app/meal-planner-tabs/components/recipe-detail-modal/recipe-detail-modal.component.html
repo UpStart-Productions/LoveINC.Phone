@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ recipe.title }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleFavorite()" aria-label="Toggle favorite">
+        <ion-icon [name]="isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
+      </ion-button>
+      <ion-button (click)="dismiss()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (recipe.imageUrl) {
+    <img class="recipe-image" [src]="recipe.imageUrl" [alt]="recipe.title" />
+  }
+
+  @if (recipe.readyInMinutes) {
+    <p class="app-body-secondary">{{ recipe.readyInMinutes }} min · Serves {{ recipe.servings }}</p>
+  }
+
+  @if (extraGuests > 0) {
+    <p class="app-body-secondary">+{{ extraGuests }} guests for this meal</p>
+  }
+
+  <h3>Ingredients</h3>
+  <ul>
+    @for (item of recipe.ingredients; track item.original) {
+      <li>{{ item.original }}</li>
+    }
+  </ul>
+
+  <h3>Steps</h3>
+  <ol>
+    @for (step of recipe.instructions; track step) {
+      <li>{{ step }}</li>
+    }
+  </ol>
+
+  <p class="app-caption spoonacular-attribution">Recipe data from Spoonacular</p>
+</ion-content>

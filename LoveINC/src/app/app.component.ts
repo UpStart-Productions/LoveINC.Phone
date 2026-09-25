@@ -28,6 +28,7 @@ import {
   JournalQuillFloatingToolbarComponent,
 } from '@upstart-productions/journal';
 import { SimpleBudgetDatabaseService, WeekPlanService } from '@upstart-productions/simple-budget';
+import { MealPlannerDatabaseService } from '@upstart-productions/meal-planner';
 import { GoalTrackerRefreshService } from './goal-tracker-tabs/services/goal-tracker-refresh.service';
 import { PushRegistrationService } from './services/push-registration.service';
 import { ServiceUnlockService, ServiceUnlockDatabaseService } from '@upstart-productions/service-unlock';
@@ -45,6 +46,7 @@ import {
   mailOutline,
   // Services Menu Icons
   heartOutline,
+  heart,
   peopleCircleOutline,
   constructOutline,
   school,
@@ -95,6 +97,7 @@ import {
   imagesOutline,
   // Content Icons
   calendarOutline,
+  calendar,
   starOutline,
   peopleOutline,
   timeOutline,
@@ -124,6 +127,7 @@ import {
   pricetagOutline,
   libraryOutline,
   restaurantOutline,
+  restaurant,
   medicalOutline,
   bookOutline,
   playCircleOutline,
@@ -139,6 +143,7 @@ import {
   wifiOutline,
   shieldOutline,
   cartOutline,
+  cart,
   carOutline,
   checkmarkDoneOutline,
   ellipseOutline,
@@ -188,6 +193,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private goalTrackerDb: GoalTrackerDatabaseService,
     private journalDb: JournalDatabaseService,
     private simpleBudgetDb: SimpleBudgetDatabaseService,
+    private mealPlannerDb: MealPlannerDatabaseService,
     private serviceUnlockDb: ServiceUnlockDatabaseService,
     private weekPlanService: WeekPlanService,
     private goalTrackerRefresh: GoalTrackerRefreshService,
@@ -323,6 +329,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.simpleBudgetDb.getDbConnection().catch((err) => {
         console.warn('Simple Budget DB init deferred:', err);
       }),
+      this.mealPlannerDb.getDbConnection().catch((err) => {
+        console.warn('Meal Planner DB init deferred:', err);
+      }),
       this.journalDb.getDbConnection().catch((err) => {
         console.warn('Journal DB init deferred:', err);
       }),
@@ -390,6 +399,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.grovlinkDb.reconcileConnectionsOnResume(),
       this.goalTrackerDb.reconcileConnectionsOnResume(),
       this.simpleBudgetDb.reconcileConnectionsOnResume(),
+      this.mealPlannerDb.reconcileConnectionsOnResume(),
       this.journalDb.reconcileConnectionsOnResume(),
       this.serviceUnlockDb.reconcileConnectionsOnResume(),
     ]).catch(() => {});
@@ -519,6 +529,9 @@ export class AppComponent implements OnInit, OnDestroy {
       imagesOutline,
       // Content Icons
       calendarOutline,
+      calendar,
+      heart,
+      restaurant,
       starOutline,
       peopleOutline,
       timeOutline,
@@ -579,6 +592,7 @@ export class AppComponent implements OnInit, OnDestroy {
       wifiOutline,
       shieldOutline,
       cartOutline,
+      cart,
       carOutline,
       megaphoneOutline,
       ribbonOutline,

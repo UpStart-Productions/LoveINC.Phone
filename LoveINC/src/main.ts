@@ -58,6 +58,7 @@ import {
   BookMarked,
   Menu,
   ToolCase,
+  UtensilsCrossed,
 } from 'lucide-angular';
 
 import { routes } from './app/app.routes';
@@ -177,6 +178,7 @@ bootstrapApplication(AppComponent, {
         BookMarked,
         Menu,
         ToolCase,
+        UtensilsCrossed,
       })
     ),
   ],

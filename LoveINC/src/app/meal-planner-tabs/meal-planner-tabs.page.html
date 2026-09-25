@@ -1,0 +1,27 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom" class="meal-planner-tab-bar">
+    <ion-tab-button tab="plan" [routerLink]="['/tabs/meal-planner/plan']" queryParamsHandling="preserve">
+      <ion-icon aria-hidden="true" name="calendar-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="calendar" class="solid-icon"></ion-icon>
+      <ion-label>Plan</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="grocery" [routerLink]="['/tabs/meal-planner/grocery']" queryParamsHandling="preserve">
+      <ion-icon aria-hidden="true" name="cart-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="cart" class="solid-icon"></ion-icon>
+      <ion-label>Grocery</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="cook" [routerLink]="['/tabs/meal-planner/cook']" queryParamsHandling="preserve">
+      <ion-icon aria-hidden="true" name="restaurant-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="restaurant" class="solid-icon"></ion-icon>
+      <ion-label>Cook</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="summary" [routerLink]="['/tabs/meal-planner/summary']" queryParamsHandling="preserve">
+      <ion-icon aria-hidden="true" name="stats-chart-outline" class="outline-icon"></ion-icon>
+      <ion-icon aria-hidden="true" name="stats-chart" class="solid-icon"></ion-icon>
+      <ion-label>Summary</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

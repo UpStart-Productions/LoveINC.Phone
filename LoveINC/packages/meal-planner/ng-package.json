@@ -1,0 +1,9 @@
+{
+  "$schema": "./node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "dist",
+  "allowedNonPeerDependencies": ["date-fns"],
+  "lib": {
+    "entryFile": "src/public_api.ts",
+    "flatModuleFile": "meal-planner"
+  }
+}

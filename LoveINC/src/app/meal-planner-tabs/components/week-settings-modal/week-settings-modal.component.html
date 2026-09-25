@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Household &amp; week</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-label position="stacked">Household size</ion-label>
+      <ion-input type="number" min="1" [(ngModel)]="householdSize"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Max cook time (minutes)</ion-label>
+      <ion-input type="number" min="15" [(ngModel)]="maxReadyMinutes"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Extra servings all week</ion-label>
+      <ion-input type="number" min="0" [(ngModel)]="weekServingDelta"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Week note (guests, events)</ion-label>
+      <ion-textarea autoGrow="true" [(ngModel)]="weekNote"></ion-textarea>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" color="red-orange" (click)="save()">Save</ion-button>
+</ion-content>

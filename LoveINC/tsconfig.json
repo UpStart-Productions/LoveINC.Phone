@@ -9,6 +9,8 @@
       "@upstart-productions/goal-tracker/*": ["packages/goal-tracker/src/*"],
       "@upstart-productions/simple-budget": ["packages/simple-budget/src/public_api.ts"],
       "@upstart-productions/simple-budget/*": ["packages/simple-budget/src/*"],
+      "@upstart-productions/meal-planner": ["packages/meal-planner/src/public_api.ts"],
+      "@upstart-productions/meal-planner/*": ["packages/meal-planner/src/*"],
       "@upstart-productions/service-unlock": ["packages/service-unlock"],
       "@upstart-productions/service-unlock/*": ["packages/service-unlock/*"],
       "@upstart-productions/journal": ["packages/journal/src/public_api.ts"],
