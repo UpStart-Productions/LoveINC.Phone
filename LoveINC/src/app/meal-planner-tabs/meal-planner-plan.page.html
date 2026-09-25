@@ -29,9 +29,6 @@
       <ion-button expand="block" color="red-orange" (click)="onSetupProfile()">Get started</ion-button>
     </div>
   } @else {
-    @if (plan?.weekServingDelta) {
-      <p class="app-body-secondary week-note">+{{ plan?.weekServingDelta }} servings all week</p>
-    }
     @if (plan?.weekNote) {
       <p class="app-body-secondary week-note">{{ plan?.weekNote }}</p>
     }

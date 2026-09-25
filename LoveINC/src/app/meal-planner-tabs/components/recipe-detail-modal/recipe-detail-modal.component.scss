@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  gap: 0;
   pointer-events: auto;
 }
 
@@ -40,4 +41,38 @@
 
 .spoonacular-attribution {
   margin-top: 1rem;
+}
+
+.content-reader-body ul {
+  list-style: disc;
+  padding-inline-start: calc(1.25rem + 10px);
+}
+
+.content-reader-body ul li,
+.content-reader-body ol li {
+  padding-bottom: 0.5rem;
+}
+
+.content-reader-body ul li span:not(.ingredient-fraction) {
+  font-size: inherit;
+}
+
+.ingredient-line::marker {
+  color: var(--ion-color-medium, #92949c);
+}
+
+.ingredient-line__content {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.35em;
+}
+
+.ingredient-quantity {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.content-reader-body ul li span.ingredient-fraction {
+  font-size: 0.75em;
 }

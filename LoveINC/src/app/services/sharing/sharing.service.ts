@@ -1,8 +1,9 @@
 import { Injectable, ElementRef } from '@angular/core';
-import { ActionSheetController } from '@ionic/angular/standalone';
+import { ActionSheetButton, ActionSheetController, AlertController } from '@ionic/angular/standalone';
 import { Share } from '@capacitor/share';
 import { EmailComposerService } from './email-composer.service';
-import { SharingOptions, ShareContent } from './models/sharing.types';
+import { PdfService } from '../pdf.service';
+import { PdfShareOptions, SharingOptions, ShareContent } from './models/sharing.types';
 import { SHARE_ACTION_SHEET_CLASS } from '../../shared/action-sheet-classes';
 
 /**
@@ -15,7 +16,9 @@ export class SharingService {
 
   constructor(
     private actionSheetCtrl: ActionSheetController,
-    private emailComposerService: EmailComposerService
+    private alertCtrl: AlertController,
+    private emailComposerService: EmailComposerService,
+    private pdfService: PdfService
   ) {}
 
   /**
@@ -26,27 +29,43 @@ export class SharingService {
       // Prepare content
       const shareContent = await this.prepareShareContent(options);
       
-      // Show action sheet with sharing options
+      const buttons: ActionSheetButton[] = [
+        {
+          text: 'Email as Text',
+          icon: 'mail-outline',
+          handler: () => {
+            void this.shareAsEmailText(shareContent);
+          },
+        },
+        {
+          text: 'Text/SMS',
+          icon: 'chatbubble-outline',
+          handler: () => {
+            void this.shareAsText(shareContent);
+          },
+        },
+      ];
+
+      if (options.pdfShare) {
+        buttons.push({
+          text: 'Share PDF',
+          icon: 'document-text-outline',
+          handler: () => {
+            void this.shareAsPdf(options.pdfShare!, shareContent);
+          },
+        });
+      }
+
+      buttons.push({
+        text: 'Cancel',
+        icon: 'close-outline',
+        role: 'cancel',
+      });
+
       const actionSheet = await this.actionSheetCtrl.create({
         header: options.actionSheetHeader ?? 'Share Content',
         cssClass: SHARE_ACTION_SHEET_CLASS,
-        buttons: [
-          {
-            text: 'Email as Text',
-            icon: 'mail-outline',
-            handler: () => this.shareAsEmailText(shareContent)
-          },
-          {
-            text: 'Text/SMS',
-            icon: 'chatbubble-outline',
-            handler: () => this.shareAsText(shareContent)
-          },
-          {
-            text: 'Cancel',
-            icon: 'close-outline',
-            role: 'cancel'
-          }
-        ]
+        buttons,
       });
 
       await actionSheet.present();
@@ -260,6 +279,37 @@ export class SharingService {
     html += '</div>';
 
     return html;
+  }
+
+  private async shareAsPdf(pdfShare: PdfShareOptions, content: ShareContent): Promise<void> {
+    try {
+      const { filePath, filename } = await pdfShare.generate();
+      this.pdfService.setShareMetadata(
+        pdfShare.subject ?? content.subject,
+        pdfShare.body ?? content.title
+      );
+      await this.pdfService.sharePdf(filePath, filename);
+    } catch (error) {
+      if (this.isShareCancelled(error)) {
+        return;
+      }
+      console.error('Error sharing PDF:', error);
+      const message =
+        error instanceof Error && error.message.trim()
+          ? error.message
+          : 'Something went wrong while creating the PDF.';
+      const alert = await this.alertCtrl.create({
+        header: 'Share failed',
+        message,
+        buttons: ['OK'],
+      });
+      await alert.present();
+    }
+  }
+
+  private isShareCancelled(err: unknown): boolean {
+    const message = err instanceof Error ? err.message.toLowerCase() : String(err).toLowerCase();
+    return message.includes('cancel') || message.includes('dismiss');
   }
 
   /**

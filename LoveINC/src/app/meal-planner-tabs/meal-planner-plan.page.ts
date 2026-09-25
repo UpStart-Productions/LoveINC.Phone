@@ -57,6 +57,7 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
   selectedWeekStart = getCurrentWeekStart();
   earliestWeekStart = '';
   plan: WeeklyPlan | null = null;
+  householdSize = 2;
   slots: Array<PlanMeal | null> = [null, null, null];
   listItems: ContentCardListItem[] = [];
   private weekSub?: Subscription;
@@ -135,7 +136,10 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
       },
     });
     await modal.present();
-    const { data } = await modal.onDidDismiss<{ cachedRecipeId: number }>();
+    const { data } = await modal.onDidDismiss<{ cachedRecipeId?: number; weekChanged?: boolean }>();
+    if (data?.weekChanged) {
+      await this.loadWeek();
+    }
     if (!data?.cachedRecipeId) {
       return;
     }
@@ -173,6 +177,7 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
     try {
       const profile = await this.profileService.getProfile();
       this.needsProfile = !profile;
+      this.householdSize = profile?.householdSize ?? 2;
       this.earliestWeekStart = (await this.planService.getEarliestWeekStart()) ?? '';
       this.plan = await this.planService.getWeeklyPlan(this.selectedWeekStart);
       this.syncSlots();
@@ -185,8 +190,11 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
     this.slots = Array.from({ length: MEALS_PER_WEEK }, (_, slotIndex) => {
       return this.plan?.meals.find((meal) => meal.slotIndex === slotIndex) ?? null;
     });
+    const weekServingDelta = this.plan?.weekServingDelta ?? 0;
     this.listItems = this.slots.map((meal, slotIndex) =>
-      meal ? mapPlanMealToListItem(meal, slotIndex) : mapEmptyMealSlot(slotIndex)
+      meal
+        ? mapPlanMealToListItem(meal, slotIndex, this.householdSize, weekServingDelta)
+        : mapEmptyMealSlot(slotIndex)
     );
   }
 }

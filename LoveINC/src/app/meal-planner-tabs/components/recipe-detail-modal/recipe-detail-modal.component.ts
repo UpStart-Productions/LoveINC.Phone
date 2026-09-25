@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -25,10 +26,22 @@ import {
 } from '@ionic/angular/standalone';
 import type { CachedRecipe } from '@upstart-productions/meal-planner';
 import {
+  formatScaledIngredientLine,
+  getRecipeScaleFactor,
+  getTargetServings,
+  type IngredientLineDisplay,
   MealPlannerPlanService,
   MealPlannerProfileService,
   MealPlannerRecipeService,
+  parseIngredientLineForDisplay,
 } from '@upstart-productions/meal-planner';
+import { PdfService } from '../../../services/pdf.service';
+import { SharingService } from '../../../services/sharing/sharing.service';
+import {
+  buildRecipePdfDocDefinition,
+  buildRecipePdfFilename,
+  buildRecipeShareHtml,
+} from '../../utils/recipe-detail-pdf.util';
 
 @Component({
   selector: 'app-recipe-detail-modal',
@@ -67,6 +80,8 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
   householdSize = 2;
   weekServingDelta = 0;
   weekChanged = false;
+  exporting = false;
+  sharing = false;
 
   private edgeScrollEl: HTMLElement | null = null;
   private edgeScrollListener: (() => void) | null = null;
@@ -77,6 +92,9 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
     private recipeService: MealPlannerRecipeService,
     private planService: MealPlannerPlanService,
     private profileService: MealPlannerProfileService,
+    private pdfService: PdfService,
+    private sharingService: SharingService,
+    private ngZone: NgZone,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -93,10 +111,24 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
   }
 
   get displayServings(): number {
-    if (this.canManageWeek && this.isOnWeek) {
-      return this.householdSize + this.weekServingDelta + this.extraGuests;
+    if (this.shouldScaleRecipe) {
+      return getTargetServings(this.householdSize, this.weekServingDelta, this.extraGuests);
     }
     return this.recipe.servings;
+  }
+
+  get shouldScaleRecipe(): boolean {
+    return this.canManageWeek && this.isOnWeek;
+  }
+
+  get displayIngredients(): IngredientLineDisplay[] {
+    const scale = this.shouldScaleRecipe
+      ? getRecipeScaleFactor(this.recipe.servings, this.displayServings)
+      : 1;
+    return this.recipe.ingredients.map((ingredient) => {
+      const line = formatScaledIngredientLine(ingredient, scale);
+      return parseIngredientLineForDisplay(line);
+    });
   }
 
   async ngOnInit() {
@@ -167,6 +199,13 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
       this.isOnWeek = false;
       this.planMealId = undefined;
       this.extraGuests = 0;
+      this.weekChanged = true;
+      void this.modalCtrl.dismiss({
+        weekChanged: true,
+        removedFromWeek: true,
+        addedToWeek: false,
+      });
+      return;
     } else {
       const plan = await this.planService.setMealForSlot(
         this.weekStartDate,
@@ -235,6 +274,108 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
     this.extraGuests = extraGuests;
     this.weekChanged = true;
     this.cdr.markForCheck();
+  }
+
+  async exportPdf() {
+    if (this.exporting || this.sharing) {
+      return;
+    }
+    this.exporting = true;
+    try {
+      const filePath = await this.createAndSavePdf();
+      await this.pdfService.openPdfInNativeViewer(filePath);
+    } catch (err) {
+      await this.presentExportAlert('Export failed', this.getErrorMessage(err));
+    } finally {
+      this.resetActionState('exporting');
+    }
+  }
+
+  async shareRecipe() {
+    if (this.exporting || this.sharing) {
+      return;
+    }
+    this.sharing = true;
+    try {
+      const shareInput = {
+        title: this.recipe.title,
+        readyInMinutes: this.recipe.readyInMinutes,
+        servings: this.displayServings,
+        ingredients: this.displayIngredients,
+        instructions: this.recipe.instructions,
+      };
+
+      await this.sharingService.shareContent({
+        title: this.recipe.title,
+        subject: `Recipe: ${this.recipe.title}`,
+        htmlContent: buildRecipeShareHtml(shareInput),
+        actionSheetHeader: 'Share Recipe',
+        pdfShare: {
+          subject: this.recipe.title,
+          body: this.buildShareSubtitle(),
+          generate: async () => {
+            const filePath = await this.createAndSavePdf();
+            return {
+              filePath,
+              filename: buildRecipePdfFilename(this.recipe.title),
+            };
+          },
+        },
+      });
+    } catch (err) {
+      await this.presentExportAlert('Share failed', this.getErrorMessage(err));
+    } finally {
+      this.resetActionState('sharing');
+    }
+  }
+
+  private async createAndSavePdf(): Promise<string> {
+    const docDefinition = buildRecipePdfDocDefinition({
+      title: this.recipe.title,
+      readyInMinutes: this.recipe.readyInMinutes,
+      servings: this.displayServings,
+      ingredients: this.displayIngredients,
+      instructions: this.recipe.instructions,
+    });
+    const filename = buildRecipePdfFilename(this.recipe.title);
+    const pdfDoc = this.pdfService.createPdfFromDefinition(docDefinition);
+    return this.pdfService.savePdfToDevice(pdfDoc, filename);
+  }
+
+  private buildShareSubtitle(): string {
+    const parts: string[] = [];
+    if (this.recipe.readyInMinutes) {
+      parts.push(`${this.recipe.readyInMinutes} min`);
+    }
+    parts.push(`Serves ${this.displayServings}`);
+    return parts.join(' · ');
+  }
+
+  private resetActionState(field: 'exporting' | 'sharing'): void {
+    this.ngZone.run(() => {
+      this[field] = false;
+    });
+  }
+
+  private getErrorMessage(err: unknown): string {
+    if (err instanceof Error && err.message.trim()) {
+      return err.message;
+    }
+    return 'Something went wrong while creating the PDF.';
+  }
+
+  private isShareCancelled(err: unknown): boolean {
+    const message = err instanceof Error ? err.message.toLowerCase() : String(err).toLowerCase();
+    return message.includes('cancel') || message.includes('dismiss');
+  }
+
+  private async presentExportAlert(header: string, message: string): Promise<void> {
+    const alert = await this.alertCtrl.create({
+      header,
+      message,
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 
   private async loadWeekContext() {

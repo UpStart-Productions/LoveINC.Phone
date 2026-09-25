@@ -8,6 +8,11 @@ import type {
 } from '../types/meal-planner.types';
 import { MEALS_PER_WEEK } from '../constants/cook.constants';
 import { getCurrentWeekStart } from '../utils/week-date.util';
+import {
+  formatScaledIngredientAmount,
+  getRecipeScaleFactor,
+  getTargetServings,
+} from '../utils/recipe-scaling.util';
 import { MealPlannerDatabaseService } from './meal-planner-database.service';
 import { MealPlannerProfileService } from './meal-planner-profile.service';
 import { MealPlannerRecipeService } from './meal-planner-recipe.service';
@@ -314,12 +319,16 @@ export class MealPlannerPlanService {
       if (!recipe) {
         continue;
       }
-      const targetServings = householdSize + plan.weekServingDelta + meal.extraGuests;
-      const scale = recipe.servings > 0 ? targetServings / recipe.servings : 1;
+      const targetServings = getTargetServings(
+        householdSize,
+        plan.weekServingDelta,
+        meal.extraGuests
+      );
+      const scale = getRecipeScaleFactor(recipe.servings, targetServings);
 
       for (const ingredient of recipe.ingredients) {
         const key = `${ingredient.aisle}::${ingredient.name.toLowerCase()}`;
-        const scaledAmount = this.formatScaledAmount(ingredient, scale);
+        const scaledAmount = formatScaledIngredientAmount(ingredient, scale);
         const existing = merged.get(key);
         if (existing) {
           existing.amounts.push(scaledAmount);
@@ -351,18 +360,6 @@ export class MealPlannerPlanService {
         );
       }
     }
-  }
-
-  private formatScaledAmount(
-    ingredient: CachedRecipe['ingredients'][number],
-    scale: number
-  ): string {
-    if (!ingredient.amount || scale === 1) {
-      return ingredient.original;
-    }
-    const scaled = Math.round(ingredient.amount * scale * 100) / 100;
-    const unit = ingredient.unit ? ` ${ingredient.unit}` : '';
-    return `${scaled}${unit}`.trim();
   }
 
   private titleCase(value: string): string {

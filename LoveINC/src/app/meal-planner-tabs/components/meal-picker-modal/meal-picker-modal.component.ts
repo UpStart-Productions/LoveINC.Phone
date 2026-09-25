@@ -236,7 +236,13 @@ export class MealPickerModalComponent implements OnInit {
       const { data } = await detailModal.onDidDismiss<{
         addedToWeek?: boolean;
         cachedRecipeId?: number;
+        removedFromWeek?: boolean;
+        weekChanged?: boolean;
       }>();
+      if (data?.removedFromWeek) {
+        void this.modalCtrl.dismiss({ weekChanged: true });
+        return;
+      }
       if (data?.addedToWeek && data.cachedRecipeId) {
         void this.modalCtrl.dismiss({ cachedRecipeId: data.cachedRecipeId });
       }

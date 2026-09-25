@@ -15,11 +15,13 @@ import { GoalService, HabitService } from '@upstart-productions/goal-tracker';
 import type { Habit } from '@upstart-productions/goal-tracker';
 import { WeeklyBarChartComponent, WeeklyBarData } from './components/weekly-bar-chart/weekly-bar-chart.component';
 import { PdfService } from '../services/pdf.service';
+import { SharingService } from '../services/sharing/sharing.service';
 import { UserProfileService } from '../services/user-profile.service';
 import { OnboardingService } from '../services/onboarding.service';
 import {
   buildGoalTrackerStatisticsDocDefinition,
   buildGoalTrackerStatisticsPdfFilename,
+  buildGoalTrackerStatisticsShareHtml,
 } from './utils/goal-tracker-statistics-pdf.util';
 
 const MONTHS_LABEL = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -165,6 +167,7 @@ export class GoalTrackerStatisticsPage {
     private habitService: HabitService,
     private goalService: GoalService,
     private pdfService: PdfService,
+    private sharingService: SharingService,
     private userProfile: UserProfileService,
     private onboarding: OnboardingService,
     private alertController: AlertController,
@@ -432,13 +435,35 @@ export class GoalTrackerStatisticsPage {
     if (this.loading || this.exporting || this.sharing) return;
     this.sharing = true;
     try {
-      const filePath = await this.createAndSavePdf();
-      this.pdfService.setShareMetadata('Goal Tracker Statistics', this.periodLabel);
-      await this.pdfService.sharePdf(filePath);
+      const shareHtml = buildGoalTrackerStatisticsShareHtml({
+        weekLabel: this.periodLabel,
+        totalPercent: this.totalPercent,
+        totalCompleted: this.totalCompleted,
+        totalScheduled: this.totalScheduled,
+        weeklyData: this.weeklyData,
+        habitStats: this.habitStats,
+        userFullName: this.getUserFullName() ?? undefined,
+      });
+
+      await this.sharingService.shareContent({
+        title: 'Goal Tracker Statistics',
+        subject: `Goal Tracker Statistics: ${this.periodLabel}`,
+        htmlContent: shareHtml,
+        actionSheetHeader: 'Share Statistics',
+        pdfShare: {
+          subject: 'Goal Tracker Statistics',
+          body: this.periodLabel,
+          generate: async () => {
+            const filePath = await this.createAndSavePdf();
+            return {
+              filePath,
+              filename: buildGoalTrackerStatisticsPdfFilename(this.periodLabel),
+            };
+          },
+        },
+      });
     } catch (err) {
-      if (!this.isShareCancelled(err)) {
-        await this.presentAlert('Share failed', this.getErrorMessage(err));
-      }
+      await this.presentAlert('Share failed', this.getErrorMessage(err));
     } finally {
       this.resetActionState('sharing');
     }

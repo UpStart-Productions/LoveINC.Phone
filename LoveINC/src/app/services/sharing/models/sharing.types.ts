@@ -24,6 +24,18 @@ export interface SharingOptions {
 
   /** Action sheet header (defaults to “Share Content”). */
   actionSheetHeader?: string;
+
+  /** Optional PDF share — generated only when the user picks Share PDF. */
+  pdfShare?: PdfShareOptions;
+}
+
+/**
+ * Lazy PDF generation for the Share PDF action sheet option.
+ */
+export interface PdfShareOptions {
+  generate: () => Promise<{ filePath: string; filename?: string }>;
+  subject?: string;
+  body?: string;
 }
 
 /**

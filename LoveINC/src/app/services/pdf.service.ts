@@ -233,7 +233,6 @@ export class PdfService {
       title: this.currentEmailSubject ?? 'Share PDF',
       text: this.currentEmailBody ?? filename ?? 'Document',
       files: [pathToShare],
-      url: pathToShare,
       dialogTitle: 'Share PDF Document',
     });
 

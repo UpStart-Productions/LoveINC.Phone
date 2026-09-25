@@ -27,8 +27,6 @@ import { WeekdayPickerComponent } from '../weekday-picker/weekday-picker.compone
 import { DatePickerModalComponent } from '../date-picker-modal/date-picker-modal.component';
 import { GoalTrackerRefreshService } from '../../services/goal-tracker-refresh.service';
 import { GoalTrackerEditService } from '../../services/goal-tracker-edit.service';
-import { GoalTrackerKeyboardService } from '../../services/goal-tracker-keyboard.service';
-
 const COLOR_OPTIONS = [
   { color: 'prussian-blue' },
   { color: 'blue-ribbon' },
@@ -176,12 +174,10 @@ export class AddGoalHabitModalComponent implements OnInit {
     private goalService: GoalService,
     private habitService: HabitService,
     private refreshService: GoalTrackerRefreshService,
-    private editService: GoalTrackerEditService,
-    private keyboardService: GoalTrackerKeyboardService
+    private editService: GoalTrackerEditService
   ) {}
 
   async ngOnInit() {
-    void this.keyboardService.enter();
     this.goals = await this.goalService.getAllGoals();
     this.goals = this.goals.filter((g) => !g.completed);
 
@@ -228,7 +224,6 @@ export class AddGoalHabitModalComponent implements OnInit {
   }
 
   ionViewWillLeave() {
-    void this.keyboardService.leave();
     this.editService.clear();
   }
 

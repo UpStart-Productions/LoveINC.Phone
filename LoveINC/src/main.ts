@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { importProvidersFrom } from '@angular/core';
+import { APP_INITIALIZER, importProvidersFrom } from '@angular/core';
 import { provideQuillConfig } from 'ngx-quill/config';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 import { INTAKE_VALIDATE_PROVIDER } from '@upstart-productions/service-unlock';
@@ -74,6 +74,7 @@ import {
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
+import { AppKeyboardService } from './app/services/app-keyboard.service';
 
 window.addEventListener('error', (e) => {
   console.error('[App] Uncaught error:', e.error ?? e.message, e.filename, e.lineno);
@@ -84,6 +85,12 @@ window.addEventListener('unhandledrejection', (e) => {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (keyboard: AppKeyboardService) => () => keyboard.initialize(),
+      deps: [AppKeyboardService],
+      multi: true,
+    },
     provideQuillConfig({ theme: 'snow' }),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular({ mode: 'ios', backButtonText: '' }),

@@ -34,6 +34,7 @@ import {
 } from '@upstart-productions/simple-budget';
 import type { WeekPlan, WeekSummary } from '@upstart-productions/simple-budget';
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
+import { SharingService } from '../services/sharing/sharing.service';
 import {
   SimpleBudgetExportPdfService,
   type SimpleBudgetMonthlyTotals,
@@ -96,6 +97,7 @@ export class SimpleBudgetExportPage implements OnInit {
     private weekPlanService: WeekPlanService,
     private budgetState: SimpleBudgetStateService,
     private exportPdfService: SimpleBudgetExportPdfService,
+    private sharingService: SharingService,
     private alertController: AlertController,
     private ngZone: NgZone
   ) {}
@@ -268,18 +270,48 @@ export class SimpleBudgetExportPage implements OnInit {
     this.sharing = true;
     try {
       if (this.exportMode === 'week' && this.plan && this.summary) {
-        await this.exportPdfService.shareWeekPdf(this.plan, this.summary, this.weekDateRange);
+        const weekLabel = `Budget ${this.weekDateRange}`;
+        await this.sharingService.shareContent({
+          title: 'Simple Budget',
+          subject: `Simple Budget: ${weekLabel}`,
+          htmlContent: this.exportPdfService.buildWeekShareHtml(
+            this.plan,
+            this.summary,
+            this.weekDateRange
+          ),
+          actionSheetHeader: 'Share Budget',
+          pdfShare: {
+            subject: 'Simple Budget',
+            body: weekLabel,
+            generate: () =>
+              this.exportPdfService.generateWeekPdfFile(this.plan!, this.summary!, this.weekDateRange),
+          },
+        });
       } else if (this.exportMode === 'month' && this.selectedMonthKey && this.monthlyWeeks.length) {
-        await this.exportPdfService.shareMonthPdf(
-          this.monthlyWeeks,
-          this.monthlyTotals,
-          this.selectedMonthLabel
-        );
+        const title = `Budget ${this.selectedMonthLabel}`;
+        await this.sharingService.shareContent({
+          title: 'Simple Budget',
+          subject: `Simple Budget: ${title}`,
+          htmlContent: this.exportPdfService.buildMonthShareHtml(
+            this.monthlyWeeks,
+            this.monthlyTotals,
+            this.selectedMonthLabel
+          ),
+          actionSheetHeader: 'Share Budget',
+          pdfShare: {
+            subject: 'Simple Budget',
+            body: title,
+            generate: () =>
+              this.exportPdfService.generateMonthPdfFile(
+                this.monthlyWeeks,
+                this.monthlyTotals,
+                this.selectedMonthLabel
+              ),
+          },
+        });
       }
     } catch (err) {
-      if (!this.isShareCancelled(err)) {
-        await this.presentAlert('Share failed', this.getErrorMessage(err));
-      }
+      await this.presentAlert('Share failed', this.getErrorMessage(err));
     } finally {
       this.resetActionState('sharing');
     }

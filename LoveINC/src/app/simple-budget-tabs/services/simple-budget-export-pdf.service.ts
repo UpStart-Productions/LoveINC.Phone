@@ -58,22 +58,148 @@ export class SimpleBudgetExportPdfService {
     await this.pdfService.openPdfInNativeViewer(filePath);
   }
 
-  async shareWeekPdf(plan: WeekPlan, summary: WeekSummary, weekDateRange: string): Promise<void> {
+  async generateWeekPdfFile(
+    plan: WeekPlan,
+    summary: WeekSummary,
+    weekDateRange: string
+  ): Promise<{ filePath: string; filename: string }> {
     const weekLabel = `Budget ${weekDateRange}`;
+    const filename = weekLabel.replace(/\s*-\s*/g, '-').replace(/\s+/g, '-').replace(/,/g, '');
     const filePath = await this.createWeekPdf(plan, summary, weekDateRange);
-    this.pdfService.setShareMetadata('Simple Budget', weekLabel);
-    await this.pdfService.sharePdf(filePath);
+    return { filePath, filename };
   }
 
-  async shareMonthPdf(
+  async generateMonthPdfFile(
     monthlyWeeks: WeekPlan[],
     monthlyTotals: SimpleBudgetMonthlyTotals,
     monthLabel: string
-  ): Promise<void> {
+  ): Promise<{ filePath: string; filename: string }> {
     const title = `Budget ${monthLabel}`;
+    const filename = title.replace(/\s+/g, '-');
     const filePath = await this.createMonthPdf(monthlyWeeks, monthlyTotals, monthLabel);
-    this.pdfService.setShareMetadata('Simple Budget', title);
-    await this.pdfService.sharePdf(filePath);
+    return { filePath, filename };
+  }
+
+  buildWeekShareHtml(plan: WeekPlan, summary: WeekSummary, weekDateRange: string): string {
+    const weekLabel = `Budget ${weekDateRange}`;
+    return this.buildShareHtml(weekLabel, plan, summary);
+  }
+
+  buildMonthShareHtml(
+    monthlyWeeks: WeekPlan[],
+    monthlyTotals: SimpleBudgetMonthlyTotals,
+    monthLabel: string
+  ): string {
+    const title = `Budget ${monthLabel}`;
+    let html = `<h2>${this.escapeHtml(title)}</h2>`;
+
+    const userFullName = this.getUserFullName();
+    if (userFullName) {
+      html += `<p>${this.escapeHtml(userFullName)}</p>`;
+    }
+
+    html += '<h3>Monthly totals</h3>';
+    html += this.buildMonthlyTotalsShareHtml(monthlyTotals);
+    html += '<h3>Weekly breakdown</h3>';
+
+    for (const plan of monthlyWeeks) {
+      const summary = calculateWeekSummary(plan);
+      const [y, m, d] = plan.weekStartDate.split('-').map(Number);
+      const start = new Date(y, m - 1, d);
+      const end = addDays(start, 6);
+      const weekLabel = `Week of ${joinWithAppDot(format(start, 'MMM d'), format(end, 'MMM d, yyyy'))}`;
+      html += this.buildShareHtml(weekLabel, plan, summary, false);
+    }
+
+    return html;
+  }
+
+  private buildShareHtml(
+    title: string,
+    plan: WeekPlan,
+    summary: WeekSummary,
+    includeUserName = true
+  ): string {
+    let html = `<h2>${this.escapeHtml(title)}</h2>`;
+
+    if (includeUserName) {
+      const userFullName = this.getUserFullName();
+      if (userFullName) {
+        html += `<p>${this.escapeHtml(userFullName)}</p>`;
+      }
+    }
+
+    html += '<h3>Summary</h3>';
+    html += this.buildSummaryShareHtml(plan, summary);
+    html += '<h3>Categories</h3>';
+    html += this.buildCategoriesShareHtml(plan);
+    html += this.buildReviewShareHtml(plan);
+    return html;
+  }
+
+  private buildMonthlyTotalsShareHtml(totals: SimpleBudgetMonthlyTotals): string {
+    const rows = [
+      { label: 'Starting balance', value: totals.startingBalance },
+      { label: 'Total income', value: totals.totalIncome },
+      { label: 'Money available', value: totals.moneyAvailable },
+      { label: 'Bills due', value: totals.bills },
+      { label: 'Flexible targets', value: totals.flexible },
+      { label: 'Remaining', value: totals.remaining },
+    ];
+
+    return rows
+      .map((row) => `<p>${this.escapeHtml(row.label)}: ${this.formatValue(row.value)}</p>`)
+      .join('');
+  }
+
+  private buildSummaryShareHtml(plan: WeekPlan, summary: WeekSummary): string {
+    const rows = buildExportRows(plan, summary).filter(
+      (row) => row.label !== 'Week of' && row.label !== 'Days left in week'
+    );
+
+    return rows
+      .map((row) => `<p>${this.escapeHtml(row.label)}: ${this.formatValue(row.value)}</p>`)
+      .join('');
+  }
+
+  private buildCategoriesShareHtml(plan: WeekPlan): string {
+    const sections = [
+      { title: 'Money coming in', type: 'income' as const },
+      { title: 'Bills due this week', type: 'bills' as const },
+      { title: 'Flexible targets', type: 'flexible' as const },
+    ];
+
+    let html = '';
+    for (const section of sections) {
+      const categories = plan.categoryInstances.filter(
+        (category) => category.type === section.type && category.visible
+      );
+      if (!categories.length) {
+        continue;
+      }
+
+      html += `<h4>${this.escapeHtml(section.title)}</h4><ul>`;
+      for (const category of categories) {
+        const notes = category.notes?.trim();
+        html += `<li>${this.escapeHtml(category.name)}: ${this.formatValue(category.amount ?? 0)}`;
+        if (notes) {
+          html += `<br><span>${this.escapeHtml(notes)}</span>`;
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+    }
+
+    return html;
+  }
+
+  private buildReviewShareHtml(plan: WeekPlan): string {
+    const reviewHtml = this.buildReviewHtml(plan);
+    if (!reviewHtml) {
+      return '';
+    }
+
+    return `<h3>Review</h3>${reviewHtml}`;
   }
 
   private async createWeekPdf(plan: WeekPlan, summary: WeekSummary, weekDateRange: string): Promise<string> {

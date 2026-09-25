@@ -3,6 +3,22 @@
     <ion-toolbar>
       <ion-title>{{ recipe.title }}</ion-title>
       <ion-buttons slot="end">
+        <ion-button
+          fill="clear"
+          aria-label="Share recipe"
+          [disabled]="exporting || sharing"
+          (click)="shareRecipe()"
+        >
+          <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+        </ion-button>
+        <ion-button
+          fill="clear"
+          aria-label="Export recipe PDF"
+          [disabled]="exporting || sharing"
+          (click)="exportPdf()"
+        >
+          <ion-icon slot="icon-only" name="document-text-outline"></ion-icon>
+        </ion-button>
         <ion-button fill="clear" aria-label="Close" (click)="dismiss()">
           <ion-icon slot="icon-only" name="close-outline"></ion-icon>
         </ion-button>
@@ -25,6 +41,22 @@
       <div class="content-reader-edge-chrome__bar">
         <p class="content-reader-edge-chrome__title">{{ recipe.title }}</p>
         <div class="recipe-detail-edge-chrome__actions">
+          <ion-button
+            fill="clear"
+            aria-label="Share recipe"
+            [disabled]="exporting || sharing"
+            (click)="shareRecipe()"
+          >
+            <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+          </ion-button>
+          <ion-button
+            fill="clear"
+            aria-label="Export recipe PDF"
+            [disabled]="exporting || sharing"
+            (click)="exportPdf()"
+          >
+            <ion-icon slot="icon-only" name="document-text-outline"></ion-icon>
+          </ion-button>
           <ion-button fill="clear" aria-label="Close" (click)="dismiss()">
             <ion-icon slot="icon-only" name="close-outline"></ion-icon>
           </ion-button>
@@ -63,8 +95,23 @@
 
     <h3>Ingredients</h3>
     <ul>
-      @for (item of recipe.ingredients; track item.original) {
-        <li>{{ item.original }}</li>
+      @for (item of displayIngredients; track $index) {
+        <li class="ingredient-line">
+          <span class="ingredient-line__content">
+            @if (item.whole || item.fraction) {
+              <span class="ingredient-quantity">
+                @if (item.whole && item.fraction) {
+                  {{ item.whole }}&nbsp;<span class="ingredient-fraction">{{ item.fraction }}</span>
+                } @else if (item.whole) {
+                  {{ item.whole }}
+                } @else {
+                  <span class="ingredient-fraction">{{ item.fraction }}</span>
+                }
+              </span>
+            }
+            <span class="ingredient-remainder">{{ item.remainder }}</span>
+          </span>
+        </li>
       }
     </ul>
 
@@ -120,7 +167,7 @@
           (click)="selectServingsAction($event, actionsPopover)"
         >
           <ion-icon slot="start" name="people-outline"></ion-icon>
-          <ion-label>Servings ({{ displayServings }})</ion-label>
+          <ion-label>{{ displayServings }} servings</ion-label>
         </ion-item>
       }
     </ion-list>

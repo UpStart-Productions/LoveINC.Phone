@@ -17,7 +17,12 @@ export function mapEmptyMealSlot(slotIndex: number): ContentCardListItem {
   };
 }
 
-export function mapPlanMealToListItem(meal: PlanMeal, slotIndex: number): ContentCardListItem {
+export function mapPlanMealToListItem(
+  meal: PlanMeal,
+  slotIndex: number,
+  householdSize = 2,
+  weekServingDelta = 0
+): ContentCardListItem {
   const recipe = meal.recipe;
   if (!recipe) {
     return mapEmptyMealSlot(slotIndex);
@@ -26,9 +31,8 @@ export function mapPlanMealToListItem(meal: PlanMeal, slotIndex: number): Conten
   if (recipe.readyInMinutes) {
     detailParts.push(`${recipe.readyInMinutes} min`);
   }
-  if (meal.extraGuests) {
-    detailParts.push(`+${meal.extraGuests} guests`);
-  }
+  const totalServings = householdSize + weekServingDelta + meal.extraGuests;
+  detailParts.push(`Serves ${totalServings}`);
   return {
     id: `slot-${slotIndex}`,
     category: `Meal ${slotIndex + 1}`,

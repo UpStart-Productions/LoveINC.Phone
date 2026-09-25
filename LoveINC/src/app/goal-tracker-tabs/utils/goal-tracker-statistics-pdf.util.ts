@@ -227,3 +227,58 @@ export function buildGoalTrackerStatisticsDocDefinition(options: {
 export function buildGoalTrackerStatisticsPdfFilename(weekLabel: string): string {
   return weekLabel.replace(/^Week\s+/i, 'Goal-Tracker-Week-').replace(/\s*-\s*/g, '-').replace(/\s+/g, '-');
 }
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+export function buildGoalTrackerStatisticsShareHtml(options: {
+  weekLabel: string;
+  totalPercent: number;
+  totalCompleted: number;
+  totalScheduled: number;
+  weeklyData: WeeklyBarData[];
+  habitStats: StatisticsPdfHabitStat[];
+  userFullName?: string;
+}): string {
+  const habitsCompletedLabel = formatHabitsCompleted(options.totalCompleted, options.totalScheduled);
+  let html = `<h2>${escapeHtml(options.weekLabel)}</h2>`;
+
+  if (options.userFullName?.trim()) {
+    html += `<p>${escapeHtml(options.userFullName.trim())}</p>`;
+  }
+
+  html += `<p><strong>${escapeHtml(habitsCompletedLabel)}</strong> — ${options.totalPercent}%</p>`;
+
+  if (options.weeklyData.length) {
+    html += '<h3>Weekly progress</h3><ul>';
+    for (const item of options.weeklyData) {
+      html += `<li>${escapeHtml(item.label)}: ${item.value}%</li>`;
+    }
+    html += '</ul>';
+  }
+
+  html += '<h3>Habits</h3>';
+  if (!options.habitStats.length) {
+    html += '<p>No habits for this period.</p>';
+    return html;
+  }
+
+  for (const stat of options.habitStats) {
+    html += `<p><strong>${escapeHtml(stat.habit.name)}</strong>`;
+    if (stat.goalName) {
+      html += `<br>${escapeHtml(stat.goalName)}`;
+    }
+    html += `<br>${stat.completed}/${stat.scheduled} times — ${stat.percent}%`;
+    if (stat.change !== null) {
+      html += ` (${formatChange(stat.change)} vs prior week)`;
+    }
+    html += '</p>';
+  }
+
+  return html;
+}

@@ -15,6 +15,14 @@ export {
   getCurrentWeekStart,
   formatWeekLabel,
 } from './lib/utils/week-date.util';
+export {
+  getTargetServings,
+  getRecipeScaleFactor,
+  formatScaledIngredientAmount,
+  formatScaledIngredientLine,
+  parseIngredientLineForDisplay,
+} from './lib/utils/recipe-scaling.util';
+export type { IngredientLineDisplay } from './lib/utils/recipe-scaling.util';
 export { MealPlannerDatabaseService } from './lib/services/meal-planner-database.service';
 export { MealPlannerProfileService } from './lib/services/meal-planner-profile.service';
 export { MealPlannerRecipeService } from './lib/services/meal-planner-recipe.service';

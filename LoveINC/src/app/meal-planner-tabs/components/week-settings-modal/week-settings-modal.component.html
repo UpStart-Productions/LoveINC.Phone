@@ -20,12 +20,12 @@
       <ion-input type="number" min="15" [(ngModel)]="maxReadyMinutes"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="stacked">Extra servings all week</ion-label>
+      <ion-label position="stacked">Extra servings from each meal</ion-label>
       <ion-input type="number" min="0" [(ngModel)]="weekServingDelta"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="stacked">Week note (guests, events)</ion-label>
-      <ion-textarea autoGrow="true" [(ngModel)]="weekNote"></ion-textarea>
+      <ion-label position="stacked">Note for this week (guests or events)</ion-label>
+      <ion-textarea autoGrow="true" rows="4" [(ngModel)]="weekNote"></ion-textarea>
     </ion-item>
   </ion-list>
 

@@ -31,6 +31,7 @@ import { SimpleBudgetDatabaseService, WeekPlanService } from '@upstart-productio
 import { MealPlannerDatabaseService } from '@upstart-productions/meal-planner';
 import { GoalTrackerRefreshService } from './goal-tracker-tabs/services/goal-tracker-refresh.service';
 import { PushRegistrationService } from './services/push-registration.service';
+import { AppKeyboardService } from './services/app-keyboard.service';
 import { ServiceUnlockService, ServiceUnlockDatabaseService } from '@upstart-productions/service-unlock';
 import { getNotificationRoute } from './shared/utils/notification-deeplink';
 import { addIcons } from 'ionicons';
@@ -202,6 +203,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private pushRegistration: PushRegistrationService,
     private router: Router,
     private serviceUnlock: ServiceUnlockService,
+    private appKeyboard: AppKeyboardService,
     private ngZone: NgZone,
     private destroyRef: DestroyRef
   ) {
@@ -229,6 +231,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     await this.platform.ready();
+    await this.appKeyboard.enableDismissAccessoryBar();
 
     try {
       await SplashScreen.hide();
@@ -396,6 +399,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.lastForegroundHandledAt = now;
 
     this.ngZone.run(() => this.forceWebViewRepaint());
+
+    await this.appKeyboard.enableDismissAccessoryBar();
 
     await Promise.all([
       this.grovlinkDb.reconcileConnectionsOnResume(),
