@@ -14,7 +14,7 @@
   </div>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content class="app-card-page" [fullscreen]="true">
   @if (loading) {
     <div class="page-shell"></div>
   } @else if (!meals.length) {
@@ -23,33 +23,10 @@
       <p class="app-body-secondary">Add meals on the Plan tab for {{ weekLabel }}.</p>
     </div>
   } @else {
-    <ion-list>
-      @for (meal of meals; track meal.id) {
-        <ion-item button detail="false" (click)="viewRecipe(meal)">
-          @if (meal.recipe?.imageUrl) {
-            <ion-thumbnail slot="start">
-              <img [src]="meal.recipe!.imageUrl" [alt]="meal.recipe!.title" />
-            </ion-thumbnail>
-          }
-          <ion-label>
-            <h3>{{ meal.recipe?.title }}</h3>
-            @if (meal.isCooked) {
-              <p class="app-body-secondary">
-                Cooked {{ meal.reactionEmoji }} · {{ meal.cookTimeBucket }}
-              </p>
-            } @else {
-              <p class="app-body-secondary">Tap for recipe</p>
-            }
-          </ion-label>
-          <ion-button
-            slot="end"
-            [color]="meal.isCooked ? 'medium' : 'red-orange'"
-            (click)="markCooked(meal); $event.stopPropagation()"
-          >
-            {{ meal.isCooked ? 'Undo' : 'Cooked' }}
-          </ion-button>
-        </ion-item>
-      }
-    </ion-list>
+    <app-content-card-list
+      [items]="listItems"
+      [flushTop]="true"
+      (itemClick)="onMealRowClick($event)"
+    />
   }
 </ion-content>

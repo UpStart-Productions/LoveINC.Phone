@@ -2,89 +2,122 @@
   <ion-toolbar>
     <ion-title>Pick {{ slotLabel }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="dismiss()">Close</ion-button>
+      <ion-button fill="clear" aria-label="Close" (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      class="live-search"
+      placeholder="Search recipes"
+      [debounce]="400"
+      [(ngModel)]="searchQuery"
+      (ionInput)="onSearchInput($event)"
+      (ionClear)="onSearchClear()"
+      showClearButton="focus"
+    ></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-searchbar
-    placeholder="Search recipes"
-    [debounce]="400"
-    (ionInput)="onSearch($event)"
-  ></ion-searchbar>
+<ion-content class="meal-picker-content" [fullscreen]="true">
+  <div
+    #categoryZone
+    class="category-zone"
+    [class.category-zone--collapsed]="categoriesAnimCollapsed"
+  >
+    <button
+      type="button"
+      class="category-tab app-unstyled-button"
+      [attr.aria-expanded]="!categoriesAnimCollapsed"
+      (click)="expandCategories()"
+    >
+      @if (collapsedTabCategory; as category) {
+        <div
+          class="category-tab__avatar"
+          [style.--category-color]="category.iconBackgroundColor"
+        >
+          <i-lucide
+            [name]="category.lucideIcon"
+            [size]="18"
+            color="#ffffff"
+            aria-hidden="true"
+          ></i-lucide>
+        </div>
+        <span class="category-tab__label app-body-secondary-sm">{{ category.label }}</span>
+      } @else {
+        <ion-icon name="grid-outline" aria-hidden="true"></ion-icon>
+        <span class="category-tab__label app-body-secondary-sm">Categories</span>
+      }
+      <ion-icon class="category-tab__chevron" name="chevron-down-outline" aria-hidden="true"></ion-icon>
+    </button>
+
+    <div class="category-panel">
+      <div class="category-grid">
+        @for (category of categories; track category.id) {
+          <button
+            type="button"
+            class="category-tile app-unstyled-button"
+            [attr.aria-pressed]="isCategorySelected(category.id)"
+            (click)="toggleCategory(category.id)"
+          >
+            <div
+              class="category-tile__avatar"
+              [class.category-tile__avatar--selected]="isCategorySelected(category.id)"
+              [style.--category-color]="category.iconBackgroundColor"
+            >
+              <i-lucide
+                [name]="category.lucideIcon"
+                [size]="categoryIconSize"
+                [color]="categoryIconColor(category.id, category.iconBackgroundColor)"
+                aria-hidden="true"
+              ></i-lucide>
+            </div>
+            <span class="category-tile__label app-body-secondary-sm">{{ category.label }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
 
   @if (errorMessage) {
-    <p class="app-body-secondary">{{ errorMessage }}</p>
+    <p class="app-body-secondary ion-padding-horizontal">{{ errorMessage }}</p>
   }
 
-  @if (query && searchResults.length) {
-    <h3>Search results</h3>
-    <ion-list>
-      @for (result of searchResults; track result.id) {
-        <ion-item button detail="false" (click)="pickSpoonacularResult(result)">
-          @if (result.image) {
-            <ion-thumbnail slot="start">
-              <img [src]="result.image" [alt]="result.title" />
-            </ion-thumbnail>
-          }
-          <ion-label>
-            <h3>{{ result.title }}</h3>
-            @if (result.readyInMinutes) {
-              <p class="app-body-secondary">{{ result.readyInMinutes }} min</p>
-            }
-          </ion-label>
-        </ion-item>
-      }
-    </ion-list>
-  } @else if (query && searching) {
-    <p class="app-body-secondary">Searching…</p>
-  }
+  @if (hasActiveSearch) {
+    @if (searchListItems.length) {
+      <app-content-card-list
+        [items]="searchListItems"
+        [flushTop]="true"
+        (itemClick)="onListItemClick($event)"
+      />
+    } @else if (searching) {
+      <p class="app-body-secondary ion-padding">Searching…</p>
+    } @else {
+      <p class="app-body-secondary ion-padding">No recipes match. Try another search or category.</p>
+    }
+  } @else {
+    @if (favoriteListItems.length) {
+      <p class="section-label app-body-secondary-sm app-uppercase">Favorites</p>
+      <app-content-card-list
+        [items]="favoriteListItems"
+        [flushTop]="true"
+        (itemClick)="onListItemClick($event)"
+      />
+    }
 
-  @if (!query && favorites.length) {
-    <h3>Favorites</h3>
-    <ion-list>
-      @for (recipe of favorites; track recipe.id) {
-        <ion-item button detail="false" (click)="pickCachedRecipe(recipe)">
-          @if (recipe.imageUrl) {
-            <ion-thumbnail slot="start">
-              <img [src]="recipe.imageUrl" [alt]="recipe.title" />
-            </ion-thumbnail>
-          }
-          <ion-label>
-            <h3>{{ recipe.title }}</h3>
-            @if (recipe.readyInMinutes) {
-              <p class="app-body-secondary">{{ recipe.readyInMinutes }} min</p>
-            }
-          </ion-label>
-        </ion-item>
-      }
-    </ion-list>
-  }
+    @if (showRecommendationsFirst && recommendationListItems.length) {
+      <p class="section-label app-body-secondary-sm app-uppercase">Suggested from your library</p>
+      <app-content-card-list
+        [items]="recommendationListItems"
+        [flushTop]="!favoriteListItems.length"
+        (itemClick)="onListItemClick($event)"
+      />
+    }
 
-  @if (!query && showRecommendationsFirst && recommendations.length) {
-    <h3>Suggested from your library</h3>
-    <ion-list>
-      @for (recipe of recommendations; track recipe.id) {
-        <ion-item button detail="false" (click)="pickCachedRecipe(recipe)">
-          @if (recipe.imageUrl) {
-            <ion-thumbnail slot="start">
-              <img [src]="recipe.imageUrl" [alt]="recipe.title" />
-            </ion-thumbnail>
-          }
-          <ion-label>
-            <h3>{{ recipe.title }}</h3>
-            @if (recipe.readyInMinutes) {
-              <p class="app-body-secondary">{{ recipe.readyInMinutes }} min</p>
-            }
-          </ion-label>
-        </ion-item>
-      }
-    </ion-list>
-  }
-
-  @if (!query && !favorites.length && !recommendations.length) {
-    <p class="app-body-secondary">Search for a recipe to add your first meals.</p>
+    @if (!favoriteListItems.length && !recommendationListItems.length) {
+      <p class="app-body-secondary ion-padding">Search or pick a category to get started.</p>
+    }
   }
 
   <p class="app-caption spoonacular-attribution">Recipes provided by Spoonacular</p>

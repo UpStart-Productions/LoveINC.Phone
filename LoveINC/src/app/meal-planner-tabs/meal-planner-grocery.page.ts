@@ -6,13 +6,10 @@ import {
   IonTitle,
   IonButtons,
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonCheckbox,
-  IonListHeader,
 } from '@ionic/angular/standalone';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
+import { ContentCardListComponent } from '../components/content-card-list/content-card-list.component';
+import type { ContentCardListItem } from '../components/content-card-list/content-card-list.model';
 import {
   MealPlannerPlanService,
   formatWeekLabel,
@@ -21,6 +18,7 @@ import {
 } from '@upstart-productions/meal-planner';
 import { MealWeekScrollerComponent } from './components/week-scroller/week-scroller.component';
 import { MealPlannerStateService } from './services/meal-planner-state.service';
+import { mapGroceryItemToListItem } from './utils/meal-planner-list.mapper';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -35,13 +33,9 @@ import { Subscription } from 'rxjs';
     IonTitle,
     IonButtons,
     IonContent,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonCheckbox,
-    IonListHeader,
     AppBackButtonComponent,
     MealWeekScrollerComponent,
+    ContentCardListComponent,
   ],
 })
 export class MealPlannerGroceryPage implements OnInit, OnDestroy {
@@ -49,7 +43,8 @@ export class MealPlannerGroceryPage implements OnInit, OnDestroy {
   selectedWeekStart = getCurrentWeekStart();
   earliestWeekStart = '';
   weekLabel = '';
-  groupedItems: Array<{ aisle: string; items: GroceryItem[] }> = [];
+  groupedItems: Array<{ aisle: string; items: GroceryItem[]; listItems: ContentCardListItem[] }> =
+    [];
   private weekSub?: Subscription;
 
   constructor(
@@ -74,12 +69,25 @@ export class MealPlannerGroceryPage implements OnInit, OnDestroy {
     this.stateService.setSelectedWeekStart(weekStartDate);
   }
 
-  async toggleItem(item: GroceryItem, checked: boolean) {
-    if (!item.id) {
+  async onGroceryRowClick(item: ContentCardListItem) {
+    const itemId = Number(item.id);
+    if (!itemId) {
       return;
     }
-    item.isChecked = checked;
-    await this.planService.setGroceryItemChecked(item.id, checked);
+    let groceryItem: GroceryItem | undefined;
+    for (const group of this.groupedItems) {
+      groceryItem = group.items.find((row) => row.id === itemId);
+      if (groceryItem) {
+        break;
+      }
+    }
+    if (!groceryItem) {
+      return;
+    }
+    const checked = !groceryItem.isChecked;
+    groceryItem.isChecked = checked;
+    await this.planService.setGroceryItemChecked(itemId, checked);
+    this.refreshListItems();
   }
 
   private async loadWeek() {
@@ -96,9 +104,20 @@ export class MealPlannerGroceryPage implements OnInit, OnDestroy {
       }
       this.groupedItems = [...map.entries()]
         .sort(([a], [b]) => a.localeCompare(b))
-        .map(([aisle, aisleItems]) => ({ aisle, items: aisleItems }));
+        .map(([aisle, aisleItems]) => ({
+          aisle,
+          items: aisleItems,
+          listItems: aisleItems.map((row) => mapGroceryItemToListItem(row)),
+        }));
     } finally {
       this.loading = false;
     }
+  }
+
+  private refreshListItems() {
+    this.groupedItems = this.groupedItems.map((group) => ({
+      ...group,
+      listItems: group.items.map((row) => mapGroceryItemToListItem(row)),
+    }));
   }
 }

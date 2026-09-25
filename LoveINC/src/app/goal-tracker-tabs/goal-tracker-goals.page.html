@@ -4,9 +4,6 @@
       <app-back-button [onLightBackground]="true"></app-back-button>
     </ion-buttons>
     <ion-title>Goal Tracker</ion-title>
-    <ion-buttons slot="end">
-      <ion-button fill="clear" class="dev-clear-db" (click)="onClearDatabase()">Clear</ion-button>
-    </ion-buttons>
   </ion-toolbar>
   <div *ngIf="showDateScroller" class="container-date-scroller">
     <app-date-scroller

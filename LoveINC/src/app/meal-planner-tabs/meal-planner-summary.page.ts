@@ -6,11 +6,10 @@ import {
   IonTitle,
   IonButtons,
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
 } from '@ionic/angular/standalone';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
+import { ContentCardListComponent } from '../components/content-card-list/content-card-list.component';
+import type { ContentCardListItem } from '../components/content-card-list/content-card-list.model';
 import {
   COOK_TIME_OPTIONS,
   MealPlannerPlanService,
@@ -21,6 +20,7 @@ import {
 } from '@upstart-productions/meal-planner';
 import { MealWeekScrollerComponent } from './components/week-scroller/week-scroller.component';
 import { MealPlannerStateService } from './services/meal-planner-state.service';
+import { mapSummaryMealToListItem } from './utils/meal-planner-list.mapper';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -35,11 +35,9 @@ import { Subscription } from 'rxjs';
     IonTitle,
     IonButtons,
     IonContent,
-    IonList,
-    IonItem,
-    IonLabel,
     AppBackButtonComponent,
     MealWeekScrollerComponent,
+    ContentCardListComponent,
   ],
 })
 export class MealPlannerSummaryPage implements OnInit, OnDestroy {
@@ -49,6 +47,7 @@ export class MealPlannerSummaryPage implements OnInit, OnDestroy {
   weekLabel = '';
   summary: WeeklySummary | null = null;
   meals: PlanMeal[] = [];
+  listItems: ContentCardListItem[] = [];
   private weekSub?: Subscription;
 
   constructor(
@@ -73,7 +72,7 @@ export class MealPlannerSummaryPage implements OnInit, OnDestroy {
     this.stateService.setSelectedWeekStart(weekStartDate);
   }
 
-  cookTimeLabel(bucket?: string): string {
+  private cookTimeLabel(bucket?: string): string {
     return COOK_TIME_OPTIONS.find((option) => option.bucket === bucket)?.label ?? bucket ?? '';
   }
 
@@ -85,6 +84,14 @@ export class MealPlannerSummaryPage implements OnInit, OnDestroy {
       this.summary = await this.planService.getWeeklySummary(this.selectedWeekStart);
       const plan = await this.planService.getWeeklyPlan(this.selectedWeekStart);
       this.meals = plan?.meals ?? [];
+      this.listItems = this.meals.map((meal) =>
+        mapSummaryMealToListItem(
+          meal,
+          meal.isCooked
+            ? `${meal.reactionEmoji ?? ''} · ${this.cookTimeLabel(meal.cookTimeBucket)}`.trim()
+            : 'Not cooked yet'
+        )
+      );
     } finally {
       this.loading = false;
     }

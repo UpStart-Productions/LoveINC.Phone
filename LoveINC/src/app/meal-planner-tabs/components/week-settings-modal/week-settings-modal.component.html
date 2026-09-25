@@ -2,7 +2,9 @@
   <ion-toolbar>
     <ion-title>Household &amp; week</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="dismiss()">Cancel</ion-button>
+      <ion-button fill="clear" aria-label="Close" (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

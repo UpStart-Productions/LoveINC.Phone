@@ -7,20 +7,16 @@ import {
   IonButtons,
   IonButton,
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonThumbnail,
   IonIcon,
   ModalController,
-  AlertController,
 } from '@ionic/angular/standalone';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
+import { ContentCardListComponent } from '../components/content-card-list/content-card-list.component';
+import type { ContentCardListItem } from '../components/content-card-list/content-card-list.model';
 import {
   MEALS_PER_WEEK,
   MealPlannerPlanService,
   MealPlannerProfileService,
-  formatWeekLabel,
   getCurrentWeekStart,
   type PlanMeal,
   type WeeklyPlan,
@@ -30,6 +26,10 @@ import { MealPickerModalComponent } from './components/meal-picker-modal/meal-pi
 import { WeekSettingsModalComponent } from './components/week-settings-modal/week-settings-modal.component';
 import { RecipeDetailModalComponent } from './components/recipe-detail-modal/recipe-detail-modal.component';
 import { MealPlannerStateService } from './services/meal-planner-state.service';
+import {
+  mapEmptyMealSlot,
+  mapPlanMealToListItem,
+} from './utils/meal-planner-list.mapper';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -45,13 +45,10 @@ import { Subscription } from 'rxjs';
     IonButtons,
     IonButton,
     IonContent,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonThumbnail,
     IonIcon,
     AppBackButtonComponent,
     MealWeekScrollerComponent,
+    ContentCardListComponent,
   ],
 })
 export class MealPlannerPlanPage implements OnInit, OnDestroy {
@@ -59,17 +56,16 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
   needsProfile = false;
   selectedWeekStart = getCurrentWeekStart();
   earliestWeekStart = '';
-  weekLabel = '';
   plan: WeeklyPlan | null = null;
   slots: Array<PlanMeal | null> = [null, null, null];
+  listItems: ContentCardListItem[] = [];
   private weekSub?: Subscription;
 
   constructor(
     private planService: MealPlannerPlanService,
     private profileService: MealPlannerProfileService,
     private stateService: MealPlannerStateService,
-    private modalCtrl: ModalController,
-    private alertCtrl: AlertController
+    private modalCtrl: ModalController
   ) {}
 
   async ngOnInit() {
@@ -116,10 +112,27 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
     await this.openSettings();
   }
 
+  async onMealRowClick(item: ContentCardListItem) {
+    const slotIndex = Number(item.id?.replace('slot-', ''));
+    if (Number.isNaN(slotIndex)) {
+      return;
+    }
+    const meal = this.slots[slotIndex];
+    if (!meal?.recipe) {
+      await this.pickMeal(slotIndex);
+      return;
+    }
+    await this.viewRecipe(meal, slotIndex);
+  }
+
   async pickMeal(slotIndex: number) {
     const modal = await this.modalCtrl.create({
       component: MealPickerModalComponent,
-      componentProps: { slotLabel: `Meal ${slotIndex + 1}` },
+      componentProps: {
+        slotLabel: `Meal ${slotIndex + 1}`,
+        weekStartDate: this.selectedWeekStart,
+        slotIndex,
+      },
     });
     await modal.present();
     const { data } = await modal.onDidDismiss<{ cachedRecipeId: number }>();
@@ -134,7 +147,7 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
     this.syncSlots();
   }
 
-  async viewRecipe(meal: PlanMeal) {
+  async viewRecipe(meal: PlanMeal, slotIndex: number) {
     if (!meal.recipe) {
       return;
     }
@@ -142,48 +155,17 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
       component: RecipeDetailModalComponent,
       componentProps: {
         recipe: meal.recipe,
+        weekStartDate: this.selectedWeekStart,
+        slotIndex,
         planMealId: meal.id,
         extraGuests: meal.extraGuests,
       },
     });
     await modal.present();
-  }
-
-  async editMealGuests(meal: PlanMeal) {
-    if (!meal.id) {
-      return;
+    const { data } = await modal.onDidDismiss<{ weekChanged?: boolean }>();
+    if (data?.weekChanged) {
+      await this.loadWeek();
     }
-    const alert = await this.alertCtrl.create({
-      header: 'Guests for this meal',
-      inputs: [
-        {
-          name: 'extraGuests',
-          type: 'number',
-          placeholder: 'Extra guests',
-          value: String(meal.extraGuests ?? 0),
-        },
-        {
-          name: 'eventNote',
-          type: 'text',
-          placeholder: 'Note (optional)',
-          value: meal.eventNote ?? '',
-        },
-      ],
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        {
-          text: 'Save',
-          handler: (values) => {
-            void this.planService.updateMealGuests(
-              meal.id!,
-              Math.max(0, Number(values['extraGuests']) || 0),
-              values['eventNote']
-            ).then(() => this.loadWeek());
-          },
-        },
-      ],
-    });
-    await alert.present();
   }
 
   private async loadWeek() {
@@ -192,7 +174,6 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
       const profile = await this.profileService.getProfile();
       this.needsProfile = !profile;
       this.earliestWeekStart = (await this.planService.getEarliestWeekStart()) ?? '';
-      this.weekLabel = formatWeekLabel(this.selectedWeekStart);
       this.plan = await this.planService.getWeeklyPlan(this.selectedWeekStart);
       this.syncSlots();
     } finally {
@@ -204,5 +185,8 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
     this.slots = Array.from({ length: MEALS_PER_WEEK }, (_, slotIndex) => {
       return this.plan?.meals.find((meal) => meal.slotIndex === slotIndex) ?? null;
     });
+    this.listItems = this.slots.map((meal, slotIndex) =>
+      meal ? mapPlanMealToListItem(meal, slotIndex) : mapEmptyMealSlot(slotIndex)
+    );
   }
 }

@@ -13,6 +13,7 @@ import {
   IonLabel,
   IonInput,
   IonTextarea,
+  IonIcon,
   ModalController,
 } from '@ionic/angular/standalone';
 import type { MealPlannerProfile } from '@upstart-productions/meal-planner';
@@ -36,6 +37,7 @@ import { MealPlannerProfileService } from '@upstart-productions/meal-planner';
     IonLabel,
     IonInput,
     IonTextarea,
+    IonIcon,
   ],
 })
 export class WeekSettingsModalComponent implements OnInit {

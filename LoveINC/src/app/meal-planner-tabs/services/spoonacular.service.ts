@@ -45,16 +45,36 @@ export class SpoonacularService {
     private recipeService: MealPlannerRecipeService
   ) {}
 
-  async searchRecipes(query: string, maxReadyTime: number): Promise<SpoonacularSearchResult[]> {
+  async searchRecipes(options: {
+    query?: string;
+    type?: string;
+    diet?: string;
+    maxReadyTime: number;
+  }): Promise<SpoonacularSearchResult[]> {
     if (!SPOONACULAR_API_KEY) {
       throw new Error('Spoonacular API key is not configured.');
     }
-    const params = new HttpParams()
+    const query = options.query?.trim() ?? '';
+    const type = options.type?.trim() ?? '';
+    const diet = options.diet?.trim() ?? '';
+    if (!query && !type && !diet) {
+      return [];
+    }
+
+    let params = new HttpParams()
       .set('apiKey', SPOONACULAR_API_KEY)
-      .set('query', query.trim())
       .set('number', '12')
-      .set('maxReadyTime', String(maxReadyTime))
+      .set('maxReadyTime', String(options.maxReadyTime))
       .set('addRecipeInformation', 'false');
+    if (query) {
+      params = params.set('query', query);
+    }
+    if (type) {
+      params = params.set('type', type);
+    }
+    if (diet) {
+      params = params.set('diet', diet);
+    }
 
     const response = await firstValueFrom(
       this.http.get<SpoonacularSearchResponse>(`${this.baseUrl}/recipes/complexSearch`, { params })

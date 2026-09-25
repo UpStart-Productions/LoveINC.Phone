@@ -153,17 +153,47 @@ export class MealPlannerPlanService {
     return refreshed;
   }
 
+  async clearMealForSlot(weekStartDate: string, slotIndex: number): Promise<WeeklyPlan> {
+    if (slotIndex < 0 || slotIndex >= MEALS_PER_WEEK) {
+      throw new Error('Invalid meal slot');
+    }
+    const plan = await this.getWeeklyPlan(weekStartDate);
+    if (!plan?.id) {
+      throw new Error('Weekly plan not found');
+    }
+    const existingMeal = plan.meals.find((meal) => meal.slotIndex === slotIndex);
+    if (!existingMeal?.id) {
+      return plan;
+    }
+
+    const db = await this.dbService.getDbConnection();
+    const now = new Date().toISOString();
+    await db.run('DELETE FROM plan_meals WHERE id = ?', [existingMeal.id]);
+    await db.run('UPDATE weekly_plans SET updated_at = ? WHERE id = ?', [now, plan.id]);
+
+    const refreshed = await this.getWeeklyPlan(weekStartDate);
+    if (!refreshed) {
+      throw new Error('Failed to clear meal');
+    }
+    await this.rebuildGroceryList(refreshed);
+    return refreshed;
+  }
+
   async updateMealGuests(
     planMealId: number,
     extraGuests: number,
     eventNote?: string
   ): Promise<void> {
     const db = await this.dbService.getDbConnection();
-    await db.run('UPDATE plan_meals SET extra_guests = ?, event_note = ? WHERE id = ?', [
-      extraGuests,
-      eventNote ?? null,
-      planMealId,
-    ]);
+    if (eventNote !== undefined) {
+      await db.run('UPDATE plan_meals SET extra_guests = ?, event_note = ? WHERE id = ?', [
+        extraGuests,
+        eventNote,
+        planMealId,
+      ]);
+    } else {
+      await db.run('UPDATE plan_meals SET extra_guests = ? WHERE id = ?', [extraGuests, planMealId]);
+    }
     const mealResult = await db.query('SELECT weekly_plan_id FROM plan_meals WHERE id = ?', [planMealId]);
     const weekPlanId = mealResult.values?.[0]?.['weekly_plan_id'];
     if (!weekPlanId) {

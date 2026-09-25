@@ -14,7 +14,7 @@
   </div>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content class="app-card-page" [fullscreen]="true">
   @if (loading) {
     <div class="page-shell"></div>
   } @else if (!summary?.mealsPlanned) {
@@ -23,8 +23,7 @@
       <p class="app-body-secondary">Plan and cook meals for {{ weekLabel }} to see your summary.</p>
     </div>
   } @else {
-    <div class="ion-padding">
-      <h2>{{ weekLabel }}</h2>
+    <div class="summary-stats ion-padding">
       <p class="app-body-secondary">
         {{ summary!.mealsCooked }}/{{ summary!.mealsPlanned }} meals cooked
       </p>
@@ -34,23 +33,8 @@
       @if (summary!.favoriteReaction) {
         <p class="app-body-secondary">Top reaction: {{ summary!.favoriteReaction }}</p>
       }
-
-      <ion-list>
-        @for (meal of meals; track meal.id) {
-          <ion-item>
-            <ion-label>
-              <h3>{{ meal.recipe?.title }}</h3>
-              @if (meal.isCooked) {
-                <p class="app-body-secondary">
-                  {{ meal.reactionEmoji }} · {{ cookTimeLabel(meal.cookTimeBucket) }}
-                </p>
-              } @else {
-                <p class="app-body-secondary">Not cooked yet</p>
-              }
-            </ion-label>
-          </ion-item>
-        }
-      </ion-list>
     </div>
+
+    <app-content-card-list [items]="listItems" [flushTop]="true" />
   }
 </ion-content>

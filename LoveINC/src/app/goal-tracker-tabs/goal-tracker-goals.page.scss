@@ -17,15 +17,6 @@ ion-toolbar.custom-toolbar {
   position: relative;
   z-index: 11;
 
-  ion-button {
-    --color: var(--ion-color-dark, #222428);
-  }
-
-  /* TEMP: dev-only clear control */
-  ion-button.dev-clear-db {
-    --color: var(--ion-color-danger);
-    font-size: var(--app-font-size-sm);
-  }
 }
 
 .loading,

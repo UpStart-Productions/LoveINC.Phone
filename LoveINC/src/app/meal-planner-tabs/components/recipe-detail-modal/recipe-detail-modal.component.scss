@@ -1,5 +1,43 @@
-.recipe-image {
-  width: 100%;
-  border-radius: 12px;
-  margin-bottom: 1rem;
+.recipe-detail-edge-chrome__actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+:host {
+  --meal-planner-accent: #d56132;
+}
+
+.recipe-detail-meta-badge {
+  position: static;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+  background-color: var(--meal-planner-accent);
+  color: #ffffff;
+  text-transform: none;
+}
+
+.recipe-detail-meta-badge__label {
+  position: relative;
+  top: -2px;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.recipe-detail-menu-icon--selected {
+  color: var(--love-inc-teal);
+}
+
+.recipe-detail-menu-icon--favorite {
+  color: var(--love-inc-red);
+}
+
+.spoonacular-attribution {
+  margin-top: 1rem;
 }

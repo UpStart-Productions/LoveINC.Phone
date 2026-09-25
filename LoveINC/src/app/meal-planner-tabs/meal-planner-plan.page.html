@@ -5,7 +5,9 @@
     </ion-buttons>
     <ion-title>Meal Planner</ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="clear" (click)="openSettings()">Household</ion-button>
+      <ion-button fill="clear" aria-label="Household settings" (click)="openSettings()">
+        <ion-icon slot="icon-only" name="people-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
   <div class="container-week-scroller">
@@ -17,7 +19,7 @@
   </div>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content class="app-card-page" [fullscreen]="true">
   @if (loading) {
     <div class="page-shell"></div>
   } @else if (needsProfile) {
@@ -27,52 +29,20 @@
       <ion-button expand="block" color="red-orange" (click)="onSetupProfile()">Get started</ion-button>
     </div>
   } @else {
-    <div class="ion-padding">
-      <p class="app-body-secondary week-label">{{ weekLabel }}</p>
-      @if (plan?.weekServingDelta) {
-        <p class="app-body-secondary">+{{ plan?.weekServingDelta }} servings all week</p>
-      }
-      @if (plan?.weekNote) {
-        <p class="app-body-secondary">{{ plan?.weekNote }}</p>
-      }
+    @if (plan?.weekServingDelta) {
+      <p class="app-body-secondary week-note">+{{ plan?.weekServingDelta }} servings all week</p>
+    }
+    @if (plan?.weekNote) {
+      <p class="app-body-secondary week-note">{{ plan?.weekNote }}</p>
+    }
 
-      <ion-list>
-        @for (meal of slots; track $index; let i = $index) {
-          <ion-item button detail="false" (click)="meal ? viewRecipe(meal) : pickMeal(i)">
-            @if (meal?.recipe?.imageUrl) {
-              <ion-thumbnail slot="start">
-                <img [src]="meal!.recipe!.imageUrl" [alt]="meal!.recipe!.title" />
-              </ion-thumbnail>
-            }
-            <ion-label>
-              <p class="app-caption">Meal {{ i + 1 }}</p>
-              @if (meal?.recipe) {
-                <h3>{{ meal!.recipe!.title }}</h3>
-                @if (meal!.recipe!.readyInMinutes) {
-                  <p class="app-body-secondary">{{ meal!.recipe!.readyInMinutes }} min</p>
-                }
-                @if (meal!.extraGuests) {
-                  <p class="app-body-secondary">+{{ meal!.extraGuests }} guests</p>
-                }
-              } @else {
-                <h3>Tap to pick a meal</h3>
-              }
-            </ion-label>
-            @if (meal) {
-              <ion-button slot="end" fill="clear" (click)="editMealGuests(meal); $event.stopPropagation()">
-                <ion-icon name="people-outline"></ion-icon>
-              </ion-button>
-              <ion-button slot="end" fill="clear" (click)="pickMeal(i); $event.stopPropagation()">
-                <ion-icon name="refresh-outline"></ion-icon>
-              </ion-button>
-            } @else {
-              <ion-icon class="list-row-chevron" name="chevron-forward-outline" slot="end"></ion-icon>
-            }
-          </ion-item>
-        }
-      </ion-list>
+    <app-content-card-list
+      [items]="listItems"
+      [flushTop]="true"
+      [compactCategoryLabel]="true"
+      (itemClick)="onMealRowClick($event)"
+    />
 
-      <p class="app-caption spoonacular-attribution">Recipes provided by Spoonacular</p>
-    </div>
+    <p class="app-caption spoonacular-attribution">Recipes provided by Spoonacular</p>
   }
 </ion-content>

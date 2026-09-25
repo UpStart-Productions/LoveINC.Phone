@@ -7,14 +7,12 @@ import {
   IonTitle,
   IonButtons,
   IonButton,
-  AlertController,
 } from '@ionic/angular/standalone';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { App } from '@capacitor/app';
 import {
   GoalService,
   HabitService,
-  GoalTrackerDatabaseService,
 } from '@upstart-productions/goal-tracker';
 import type { Goal, Habit } from '@upstart-productions/goal-tracker';
 import { HabitCardComponent } from './components/habit-card/habit-card.component';
@@ -72,11 +70,9 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
   constructor(
     private goalService: GoalService,
     private habitService: HabitService,
-    private goalTrackerDb: GoalTrackerDatabaseService,
     private refreshService: GoalTrackerRefreshService,
     private dateService: GoalTrackerDateService,
-    private modalService: GoalTrackerModalService,
-    private alertController: AlertController
+    private modalService: GoalTrackerModalService
   ) {}
 
   get selectedDate(): string {
@@ -229,40 +225,5 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
 
   onAddHabit(goalId?: number) {
     this.modalService.openAddHabit(goalId);
-  }
-
-  /** TEMP: dev helper — remove before release. */
-  async onClearDatabase() {
-    const alert = await this.alertController.create({
-      header: 'Clear Goal Tracker?',
-      message: 'Deletes all goals, habits, and check-off history on this device.',
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        {
-          text: 'Clear',
-          role: 'destructive',
-          handler: () => {
-            void this.clearDatabase();
-          },
-        },
-      ],
-    });
-    await alert.present();
-  }
-
-  private async clearDatabase() {
-    try {
-      await this.goalTrackerDb.resetDatabase();
-      this.dateService.completedDates = [];
-      await this.loadData();
-      this.refreshService.requestRefresh();
-    } catch (err) {
-      const errorAlert = await this.alertController.create({
-        header: 'Clear Failed',
-        message: (err as Error)?.message ?? 'Unknown error',
-        buttons: ['OK'],
-      });
-      await errorAlert.present();
-    }
   }
 }

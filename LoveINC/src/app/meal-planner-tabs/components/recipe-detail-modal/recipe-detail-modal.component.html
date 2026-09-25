@@ -1,41 +1,128 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>{{ recipe.title }}</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="toggleFavorite()" aria-label="Toggle favorite">
-        <ion-icon [name]="isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
-      </ion-button>
-      <ion-button (click)="dismiss()">Close</ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+@if (showStandardHeader) {
+  <ion-header class="content-reader-header">
+    <ion-toolbar>
+      <ion-title>{{ recipe.title }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button fill="clear" aria-label="Close" (click)="dismiss()">
+          <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+}
 
-<ion-content class="ion-padding">
-  @if (recipe.imageUrl) {
-    <img class="recipe-image" [src]="recipe.imageUrl" [alt]="recipe.title" />
+<ion-content
+  #ionContent
+  [fullscreen]="true"
+  class="content-reader-scroll"
+  [class.content-reader-scroll--edge-hero]="showEdgeHero"
+>
+  @if (showEdgeHero) {
+    <div
+      class="content-reader-edge-chrome"
+      [class.content-reader-edge-chrome--scrolled]="edgeHeaderScrolled"
+    >
+      <div class="content-reader-edge-chrome__bar">
+        <p class="content-reader-edge-chrome__title">{{ recipe.title }}</p>
+        <div class="recipe-detail-edge-chrome__actions">
+          <ion-button fill="clear" aria-label="Close" (click)="dismiss()">
+            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
   }
 
-  @if (recipe.readyInMinutes) {
-    <p class="app-body-secondary">{{ recipe.readyInMinutes }} min · Serves {{ recipe.servings }}</p>
+  @if (showEdgeHero && recipe.imageUrl) {
+    <div class="content-reader-hero">
+      <img [src]="recipe.imageUrl" [alt]="recipe.title" class="content-reader-hero__image" />
+      <div class="content-reader-hero__gradient" aria-hidden="true"></div>
+      <p class="content-reader-hero__title app-title">{{ recipe.title }}</p>
+    </div>
   }
 
-  @if (extraGuests > 0) {
-    <p class="app-body-secondary">+{{ extraGuests }} guests for this meal</p>
-  }
+  <div class="content-reader-body p-l-18 p-r-18 p-b-36">
+    <div class="card-badge card-badge--actions recipe-detail-meta-badge">
+      <span class="recipe-detail-meta-badge__label">
+        @if (recipe.readyInMinutes) {
+          {{ recipe.readyInMinutes }} min ·
+        }
+        Serves {{ displayServings }}
+      </span>
+      <button
+        type="button"
+        class="card-badge-more"
+        aria-label="Recipe options"
+        aria-haspopup="dialog"
+        [attr.aria-expanded]="actionsOpen"
+        (click)="openActions($event)"
+      >
+        <span aria-hidden="true">•••</span>
+      </button>
+    </div>
 
-  <h3>Ingredients</h3>
-  <ul>
-    @for (item of recipe.ingredients; track item.original) {
-      <li>{{ item.original }}</li>
-    }
-  </ul>
+    <h3>Ingredients</h3>
+    <ul>
+      @for (item of recipe.ingredients; track item.original) {
+        <li>{{ item.original }}</li>
+      }
+    </ul>
 
-  <h3>Steps</h3>
-  <ol>
-    @for (step of recipe.instructions; track step) {
-      <li>{{ step }}</li>
-    }
-  </ol>
+    <h3>Steps</h3>
+    <ol>
+      @for (step of recipe.instructions; track step) {
+        <li>{{ step }}</li>
+      }
+    </ol>
 
-  <p class="app-caption spoonacular-attribution">Recipe data from Spoonacular</p>
+    <p class="app-caption spoonacular-attribution">Recipe data from Spoonacular</p>
+  </div>
 </ion-content>
+
+<ion-popover
+  class="card-actions-popover"
+  [arrow]="false"
+  #actionsPopover
+  [isOpen]="actionsOpen"
+  [event]="actionsEvent"
+  (didDismiss)="actionsOpen = false"
+  side="bottom"
+  alignment="end"
+  [showBackdrop]="true"
+  aria-label="Recipe options"
+>
+  <ng-template>
+    <ion-list>
+      @if (canManageWeek) {
+        <ion-item button detail="false" lines="none" (click)="selectWeekAction($event, actionsPopover)">
+          <ion-icon
+            slot="start"
+            [name]="isOnWeek ? 'checkmark-circle' : 'checkmark-circle-outline'"
+            [class.recipe-detail-menu-icon--selected]="isOnWeek"
+          ></ion-icon>
+          <ion-label>{{ isOnWeek ? 'Selected' : 'Select for week' }}</ion-label>
+        </ion-item>
+      }
+      <ion-item button detail="false" lines="none" (click)="selectFavoriteAction($event, actionsPopover)">
+        <ion-icon
+          slot="start"
+          [name]="isFavorite ? 'heart' : 'heart-outline'"
+          [class.recipe-detail-menu-icon--favorite]="isFavorite"
+        ></ion-icon>
+        <ion-label>{{ isFavorite ? 'Favorited' : 'Favorite for later' }}</ion-label>
+      </ion-item>
+      @if (canManageWeek) {
+        <ion-item
+          button
+          detail="false"
+          lines="none"
+          [disabled]="!isOnWeek"
+          (click)="selectServingsAction($event, actionsPopover)"
+        >
+          <ion-icon slot="start" name="people-outline"></ion-icon>
+          <ion-label>Servings ({{ displayServings }})</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  </ng-template>
+</ion-popover>
