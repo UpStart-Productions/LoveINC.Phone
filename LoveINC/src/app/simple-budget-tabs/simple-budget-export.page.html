@@ -4,6 +4,24 @@
       <app-back-button [onLightBackground]="true"></app-back-button>
     </ion-buttons>
     <ion-title>Export</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        fill="clear"
+        aria-label="Share budget"
+        [disabled]="!canExportOrShare"
+        (click)="shareBudget()"
+      >
+        <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+      </ion-button>
+      <ion-button
+        fill="clear"
+        aria-label="Export budget PDF"
+        [disabled]="!canExportOrShare"
+        (click)="exportPdf()"
+      >
+        <ion-icon slot="icon-only" name="document-text-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -37,10 +55,6 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-button expand="block" (click)="exportPdf()" [disabled]="exporting" class="export-button">
-      <ion-icon name="document-text-outline" slot="start"></ion-icon>
-      {{ exporting ? 'Creating PDF…' : 'Export PDF' }}
-    </ion-button>
   </div>
 
   <div *ngIf="!loading && exportMode === 'month' && selectedMonthKey" class="export-content">
@@ -68,9 +82,5 @@
       </ion-card-content>
       <p *ngIf="!monthlyWeeks.length" class="no-data">No week plans for this month.</p>
     </ion-card>
-    <ion-button expand="block" (click)="exportPdf()" [disabled]="exporting || !monthlyWeeks.length" class="export-button">
-      <ion-icon name="document-text-outline" slot="start"></ion-icon>
-      {{ exporting ? 'Creating PDF…' : 'Export PDF' }}
-    </ion-button>
   </div>
 </ion-content>

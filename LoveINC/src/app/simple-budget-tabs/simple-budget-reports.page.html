@@ -4,6 +4,24 @@
       <app-back-button [onLightBackground]="true"></app-back-button>
     </ion-buttons>
     <ion-title>Reports</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        fill="clear"
+        aria-label="Share budget"
+        [disabled]="!canExportOrShare"
+        (click)="shareBudget()"
+      >
+        <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+      </ion-button>
+      <ion-button
+        fill="clear"
+        aria-label="Export budget PDF"
+        [disabled]="!canExportOrShare"
+        (click)="exportPdf()"
+      >
+        <ion-icon slot="icon-only" name="document-text-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

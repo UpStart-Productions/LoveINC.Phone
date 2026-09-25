@@ -1,12 +1,3 @@
-<ion-header *ngIf="!isGoalsTab" [translucent]="false">
-  <ion-toolbar class="custom-toolbar">
-    <ion-buttons slot="start">
-      <app-back-button [onLightBackground]="true"></app-back-button>
-    </ion-buttons>
-    <ion-title>Statistics</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-tabs>
   <ion-tab-bar slot="bottom" class="goal-tracker-tab-bar">
     <ion-tab-button tab="goals" [routerLink]="['/tabs/goal-tracker/goals']" queryParamsHandling="preserve">

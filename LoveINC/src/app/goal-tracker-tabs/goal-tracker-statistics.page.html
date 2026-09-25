@@ -1,52 +1,89 @@
-<ion-content [fullscreen]="true" [scrollY]="false" class="statistics-content">
-  <div class="statistics-inner">
-    <!-- Fixed: Total Done, chart, week picker -->
-    <div class="statistics-fixed">
-      <div class="total-done">
-        <div class="total-done-left">
-          <h2>Total Done</h2>
-          <p class="app-caption">{{ weekDateRangeLabel }}</p>
-        </div>
-        <div class="total-done-right">
-          <span class="total-percent">{{ totalPercent }}%</span>
-          <p class="app-caption">{{ totalCompleted }} / {{ totalScheduled }}</p>
-        </div>
-      </div>
+<ion-header [translucent]="false">
+  <ion-toolbar class="custom-toolbar">
+    <ion-buttons slot="start">
+      <app-back-button [onLightBackground]="true"></app-back-button>
+    </ion-buttons>
+    <ion-title>Statistics</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        fill="clear"
+        aria-label="Share statistics"
+        [disabled]="loading || sharing"
+        (click)="shareStats()"
+      >
+        <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+      </ion-button>
+      <ion-button
+        fill="clear"
+        aria-label="Export statistics PDF"
+        [disabled]="loading || exporting"
+        (click)="exportPdf()"
+      >
+        <ion-icon slot="icon-only" name="document-text-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
 
-      <app-weekly-bar-chart [data]="weeklyData"></app-weekly-bar-chart>
-
-      <div class="week-nav">
-        <ion-button fill="clear" size="small" aria-label="Previous week" (click)="prevWeek()">
-          <ion-icon name="chevron-back-outline"></ion-icon>
-        </ion-button>
-        <span class="week-selector">{{ weekLabel }}</span>
-        <ion-button fill="clear" size="small" aria-label="Next week" (click)="nextWeek()">
-          <ion-icon name="chevron-forward-outline"></ion-icon>
-        </ion-button>
-      </div>
+  <div class="statistics-fixed">
+    <div class="total-done">
+      <h2>{{ habitsCompletedLabel }}</h2>
+      <span class="total-percent">{{ totalPercent }}%</span>
     </div>
 
-    <!-- Scrollable habit list -->
-    <div class="habit-stats-scroll">
-      <div class="habit-stats-list">
-        <div *ngFor="let stat of habitStats" class="habit-stat-card" [ngClass]="'border-' + (stat.habit.color || 'prussian-blue')">
-          <div class="habit-stat-main">
-            <div>
-              <h3>{{ stat.habit.name }}</h3>
-              <p *ngIf="stat.goalName" class="habit-goal-name">{{ stat.goalName }}</p>
-              <p class="app-caption">{{ stat.completed }}/{{ stat.scheduled }} times</p>
-            </div>
-          </div>
-          <div class="habit-stat-right">
-            <span class="stat-percent" [ngClass]="getPercentClass(stat.percent)">{{ stat.percent }}%</span>
-            <span *ngIf="stat.change !== null" class="stat-change" [ngClass]="getChangeClass(stat.change)">
-              <ion-icon *ngIf="stat.change > 0" name="arrow-up-outline"></ion-icon>
-              <ion-icon *ngIf="stat.change < 0" name="arrow-down-outline"></ion-icon>
-              <ion-icon *ngIf="stat.change === 0" name="remove-outline"></ion-icon>
-              {{ stat.change > 0 ? '+' : '' }}{{ stat.change }}%
-            </span>
-          </div>
+    <div class="statistics-chart">
+      <app-weekly-bar-chart [data]="weeklyData"></app-weekly-bar-chart>
+    </div>
+
+    <div class="week-nav" [class.year-view]="chartView === 'year'">
+      <ion-button
+        *ngIf="chartView === 'week'"
+        fill="clear"
+        size="small"
+        aria-label="Previous week"
+        (click)="prevWeek()"
+      >
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <span
+        class="week-selector"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="chartView === 'week' ? 'Switch to year view' : 'Switch to week view'"
+        (click)="toggleChartView()"
+        (keydown.enter)="toggleChartView()"
+        (keydown.space)="$event.preventDefault(); toggleChartView()"
+      >{{ periodLabel }}</span>
+      <ion-button
+        *ngIf="chartView === 'week'"
+        fill="clear"
+        size="small"
+        aria-label="Next week"
+        (click)="nextWeek()"
+      >
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="habit-stats-content">
+  <div class="habit-stats-list">
+    <div *ngFor="let stat of habitStats" class="habit-stat-card" [ngClass]="'border-' + (stat.habit.color || 'prussian-blue')">
+      <div class="habit-stat-main">
+        <div>
+          <h3>{{ stat.habit.name }}</h3>
+          <p *ngIf="stat.goalName" class="habit-goal-name">{{ stat.goalName }}</p>
+          <p class="app-caption">{{ stat.completed }}/{{ stat.scheduled }} times</p>
         </div>
+      </div>
+      <div class="habit-stat-right">
+        <span class="stat-percent" [ngClass]="getPercentClass(stat.percent)">{{ stat.percent }}%</span>
+        <span *ngIf="stat.change !== null" class="stat-change" [ngClass]="getChangeClass(stat.change)">
+          <ion-icon *ngIf="stat.change > 0" name="arrow-up-outline"></ion-icon>
+          <ion-icon *ngIf="stat.change < 0" name="arrow-down-outline"></ion-icon>
+          <ion-icon *ngIf="stat.change === 0" name="remove-outline"></ion-icon>
+          {{ stat.change > 0 ? '+' : '' }}{{ stat.change }}%
+        </span>
       </div>
     </div>
   </div>

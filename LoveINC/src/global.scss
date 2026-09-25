@@ -298,6 +298,9 @@ ion-button[fill="clear"][color="primary"] {
 
 /* Global Notification Badge Styling */
 .notifications-button {
+  --background: transparent;
+  --box-shadow: none;
+  --color: var(--app-header-color);
   --padding-start: 0.25rem;
   --padding-end: 0.25rem;
   --padding-top: 0;
@@ -311,7 +314,11 @@ ion-button[fill="clear"][color="primary"] {
     min-width: 0;
     padding: 0 0.25rem !important;
   }
-  
+
+  ion-icon {
+    color: inherit;
+  }
+
   .notification-badge {
     position: absolute;
     top: 0.0625rem;
@@ -391,13 +398,19 @@ ion-modal.donation-map-modal-fullscreen {
   }
 }
 
-/* Chart bar popover (statistics) – pointer-events: none so taps pass through to bars */
+/* Chart bar popover (statistics) – invisible backdrop dismisses on outside tap */
 ion-popover.chart-bar-popover {
   --background: rgba(var(--ion-color-dark-rgb), 0.95);
   --box-shadow: 0 2px 8px rgba(var(--app-scrim-rgb), 0.3);
   --width: fit-content;
   --max-width: 6.625rem;
+  --backdrop-opacity: 0.01;
+  --offset-y: 4px;
   pointer-events: none;
+
+  &::part(backdrop) {
+    pointer-events: auto;
+  }
 }
 
 /* Chart pie popover (Simple Budget reports) – dark popover on slice tap, backdrop dismiss, auto-fade */

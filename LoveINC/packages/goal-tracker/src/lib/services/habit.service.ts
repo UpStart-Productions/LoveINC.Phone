@@ -18,7 +18,15 @@ function isAfter(dateStr: string, otherStr: string): boolean {
   return new Date(dateStr) > new Date(otherStr);
 }
 
-/** Sentinel: habits with no start date show for all dates */
+function isoToLocalDateStr(iso: string): string {
+  const d = new Date(iso);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/** Sentinel: no explicit start date in UI — effective start is the habit createdAt date */
 const NO_START_DATE = '1970-01-01';
 
 @Injectable({
@@ -245,14 +253,22 @@ export class HabitService {
     return map;
   }
 
-  /** Returns true if habit is scheduled for the given date (weekday only; habits have no date range) */
+  /** Returns true if habit is scheduled for the given date (weekday + active date range) */
   isHabitScheduledForDate(habit: Habit, date: string): boolean {
     const weekday = getWeekday(date);
     const scheduled = habit.schedule?.find((s) => s.day === weekday && s.selected);
     if (!scheduled) return false;
+
     const start = habit.startDate;
+    const createdDate = habit.createdAt ? isoToLocalDateStr(habit.createdAt) : null;
+    const effectiveStart =
+      start && start !== NO_START_DATE
+        ? start
+        : createdDate;
+
+    if (effectiveStart && isBefore(date, effectiveStart)) return false;
+
     const end = habit.endDate;
-    if (start && start !== NO_START_DATE && isBefore(date, start)) return false;
     if (end && isAfter(date, end)) return false;
     return true;
   }

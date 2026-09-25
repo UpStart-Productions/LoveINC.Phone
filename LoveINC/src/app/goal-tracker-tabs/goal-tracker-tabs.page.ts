@@ -1,23 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
+import { ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
   IonIcon,
   IonTabs,
   IonTabBar,
   IonTabButton,
   IonLabel,
 } from '@ionic/angular/standalone';
-import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
-import { Router, NavigationEnd, RouterLink } from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { RouterLink } from '@angular/router';
 import { GoalTrackerModalService } from './services/goal-tracker-modal.service';
-import { GoalTrackerDateService } from './services/goal-tracker-date.service';
-import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.service';
+import { GoalTrackerKeyboardService } from './services/goal-tracker-keyboard.service';
 
 @Component({
   selector: 'app-goal-tracker-tabs',
@@ -26,49 +19,26 @@ import { GoalTrackerRefreshService } from './services/goal-tracker-refresh.servi
   standalone: true,
   imports: [
     CommonModule,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
     IonIcon,
     IonTabs,
     IonTabBar,
     IonTabButton,
     IonLabel,
     RouterLink,
-    AppBackButtonComponent,
   ],
 })
-export class GoalTrackerTabsPage implements OnInit, OnDestroy {
-  isGoalsTab = true;
-  private sub?: Subscription;
-
+export class GoalTrackerTabsPage implements ViewWillEnter, ViewWillLeave {
   constructor(
     private modalService: GoalTrackerModalService,
-    private router: Router,
-    private dateService: GoalTrackerDateService,
-    private refreshService: GoalTrackerRefreshService
+    private keyboardService: GoalTrackerKeyboardService
   ) {}
 
-  ngOnInit() {
-    this.updateGoalsTab();
-    this.sub = this.router.events
-      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe(() => this.updateGoalsTab());
+  ionViewWillEnter() {
+    void this.keyboardService.enter();
   }
 
-  ngOnDestroy() {
-    this.sub?.unsubscribe();
-  }
-
-  private updateGoalsTab() {
-    const url = this.router.url;
-    this.isGoalsTab =
-      url.includes('/tabs/goal-tracker/goals') || url === '/tabs/goal-tracker';
-  }
-
-  get isStatisticsTab(): boolean {
-    return !this.isGoalsTab;
+  ionViewWillLeave() {
+    void this.keyboardService.leave();
   }
 
   onFabClick() {

@@ -1,12 +1,3 @@
-<ion-header *ngIf="!isWeeklyTab" [translucent]="false">
-  <ion-toolbar class="custom-toolbar">
-    <ion-buttons slot="start">
-      <app-back-button [onLightBackground]="true"></app-back-button>
-    </ion-buttons>
-    <ion-title>{{ headerTitle }}</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-tabs>
   <ion-tab-bar slot="bottom" class="simple-budget-tab-bar">
     <ion-tab-button tab="weekly" [routerLink]="['/tabs/simple-budget/weekly']" queryParamsHandling="preserve">
@@ -25,11 +16,6 @@
       <ion-icon aria-hidden="true" name="stats-chart-outline" class="outline-icon"></ion-icon>
       <ion-icon aria-hidden="true" name="stats-chart" class="solid-icon"></ion-icon>
       <ion-label>Reports</ion-label>
-    </ion-tab-button>
-    <ion-tab-button tab="export" [routerLink]="['/tabs/simple-budget/export']" queryParamsHandling="preserve">
-      <ion-icon aria-hidden="true" name="share-outline" class="outline-icon"></ion-icon>
-      <ion-icon aria-hidden="true" name="share" class="solid-icon"></ion-icon>
-      <ion-label>Export</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>

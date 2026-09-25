@@ -71,8 +71,10 @@
   }
 }
 
-.export-button {
-  margin: 0.5rem 1rem;
+ion-toolbar.custom-toolbar {
+  ion-button {
+    --color: var(--ion-color-dark, #222428);
+  }
 }
 
 .loading {

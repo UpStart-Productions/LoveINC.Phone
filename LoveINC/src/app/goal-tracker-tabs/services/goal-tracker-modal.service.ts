@@ -25,6 +25,36 @@ export class GoalTrackerModalService {
     }
   }
 
+  /** Step 1: goal, step 2: habit — for first-time setup from the Goals empty state. */
+  async openGuidedFirstGoal() {
+    this.editService.clear();
+    const modal = await this.modalCtrl.create({
+      component: AddGoalHabitModalComponent,
+      componentProps: { guided: true },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data?.saved) {
+      this.refreshService.requestRefresh();
+    }
+  }
+
+  async openAddHabit(preselectedGoalId?: number) {
+    this.editService.clear();
+    const modal = await this.modalCtrl.create({
+      component: AddGoalHabitModalComponent,
+      componentProps: {
+        initialMode: 'habit',
+        preselectedGoalId: preselectedGoalId ?? null,
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data?.saved) {
+      this.refreshService.requestRefresh();
+    }
+  }
+
   async openEditHabit(habit: Habit) {
     this.editService.setEditHabit(habit);
     this.editService.setEditGoal(null);

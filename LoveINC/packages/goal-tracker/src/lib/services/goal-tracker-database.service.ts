@@ -145,6 +145,7 @@ export class GoalTrackerDatabaseService {
         description TEXT,
         progress REAL NOT NULL DEFAULT 0,
         target REAL,
+        targetLabel TEXT,
         color TEXT,
         category TEXT,
         dueDate TEXT,
@@ -196,6 +197,15 @@ export class GoalTrackerDatabaseService {
       }
       try {
         await db.execute('ALTER TABLE goals ADD COLUMN startDate TEXT');
+      } catch {
+        /* column may already exist */
+      }
+    }
+    try {
+      await db.query('SELECT targetLabel FROM goals LIMIT 1');
+    } catch {
+      try {
+        await db.execute('ALTER TABLE goals ADD COLUMN targetLabel TEXT');
       } catch {
         /* column may already exist */
       }

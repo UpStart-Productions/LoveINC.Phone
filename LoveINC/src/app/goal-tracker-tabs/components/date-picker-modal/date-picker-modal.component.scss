@@ -6,17 +6,26 @@
 }
 
 ion-content {
+  --padding-start: 0;
+  --padding-end: 0;
   --padding-bottom: 1rem;
+}
+
+ion-datetime {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
 }
 
 .date-picker-actions {
   display: flex;
   gap: 0.75rem;
   padding: 1rem 1rem 0;
-  justify-content: flex-end;
+  justify-content: center;
 
   ion-button {
-    flex: 1;
-    max-width: 8rem;
+    flex: 0 1 8rem;
+    min-width: 6.5rem;
   }
 }

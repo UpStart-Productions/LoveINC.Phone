@@ -6,10 +6,16 @@ import {
   IonToolbar,
   IonTitle,
   IonButtons,
+  IonButton,
+  AlertController,
 } from '@ionic/angular/standalone';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import { App } from '@capacitor/app';
-import { GoalService, HabitService } from '@upstart-productions/goal-tracker';
+import {
+  GoalService,
+  HabitService,
+  GoalTrackerDatabaseService,
+} from '@upstart-productions/goal-tracker';
 import type { Goal, Habit } from '@upstart-productions/goal-tracker';
 import { HabitCardComponent } from './components/habit-card/habit-card.component';
 import { DateScrollerComponent, DateScrollerDate } from './components/date-scroller/date-scroller.component';
@@ -24,6 +30,12 @@ export interface GoalWithHabits {
   habits: Habit[];
 }
 
+export type GoalTrackerEmptyState =
+  | 'content'
+  | 'no-goals'
+  | 'no-habits'
+  | 'nothing-scheduled';
+
 @Component({
   selector: 'app-goal-tracker-goals',
   templateUrl: './goal-tracker-goals.page.html',
@@ -36,6 +48,7 @@ export interface GoalWithHabits {
     IonTitle,
     IonButtons,
     IonContent,
+    IonButton,
     HabitCardComponent,
     DateScrollerComponent,
     AppBackButtonComponent,
@@ -46,6 +59,9 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
     this.loadData();
   }
   goalsWithHabits: GoalWithHabits[] = [];
+  activeGoals: Goal[] = [];
+  activeGoalCount = 0;
+  totalHabitCount = 0;
   completionMap: Record<number, boolean> = {};
   loading = true;
   private documentWasHidden = false;
@@ -56,9 +72,11 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
   constructor(
     private goalService: GoalService,
     private habitService: HabitService,
+    private goalTrackerDb: GoalTrackerDatabaseService,
     private refreshService: GoalTrackerRefreshService,
     private dateService: GoalTrackerDateService,
-    private modalService: GoalTrackerModalService
+    private modalService: GoalTrackerModalService,
+    private alertController: AlertController
   ) {}
 
   get selectedDate(): string {
@@ -67,6 +85,32 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
 
   get completedDates(): string[] {
     return this.dateService.completedDates;
+  }
+
+  get emptyState(): GoalTrackerEmptyState {
+    if (this.goalsWithHabits.length > 0) {
+      return 'content';
+    }
+    if (this.activeGoalCount === 0) {
+      return 'no-goals';
+    }
+    if (this.totalHabitCount === 0) {
+      return 'no-habits';
+    }
+    return 'nothing-scheduled';
+  }
+
+  get showDateScroller(): boolean {
+    return this.emptyState === 'content' || this.emptyState === 'nothing-scheduled';
+  }
+
+  get selectedDateLabel(): string {
+    const d = new Date(`${this.selectedDate}T12:00:00`);
+    return d.toLocaleDateString(undefined, {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+    });
   }
 
   onDateSelected(date: DateScrollerDate) {
@@ -139,8 +183,12 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
     const goalsWithHabits: GoalWithHabits[] = [];
     const completionMap: Record<number, boolean> = {};
 
-    for (const goal of allGoals) {
-      if (goal.completed) continue;
+    const activeGoals = allGoals.filter((goal) => !goal.completed);
+    this.activeGoals = activeGoals;
+    this.activeGoalCount = activeGoals.length;
+    this.totalHabitCount = allHabits.length;
+
+    for (const goal of activeGoals) {
       const habitsForGoal = allHabits.filter((h: Habit) => h.goalId === goal.id);
       const scheduledHabits = habitsForGoal.filter((h: Habit) =>
         this.habitService.isHabitScheduledForDate(h, sel)
@@ -173,5 +221,48 @@ export class GoalTrackerGoalsPage implements OnInit, OnDestroy {
 
   onGoalEdit(goal: Goal) {
     this.modalService.openEditGoal(goal);
+  }
+
+  onCreateFirstGoal() {
+    this.modalService.openGuidedFirstGoal();
+  }
+
+  onAddHabit(goalId?: number) {
+    this.modalService.openAddHabit(goalId);
+  }
+
+  /** TEMP: dev helper — remove before release. */
+  async onClearDatabase() {
+    const alert = await this.alertController.create({
+      header: 'Clear Goal Tracker?',
+      message: 'Deletes all goals, habits, and check-off history on this device.',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Clear',
+          role: 'destructive',
+          handler: () => {
+            void this.clearDatabase();
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  private async clearDatabase() {
+    try {
+      await this.goalTrackerDb.resetDatabase();
+      this.dateService.completedDates = [];
+      await this.loadData();
+      this.refreshService.requestRefresh();
+    } catch (err) {
+      const errorAlert = await this.alertController.create({
+        header: 'Clear Failed',
+        message: (err as Error)?.message ?? 'Unknown error',
+        buttons: ['OK'],
+      });
+      await errorAlert.present();
+    }
   }
 }

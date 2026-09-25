@@ -1,4 +1,10 @@
-import { Component, Input } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PopoverController } from '@ionic/angular/standalone';
 import { ChartBarPopoverComponent } from '../chart-bar-popover/chart-bar-popover.component';
@@ -21,14 +27,50 @@ export interface WeeklyBarData {
   standalone: true,
   imports: [CommonModule],
 })
-export class WeeklyBarChartComponent {
+export class WeeklyBarChartComponent implements OnChanges, AfterViewInit {
   /** Array of 7 items, one per day */
   @Input() data: WeeklyBarData[] = [];
 
+  displayValues: number[] = [];
+
   private currentPopover: HTMLIonPopoverElement | null = null;
   private currentBarIndex: number | null = null;
+  private animateFrameId: number | null = null;
 
   constructor(private popoverCtrl: PopoverController) {}
+
+  ngAfterViewInit() {
+    this.animateBars();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['data']) {
+      this.animateBars();
+    }
+  }
+
+  private animateBars() {
+    if (this.animateFrameId !== null) {
+      cancelAnimationFrame(this.animateFrameId);
+      this.animateFrameId = null;
+    }
+
+    const targets = this.data.map((item) => item.value);
+    this.displayValues = targets.map(() => 0);
+
+    this.animateFrameId = requestAnimationFrame(() => {
+      this.animateFrameId = requestAnimationFrame(() => {
+        this.displayValues = [...targets];
+        this.animateFrameId = null;
+      });
+    });
+  }
+
+  private getBarAnchorEvent(event: Event): Event {
+    const wrapper = event.currentTarget as HTMLElement;
+    const anchor = wrapper.querySelector('.bar-track') ?? wrapper;
+    return { target: anchor, currentTarget: anchor } as unknown as Event;
+  }
 
   async onBarTap(event: Event, item: WeeklyBarData, index: number) {
     if (this.currentPopover && this.currentBarIndex === index) {
@@ -50,9 +92,14 @@ export class WeeklyBarChartComponent {
         completed,
         scheduled,
       },
-      event,
+      event: this.getBarAnchorEvent(event),
+      reference: 'trigger',
+      side: 'bottom',
+      alignment: 'center',
+      arrow: true,
       size: 'auto',
-      showBackdrop: false,
+      showBackdrop: true,
+      backdropDismiss: true,
       cssClass: 'chart-bar-popover',
     });
     popover.onDidDismiss().then(() => {

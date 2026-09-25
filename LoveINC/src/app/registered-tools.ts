@@ -46,10 +46,8 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
       },
       {
         path: 'export',
-        loadComponent: () =>
-          import('@app/simple-budget-tabs/simple-budget-export.page').then(
-            (m) => m.SimpleBudgetExportPage
-          ),
+        redirectTo: 'reports',
+        pathMatch: 'full',
       },
       {
         path: 'reports',

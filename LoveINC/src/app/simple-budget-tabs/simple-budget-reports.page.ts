@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addDays, format } from 'date-fns';
@@ -19,6 +19,9 @@ import {
   IonSelect,
   IonSelectOption,
   IonToggle,
+  IonButton,
+  IonIcon,
+  AlertController,
   PopoverController,
 } from '@ionic/angular/standalone';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
@@ -30,6 +33,10 @@ import {
 import type { WeekPlan, WeekSummary } from '@upstart-productions/simple-budget';
 import { SimpleBudgetStateService } from '../services/simple-budget-state.service';
 import { PieChartComponent, type PieSlice } from './components/pie-chart/pie-chart.component';
+import {
+  SimpleBudgetExportPdfService,
+  type SimpleBudgetMonthlyTotals,
+} from './services/simple-budget-export-pdf.service';
 
 const CATEGORY_PALETTE = [
   '#003049',
@@ -69,12 +76,16 @@ const CATEGORY_PALETTE = [
     IonSelect,
     IonSelectOption,
     IonToggle,
+    IonButton,
+    IonIcon,
     PieChartComponent,
     AppBackButtonComponent,
   ],
 })
 export class SimpleBudgetReportsPage implements OnInit {
   loading = true;
+  exporting = false;
+  sharing = false;
   reportMode: 'week' | 'month' = 'week';
   chartType: 'spending' | 'income' = 'spending';
   selectedMonthKey = '';
@@ -84,7 +95,14 @@ export class SimpleBudgetReportsPage implements OnInit {
   plan: WeekPlan | null = null;
   summary: WeekSummary | null = null;
   monthlyWeeks: WeekPlan[] = [];
-  monthlyTotals = { moneyAvailable: 0, totalIncome: 0, bills: 0, flexible: 0 };
+  monthlyTotals: SimpleBudgetMonthlyTotals = {
+    startingBalance: 0,
+    totalIncome: 0,
+    moneyAvailable: 0,
+    bills: 0,
+    flexible: 0,
+    remaining: 0,
+  };
 
   chartSlices: PieSlice[] = [];
   chartKey = 0;
@@ -92,7 +110,10 @@ export class SimpleBudgetReportsPage implements OnInit {
   constructor(
     private weekPlanService: WeekPlanService,
     private budgetState: SimpleBudgetStateService,
-    private popoverCtrl: PopoverController
+    private exportPdfService: SimpleBudgetExportPdfService,
+    private alertController: AlertController,
+    private popoverCtrl: PopoverController,
+    private ngZone: NgZone
   ) {}
 
   async ngOnInit() {
@@ -171,13 +192,22 @@ export class SimpleBudgetReportsPage implements OnInit {
     this.loading = true;
     try {
       this.monthlyWeeks = await this.weekPlanService.getWeeksForMonth(this.selectedMonthKey);
-      this.monthlyTotals = { moneyAvailable: 0, totalIncome: 0, bills: 0, flexible: 0 };
+      this.monthlyTotals = {
+        startingBalance: 0,
+        totalIncome: 0,
+        moneyAvailable: 0,
+        bills: 0,
+        flexible: 0,
+        remaining: 0,
+      };
       for (const wp of this.monthlyWeeks) {
         const s = calculateWeekSummary(wp);
-        this.monthlyTotals.moneyAvailable += s.totalAvailable;
+        this.monthlyTotals.startingBalance += wp.startingBalance;
         this.monthlyTotals.totalIncome += s.totalAvailable - wp.startingBalance;
+        this.monthlyTotals.moneyAvailable += s.totalAvailable;
         this.monthlyTotals.bills += s.totalBills;
         this.monthlyTotals.flexible += s.totalFlexible;
+        this.monthlyTotals.remaining += s.remaining;
       }
       this.buildChartFromMonth();
     } catch (err) {
@@ -264,5 +294,80 @@ export class SimpleBudgetReportsPage implements OnInit {
       currency: 'USD',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2}).format(n);
+  }
+
+  get canExportOrShare(): boolean {
+    if (this.loading || this.exporting || this.sharing) return false;
+    if (this.reportMode === 'week') return !!(this.plan && this.summary);
+    return !!(this.selectedMonthKey && this.monthlyWeeks.length);
+  }
+
+  async exportPdf() {
+    if (!this.canExportOrShare) return;
+    this.exporting = true;
+    try {
+      if (this.reportMode === 'week' && this.plan && this.summary) {
+        await this.exportPdfService.exportWeekPdf(this.plan, this.summary, this.weekDateRange);
+      } else if (this.reportMode === 'month' && this.selectedMonthKey && this.monthlyWeeks.length) {
+        await this.exportPdfService.exportMonthPdf(
+          this.monthlyWeeks,
+          this.monthlyTotals,
+          this.selectedMonthLabel
+        );
+      }
+    } catch (err) {
+      await this.presentAlert('Export failed', this.getErrorMessage(err));
+    } finally {
+      this.resetActionState('exporting');
+    }
+  }
+
+  async shareBudget() {
+    if (!this.canExportOrShare) return;
+    this.sharing = true;
+    try {
+      if (this.reportMode === 'week' && this.plan && this.summary) {
+        await this.exportPdfService.shareWeekPdf(this.plan, this.summary, this.weekDateRange);
+      } else if (this.reportMode === 'month' && this.selectedMonthKey && this.monthlyWeeks.length) {
+        await this.exportPdfService.shareMonthPdf(
+          this.monthlyWeeks,
+          this.monthlyTotals,
+          this.selectedMonthLabel
+        );
+      }
+    } catch (err) {
+      if (!this.isShareCancelled(err)) {
+        await this.presentAlert('Share failed', this.getErrorMessage(err));
+      }
+    } finally {
+      this.resetActionState('sharing');
+    }
+  }
+
+  private resetActionState(field: 'exporting' | 'sharing') {
+    this.ngZone.run(() => {
+      this[field] = false;
+    });
+  }
+
+  private getErrorMessage(err: unknown): string {
+    if (err instanceof Error && err.message.trim()) {
+      return err.message;
+    }
+    return 'Something went wrong while creating the PDF.';
+  }
+
+  private isShareCancelled(err: unknown): boolean {
+    const message = err instanceof Error ? err.message.toLowerCase() : String(err).toLowerCase();
+    return message.includes('cancel') || message.includes('dismiss');
+  }
+
+  private async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 }

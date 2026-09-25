@@ -28,13 +28,32 @@
   --padding-end: 1rem;
 }
 
+.guided-intro {
+  margin: 1rem 0 0.5rem;
+}
+
+.field-hint {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.target-inline-row {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+
+  ion-item {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
 .form-section {
   padding: 0;
 }
 
 .save-button {
   margin-top: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
 }
 
 /* Placeholder text – smaller than labels */
@@ -44,12 +63,15 @@
   font-size: var(--app-font-size-sm);
 }
 
-.error,
 .hint {
   padding: 1rem;
   margin: 0 1rem;
 }
+
 .error {
+  margin: 0.75rem 0 2rem;
+  padding: 0;
+  text-align: left;
   color: var(--ion-color-danger);
 }
 .hint {

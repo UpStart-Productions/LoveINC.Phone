@@ -11,7 +11,9 @@
   </ion-header>
   <ion-content>
     <ion-datetime
-      [value]="selectedValue"
+      *ngIf="showDatetime"
+      [value]="ionValue"
+      [max]="max"
       presentation="date"
       [preferWheel]="true"
       (ionChange)="onDatetimeChange($event)"

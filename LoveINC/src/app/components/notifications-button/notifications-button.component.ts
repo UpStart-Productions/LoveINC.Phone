@@ -14,7 +14,7 @@ import { NotificationsService } from '../../services/notifications.service';
   imports: [CommonModule, AsyncPipe, IonButton, IonIcon],
   styles: [`:host { display: inline-flex; }`],
   template: `
-    <ion-button class="notifications-button" aria-label="Notifications" (click)="openAlertsModal()">
+    <ion-button fill="clear" class="notifications-button" aria-label="Notifications" (click)="openAlertsModal()">
       <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
       <span *ngIf="showBadgePreview || (hasUnread$ | async)" class="notification-badge"></span>
     </ion-button>

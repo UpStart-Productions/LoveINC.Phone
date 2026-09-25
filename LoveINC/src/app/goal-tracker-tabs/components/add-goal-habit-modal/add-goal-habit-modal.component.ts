@@ -27,6 +27,7 @@ import { WeekdayPickerComponent } from '../weekday-picker/weekday-picker.compone
 import { DatePickerModalComponent } from '../date-picker-modal/date-picker-modal.component';
 import { GoalTrackerRefreshService } from '../../services/goal-tracker-refresh.service';
 import { GoalTrackerEditService } from '../../services/goal-tracker-edit.service';
+import { GoalTrackerKeyboardService } from '../../services/goal-tracker-keyboard.service';
 
 const COLOR_OPTIONS = [
   { color: 'prussian-blue' },
@@ -83,11 +84,70 @@ export class AddGoalHabitModalComponent implements OnInit {
   @Input() edit = false;
   @Input() editGoal = false;
   @Input() habit?: Habit;
+  /** Three-step onboarding: goal basics, target/due date, then habit. */
+  @Input() guided = false;
+  @Input() initialMode: 'goal' | 'habit' = 'goal';
+  @Input() preselectedGoalId: number | null = null;
+
+  guidedStep: 1 | 2 | 3 = 1;
 
   get pageTitle(): string {
+    if (this.guided && !this.edit) {
+      if (this.guidedStep === 1) return 'Your first goal';
+      if (this.guidedStep === 2) return 'Set your target';
+      return 'Add a habit';
+    }
     if (this.edit && this.editGoal) return 'Edit Goal';
     if (this.edit || this.habit) return 'Edit Habit';
     return this.mode === 'goal' ? 'Add Goal' : 'Add Habit';
+  }
+
+  get guidedIntro(): string {
+    if (!this.guided || this.edit) {
+      return '';
+    }
+    if (this.guidedStep === 1) {
+      return 'Name something you want to work toward. Next you will set your target and due date, then add a habit.';
+    }
+    if (this.guidedStep === 2) {
+      const goalName = this.goalTitle.trim() || 'your goal';
+      return `For “${goalName}”, set how much you want to reach, what to call it (like $ or job), and your due date.`;
+    }
+    const goalName = this.goalTitle.trim() || 'your goal';
+    return `What will you do regularly to reach “${goalName}”? Pick the days of the week you want to do it.`;
+  }
+
+  get saveButtonLabel(): string {
+    if (this.guided && !this.edit && this.guidedStep < 3) {
+      return 'Next';
+    }
+    if (this.guided && !this.edit && this.guidedStep === 3) {
+      return 'Finish';
+    }
+    return 'Save';
+  }
+
+  get showGuidedGoalBasics(): boolean {
+    return this.guided && !this.edit && this.guidedStep === 1;
+  }
+
+  get showGuidedGoalTargetDue(): boolean {
+    return this.guided && !this.edit && this.guidedStep === 2;
+  }
+
+  get showStandardGoalForm(): boolean {
+    return this.mode === 'goal' && (!this.guided || this.edit);
+  }
+
+  get showGoalDescription(): boolean {
+    return !this.guided || this.edit;
+  }
+
+  readonly targetFieldHint =
+    'Enter a number and a short label. Examples: 1000 and $, 20 and lbs, or 1 and job.';
+
+  get showHabitOptionalFields(): boolean {
+    return !this.guided || this.edit;
   }
 
   // Goal form
@@ -95,6 +155,7 @@ export class AddGoalHabitModalComponent implements OnInit {
   goalDescription = '';
   goalColor = 'prussian-blue';
   goalTarget: number | null = null;
+  goalTargetLabel = '';
   goalDueDate = '';
 
   // Habit form
@@ -115,12 +176,26 @@ export class AddGoalHabitModalComponent implements OnInit {
     private goalService: GoalService,
     private habitService: HabitService,
     private refreshService: GoalTrackerRefreshService,
-    private editService: GoalTrackerEditService
+    private editService: GoalTrackerEditService,
+    private keyboardService: GoalTrackerKeyboardService
   ) {}
 
   async ngOnInit() {
+    void this.keyboardService.enter();
     this.goals = await this.goalService.getAllGoals();
     this.goals = this.goals.filter((g) => !g.completed);
+
+    if (this.guided && !this.edit) {
+      this.mode = 'goal';
+      this.guidedStep = 1;
+    } else if (this.initialMode === 'habit') {
+      this.mode = 'habit';
+    }
+
+    if (this.preselectedGoalId != null) {
+      this.habitGoalId = this.preselectedGoalId;
+      this.mode = 'habit';
+    }
 
     const goal = this.editService.getEditGoal();
     if (goal && this.editGoal) {
@@ -130,6 +205,7 @@ export class AddGoalHabitModalComponent implements OnInit {
       this.goalDescription = goal.description ?? '';
       this.goalColor = goal.color ?? 'prussian-blue';
       this.goalTarget = goal.target ?? null;
+      this.goalTargetLabel = goal.targetLabel ?? '';
       this.goalDueDate = goal.dueDate ?? '';
     }
 
@@ -152,6 +228,7 @@ export class AddGoalHabitModalComponent implements OnInit {
   }
 
   ionViewWillLeave() {
+    void this.keyboardService.leave();
     this.editService.clear();
   }
 
@@ -161,6 +238,18 @@ export class AddGoalHabitModalComponent implements OnInit {
 
   async save() {
     this.error = '';
+    if (this.guided && !this.edit) {
+      if (this.guidedStep === 1) {
+        this.advanceGuidedStep1();
+        return;
+      }
+      if (this.guidedStep === 2) {
+        await this.saveGuidedGoalAndAdvance();
+        return;
+      }
+      await this.saveHabit();
+      return;
+    }
     if (this.mode === 'goal') {
       await this.saveGoal();
     } else {
@@ -168,9 +257,69 @@ export class AddGoalHabitModalComponent implements OnInit {
     }
   }
 
+  private advanceGuidedStep1(): void {
+    if (!this.goalTitle?.trim()) {
+      this.error = 'Please enter a goal name.';
+      return;
+    }
+    this.error = '';
+    this.guidedStep = 2;
+  }
+
+  private validateGoalTargetAndDueDate(): boolean {
+    if (this.goalTarget == null || this.goalTarget <= 0) {
+      this.error = 'Please enter a target greater than zero.';
+      return false;
+    }
+    if (!this.goalTargetLabel?.trim()) {
+      this.error = 'Please enter a label for your target (like $, lbs, or job).';
+      return false;
+    }
+    if (!this.goalDueDate?.trim()) {
+      this.error = 'Please select a due date.';
+      return false;
+    }
+    return true;
+  }
+
+  private async saveGuidedGoalAndAdvance(): Promise<void> {
+    if (!this.validateGoalTargetAndDueDate()) {
+      return;
+    }
+    this.saving = true;
+    try {
+      const created = await this.goalService.createGoal({
+        title: this.goalTitle.trim(),
+        description: undefined,
+        progress: 0,
+        target: this.goalTarget!,
+        targetLabel: this.goalTargetLabel.trim(),
+        color: this.goalColor,
+        dueDate: this.goalDueDate,
+        completed: false,
+      });
+      if (created.id == null) {
+        throw new Error('Failed to create goal.');
+      }
+      this.habitGoalId = created.id;
+      this.guidedStep = 3;
+      this.mode = 'habit';
+      this.goals = await this.goalService.getAllGoals();
+      this.goals = this.goals.filter((g) => !g.completed);
+      this.refreshService.requestRefresh();
+    } catch (e) {
+      this.error = (e as Error)?.message ?? 'Failed to save goal.';
+    } finally {
+      this.saving = false;
+    }
+  }
+
   private async saveGoal() {
     if (!this.goalTitle?.trim()) {
       this.error = 'Please enter a goal name.';
+      return;
+    }
+    if (!this.validateGoalTargetAndDueDate()) {
       return;
     }
     this.saving = true;
@@ -180,18 +329,20 @@ export class AddGoalHabitModalComponent implements OnInit {
         await this.goalService.updateGoal(goal.id, {
           title: this.goalTitle.trim(),
           description: this.goalDescription.trim() || undefined,
-          target: this.goalTarget ?? undefined,
+          target: this.goalTarget!,
+          targetLabel: this.goalTargetLabel.trim(),
           color: this.goalColor,
-          dueDate: this.goalDueDate || undefined,
+          dueDate: this.goalDueDate,
         });
       } else {
         await this.goalService.createGoal({
           title: this.goalTitle.trim(),
           description: this.goalDescription.trim() || undefined,
           progress: 0,
-          target: this.goalTarget ?? undefined,
+          target: this.goalTarget!,
+          targetLabel: this.goalTargetLabel.trim(),
           color: this.goalColor,
-          dueDate: this.goalDueDate || undefined,
+          dueDate: this.goalDueDate,
           completed: false,
         });
       }

@@ -14,14 +14,15 @@ export class GoalService {
     const conn = await this.db.getDbConnection();
     const now = new Date().toISOString();
     const sql = `
-      INSERT INTO goals (title, description, progress, target, color, category, dueDate, completed, createdAt, updatedAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO goals (title, description, progress, target, targetLabel, color, category, dueDate, completed, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const result = await conn.run(sql, [
       goal.title,
       goal.description ?? null,
       goal.progress ?? 0,
       goal.target ?? null,
+      goal.targetLabel ?? null,
       goal.color ?? null,
       goal.category ?? null,
       goal.dueDate ?? null,
@@ -80,6 +81,10 @@ export class GoalService {
       setClauses.push('target = ?');
       params.push(updates.target ?? null);
     }
+    if (updates.targetLabel !== undefined) {
+      setClauses.push('targetLabel = ?');
+      params.push(updates.targetLabel ?? null);
+    }
     if (updates.color !== undefined) {
       setClauses.push('color = ?');
       params.push(updates.color ?? null);
@@ -136,6 +141,7 @@ export class GoalService {
       description: row['description'] as string | undefined,
       progress: (row['progress'] as number) ?? 0,
       target: row['target'] as number | undefined,
+      targetLabel: row['targetLabel'] as string | undefined,
       color: row['color'] as string | undefined,
       category: row['category'] as Goal['category'],
       dueDate: row['dueDate'] as string | undefined,

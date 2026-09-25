@@ -105,6 +105,42 @@ export class PdfService {
     return this.pdfMake.createPdf(docDefinition, tableLayouts);
   }
 
+  createPdfFromDefinition(docDefinition: TDocumentDefinitions): ReturnType<typeof pdfMake.createPdf> {
+    const tableLayouts = { budgetTable: BUDGET_TABLE_LAYOUT };
+    const docWithDefaults: TDocumentDefinitions = {
+      footer: this.buildFooter() as TDocumentDefinitions['footer'],
+      pageSize: 'A4' as PageSize,
+      pageMargins: [40, 60, 40, 60] as [number, number, number, number],
+      defaultStyle: {
+        fontSize: 10,
+        lineHeight: 1.3,
+      },
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          alignment: 'center',
+        },
+        subtitle: {
+          fontSize: 11,
+          color: '#666',
+          alignment: 'center',
+        },
+        footnote: { color: '#777', fontSize: 9, lineHeight: 1.0 },
+      },
+      ...docDefinition,
+      content: docDefinition.content,
+      info: {
+        author: APP_NAME,
+        creator: `${APP_NAME} App`,
+        producer: 'pdfmake',
+        ...docDefinition.info,
+      },
+    };
+
+    return this.pdfMake.createPdf(docWithDefaults, tableLayouts);
+  }
+
   getPdfDataUrl(pdfDoc: { getBase64: (cb: (data: string) => void) => void }): Promise<string> {
     return new Promise<string>((resolve) => {
       pdfDoc.getBase64((base64Data: string) => {
@@ -127,26 +163,45 @@ export class PdfService {
   }
 
   async savePdfToDevice(pdfDoc: { getBase64: (cb: (data: string) => void) => void }, filename: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      pdfDoc.getBase64((base64Data: string) => {
-        const safeFilename = this.generateSafeFilename(filename);
-        Filesystem.writeFile({
-          path: safeFilename,
-          data: base64Data,
-          directory: Directory.Cache,
-        })
-          .then((result) => {
-            this.currentPdfPath = result.uri;
-            this.currentPdfFilename = safeFilename;
-            this.currentPdfPathForCleanup = safeFilename;
-            resolve(result.uri);
-          })
-          .catch((error) => {
-            console.error('PDF Service: Error saving PDF:', error);
-            reject(new Error('Failed to save PDF to device'));
-          });
-      });
+    const base64Data = await new Promise<string>((resolve, reject) => {
+      let settled = false;
+      const timeoutId = setTimeout(() => {
+        if (!settled) {
+          settled = true;
+          reject(new Error('PDF generation timed out'));
+        }
+      }, 30000);
+
+      try {
+        pdfDoc.getBase64((data: string) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeoutId);
+          if (!data) {
+            reject(new Error('PDF generation returned empty data'));
+            return;
+          }
+          resolve(data);
+        });
+      } catch (error) {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timeoutId);
+          reject(error);
+        }
+      }
     });
+
+    const safeFilename = this.generateSafeFilename(filename);
+    const result = await Filesystem.writeFile({
+      path: safeFilename,
+      data: base64Data,
+      directory: Directory.Cache,
+    });
+    this.currentPdfPath = result.uri;
+    this.currentPdfFilename = safeFilename;
+    this.currentPdfPathForCleanup = safeFilename;
+    return result.uri;
   }
 
   async openPdfInNativeViewer(filePath: string): Promise<void> {
@@ -169,9 +224,15 @@ export class PdfService {
       throw new Error('No PDF file available to share');
     }
 
+    const canShare = await Share.canShare();
+    if (!canShare.value) {
+      throw new Error('Sharing is not available on this device');
+    }
+
     await Share.share({
       title: this.currentEmailSubject ?? 'Share PDF',
       text: this.currentEmailBody ?? filename ?? 'Document',
+      files: [pathToShare],
       url: pathToShare,
       dialogTitle: 'Share PDF Document',
     });

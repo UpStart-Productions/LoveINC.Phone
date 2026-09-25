@@ -62,10 +62,33 @@ export class HabitCardComponent {
     return `background-${color}`;
   }
 
+  get goalTargetText(): string {
+    if (!this.goal?.target) {
+      return '';
+    }
+    const label = this.goal.targetLabel?.trim();
+    return label ? `${this.goal.target} ${label}` : `${this.goal.target}`;
+  }
+
   get goalDueDateFormatted(): string {
     if (!this.goal?.dueDate) return '';
     const d = new Date(this.goal.dueDate + 'T00:00:00');
-    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  get goalMetaLine(): string {
+    if (!this.goal) {
+      return '';
+    }
+    const parts: string[] = [];
+    const target = this.goalTargetText;
+    if (target) {
+      parts.push(target);
+    }
+    if (this.goalDueDateFormatted) {
+      parts.push(`Due ${this.goalDueDateFormatted}`);
+    }
+    return parts.join(' · ');
   }
 
   get goalDueDateBadge(): { month: string; day: string } | null {

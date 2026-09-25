@@ -81,17 +81,21 @@ export function mapContentPlanThemeToLearnListItem(
   const iconSvg = theme.iconSvg?.trim();
   const lucideIcon = parseLucideIconNameFromIconSvg(iconSvg);
   const rawPhoto = theme.photoUrl?.trim();
-  const imageUrl = rawPhoto
+  const resolvedPhoto = rawPhoto
     ? (resolveUploadUrl ? resolveUploadUrl(rawPhoto) : rawPhoto) || rawPhoto
     : undefined;
+
+  // Learn rows match GrovPod promos: theme Lucide icon in the aside when configured.
+  // photoUrl is for cover carousels, not the list avatar (it was hiding compass/book-marked).
+  const useIconAside = !!lucideIcon;
 
   return {
     id: theme.id,
     title: theme.name,
     category: subtitle || undefined,
-    categoryIconSvg: !imageUrl && iconSvg ? iconSvg : undefined,
-    lucideIcon: imageUrl ? undefined : lucideIcon,
-    imageUrl,
+    categoryIconSvg: iconSvg || undefined,
+    lucideIcon: useIconAside ? lucideIcon : undefined,
+    imageUrl: useIconAside ? undefined : resolvedPhoto,
     iconBackgroundColor: resolveAvatarBackgroundColor(theme.id),
     compactCategoryLabel: true,
     route: `/tabs/content-plan-theme/${theme.id}`,

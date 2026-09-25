@@ -20,12 +20,44 @@ ion-toolbar.custom-toolbar {
   ion-button {
     --color: var(--ion-color-dark, #222428);
   }
+
+  /* TEMP: dev-only clear control */
+  ion-button.dev-clear-db {
+    --color: var(--ion-color-danger);
+    font-size: var(--app-font-size-sm);
+  }
 }
 
 .loading,
 .empty-state {
   padding: 1.5rem;
   text-align: center;
+}
+
+.empty-state h2 {
+  margin: 0 0 0.75rem;
+}
+
+.empty-state .app-body-secondary {
+  margin: 0 0 1.25rem;
+}
+
+.empty-state ion-button {
+  margin-top: 0.5rem;
+}
+
+.empty-state-with-goals {
+  text-align: left;
+}
+
+.empty-state-with-goals > h2,
+.empty-state-with-goals > .app-body-secondary,
+.empty-state-with-goals > ion-button {
+  text-align: center;
+}
+
+.goals-list-empty .goal-section ion-button {
+  margin-top: 0.75rem;
 }
 
 .goals-list {

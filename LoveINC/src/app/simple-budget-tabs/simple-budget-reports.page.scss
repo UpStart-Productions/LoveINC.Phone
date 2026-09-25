@@ -1,3 +1,9 @@
+ion-toolbar.custom-toolbar {
+  ion-button {
+    --color: var(--ion-color-dark, #222428);
+  }
+}
+
 .segment-container {
   padding: 0 1rem 0 1rem;
   margin-top: 0.8rem;

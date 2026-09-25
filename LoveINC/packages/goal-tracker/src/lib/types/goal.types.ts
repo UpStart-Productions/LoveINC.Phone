@@ -16,8 +16,10 @@ export interface Goal {
   description?: string;
   /** Current progress value (e.g. 100 for $100 saved). Auto-updated by habit completions. */
   progress: number;
-  /** Target value (e.g. 1000 for $1000). Optional. */
+  /** Target value (e.g. 1000 for $1000, or 1 for one job). */
   target?: number;
+  /** Unit or name for the target (e.g. "$", "lbs", "job"). */
+  targetLabel?: string;
   color?: string;
   category?: GoalCategory;
   dueDate?: string; // ISO date string

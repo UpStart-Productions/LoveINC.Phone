@@ -4,8 +4,11 @@
       <app-back-button [onLightBackground]="true"></app-back-button>
     </ion-buttons>
     <ion-title>Goal Tracker</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" class="dev-clear-db" (click)="onClearDatabase()">Clear</ion-button>
+    </ion-buttons>
   </ion-toolbar>
-  <div class="container-date-scroller">
+  <div *ngIf="showDateScroller" class="container-date-scroller">
     <app-date-scroller
       [completedDates]="completedDates"
       (dateSelectedEvent)="onDateSelected($event)"
@@ -15,11 +18,51 @@
 
 <ion-content [fullscreen]="true" class="goals-content">
   <div *ngIf="loading" class="loading">Loading…</div>
-  <div *ngIf="!loading && goalsWithHabits.length === 0" class="empty-state">
-    <p class="app-body-secondary">No habits scheduled for this date.</p>
-    <p class="app-caption">Add a goal and habits to get started.</p>
+
+  <div *ngIf="!loading && emptyState === 'no-goals'" class="empty-state">
+    <h2>Set a goal to get started</h2>
+    <p class="app-body-secondary">
+      Goals are what you are working toward. Habits are the small steps you take on the days you choose.
+    </p>
+    <ion-button expand="block" color="red-orange" (click)="onCreateFirstGoal()">
+      Create your first goal
+    </ion-button>
   </div>
-  <div *ngIf="!loading && goalsWithHabits.length > 0" class="goals-list">
+
+  <div *ngIf="!loading && emptyState === 'no-habits'" class="empty-state empty-state-with-goals">
+    <h2>Add habits to your goal</h2>
+    <p class="app-body-secondary">
+      Habits are what you check off each day. Pick the days of the week you want to do each one.
+    </p>
+    <div class="goals-list goals-list-empty">
+      <div *ngFor="let goal of activeGoals" class="goal-section">
+        <app-habit-card
+          [goal]="goal"
+          [nested]="true"
+          [allowEdit]="true"
+          (goalEditEvent)="onGoalEdit($event)"
+        ></app-habit-card>
+        <ion-button expand="block" fill="outline" color="red-orange" (click)="onAddHabit(goal.id)">
+          Add habit for this goal
+        </ion-button>
+      </div>
+    </div>
+    <ion-button expand="block" color="red-orange" (click)="onAddHabit()">
+      Add a habit
+    </ion-button>
+  </div>
+
+  <div *ngIf="!loading && emptyState === 'nothing-scheduled'" class="empty-state">
+    <h2>Nothing scheduled for {{ selectedDateLabel }}</h2>
+    <p class="app-body-secondary">
+      Your habits run on specific days of the week. Try another date above, or add a habit that includes this day.
+    </p>
+    <ion-button expand="block" color="red-orange" (click)="onAddHabit()">
+      Add a habit
+    </ion-button>
+  </div>
+
+  <div *ngIf="!loading && emptyState === 'content'" class="goals-list">
     <div *ngFor="let gwh of goalsWithHabits" class="goal-section">
       <app-habit-card
         [goal]="gwh.goal"

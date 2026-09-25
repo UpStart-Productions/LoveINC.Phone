@@ -22,6 +22,7 @@
     </button>
     <div class="card-content" [class.card-content-goal]="isGoal">
       <p *ngIf="goal">{{ goal.title }}</p>
+      <p *ngIf="goal && goalMetaLine" class="txt-small">{{ goalMetaLine }}</p>
       <p *ngIf="habit">{{ habit.name }}</p>
       <p *ngIf="goal?.description" class="txt-small">{{ goal?.description }}</p>
       <p *ngIf="habit?.description" class="txt-small">{{ habit?.description }}</p>
