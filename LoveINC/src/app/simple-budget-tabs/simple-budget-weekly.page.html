@@ -15,14 +15,12 @@
       </span>
     </ion-buttons>
   </ion-toolbar>
-  <div class="container-date-scroller">
-    <app-week-scroller
-      [initialWeekStart]="selectedWeekStart"
-      [earliestWeekStart]="earliestWeekStart"
-      [weekBalances]="weekBalances"
-      (weekSelectedEvent)="onWeekSelected($event)"
-    ></app-week-scroller>
-  </div>
+  <app-week-scroller
+    [initialWeekStart]="selectedWeekStart"
+    [earliestWeekStart]="earliestWeekStart"
+    [weekBalances]="weekBalances"
+    (weekSelectedEvent)="onWeekSelected($event)"
+  ></app-week-scroller>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="weekly-content">

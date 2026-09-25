@@ -5,12 +5,12 @@
     </ion-buttons>
     <ion-title>Goal Tracker</ion-title>
   </ion-toolbar>
-  <div *ngIf="showDateScroller" class="container-date-scroller">
+  @if (showDateScroller) {
     <app-date-scroller
       [completedDates]="completedDates"
       (dateSelectedEvent)="onDateSelected($event)"
     ></app-date-scroller>
-  </div>
+  }
 </ion-header>
 
 <ion-content [fullscreen]="true" class="goals-content">

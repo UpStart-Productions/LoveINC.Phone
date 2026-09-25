@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar class="meal-recap-sheet-toolbar">
+    <ion-title>How was it?</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="done-button" (click)="close()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="meal-recap-sheet-content">
+  <div class="meal-recap-reactions" role="group" aria-label="How was the meal?">
+    @for (reaction of reactions; track reaction.id) {
+      <button
+        type="button"
+        class="meal-recap-reaction"
+        [class.meal-recap-reaction--selected]="isReactionSelected(reaction.emoji)"
+        [attr.aria-pressed]="isReactionSelected(reaction.emoji)"
+        (click)="selectReaction(reaction.emoji)"
+      >
+        <span class="meal-recap-reaction__emoji" aria-hidden="true">{{ reaction.emoji }}</span>
+        <span class="meal-recap-reaction__label">{{ reaction.label }}</span>
+      </button>
+    }
+  </div>
+
+  <div class="meal-recap-slider-block">
+    <p class="meal-recap-slider-block__title">How long did it take?</p>
+    <ion-range
+      [min]="cookTimeMin"
+      [max]="cookTimeMax"
+      [step]="5"
+      [snaps]="true"
+      [pin]="true"
+      [value]="cookMinutes"
+      (ionInput)="onCookMinutesChange($event)"
+      aria-label="How long did it take to make"
+    ></ion-range>
+    <div class="meal-recap-range-labels">
+      <span>{{ cookTimeMin }} min</span>
+      <span class="meal-recap-range-labels__center">{{ recipeTimeMinutes }} min (recipe)</span>
+      <span>{{ cookTimeMax }} min</span>
+    </div>
+  </div>
+
+  <div class="meal-recap-slider-block">
+    <p class="meal-recap-slider-block__title">Complexity</p>
+    <ion-range
+      min="0"
+      max="2"
+      step="1"
+      [snaps]="true"
+      [pin]="false"
+      [value]="complexityIndex"
+      (ionInput)="onComplexityChange($event)"
+      aria-label="Recipe complexity"
+    ></ion-range>
+    <div class="meal-recap-range-labels">
+      <span>Easy</span>
+      <span class="meal-recap-range-labels__center">OK</span>
+      <span>Hard</span>
+    </div>
+  </div>
+</ion-content>

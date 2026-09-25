@@ -2,7 +2,7 @@
   <div class="chart-bars" [class.compact]="data.length > 7">
     <div *ngFor="let item of data; let i = index" class="bar-wrapper" (click)="onBarTap($event, item, i)" role="button" tabindex="0">
       <div class="bar-track">
-        <div class="bar-fill" [style.height.%]="displayValues[i] ?? 0"></div>
+        <div class="bar-fill" [style.height.%]="displayValues[i]"></div>
       </div>
       <span class="bar-label">{{ item.label }}</span>
     </div>

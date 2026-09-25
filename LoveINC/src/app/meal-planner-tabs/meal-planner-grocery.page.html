@@ -1,17 +1,20 @@
-<ion-header class="ion-no-border">
+<ion-header class="ion-no-border" [translucent]="false">
   <ion-toolbar>
     <ion-buttons slot="start">
       <app-back-button></app-back-button>
     </ion-buttons>
     <ion-title>Grocery List</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" aria-label="Add item" (click)="addItem()">
+        <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
-  <div class="container-week-scroller">
-    <app-meal-week-scroller
-      [initialWeekStart]="selectedWeekStart"
-      [earliestWeekStart]="earliestWeekStart"
-      (weekSelectedEvent)="onWeekSelected($event)"
-    ></app-meal-week-scroller>
-  </div>
+  <app-meal-week-scroller
+    [initialWeekStart]="selectedWeekStart"
+    [earliestWeekStart]="earliestWeekStart"
+    (weekSelectedEvent)="onWeekSelected($event)"
+  ></app-meal-week-scroller>
 </ion-header>
 
 <ion-content class="app-card-page" [fullscreen]="true">
@@ -20,15 +23,18 @@
   } @else if (!groupedItems.length) {
     <div class="empty-state ion-padding">
       <h2>No grocery list yet</h2>
-      <p class="app-body-secondary">Pick three meals on the Plan tab for {{ weekLabel }}.</p>
+      <p class="app-body-secondary">
+        Pick meals on the Plan tab for {{ weekLabel }}, or tap + to add items yourself.
+      </p>
     </div>
   } @else {
     @for (group of groupedItems; track group.aisle; let first = $first) {
       <p class="aisle-label app-body-secondary-sm app-uppercase">{{ group.aisle }}</p>
-      <app-content-card-list
-        [items]="group.listItems"
+      <app-grocery-item-list
+        [items]="group.items"
         [flushTop]="first"
-        (itemClick)="onGroceryRowClick($event)"
+        (itemTap)="onGroceryRowTap($event)"
+        (itemDelete)="onGroceryRowDelete($event)"
       />
     }
   }

@@ -1,0 +1,53 @@
+.meal-recap-reactions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.meal-recap-reaction {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.75rem 0.5rem;
+  border: 1px solid var(--ion-color-light-shade);
+  border-radius: 0.75rem;
+  background: #ffffff;
+  color: var(--ion-color-dark);
+}
+
+.meal-recap-reaction--selected {
+  border-color: var(--ion-color-primary);
+  background: rgba(var(--ion-color-primary-rgb), 0.08);
+}
+
+.meal-recap-reaction__emoji {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.meal-recap-reaction__label {
+  font-size: 0.875rem;
+}
+
+.meal-recap-slider-block {
+  margin-bottom: 1.5rem;
+}
+
+.meal-recap-slider-block__title {
+  margin: 0 0 0.5rem;
+}
+
+.meal-recap-range-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--ion-color-medium);
+}
+
+.meal-recap-range-labels__center {
+  text-align: center;
+}

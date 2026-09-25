@@ -42,6 +42,8 @@ import {
   buildRecipePdfFilename,
   buildRecipeShareHtml,
 } from '../../utils/recipe-detail-pdf.util';
+import { MealRecapSheetComponent } from '../meal-recap-sheet/meal-recap-sheet.component';
+import type { MealRecapComplexity } from '@upstart-productions/meal-planner';
 
 @Component({
   selector: 'app-recipe-detail-modal',
@@ -82,6 +84,9 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
   weekChanged = false;
   exporting = false;
   sharing = false;
+  mealRecapReactionEmoji?: string;
+  mealRecapActualCookMinutes?: number;
+  mealRecapComplexity?: MealRecapComplexity;
 
   private edgeScrollEl: HTMLElement | null = null;
   private edgeScrollListener: (() => void) | null = null;
@@ -187,6 +192,37 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
     await popover.dismiss();
     this.actionsOpen = false;
     await this.editServings();
+  }
+
+  async selectIMadeThisAction(event: Event, popover: IonPopover) {
+    event.stopPropagation();
+    await popover.dismiss();
+    this.actionsOpen = false;
+    await this.openMealRecapSheet();
+  }
+
+  private async openMealRecapSheet() {
+    if (!this.planMealId) {
+      return;
+    }
+
+    const modal = await this.modalCtrl.create({
+      component: MealRecapSheetComponent,
+      cssClass: 'meal-recap-sheet',
+      componentProps: {
+        planMealId: this.planMealId,
+        recipeTimeMinutes: this.recipe.readyInMinutes ?? 45,
+        initialReactionEmoji: this.mealRecapReactionEmoji,
+        initialActualCookMinutes: this.mealRecapActualCookMinutes,
+        initialComplexity: this.mealRecapComplexity,
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onDidDismiss<{ saved?: boolean }>();
+    if (data?.saved) {
+      this.weekChanged = true;
+      await this.loadWeekContext();
+    }
   }
 
   async toggleWeek() {
@@ -391,6 +427,9 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
       this.isOnWeek = true;
       this.planMealId = meal.id;
       this.extraGuests = meal.extraGuests;
+      this.mealRecapReactionEmoji = meal.reactionEmoji;
+      this.mealRecapActualCookMinutes = meal.actualCookMinutes;
+      this.mealRecapComplexity = meal.complexity;
     }
   }
 

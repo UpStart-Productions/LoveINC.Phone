@@ -170,6 +170,16 @@
           <ion-label>{{ displayServings }} servings</ion-label>
         </ion-item>
       }
+      <ion-item
+        button
+        detail="false"
+        lines="none"
+        [disabled]="!isOnWeek"
+        (click)="selectIMadeThisAction($event, actionsPopover)"
+      >
+        <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+        <ion-label>I made this</ion-label>
+      </ion-item>
     </ion-list>
   </ng-template>
 </ion-popover>

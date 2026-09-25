@@ -25,7 +25,6 @@ import {
   IonItem,
   IonLabel,
   IonIcon,
-  IonButton,
   NavController,
 } from '@ionic/angular/standalone';
 import { navigateAppForward } from '../shared/utils/navigation-forward.util';
@@ -64,7 +63,6 @@ interface MoreSection {
     IonItem,
     IonLabel,
     IonIcon,
-    IonButton,
     HeaderActionsComponent,
   ],
 })

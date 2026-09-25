@@ -1,3 +1,9 @@
+@use '../../../shared/styles/scroller-header-chrome';
+
+:host {
+  @include scroller-header-chrome.host;
+}
+
 .date-scroller {
   width: 100%;
   min-height: 3rem;
@@ -7,7 +13,6 @@
   display: flex;
   scroll-behavior: smooth;
   z-index: 1;
-  margin-bottom: 1rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
 
@@ -58,9 +63,8 @@ button span.selected {
   font-weight: 500;
 }
 
-.txt-small-caps {
-  text-transform: uppercase;
-  font-size: var(--app-font-size-xs);
+.date-scroller .date .txt-small-caps {
+  @include scroller-header-chrome.small-caps-label;
 }
 .txt-normal-bold {
   font-weight: 600;

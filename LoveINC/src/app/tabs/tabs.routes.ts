@@ -76,7 +76,7 @@ const ROOT_DRILL_IN_REDIRECTS: Routes = [
   { path: 'meal-planner', redirectTo: '/tabs/meal-planner', pathMatch: 'full' },
   { path: 'meal-planner/plan', redirectTo: '/tabs/meal-planner/plan', pathMatch: 'full' },
   { path: 'meal-planner/grocery', redirectTo: '/tabs/meal-planner/grocery', pathMatch: 'full' },
-  { path: 'meal-planner/cook', redirectTo: '/tabs/meal-planner/cook', pathMatch: 'full' },
+  { path: 'meal-planner/cook', redirectTo: '/tabs/meal-planner/plan', pathMatch: 'full' },
   { path: 'meal-planner/summary', redirectTo: '/tabs/meal-planner/summary', pathMatch: 'full' },
   { path: 'goal-tracker', redirectTo: '/tabs/goal-tracker', pathMatch: 'full' },
   { path: 'goal-tracker/goals', redirectTo: '/tabs/goal-tracker/goals', pathMatch: 'full' },

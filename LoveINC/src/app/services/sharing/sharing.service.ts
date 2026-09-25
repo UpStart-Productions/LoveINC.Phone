@@ -1,4 +1,4 @@
-import { Injectable, ElementRef } from '@angular/core';
+import { Injectable, ElementRef, Injector } from '@angular/core';
 import { ActionSheetButton, ActionSheetController, AlertController } from '@ionic/angular/standalone';
 import { Share } from '@capacitor/share';
 import { EmailComposerService } from './email-composer.service';
@@ -18,7 +18,7 @@ export class SharingService {
     private actionSheetCtrl: ActionSheetController,
     private alertCtrl: AlertController,
     private emailComposerService: EmailComposerService,
-    private pdfService: PdfService
+    private injector: Injector
   ) {}
 
   /**
@@ -284,11 +284,12 @@ export class SharingService {
   private async shareAsPdf(pdfShare: PdfShareOptions, content: ShareContent): Promise<void> {
     try {
       const { filePath, filename } = await pdfShare.generate();
-      this.pdfService.setShareMetadata(
+      const pdfService = this.injector.get(PdfService);
+      pdfService.setShareMetadata(
         pdfShare.subject ?? content.subject,
         pdfShare.body ?? content.title
       );
-      await this.pdfService.sharePdf(filePath, filename);
+      await pdfService.sharePdf(filePath, filename);
     } catch (error) {
       if (this.isShareCancelled(error)) {
         return;

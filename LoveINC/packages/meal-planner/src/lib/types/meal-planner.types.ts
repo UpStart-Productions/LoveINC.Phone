@@ -10,6 +10,8 @@ export interface RecipeIngredient {
   amount: number;
   unit: string;
   original: string;
+  spoonacularIngredientId?: number;
+  imageFile?: string;
 }
 
 export interface CachedRecipe {
@@ -25,6 +27,16 @@ export interface CachedRecipe {
   cachedAt: string;
 }
 
+import type { MealRecapComplexity } from '../constants/meal-recap.constants';
+
+export type { MealRecapComplexity };
+
+export interface MealRecap {
+  reactionEmoji?: string;
+  actualCookMinutes?: number;
+  complexity?: MealRecapComplexity;
+}
+
 export interface PlanMeal {
   id?: number;
   weeklyPlanId?: number;
@@ -36,6 +48,8 @@ export interface PlanMeal {
   isCooked: boolean;
   cookTimeBucket?: string;
   reactionEmoji?: string;
+  actualCookMinutes?: number;
+  complexity?: MealRecapComplexity;
   cookedAt?: string;
 }
 
@@ -56,14 +70,14 @@ export interface GroceryItem {
   ingredientName: string;
   amountText: string;
   isChecked: boolean;
+  isManual: boolean;
+  imageUrl?: string;
   sortOrder: number;
 }
 
 export interface WeeklySummary {
   weekStartDate: string;
   mealsPlanned: number;
-  mealsCooked: number;
-  favoriteReaction?: string;
   averageReadyMinutes?: number;
 }
 

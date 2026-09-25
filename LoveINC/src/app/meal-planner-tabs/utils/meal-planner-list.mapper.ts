@@ -64,21 +64,6 @@ export function mapSpoonacularResultToListItem(result: SpoonacularSearchResult):
   };
 }
 
-export function mapCookMealToListItem(
-  meal: PlanMeal,
-  cookDetail?: string
-): ContentCardListItem {
-  const recipe = meal.recipe;
-  return {
-    id: String(meal.id),
-    title: recipe?.title ?? 'Meal',
-    detail: cookDetail ?? (meal.isCooked ? 'Cooked' : 'Tap for options'),
-    imageUrl: recipe?.imageUrl,
-    avatarOverlayIcon: meal.isCooked ? 'checkmark-circle' : undefined,
-    ...LIST_AVATAR,
-  };
-}
-
 export function mapSummaryMealToListItem(
   meal: PlanMeal,
   detail?: string
@@ -89,7 +74,6 @@ export function mapSummaryMealToListItem(
     title: recipe?.title ?? 'Meal',
     detail,
     imageUrl: recipe?.imageUrl,
-    avatarOverlayIcon: meal.isCooked ? 'checkmark-circle' : undefined,
     clickable: false,
     ...LIST_AVATAR,
   };
@@ -99,8 +83,8 @@ export function mapGroceryItemToListItem(item: GroceryItem): ContentCardListItem
   return {
     id: String(item.id),
     title: item.ingredientName,
-    detail: item.amountText,
-    iconName: 'cart-outline',
+    imageUrl: item.imageUrl,
+    iconName: item.imageUrl ? undefined : 'cart-outline',
     iconBackgroundColor: '#8b7355',
     avatarOverlayIcon: item.isChecked ? 'checkmark-circle' : undefined,
     ...LIST_AVATAR,

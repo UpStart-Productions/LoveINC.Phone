@@ -7,9 +7,7 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonButton,
   IonButtons,
-  IonIcon,
   NavController,
 } from '@ionic/angular/standalone';
 import { navigateAppForward } from '../shared/utils/navigation-forward.util';
@@ -62,9 +60,7 @@ export interface UpdateItem {
     IonToolbar,
     IonTitle,
     IonContent,
-    IonButton,
     IonButtons,
-    IonIcon,
     CardComponent,
     HeaderActionsComponent,
   ],

@@ -1,17 +1,15 @@
-<ion-header class="ion-no-border">
+<ion-header class="ion-no-border" [translucent]="false">
   <ion-toolbar>
     <ion-buttons slot="start">
       <app-back-button></app-back-button>
     </ion-buttons>
     <ion-title>Weekly Summary</ion-title>
   </ion-toolbar>
-  <div class="container-week-scroller">
-    <app-meal-week-scroller
-      [initialWeekStart]="selectedWeekStart"
-      [earliestWeekStart]="earliestWeekStart"
-      (weekSelectedEvent)="onWeekSelected($event)"
-    ></app-meal-week-scroller>
-  </div>
+  <app-meal-week-scroller
+    [initialWeekStart]="selectedWeekStart"
+    [earliestWeekStart]="earliestWeekStart"
+    (weekSelectedEvent)="onWeekSelected($event)"
+  ></app-meal-week-scroller>
 </ion-header>
 
 <ion-content class="app-card-page" [fullscreen]="true">
@@ -20,18 +18,15 @@
   } @else if (!summary?.mealsPlanned) {
     <div class="empty-state ion-padding">
       <h2>No summary yet</h2>
-      <p class="app-body-secondary">Plan and cook meals for {{ weekLabel }} to see your summary.</p>
+      <p class="app-body-secondary">Plan meals for {{ weekLabel }} to see your summary.</p>
     </div>
   } @else {
     <div class="summary-stats ion-padding">
       <p class="app-body-secondary">
-        {{ summary!.mealsCooked }}/{{ summary!.mealsPlanned }} meals cooked
+        {{ summary!.mealsPlanned }} meal{{ summary!.mealsPlanned === 1 ? '' : 's' }} planned
       </p>
       @if (summary!.averageReadyMinutes) {
         <p class="app-body-secondary">Average recipe time: {{ summary!.averageReadyMinutes }} min</p>
-      }
-      @if (summary!.favoriteReaction) {
-        <p class="app-body-secondary">Top reaction: {{ summary!.favoriteReaction }}</p>
       }
     </div>
 

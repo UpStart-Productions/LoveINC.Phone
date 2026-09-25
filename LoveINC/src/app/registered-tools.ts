@@ -83,8 +83,8 @@ export const REGISTERED_TOOL_ROUTES: Route[] = [
       },
       {
         path: 'cook',
-        loadComponent: () =>
-          import('@app/meal-planner-tabs/meal-planner-cook.page').then((m) => m.MealPlannerCookPage),
+        redirectTo: 'plan',
+        pathMatch: 'full',
       },
       {
         path: 'summary',
@@ -210,7 +210,7 @@ export const REGISTERED_TOOL_CARDS: ToolCard[] = [
     category: 'Life Skills',
     lucideCategoryIcon: 'utensils-crossed',
     title: 'Meal Planner',
-    detail: 'Plan meals, shop, and cook',
+    detail: 'Plan meals and shop',
     lucideIcon: 'utensils-crossed',
     iconBackgroundColor: '#d56132',
     route: '/tabs/meal-planner',

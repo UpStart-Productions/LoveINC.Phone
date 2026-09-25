@@ -3,13 +3,20 @@ export type {
   RecipeIngredient,
   CachedRecipe,
   PlanMeal,
+  MealRecap,
+  MealRecapComplexity,
   WeeklyPlan,
   GroceryItem,
   WeeklySummary,
   SpoonacularSearchResult,
 } from './lib/types/meal-planner.types';
-export { MEALS_PER_WEEK, COOK_TIME_OPTIONS, REACTION_OPTIONS } from './lib/constants/cook.constants';
-export type { CookTimeOption, ReactionOption } from './lib/constants/cook.constants';
+export { MEALS_PER_WEEK } from './lib/constants/cook.constants';
+export {
+  MEAL_RECAP_REACTIONS,
+  MEAL_RECAP_COMPLEXITY_VALUES,
+  complexityToIndex,
+  indexToComplexity,
+} from './lib/constants/meal-recap.constants';
 export {
   getSundayForDate,
   getCurrentWeekStart,
@@ -22,8 +29,20 @@ export {
   formatScaledIngredientLine,
   parseIngredientLineForDisplay,
 } from './lib/utils/recipe-scaling.util';
+export {
+  GROCERY_AISLE_ORDER,
+  normalizeGroceryAisle,
+  compareGroceryAisles,
+} from './lib/utils/grocery-aisle.util';
+export {
+  ingredientImageUrlFromFile,
+  normalizeIngredientImageFile,
+  resolveIngredientImageUrl,
+  buildIngredientSearchQueries,
+} from './lib/utils/ingredient-image.util';
 export type { IngredientLineDisplay } from './lib/utils/recipe-scaling.util';
 export { MealPlannerDatabaseService } from './lib/services/meal-planner-database.service';
 export { MealPlannerProfileService } from './lib/services/meal-planner-profile.service';
 export { MealPlannerRecipeService } from './lib/services/meal-planner-recipe.service';
 export { MealPlannerPlanService } from './lib/services/meal-planner-plan.service';
+export { MealPlannerIngredientImageService } from './lib/services/meal-planner-ingredient-image.service';

@@ -189,8 +189,11 @@ export class MealPickerModalComponent implements OnInit {
         maxReadyTime: this.maxReadyMinutes,
       });
       this.searchListItems = results.map((result) => mapSpoonacularResultToListItem(result));
-    } catch {
-      this.errorMessage = 'Could not search recipes. Check your connection and API key.';
+    } catch (err) {
+      this.errorMessage =
+        err instanceof Error && err.message.trim()
+          ? err.message
+          : 'Could not search recipes. Check your connection and API key.';
       this.searchListItems = [];
     } finally {
       this.searching = false;

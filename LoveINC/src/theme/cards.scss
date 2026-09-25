@@ -865,7 +865,14 @@ ion-card.clickable {
   background: transparent;
 }
 
-.card-actions-popover { --offset-y: 14px; --offset-x: 10px; }
+.card-actions-popover {
+  --offset-y: 14px;
+  --offset-x: 10px;
+
+  &::part(content) {
+    min-width: 13.75rem;
+  }
+}
 /* Verse typography uses the same serif family as journal reading. */
 app-verse-of-the-day-widget .content-card {
   h2 { font-family: var(--app-font-family-crimson); font-size: 1.375rem; font-weight: 500; }

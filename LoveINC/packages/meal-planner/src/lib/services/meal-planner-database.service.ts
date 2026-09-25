@@ -210,6 +210,44 @@ export class MealPlannerDatabaseService {
       CREATE INDEX IF NOT EXISTS idx_grocery_items_week
       ON grocery_items(weekly_plan_id);
     `);
+    await this.migrateTables(db);
+  }
+
+  private async migrateTables(db: SQLiteDBConnection): Promise<void> {
+    await this.addColumnIfMissing(db, 'plan_meals', 'actual_cook_minutes', 'INTEGER');
+    await this.addColumnIfMissing(db, 'plan_meals', 'complexity', 'TEXT');
+    await this.addColumnIfMissing(db, 'grocery_items', 'is_manual', 'INTEGER DEFAULT 0');
+    await this.addColumnIfMissing(db, 'grocery_items', 'image_url', 'TEXT');
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS grocery_item_exclusions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        weekly_plan_id INTEGER NOT NULL,
+        ingredient_key TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (weekly_plan_id) REFERENCES weekly_plans(id) ON DELETE CASCADE,
+        UNIQUE(weekly_plan_id, ingredient_key)
+      );
+    `);
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS ingredient_images (
+        name_key TEXT PRIMARY KEY,
+        image_url TEXT NOT NULL,
+        cached_at TEXT NOT NULL
+      );
+    `);
+  }
+
+  private async addColumnIfMissing(
+    db: SQLiteDBConnection,
+    table: string,
+    column: string,
+    type: string
+  ): Promise<void> {
+    const result = await db.query(`PRAGMA table_info(${table})`);
+    const exists = (result.values ?? []).some((row) => String(row['name']) === column);
+    if (!exists) {
+      await db.execute(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+    }
   }
 
   resetConnection(): void {
@@ -252,7 +290,9 @@ export class MealPlannerDatabaseService {
 
   async wipeAll(): Promise<void> {
     const db = await this.getDbConnection();
+    await db.execute('DELETE FROM grocery_item_exclusions');
     await db.execute('DELETE FROM grocery_items');
+    await db.execute('DELETE FROM ingredient_images');
     await db.execute('DELETE FROM plan_meals');
     await db.execute('DELETE FROM weekly_plans');
     await db.execute('DELETE FROM favorite_recipes');
