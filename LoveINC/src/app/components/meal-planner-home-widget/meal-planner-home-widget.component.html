@@ -1,0 +1,27 @@
+@if (showCard) {
+  @if (cardImageUrl) {
+    <app-content-card
+      [compactCategoryLabel]="true"
+      [category]="'Meal Planner'"
+      [lucideCategoryIcon]="'utensils-crossed'"
+      [title]="cardTitle"
+      [detail]="cardDetail"
+      [imageUrl]="cardImageUrl"
+      [asideAvatarSize]="'small'"
+      [route]="'/tabs/meal-planner/plan'"
+      [navigationFrom]="'home'"
+    />
+  } @else {
+    <app-content-card
+      [compactCategoryLabel]="true"
+      [category]="'Meal Planner'"
+      [lucideCategoryIcon]="'utensils-crossed'"
+      [title]="cardTitle"
+      [detail]="cardDetail"
+      [lucideIcon]="'utensils-crossed'"
+      [iconBackgroundColor]="'#d56132'"
+      [route]="'/tabs/meal-planner/plan'"
+      [navigationFrom]="'home'"
+    />
+  }
+}

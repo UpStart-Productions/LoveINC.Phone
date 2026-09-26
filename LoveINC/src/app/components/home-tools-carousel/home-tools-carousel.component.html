@@ -41,5 +41,11 @@
     >
       <app-journal-home-widget (visibleChange)="onJournalVisible($event)" />
     </div>
+    <div
+      class="peek-carousel__slide"
+      [class.home-tools-carousel__slide--hidden]="!mealPlannerVisible"
+    >
+      <app-meal-planner-home-widget (visibleChange)="onMealPlannerVisible($event)" />
+    </div>
   </div>
 </section>

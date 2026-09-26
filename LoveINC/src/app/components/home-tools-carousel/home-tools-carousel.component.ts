@@ -6,6 +6,7 @@ import { SimpleBudgetHomeWidgetComponent } from '../simple-budget-home-widget/si
 import { GoalTrackerHomeWidgetComponent } from '../goal-tracker-home-widget/goal-tracker-home-widget.component';
 import { JobSearchHomeWidgetComponent } from '../job-search-home-widget/job-search-home-widget.component';
 import { JournalHomeWidgetComponent } from '../journal-home-widget/journal-home-widget.component';
+import { MealPlannerHomeWidgetComponent } from '../meal-planner-home-widget/meal-planner-home-widget.component';
 import { HomeClassToolsPreferenceService } from '../../services/home-class-tools-preference.service';
 
 @Component({
@@ -20,6 +21,7 @@ import { HomeClassToolsPreferenceService } from '../../services/home-class-tools
     GoalTrackerHomeWidgetComponent,
     JobSearchHomeWidgetComponent,
     JournalHomeWidgetComponent,
+    MealPlannerHomeWidgetComponent,
   ],
   host: {
     '[class.home-tools-carousel--empty]': '!hasTools',
@@ -45,10 +47,14 @@ export class HomeToolsCarouselComponent implements OnInit, OnDestroy {
   @ViewChild(JournalHomeWidgetComponent)
   private journalWidget?: JournalHomeWidgetComponent;
 
+  @ViewChild(MealPlannerHomeWidgetComponent)
+  private mealPlannerWidget?: MealPlannerHomeWidgetComponent;
+
   budgetVisible = false;
   goalsVisible = false;
   jobSearchVisible = false;
   journalVisible = false;
+  mealPlannerVisible = false;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -80,7 +86,8 @@ export class HomeToolsCarouselComponent implements OnInit, OnDestroy {
       Number(this.budgetVisible) +
       Number(this.goalsVisible) +
       Number(this.jobSearchVisible) +
-      Number(this.journalVisible)
+      Number(this.journalVisible) +
+      Number(this.mealPlannerVisible)
     );
   }
 
@@ -112,10 +119,17 @@ export class HomeToolsCarouselComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
   }
 
+  onMealPlannerVisible(visible: boolean): void {
+    if (this.mealPlannerVisible === visible) return;
+    this.mealPlannerVisible = visible;
+    this.cdr.markForCheck();
+  }
+
   refresh(): void {
     this.budgetWidget?.refresh();
     this.goalsWidget?.refresh();
     this.jobSearchWidget?.refresh();
     this.journalWidget?.refresh();
+    this.mealPlannerWidget?.refresh();
   }
 }
