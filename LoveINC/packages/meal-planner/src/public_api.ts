@@ -1,6 +1,9 @@
 export type {
   MealPlannerProfile,
   RecipeIngredient,
+  RecipeSource,
+  RecipeExternalKey,
+  RecipeNutritionFact,
   CachedRecipe,
   PlanMeal,
   MealRecap,

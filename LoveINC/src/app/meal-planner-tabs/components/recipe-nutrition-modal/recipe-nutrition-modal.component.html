@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar class="recipe-nutrition-sheet-toolbar">
+    <ion-title>Nutrition per serving</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" class="close-button" aria-label="Close" (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="recipe-nutrition-sheet-content">
+  <table class="recipe-nutrition-table">
+    <tbody>
+      @for (fact of facts; track fact.key) {
+        <tr>
+          <td>{{ fact.name.trim() }}</td>
+          <td class="recipe-nutrition-table__value">
+            <span [class.recipe-nutrition-table__amount--high]="isAmountHigh(fact)">
+              {{ nutritionLine(fact) }}
+            </span>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <p class="app-caption recipe-nutrition-disclaimer">
+    Bold values are at or above 20% of FDA Daily Values (2,000 calorie diet).
+  </p>
+</ion-content>

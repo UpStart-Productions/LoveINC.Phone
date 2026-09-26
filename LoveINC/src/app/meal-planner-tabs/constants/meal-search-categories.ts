@@ -44,7 +44,7 @@ export const MEAL_SEARCH_CATEGORIES: MealSearchCategory[] = [
     label: 'Appetizer',
     lucideIcon: 'shrimp',
     iconBackgroundColor: '#214491',
-    search: { type: 'appetizer' },
+    search: { type: 'snack' },
   },
   {
     id: 'side-dish',
@@ -54,11 +54,11 @@ export const MEAL_SEARCH_CATEGORIES: MealSearchCategory[] = [
     search: { type: 'side dish' },
   },
   {
-    id: 'snack',
-    label: 'Snack',
-    lucideIcon: 'cookie',
+    id: 'pasta',
+    label: 'Pasta',
+    lucideIcon: 'wheat',
     iconBackgroundColor: '#8b7355',
-    search: { type: 'snack' },
+    search: { query: 'pasta' },
   },
   {
     id: 'dessert',

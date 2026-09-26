@@ -22,3 +22,19 @@
 .content-card-tool-body--with-aside-rating .content-card-detail {
   padding-right: calc(var(--content-card-aside-avatar-size) + 0.25rem);
 }
+
+.content-card-detail__inline-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.content-card-detail__text {
+  min-width: 0;
+  flex: 1;
+}
+
+.content-card-detail__inline-row app-meal-star-rating {
+  flex-shrink: 0;
+  margin-left: auto;
+}

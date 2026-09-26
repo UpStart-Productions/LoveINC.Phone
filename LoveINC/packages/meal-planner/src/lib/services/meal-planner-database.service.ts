@@ -224,6 +224,24 @@ export class MealPlannerDatabaseService {
     await this.addColumnIfMissing(db, 'weekly_plans', 'meals_per_week', 'INTEGER NOT NULL DEFAULT 3');
     await this.addColumnIfMissing(db, 'grocery_items', 'is_manual', 'INTEGER DEFAULT 0');
     await this.addColumnIfMissing(db, 'grocery_items', 'image_url', 'TEXT');
+    await this.addColumnIfMissing(db, 'cached_recipes', 'recipe_source', "TEXT NOT NULL DEFAULT 'spoonacular'");
+    await this.addColumnIfMissing(db, 'cached_recipes', 'external_id', 'TEXT');
+    await db.run(
+      `UPDATE cached_recipes
+       SET external_id = CAST(spoonacular_id AS TEXT)
+       WHERE external_id IS NULL OR external_id = ''`
+    );
+    await this.addColumnIfMissing(db, 'cached_recipes', 'nutrition_json', 'TEXT');
+    await this.addColumnIfMissing(db, 'cached_recipes', 'calories_per_serving', 'INTEGER');
+    await db.run(
+      `UPDATE cached_recipes
+       SET ready_in_minutes = NULL
+       WHERE recipe_source = 'myplate'`
+    );
+    await db.execute(`
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_cached_recipes_source_external
+      ON cached_recipes(recipe_source, external_id);
+    `);
     await db.execute(`
       CREATE TABLE IF NOT EXISTS grocery_item_exclusions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

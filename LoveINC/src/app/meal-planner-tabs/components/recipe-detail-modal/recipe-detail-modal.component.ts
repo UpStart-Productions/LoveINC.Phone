@@ -23,6 +23,7 @@ import {
   IonItem,
   IonLabel,
   ModalController,
+  ToastController,
 } from '@ionic/angular/standalone';
 import type { CachedRecipe } from '@upstart-productions/meal-planner';
 import {
@@ -44,8 +45,12 @@ import {
 } from '../../utils/recipe-detail-pdf.util';
 import { LucideAngularModule } from 'lucide-angular';
 import { MealRecapSheetComponent } from '../meal-recap-sheet/meal-recap-sheet.component';
+import { RecipeNutritionModalComponent } from '../recipe-nutrition-modal/recipe-nutrition-modal.component';
 import { MealStarRatingComponent } from '../meal-star-rating/meal-star-rating.component';
 import type { MealRecapThumb } from '@upstart-productions/meal-planner';
+import { MEAL_RECIPE_ATTRIBUTION } from '../../config/meal-recipe-provider.config';
+import { nutritionFactsForDisplay } from '../../utils/myplate-nutrition.util';
+import type { RecipeNutritionFact } from '@upstart-productions/meal-planner';
 
 @Component({
   selector: 'app-recipe-detail-modal',
@@ -88,6 +93,7 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
   weekChanged = false;
   exporting = false;
   sharing = false;
+  readonly recipeAttribution = MEAL_RECIPE_ATTRIBUTION;
   mealRecapReactionEmoji?: string;
   mealRecapEffortRating?: MealRecapThumb;
   mealRecapTimeRating?: MealRecapThumb;
@@ -107,7 +113,8 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
     private pdfService: PdfService,
     private sharingService: SharingService,
     private ngZone: NgZone,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toastCtrl: ToastController
   ) {}
 
   get showEdgeHero(): boolean {
@@ -131,6 +138,10 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
 
   get shouldScaleRecipe(): boolean {
     return this.canManageWeek && this.isOnWeek;
+  }
+
+  get displayNutrition(): RecipeNutritionFact[] {
+    return nutritionFactsForDisplay(this.recipe.nutrition);
   }
 
   get displayIngredients(): IngredientLineDisplay[] {
@@ -208,6 +219,31 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
     await this.openMealRecapSheet();
   }
 
+  async selectNutritionAction(event: Event, popover: IonPopover) {
+    event.stopPropagation();
+    await popover.dismiss();
+    this.actionsOpen = false;
+    await this.openNutritionModal();
+  }
+
+  async openNutritionModal(): Promise<void> {
+    if (!this.displayNutrition.length) {
+      return;
+    }
+
+    const modal = await this.modalCtrl.create({
+      component: RecipeNutritionModalComponent,
+      cssClass: 'recipe-nutrition-sheet',
+      breakpoints: [0, 0.58],
+      initialBreakpoint: 0.58,
+      backdropDismiss: true,
+      componentProps: {
+        facts: this.displayNutrition,
+      },
+    });
+    await modal.present();
+  }
+
   private async openMealRecapSheet() {
     if (!this.planMealId) {
       return;
@@ -263,6 +299,7 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
       this.isOnWeek = true;
       this.planMealId = meal?.id;
       this.extraGuests = meal?.extraGuests ?? 0;
+      await this.showActionToast('Selected for this week');
     }
 
     this.weekChanged = true;
@@ -274,6 +311,20 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
     }
     this.isFavorite = !this.isFavorite;
     await this.recipeService.setFavorite(this.recipe.id, this.isFavorite);
+    if (this.isFavorite) {
+      await this.showActionToast('Favorited');
+    }
+  }
+
+  private async showActionToast(message: string): Promise<void> {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 3000,
+      position: 'bottom',
+      color: 'success',
+      icon: 'checkmark-circle',
+    });
+    await toast.present();
   }
 
   async editServings() {

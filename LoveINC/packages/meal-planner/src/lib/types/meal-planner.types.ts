@@ -12,12 +12,31 @@ export interface RecipeIngredient {
   original: string;
 }
 
+export type RecipeSource = 'spoonacular' | 'myplate';
+
+export interface RecipeExternalKey {
+  recipeSource: RecipeSource;
+  externalId: string;
+}
+
+export interface RecipeNutritionFact {
+  key: string;
+  name: string;
+  amount: number;
+  unit?: string;
+  indent?: number;
+}
+
 export interface CachedRecipe {
   id?: number;
+  recipeSource: RecipeSource;
+  externalId: string;
   spoonacularId: number;
   title: string;
   imageUrl?: string;
   readyInMinutes?: number;
+  caloriesPerServing?: number;
+  nutrition?: RecipeNutritionFact[];
   servings: number;
   ingredients: RecipeIngredient[];
   instructions: string[];
@@ -88,6 +107,7 @@ export interface WeeklySummary {
   averageReadyMinutes?: number;
 }
 
+/** @deprecated Use app-layer RecipeSearchResult. Kept for backward compatibility. */
 export interface SpoonacularSearchResult {
   id: number;
   title: string;

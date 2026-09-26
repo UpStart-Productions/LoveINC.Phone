@@ -124,6 +124,11 @@
           [compactCategoryLabel]="true"
           (itemClick)="onListItemClick($event)"
         />
+        @if (searchHasMore) {
+          <ion-infinite-scroll (ionInfinite)="onSearchInfinite($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        }
       } @else if (searching) {
         <p class="app-body-secondary ion-padding">Searching…</p>
       } @else {
@@ -155,6 +160,6 @@
       }
     }
 
-    <p class="app-caption spoonacular-attribution">Recipes provided by Spoonacular</p>
+    <p class="app-caption spoonacular-attribution">{{ recipeAttribution }}</p>
   }
 </ion-content>

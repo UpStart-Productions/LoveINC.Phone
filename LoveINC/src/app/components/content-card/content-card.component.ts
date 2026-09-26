@@ -206,6 +206,7 @@ export class ContentCardComponent {
     return (
       this.compactCategoryLabel &&
       this.hasAsideAvatar &&
+      !this.listRow &&
       !this.saveToggle &&
       !this.authorName?.trim() &&
       !this.asideBadge?.trim() &&
@@ -219,8 +220,12 @@ export class ContentCardComponent {
     return this.hasAsideAvatar || !!this.asideBadge?.trim() || asideDate;
   }
 
-  get hasDetailRating(): boolean {
-    return this.mealStarRating != null && !!this.detail;
+  get hasInlineDetailRating(): boolean {
+    return this.listRow && this.mealStarRating != null && !!this.detail;
+  }
+
+  get hasAsideDetailRating(): boolean {
+    return !this.listRow && this.mealStarRating != null && !!this.detail;
   }
 
   get badgeAsideOnly(): boolean {

@@ -21,6 +21,33 @@ export function getRecipeScaleFactor(recipeServings: number, targetServings: num
   return targetServings / recipeServings;
 }
 
+/** Leading quantity from a free-text ingredient line (MyPlate text, or Spoonacular original). */
+function parseLeadingAmount(original: string): number | undefined {
+  const mixed = original.match(/^(\d+)\s+(\d+)\/(\d+)(?:\s|$)/);
+  if (mixed) {
+    return Number(mixed[1]) + Number(mixed[2]) / Number(mixed[3]);
+  }
+
+  const fraction = original.match(/^(\d+)\/(\d+)(?:\s|$)/);
+  if (fraction) {
+    return Number(fraction[1]) / Number(fraction[2]);
+  }
+
+  const decimal = original.match(/^(\d+(?:\.\d+)?)(?:\s|$)/);
+  if (decimal) {
+    return Number(decimal[1]);
+  }
+
+  return undefined;
+}
+
+function getIngredientBaseAmount(ingredient: RecipeIngredient): number {
+  if (ingredient.amount > 0) {
+    return ingredient.amount;
+  }
+  return parseLeadingAmount(ingredient.original) ?? 0;
+}
+
 function roundScaledAmount(value: number): number {
   return Math.round(value * 100) / 100;
 }
@@ -39,21 +66,35 @@ const COMMON_FRACTIONS: Array<[number, string]> = [
 
 /** Grocery list amount text (amount + unit, or original when unscaled). */
 export function formatScaledIngredientAmount(ingredient: RecipeIngredient, scale: number): string {
-  if (!ingredient.amount || scale === 1) {
+  if (scale === 1) {
     return ingredient.original;
   }
-  const scaledText = formatScaledAmountForDisplay(roundScaledAmount(ingredient.amount * scale));
-  const unit = ingredient.unit ? ` ${ingredient.unit}` : '';
-  return `${scaledText}${unit}`.trim();
+
+  const baseAmount = getIngredientBaseAmount(ingredient);
+  if (!baseAmount) {
+    return ingredient.original;
+  }
+
+  if (ingredient.unit) {
+    const scaledText = formatScaledAmountForDisplay(roundScaledAmount(baseAmount * scale));
+    return `${scaledText} ${ingredient.unit}`.trim();
+  }
+
+  return formatScaledIngredientLine(ingredient, scale);
 }
 
 /** Full ingredient line for recipe detail — scales the leading quantity, keeps Spoonacular wording. */
 export function formatScaledIngredientLine(ingredient: RecipeIngredient, scale: number): string {
-  if (!ingredient.amount || scale === 1) {
+  if (scale === 1) {
     return ingredient.original;
   }
 
-  const scaledText = formatScaledAmountForDisplay(roundScaledAmount(ingredient.amount * scale));
+  const baseAmount = getIngredientBaseAmount(ingredient);
+  if (!baseAmount) {
+    return ingredient.original;
+  }
+
+  const scaledText = formatScaledAmountForDisplay(roundScaledAmount(baseAmount * scale));
   const leadingQuantity = /^(\d+\s+\d+\/\d+|\d+\/\d+|\d+(?:\.\d+)?)\s*/;
   const match = ingredient.original.match(leadingQuantity);
   if (!match) {

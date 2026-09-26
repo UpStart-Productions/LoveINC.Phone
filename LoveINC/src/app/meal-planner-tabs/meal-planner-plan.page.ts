@@ -31,6 +31,7 @@ import {
   mapPlanMealToListItem,
 } from './utils/meal-planner-list.mapper';
 import { Subscription } from 'rxjs';
+import { MEAL_RECIPE_ATTRIBUTION } from './config/meal-recipe-provider.config';
 
 @Component({
   selector: 'app-meal-planner-plan',
@@ -60,6 +61,7 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
   householdSize = 2;
   slots: Array<PlanMeal | null> = [null, null, null];
   listItems: ContentCardListItem[] = [];
+  readonly recipeAttribution = MEAL_RECIPE_ATTRIBUTION;
   private weekSub?: Subscription;
 
   constructor(

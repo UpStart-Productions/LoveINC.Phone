@@ -1,4 +1,5 @@
 import type { Content, TDocumentDefinitions } from 'pdfmake/interfaces';
+import { MEAL_RECIPE_ATTRIBUTION } from '../config/meal-recipe-provider.config';
 import type { IngredientLineDisplay } from '@upstart-productions/meal-planner';
 
 export interface RecipePdfInput {
@@ -67,7 +68,7 @@ export function buildRecipePdfDocDefinition(input: RecipePdfInput): TDocumentDef
       ol: input.instructions.length ? input.instructions : ['See recipe source for instructions.'],
     },
     {
-      text: 'Recipe data from Spoonacular',
+      text: MEAL_RECIPE_ATTRIBUTION,
       style: 'footnote',
       margin: [0, 16, 0, 0] as [number, number, number, number],
     },

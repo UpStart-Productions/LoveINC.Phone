@@ -297,19 +297,32 @@ export class MealPlannerPlanService {
   async getLatestStarRatingsForRecipes(options: {
     cachedRecipeIds?: readonly number[];
     spoonacularIds?: readonly number[];
-  }): Promise<{ byCachedRecipeId: Map<number, number>; bySpoonacularId: Map<number, number> }> {
+    recipeKeys?: readonly { recipeSource: string; externalId: string }[];
+  }): Promise<{
+    byCachedRecipeId: Map<number, number>;
+    bySpoonacularId: Map<number, number>;
+    byRecipeKey: Map<string, number>;
+  }> {
     const byCachedRecipeId = new Map<number, number>();
     const bySpoonacularId = new Map<number, number>();
+    const byRecipeKey = new Map<string, number>();
     const cachedRecipeIds = [...new Set((options.cachedRecipeIds ?? []).filter((id) => id > 0))];
     const spoonacularIds = [...new Set((options.spoonacularIds ?? []).filter((id) => id > 0))];
+    const recipeKeys = [
+      ...new Map(
+        (options.recipeKeys ?? [])
+          .filter((key) => key.externalId.trim())
+          .map((key) => [`${key.recipeSource}:${key.externalId}`, key] as const)
+      ).values(),
+    ];
 
-    if (!cachedRecipeIds.length && !spoonacularIds.length) {
-      return { byCachedRecipeId, bySpoonacularId };
+    if (!cachedRecipeIds.length && !spoonacularIds.length && !recipeKeys.length) {
+      return { byCachedRecipeId, bySpoonacularId, byRecipeKey };
     }
 
     const db = await this.dbService.getDbConnection();
     const conditions: string[] = [];
-    const params: number[] = [];
+    const params: Array<number | string> = [];
 
     if (cachedRecipeIds.length) {
       conditions.push(`pm.cached_recipe_id IN (${cachedRecipeIds.map(() => '?').join(',')})`);
@@ -319,9 +332,17 @@ export class MealPlannerPlanService {
       conditions.push(`cr.spoonacular_id IN (${spoonacularIds.map(() => '?').join(',')})`);
       params.push(...spoonacularIds);
     }
+    if (recipeKeys.length) {
+      conditions.push(
+        recipeKeys.map(() => '(cr.recipe_source = ? AND cr.external_id = ?)').join(' OR ')
+      );
+      for (const key of recipeKeys) {
+        params.push(key.recipeSource, key.externalId);
+      }
+    }
 
     const result = await db.query(
-      `SELECT pm.cached_recipe_id, cr.spoonacular_id, pm.star_rating, pm.cooked_at
+      `SELECT pm.cached_recipe_id, cr.spoonacular_id, cr.recipe_source, cr.external_id, pm.star_rating, pm.cooked_at
        FROM plan_meals pm
        JOIN cached_recipes cr ON cr.id = pm.cached_recipe_id
        WHERE pm.star_rating IS NOT NULL
@@ -333,6 +354,9 @@ export class MealPlannerPlanService {
     for (const row of result.values ?? []) {
       const cachedRecipeId = Number(row['cached_recipe_id']);
       const spoonacularId = Number(row['spoonacular_id']);
+      const recipeSource = String(row['recipe_source'] ?? 'spoonacular');
+      const externalId = String(row['external_id'] ?? spoonacularId);
+      const recipeKey = `${recipeSource}:${externalId}`;
       const rating = Number(row['star_rating']);
       if (!byCachedRecipeId.has(cachedRecipeId)) {
         byCachedRecipeId.set(cachedRecipeId, rating);
@@ -340,9 +364,12 @@ export class MealPlannerPlanService {
       if (!bySpoonacularId.has(spoonacularId)) {
         bySpoonacularId.set(spoonacularId, rating);
       }
+      if (!byRecipeKey.has(recipeKey)) {
+        byRecipeKey.set(recipeKey, rating);
+      }
     }
 
-    return { byCachedRecipeId, bySpoonacularId };
+    return { byCachedRecipeId, bySpoonacularId, byRecipeKey };
   }
 
   async updateMealGuests(

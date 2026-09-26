@@ -1,5 +1,7 @@
 import type { ContentCardListItem } from '../../components/content-card-list/content-card-list.model';
-import type { CachedRecipe, GroceryItem, PlanMeal, SpoonacularSearchResult } from '@upstart-productions/meal-planner';
+import type { CachedRecipe, GroceryItem, PlanMeal } from '@upstart-productions/meal-planner';
+import type { RecipeSearchResult } from '../services/recipe-provider.types';
+import { encodeRecipeExternalKey } from '../services/recipe-provider.types';
 
 const LIST_AVATAR = { asideAvatarSize: 'large' as const };
 const EMPTY_MEAL_AVATAR_BG = '#e0e0e0';
@@ -7,13 +9,18 @@ const EMPTY_MEAL_AVATAR_BG = '#e0e0e0';
 function buildRecipeListDetail(
   readyInMinutes: number | undefined,
   totalServings?: number,
-  starRating?: number
+  starRating?: number,
+  caloriesPerServing?: number
 ): Pick<ContentCardListItem, 'detail' | 'mealStarRating'> {
   const timeLabel =
     readyInMinutes != null && readyInMinutes > 0 ? `${readyInMinutes} min` : undefined;
+  const caloriesLabel =
+    !timeLabel && caloriesPerServing != null && caloriesPerServing > 0
+      ? `${caloriesPerServing} cal`
+      : undefined;
   const servingsLabel =
     totalServings != null && totalServings > 0 ? `Serves ${totalServings}` : undefined;
-  const detailParts = [timeLabel, servingsLabel].filter(Boolean);
+  const detailParts = [timeLabel ?? caloriesLabel, servingsLabel].filter(Boolean);
   const detail = detailParts.length ? detailParts.join(' · ') : undefined;
 
   if (starRating != null) {
@@ -31,7 +38,12 @@ function buildMealListDetail(
   recipe: CachedRecipe,
   totalServings: number
 ): Pick<ContentCardListItem, 'detail' | 'mealStarRating'> {
-  return buildRecipeListDetail(recipe.readyInMinutes, totalServings, meal.starRating);
+  return buildRecipeListDetail(
+    recipe.readyInMinutes,
+    totalServings,
+    meal.starRating,
+    recipe.caloriesPerServing
+  );
 }
 
 export function mapEmptyMealSlot(slotIndex: number): ContentCardListItem {
@@ -73,24 +85,42 @@ export function mapCachedRecipeToListItem(
   options?: { id?: string; starRating?: number }
 ): ContentCardListItem {
   return {
-    id: options?.id ?? String(recipe.id ?? recipe.spoonacularId),
+    id:
+      options?.id ??
+      String(recipe.id ?? encodeRecipeExternalKey({
+        recipeSource: recipe.recipeSource,
+        externalId: recipe.externalId,
+      })),
     compactCategoryLabel: true,
     title: recipe.title,
-    ...buildRecipeListDetail(recipe.readyInMinutes, undefined, options?.starRating),
+    ...buildRecipeListDetail(
+      recipe.readyInMinutes,
+      undefined,
+      options?.starRating,
+      recipe.caloriesPerServing
+    ),
     imageUrl: recipe.imageUrl,
     ...LIST_AVATAR,
   };
 }
 
-export function mapSpoonacularResultToListItem(
-  result: SpoonacularSearchResult,
+export function mapRecipeSearchResultToListItem(
+  result: RecipeSearchResult,
   options?: { starRating?: number }
 ): ContentCardListItem {
   return {
-    id: String(result.id),
+    id: encodeRecipeExternalKey({
+      recipeSource: result.recipeSource,
+      externalId: result.externalId,
+    }),
     compactCategoryLabel: true,
     title: result.title,
-    ...buildRecipeListDetail(result.readyInMinutes, undefined, options?.starRating),
+    ...buildRecipeListDetail(
+      result.readyInMinutes,
+      undefined,
+      options?.starRating,
+      result.caloriesPerServing
+    ),
     imageUrl: result.image,
     ...LIST_AVATAR,
   };

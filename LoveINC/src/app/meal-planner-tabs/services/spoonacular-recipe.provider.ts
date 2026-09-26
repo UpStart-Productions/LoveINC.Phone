@@ -1,11 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import type { CachedRecipe, RecipeIngredient, SpoonacularSearchResult } from '@upstart-productions/meal-planner';
+import type { CachedRecipe, RecipeIngredient } from '@upstart-productions/meal-planner';
 import { MealPlannerRecipeService } from '@upstart-productions/meal-planner';
 import { SPOONACULAR_API_KEY } from '../config/spoonacular-api.config';
+import type {
+  MealRecipeProviderAdapter,
+  RecipeExternalKey,
+  RecipeSearchCriteria,
+  RecipeSearchPage,
+  RecipeSearchResult,
+} from './recipe-provider.types';
+import { RECIPE_SEARCH_PAGE_SIZE } from './recipe-provider.types';
 
 interface SpoonacularSearchResponse {
+  totalResults?: number;
   results: Array<{
     id: number;
     title: string;
@@ -37,7 +46,7 @@ interface SpoonacularRecipeDetail {
 @Injectable({
   providedIn: 'root',
 })
-export class SpoonacularService {
+export class SpoonacularRecipeProvider implements MealRecipeProviderAdapter {
   private readonly baseUrl = 'https://api.spoonacular.com';
 
   constructor(
@@ -45,26 +54,25 @@ export class SpoonacularService {
     private recipeService: MealPlannerRecipeService
   ) {}
 
-  async searchRecipes(options: {
-    query?: string;
-    type?: string;
-    diet?: string;
-    maxReadyTime: number;
-  }): Promise<SpoonacularSearchResult[]> {
+  async searchRecipes(criteria: RecipeSearchCriteria): Promise<RecipeSearchPage> {
     if (!SPOONACULAR_API_KEY) {
       throw new Error('Spoonacular API key is not configured.');
     }
-    const query = options.query?.trim() ?? '';
-    const type = options.type?.trim() ?? '';
-    const diet = options.diet?.trim() ?? '';
+    const query = criteria.query?.trim() ?? '';
+    const type = criteria.type?.trim() ?? '';
+    const diet = criteria.diet?.trim() ?? '';
     if (!query && !type && !diet) {
-      return [];
+      return { results: [], total: 0, offset: 0, limit: RECIPE_SEARCH_PAGE_SIZE };
     }
+
+    const limit = criteria.limit ?? RECIPE_SEARCH_PAGE_SIZE;
+    const offset = criteria.offset ?? 0;
 
     let params = new HttpParams()
       .set('apiKey', SPOONACULAR_API_KEY)
-      .set('number', '12')
-      .set('maxReadyTime', String(options.maxReadyTime))
+      .set('number', String(limit))
+      .set('offset', String(offset))
+      .set('maxReadyTime', String(criteria.maxReadyTime))
       .set('addRecipeInformation', 'true');
     if (query) {
       params = params.set('query', query);
@@ -89,24 +97,37 @@ export class SpoonacularService {
       throw err;
     }
 
-    return (response.results ?? []).map((item) => ({
-      id: item.id,
-      title: item.title,
-      image: item.image,
-      readyInMinutes: item.readyInMinutes,
-    }));
+    const results = (response.results ?? []).map(
+      (item): RecipeSearchResult => ({
+        recipeSource: 'spoonacular',
+        externalId: String(item.id),
+        title: item.title,
+        image: item.image,
+        readyInMinutes: item.readyInMinutes,
+      })
+    );
+
+    const total = response.totalResults ?? offset + results.length;
+
+    return { results, total, offset, limit };
   }
 
-  async fetchAndCacheRecipe(spoonacularId: number): Promise<CachedRecipe> {
-    const cached = await this.recipeService.getCachedRecipeBySpoonacularId(spoonacularId);
+  async fetchAndCacheRecipe(key: RecipeExternalKey): Promise<CachedRecipe> {
+    const spoonacularId = Number(key.externalId);
+    if (!Number.isFinite(spoonacularId) || spoonacularId <= 0) {
+      throw new Error('Invalid Spoonacular recipe id.');
+    }
+
+    const cached = await this.recipeService.getCachedRecipeByExternalKey('spoonacular', key.externalId);
     if (cached) {
       return cached;
     }
+
     const detail = await this.fetchRecipeDetail(spoonacularId);
     return this.recipeService.upsertCachedRecipe(detail);
   }
 
-  private async fetchRecipeDetail(spoonacularId: number): Promise<Omit<CachedRecipe, 'id'>> {
+  private async fetchRecipeDetail(spoonacularId: number): Promise<Omit<CachedRecipe, 'id' | 'cachedAt'>> {
     if (!SPOONACULAR_API_KEY) {
       throw new Error('Spoonacular API key is not configured.');
     }
@@ -137,6 +158,8 @@ export class SpoonacularService {
           : ['See recipe source for instructions.'];
 
     return {
+      recipeSource: 'spoonacular',
+      externalId: String(detail.id),
       spoonacularId: detail.id,
       title: detail.title,
       imageUrl: detail.image,
@@ -145,7 +168,6 @@ export class SpoonacularService {
       ingredients,
       instructions,
       sourceUrl: detail.sourceUrl,
-      cachedAt: new Date().toISOString(),
     };
   }
 }

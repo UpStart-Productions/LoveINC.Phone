@@ -73,7 +73,7 @@
         </div>
         <div
           class="content-card-tool-body"
-          [class.content-card-tool-body--with-aside-rating]="hasDetailRating && hasAsideAvatar"
+          [class.content-card-tool-body--with-aside-rating]="hasAsideDetailRating && hasAsideAvatar"
         >
           @if (subtitle) {
             <p class="app-body-secondary">{{ subtitle }}</p>
@@ -243,7 +243,7 @@
           *ngIf="showAside"
           [class.content-card-aside--extra-only]="!hasAsideAvatar && !!asideBadge"
           [class.content-card-aside--with-date]="showAsideDate"
-          [class.content-card-aside-with-rating]="hasDetailRating && hasAsideAvatar"
+          [class.content-card-aside-with-rating]="hasAsideDetailRating && hasAsideAvatar"
         >
           @if (showAsideDate) {
             <span class="app-body-secondary-xs content-card-aside-date">
@@ -271,16 +271,21 @@
 <ng-template #detailContent>
   @if (detailSegments?.length || detail) {
     <div class="content-card-detail" [class.content-card-detail--single-line]="detailSingleLine">
-      <p>
-        @if (detailSegments?.length) {
-          @for (seg of detailSegments; track $index) {
-            <span
-              [class.content-card-tone-positive]="seg.tone === 'positive'"
-              [class.content-card-tone-negative]="seg.tone === 'negative'"
-            >{{ seg.text }}</span>
+      <p [class.content-card-detail__inline-row]="hasInlineDetailRating">
+        <span class="content-card-detail__text">
+          @if (detailSegments?.length) {
+            @for (seg of detailSegments; track $index) {
+              <span
+                [class.content-card-tone-positive]="seg.tone === 'positive'"
+                [class.content-card-tone-negative]="seg.tone === 'negative'"
+              >{{ seg.text }}</span>
+            }
+          } @else {
+            {{ detail }}
           }
-        } @else {
-          {{ detail }}
+        </span>
+        @if (hasInlineDetailRating) {
+          <app-meal-star-rating [rating]="mealStarRating!" [compact]="true" />
         }
       </p>
     </div>
@@ -288,7 +293,7 @@
 </ng-template>
 
 <ng-template #asideRating>
-  @if (hasDetailRating) {
+  @if (hasAsideDetailRating) {
     <app-meal-star-rating [rating]="mealStarRating!" [compact]="true" />
   }
 </ng-template>

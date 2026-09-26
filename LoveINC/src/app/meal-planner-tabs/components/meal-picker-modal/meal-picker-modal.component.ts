@@ -8,10 +8,13 @@ import {
   IonButtons,
   IonButton,
   IonContent,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
   IonSearchbar,
   IonIcon,
   ModalController,
 } from '@ionic/angular/standalone';
+import type { InfiniteScrollCustomEvent } from '@ionic/angular';
 import { LucideAngularModule } from 'lucide-angular';
 import type { CachedRecipe } from '@upstart-productions/meal-planner';
 import {
@@ -22,10 +25,17 @@ import {
 import { ContentCardListComponent } from '../../../components/content-card-list/content-card-list.component';
 import type { ContentCardListItem } from '../../../components/content-card-list/content-card-list.model';
 import { MEAL_SEARCH_CATEGORIES } from '../../constants/meal-search-categories';
-import { SpoonacularService } from '../../services/spoonacular.service';
+import { MEAL_RECIPE_ATTRIBUTION } from '../../config/meal-recipe-provider.config';
+import { RecipeProviderService } from '../../services/recipe-provider.service';
+import {
+  decodeRecipeExternalKey,
+  RECIPE_SEARCH_PAGE_SIZE,
+  type RecipeExternalKey,
+  type RecipeSearchResult,
+} from '../../services/recipe-provider.types';
 import {
   mapCachedRecipeToListItem,
-  mapSpoonacularResultToListItem,
+  mapRecipeSearchResultToListItem,
 } from '../../utils/meal-planner-list.mapper';
 import { RecipeDetailModalComponent } from '../recipe-detail-modal/recipe-detail-modal.component';
 import { SwipeUpToCloseDirective } from '../../../directives/swipe-up-to-close.directive';
@@ -44,6 +54,8 @@ import { SwipeUpToCloseDirective } from '../../../directives/swipe-up-to-close.d
     IonButtons,
     IonButton,
     IonContent,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
     IonSearchbar,
     IonIcon,
     ContentCardListComponent,
@@ -66,19 +78,23 @@ export class MealPickerModalComponent implements OnInit {
   categoriesPanelOpen = false;
   categoriesAnimCollapsed = false;
   searching = false;
+  loadingMore = false;
   loadingPick = false;
+  searchTotal = 0;
   showRecommendationsFirst = false;
   errorMessage = '';
+  readonly recipeAttribution = MEAL_RECIPE_ATTRIBUTION;
 
   searchListItems: ContentCardListItem[] = [];
   favoriteListItems: ContentCardListItem[] = [];
   recommendationListItems: ContentCardListItem[] = [];
 
   private maxReadyMinutes = 45;
+  private searchOffset = 0;
 
   constructor(
     private modalCtrl: ModalController,
-    private spoonacular: SpoonacularService,
+    private recipeProvider: RecipeProviderService,
     private recipeService: MealPlannerRecipeService,
     private profileService: MealPlannerProfileService,
     private planService: MealPlannerPlanService
@@ -94,6 +110,10 @@ export class MealPickerModalComponent implements OnInit {
       this.favoriteListItems.length > 0 ||
       (this.showRecommendationsFirst && this.recommendationListItems.length > 0)
     );
+  }
+
+  get searchHasMore(): boolean {
+    return this.searchListItems.length < this.searchTotal;
   }
 
   get collapsedTabCategory() {
@@ -220,7 +240,10 @@ export class MealPickerModalComponent implements OnInit {
   async onListItemClick(item: ContentCardListItem) {
     const fromSearch = this.searchListItems.some((row) => row.id === item.id);
     if (fromSearch) {
-      await this.viewSearchResult(Number(item.id));
+      const key = decodeRecipeExternalKey(String(item.id));
+      if (key) {
+        await this.viewSearchResult(key);
+      }
       return;
     }
     const cachedId = Number(item.id);
@@ -229,46 +252,107 @@ export class MealPickerModalComponent implements OnInit {
     }
   }
 
+  async onSearchInfinite(event: InfiniteScrollCustomEvent) {
+    await this.loadMoreSearch();
+    await event.target.complete();
+  }
+
   private async runSearch() {
     const params = this.buildSearchParams();
     if (!params) {
       this.searchListItems = [];
+      this.searchTotal = 0;
+      this.searchOffset = 0;
       this.errorMessage = '';
       return;
     }
 
     this.searching = true;
+    this.searchOffset = 0;
     this.errorMessage = '';
     try {
-      const results = await this.spoonacular.searchRecipes({
+      const page = await this.recipeProvider.searchRecipes({
         ...params,
         maxReadyTime: this.maxReadyMinutes,
+        limit: RECIPE_SEARCH_PAGE_SIZE,
+        offset: 0,
       });
-      const spoonacularIds = results.map((result) => result.id);
-      const [ratings, cachedReadyMinutes] = await Promise.all([
-        this.planService.getLatestStarRatingsForRecipes({ spoonacularIds }),
-        this.recipeService.getReadyMinutesBySpoonacularIds(spoonacularIds),
-      ]);
-      this.searchListItems = results.map((result) =>
-        mapSpoonacularResultToListItem(
-          {
-            ...result,
-            readyInMinutes: result.readyInMinutes ?? cachedReadyMinutes.get(result.id),
-          },
-          {
-            starRating: ratings.bySpoonacularId.get(result.id),
-          }
-        )
-      );
+      this.searchTotal = page.total;
+      this.searchOffset = page.results.length;
+      this.searchListItems = await this.mapSearchResults(page.results);
     } catch (err) {
       this.errorMessage =
         err instanceof Error && err.message.trim()
           ? err.message
-          : 'Could not search recipes. Check your connection and API key.';
+          : 'Could not search recipes. Check your connection and try again.';
       this.searchListItems = [];
+      this.searchTotal = 0;
+      this.searchOffset = 0;
     } finally {
       this.searching = false;
     }
+  }
+
+  private async loadMoreSearch() {
+    if (this.loadingMore || this.searching || !this.searchHasMore) {
+      return;
+    }
+
+    const params = this.buildSearchParams();
+    if (!params) {
+      return;
+    }
+
+    this.loadingMore = true;
+    this.errorMessage = '';
+    try {
+      const page = await this.recipeProvider.searchRecipes({
+        ...params,
+        maxReadyTime: this.maxReadyMinutes,
+        limit: RECIPE_SEARCH_PAGE_SIZE,
+        offset: this.searchOffset,
+      });
+      this.searchTotal = page.total;
+      this.searchOffset += page.results.length;
+      const moreItems = await this.mapSearchResults(page.results);
+      this.searchListItems = [...this.searchListItems, ...moreItems];
+    } catch (err) {
+      this.errorMessage =
+        err instanceof Error && err.message.trim()
+          ? err.message
+          : 'Could not load more recipes. Try again.';
+    } finally {
+      this.loadingMore = false;
+    }
+  }
+
+  private async mapSearchResults(
+    results: RecipeSearchResult[]
+  ): Promise<ContentCardListItem[]> {
+    const recipeKeys = results.map((result) => ({
+      recipeSource: result.recipeSource,
+      externalId: result.externalId,
+    }));
+    const [ratings, cachedReadyMinutes] = await Promise.all([
+      this.planService.getLatestStarRatingsForRecipes({ recipeKeys }),
+      this.recipeService.getReadyMinutesByRecipeKeys(recipeKeys),
+    ]);
+
+    return results.map((result) => {
+      const recipeKey = this.recipeService.recipeKeyToken({
+        recipeSource: result.recipeSource,
+        externalId: result.externalId,
+      });
+      return mapRecipeSearchResultToListItem(
+        {
+          ...result,
+          readyInMinutes: result.readyInMinutes ?? cachedReadyMinutes.get(recipeKey),
+        },
+        {
+          starRating: ratings.byRecipeKey.get(recipeKey),
+        }
+      );
+    });
   }
 
   private buildSearchParams(): { query?: string; type?: string; diet?: string } | null {
@@ -289,11 +373,11 @@ export class MealPickerModalComponent implements OnInit {
     };
   }
 
-  private async viewSearchResult(spoonacularId: number) {
+  private async viewSearchResult(key: RecipeExternalKey) {
     this.loadingPick = true;
     this.errorMessage = '';
     try {
-      const cached = await this.spoonacular.fetchAndCacheRecipe(spoonacularId);
+      const cached = await this.recipeProvider.fetchAndCacheRecipe(key);
       if (!cached.id) {
         throw new Error('Failed to cache recipe');
       }

@@ -79,6 +79,8 @@
         <span class="recipe-detail-meta-badge__label">
           @if (recipe.readyInMinutes) {
             {{ recipe.readyInMinutes }} min ·
+          } @else if (recipe.caloriesPerServing) {
+            {{ recipe.caloriesPerServing }} cal ·
           }
           Serves {{ displayServings }}
         </span>
@@ -127,7 +129,7 @@
       }
     </ol>
 
-    <p class="app-caption spoonacular-attribution">Recipe data from Spoonacular</p>
+    <p class="app-caption spoonacular-attribution">{{ recipeAttribution }}</p>
   </div>
 </ion-content>
 
@@ -185,6 +187,12 @@
         <i-lucide slot="start" name="soup" [size]="24" aria-hidden="true"></i-lucide>
         <ion-label>I made this</ion-label>
       </ion-item>
+      @if (displayNutrition.length) {
+        <ion-item button detail="false" lines="none" (click)="selectNutritionAction($event, actionsPopover)">
+          <i-lucide slot="start" name="carrot" [size]="24" aria-hidden="true"></i-lucide>
+          <ion-label>Nutrition</ion-label>
+        </ion-item>
+      }
     </ion-list>
   </ng-template>
 </ion-popover>
