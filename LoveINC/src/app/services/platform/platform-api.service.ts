@@ -9,6 +9,7 @@ import type {
   PlatformCustomer,
   PlatformDonation,
   PlatformEvent,
+  PlatformGrovSeed,
   PlatformHomeFeedItem,
   PlatformImpactStory,
   PlatformJobListing,
@@ -35,6 +36,7 @@ export type {
   PlatformCta,
   PlatformDonation,
   PlatformEvent,
+  PlatformGrovSeed,
   PlatformHomeFeedItem,
   PlatformImpactStory,
   PlatformJobListing,
@@ -185,6 +187,13 @@ export class PlatformApiService {
     return this.get<{ collections: PlatformServiceCollection[] }>('/service-collections').pipe(
       map((res) => res?.collections ?? []),
       catchError(() => of([])),
+    );
+  }
+
+  /** GET /public/.../grov-seeds — enabled GrovPod slugs for this tenant. */
+  getGrovSeeds(): Observable<PlatformGrovSeed[] | null> {
+    return this.get<{ seeds: PlatformGrovSeed[] }>('/grov-seeds').pipe(
+      map((res) => (res == null ? null : (res.seeds ?? []))),
     );
   }
 

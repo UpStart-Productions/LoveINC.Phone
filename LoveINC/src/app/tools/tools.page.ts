@@ -10,8 +10,10 @@ import {
 } from '@ionic/angular/standalone';
 import { ContentCardListComponent } from '../components/content-card-list/content-card-list.component';
 import type { ContentCardListItem } from '../components/content-card-list/content-card-list.model';
+import { forkJoin } from 'rxjs';
 import { ContentPlanService } from '../content-plan/content-plan.service';
 import { mapContentPlanThemeToLearnListItem } from '../content-plan/content-plan.mapper';
+import { GrovSeedsService } from '../services/grov-seeds.service';
 import { PlatformApiService } from '../services/platform';
 import { REGISTERED_TOOL_CARDS, type ToolCard } from '../registered-tools';
 import { resolveAvatarBackgroundColor } from '../shared/utils/avatar-palette.util';
@@ -32,6 +34,7 @@ import { resolveAvatarBackgroundColor } from '../shared/utils/avatar-palette.uti
 })
 export class ToolsPage implements OnInit {
   private readonly contentPlanService = inject(ContentPlanService);
+  private readonly grovSeeds = inject(GrovSeedsService);
   private readonly platformApi = inject(PlatformApiService);
 
   listItems: ContentCardListItem[] = [];
@@ -71,20 +74,31 @@ export class ToolsPage implements OnInit {
   }
 
   private loadItems(refresh = false): void {
-    this.listItems = [this.classesListItem, this.compassionListItem, ...this.staticToolCards.map((card) => this.mapToolCard(card))];
-    this.contentPlanService.getThemes(refresh).subscribe({
-      next: (themes) => {
+    const staticRows = [this.classesListItem, this.compassionListItem];
+    this.listItems = [
+      ...staticRows,
+      ...this.staticToolCards.map((card) => this.mapToolCard(card)),
+    ];
+
+    forkJoin({
+      themes: this.contentPlanService.getThemes(refresh),
+      toolCards: this.grovSeeds.filterToolCards(this.staticToolCards, refresh),
+    }).subscribe({
+      next: ({ themes, toolCards }) => {
         const themeItems = themes.map((theme) =>
           mapContentPlanThemeToLearnListItem(theme, (path) =>
             this.platformApi.resolveUploadUrl(path),
           ),
         );
-        const toolItems = this.staticToolCards.map((card) => this.mapToolCard(card));
-        this.listItems = [this.classesListItem, this.compassionListItem, ...themeItems, ...toolItems];
+        const toolItems = toolCards.map((card) => this.mapToolCard(card));
+        this.listItems = [...staticRows, ...themeItems, ...toolItems];
       },
       error: (err) => {
-        console.error('Error loading Learn themes:', err);
-        this.listItems = [this.classesListItem, this.compassionListItem, ...this.staticToolCards.map((card) => this.mapToolCard(card))];
+        console.error('Error loading Learn tools:', err);
+        this.listItems = [
+          ...staticRows,
+          ...this.staticToolCards.map((card) => this.mapToolCard(card)),
+        ];
       },
     });
   }

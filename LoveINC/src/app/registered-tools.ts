@@ -247,6 +247,31 @@ function buildNavigableGrovPodSlugs(): Set<string> {
 
 const NAVIGABLE_GROV_POD_SLUGS = buildNavigableGrovPodSlugs();
 
+/** Tab route segment for a registered tool card (e.g. `/tabs/meal-planner` → `meal-planner`). */
+export function toolSlugFromTabRoute(route: string | undefined): string | null {
+  const match = route?.trim().match(/^\/tabs\/([^/]+)/);
+  return match?.[1] ?? null;
+}
+
+/** All slugs the app can navigate to for registered GrovPods. */
+export function getAllRegisteredToolSlugs(): string[] {
+  return [...NAVIGABLE_GROV_POD_SLUGS];
+}
+
+/** Keep only tool cards whose slug is enabled for this tenant. */
+export function filterToolCardsByEnabledSlugs(
+  cards: ToolCard[],
+  enabledSlugs: ReadonlySet<string>,
+): ToolCard[] {
+  return cards.filter((card) => {
+    const slug = toolSlugFromTabRoute(card.route);
+    if (!slug) {
+      return true;
+    }
+    return enabledSlugs.has(slug);
+  });
+}
+
 /** Map a GrovPod slug from the platform API to a tab route, or null when unknown. */
 export function resolveRegisteredToolTabRoute(slug: string | undefined): string | null {
   const normalized = slug?.trim();

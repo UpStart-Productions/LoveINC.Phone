@@ -4,6 +4,7 @@ export type {
   PlatformClass,
   PlatformCta,
   PlatformEvent,
+  PlatformGrovSeed,
   PlatformHomeFeedItem,
   PlatformImpactStory,
   PlatformJobListing,

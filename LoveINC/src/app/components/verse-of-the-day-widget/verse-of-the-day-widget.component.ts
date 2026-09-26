@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { VerseOfTheDayService, VerseOfTheDay } from '@upstart-productions/verse-of-the-day';
+import { GrovSeedsService } from '../../services/grov-seeds.service';
 import { ContentCardComponent } from '../content-card/content-card.component';
+
+const VERSE_OF_THE_DAY_SEED_SLUG = 'verse-of-the-day';
 
 @Component({
   selector: 'app-verse-of-the-day-widget',
@@ -10,19 +14,47 @@ import { ContentCardComponent } from '../content-card/content-card.component';
   standalone: true,
   imports: [CommonModule, ContentCardComponent],
 })
-export class VerseOfTheDayWidgetComponent implements OnInit {
+export class VerseOfTheDayWidgetComponent implements OnInit, OnDestroy {
   verse: VerseOfTheDay | null = null;
   loading = true;
+  seedEnabled = false;
+  private seedSub?: Subscription;
 
-  constructor(private verseOfTheDayService: VerseOfTheDayService) {}
+  constructor(
+    private verseOfTheDayService: VerseOfTheDayService,
+    private grovSeeds: GrovSeedsService,
+  ) {}
 
   ngOnInit() {
-    this.loadVerse();
+    this.syncSeedEnabled(false);
+  }
+
+  ngOnDestroy(): void {
+    this.seedSub?.unsubscribe();
   }
 
   /** Re-fetch verse (e.g. pull-to-refresh on Home). */
   refresh(): void {
-    this.loadVerse();
+    this.syncSeedEnabled(true);
+  }
+
+  get showWidget(): boolean {
+    return this.seedEnabled;
+  }
+
+  private syncSeedEnabled(refresh: boolean): void {
+    this.seedSub?.unsubscribe();
+    this.seedSub = this.grovSeeds.isSlugEnabled(VERSE_OF_THE_DAY_SEED_SLUG, refresh).subscribe({
+      next: (enabled) => {
+        this.seedEnabled = enabled;
+        if (enabled) {
+          this.loadVerse();
+          return;
+        }
+        this.loading = false;
+        this.verse = null;
+      },
+    });
   }
 
   private loadVerse(): void {

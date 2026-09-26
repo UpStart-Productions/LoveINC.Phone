@@ -43,6 +43,14 @@ export interface PlatformCustomer {
   name: string;
 }
 
+/** GET /public/.../grov-seeds — tenant-enabled GrovPod slugs for the mobile app. */
+export interface PlatformGrovSeed {
+  slug: string;
+  name: string;
+  description?: string;
+  lucideIcon?: string;
+}
+
 /** GET /public/.../team — affiliate staff (admin Team), not app users. */
 export interface PlatformTeamMember {
   id: string;
