@@ -28,8 +28,9 @@ export interface WeeklyBarData {
   imports: [CommonModule],
 })
 export class WeeklyBarChartComponent implements OnChanges, AfterViewInit {
-  /** Array of 7 items, one per day */
+  /** One bar per day, week, or month depending on the parent screen */
   @Input() data: WeeklyBarData[] = [];
+  @Input() unitNoun = 'times';
 
   displayValues: number[] = [];
 
@@ -91,6 +92,7 @@ export class WeeklyBarChartComponent implements OnChanges, AfterViewInit {
         label: item.label,
         completed,
         scheduled,
+        unitNoun: this.unitNoun,
       },
       event: this.getBarAnchorEvent(event),
       reference: 'trigger',

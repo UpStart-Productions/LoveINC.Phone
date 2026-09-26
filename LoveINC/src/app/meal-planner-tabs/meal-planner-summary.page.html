@@ -1,35 +1,76 @@
-<ion-header class="ion-no-border" [translucent]="false">
-  <ion-toolbar>
+<ion-header [translucent]="false">
+  <ion-toolbar class="custom-toolbar">
     <ion-buttons slot="start">
-      <app-back-button></app-back-button>
+      <app-back-button [onLightBackground]="true"></app-back-button>
     </ion-buttons>
-    <ion-title>Weekly Summary</ion-title>
+    <ion-title>Summary</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        fill="clear"
+        aria-label="Share summary"
+        [disabled]="loading || sharing"
+        (click)="shareStats()"
+      >
+        <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+      </ion-button>
+      <ion-button
+        fill="clear"
+        aria-label="Export summary PDF"
+        [disabled]="loading || exporting"
+        (click)="exportPdf()"
+      >
+        <ion-icon slot="icon-only" name="document-text-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
-  <app-meal-week-scroller
-    [initialWeekStart]="selectedWeekStart"
-    [earliestWeekStart]="earliestWeekStart"
-    (weekSelectedEvent)="onWeekSelected($event)"
-  ></app-meal-week-scroller>
-</ion-header>
 
-<ion-content class="app-card-page" [fullscreen]="true">
-  @if (loading) {
-    <div class="page-shell"></div>
-  } @else if (!summary?.mealsPlanned) {
-    <div class="empty-state ion-padding">
-      <h2>No summary yet</h2>
-      <p class="app-body-secondary">Plan meals for {{ weekLabel }} to see your summary.</p>
+  <div class="statistics-fixed">
+    <div class="total-done">
+      <h2>{{ mealsCookedLabel }}</h2>
+      <span class="total-percent">{{ totalPercent }}%</span>
     </div>
-  } @else {
-    <div class="summary-stats ion-padding">
-      <p class="app-body-secondary">
-        {{ summary!.mealsPlanned }} meal{{ summary!.mealsPlanned === 1 ? '' : 's' }} planned
-      </p>
-      @if (summary!.averageReadyMinutes) {
-        <p class="app-body-secondary">Average recipe time: {{ summary!.averageReadyMinutes }} min</p>
+
+    <div class="statistics-chart">
+      <app-weekly-bar-chart [data]="weeklyData" unitNoun="meals"></app-weekly-bar-chart>
+    </div>
+
+    <div class="week-nav" [class.year-view]="chartView === 'year'">
+      @if (chartView === 'week') {
+        <ion-button fill="clear" size="small" aria-label="Previous weeks" (click)="prevWeek()">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+        </ion-button>
+      }
+      <span
+        class="week-selector"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="chartView === 'week' ? 'Switch to year view' : 'Switch to week view'"
+        (click)="toggleChartView()"
+        (keydown.enter)="toggleChartView()"
+        (keydown.space)="$event.preventDefault(); toggleChartView()"
+      >{{ periodLabel }}</span>
+      @if (chartView === 'week') {
+        <ion-button fill="clear" size="small" aria-label="Next weeks" (click)="nextWeek()">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </ion-button>
       }
     </div>
+  </div>
+</ion-header>
 
-    <app-content-card-list [items]="listItems" [flushTop]="true" />
+<ion-content [fullscreen]="true" class="app-card-page meal-summary-content">
+  @if (loading) {
+    <div class="page-shell"></div>
+  } @else if (!cookedListItems.length) {
+    <p class="meal-summary-empty app-body-secondary">No meals cooked for this period yet.</p>
+  } @else {
+    @if (recapNarrative) {
+      <p class="meal-summary-narrative">{{ recapNarrative }}</p>
+    }
+    <app-content-card-list
+      [items]="cookedListItems"
+      [flushTop]="true"
+      [compactCategoryLabel]="true"
+    />
   }
 </ion-content>

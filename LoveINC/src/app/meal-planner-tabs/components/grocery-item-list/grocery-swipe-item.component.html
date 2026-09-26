@@ -1,0 +1,34 @@
+<div
+  #wrap
+  class="grocery-swipe-item"
+  [class.grocery-swipe-item--collapsing]="collapsing"
+>
+  <div class="grocery-swipe-item__delete" aria-hidden="true">
+    <ion-icon
+      class="grocery-swipe-item__delete-icon"
+      name="trash-outline"
+      [style.transform]="'scale(' + deleteIconScale + ')'"
+    ></ion-icon>
+  </div>
+
+  <div
+    #surface
+    class="grocery-swipe-item__surface"
+    [class.grocery-swipe-item__surface--animating]="surfaceAnimating"
+    [class.grocery-swipe-item__surface--border]="showBorder"
+    [style.transform]="'translate3d(' + swipeX + 'px, 0, 0)'"
+  >
+    <button
+      type="button"
+      class="grocery-swipe-item__check app-unstyled-button"
+      [attr.aria-label]="'Remove ' + item.ingredientName"
+      (click)="onCheckTap($event)"
+    >
+      <ion-icon
+        [name]="checked ? 'checkmark-circle' : 'checkmark-circle-outline'"
+        [color]="checked ? 'success' : 'medium'"
+      ></ion-icon>
+    </button>
+    <span class="app-list-row-title">{{ item.ingredientName }}</span>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+.week-settings-sheet-toolbar .close-button ion-icon {
+  --color: var(--ion-color-dark) !important;
+  color: var(--ion-color-dark) !important;
+  font-size: 1.5rem;
+}
+
+.week-settings-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.week-settings-field {
+  flex: 1;
+  min-width: 0;
+  --background: transparent;
+}
+
+.week-settings-notes-field {
+  --background: transparent;
+  margin-top: 0.25rem;
+}

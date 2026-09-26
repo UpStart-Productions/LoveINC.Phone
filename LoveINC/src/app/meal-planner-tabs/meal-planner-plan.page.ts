@@ -89,24 +89,22 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
   async openSettings() {
     const modal = await this.modalCtrl.create({
       component: WeekSettingsModalComponent,
+      cssClass: 'week-settings-sheet',
+      breakpoints: [0, 0.58],
+      initialBreakpoint: 0.58,
+      backdropDismiss: true,
       componentProps: {
+        weekStartDate: this.selectedWeekStart,
         weekServingDelta: this.plan?.weekServingDelta ?? 0,
         weekNote: this.plan?.weekNote ?? '',
+        mealsPerWeek: this.plan?.mealsPerWeek ?? MEALS_PER_WEEK,
       },
     });
     await modal.present();
-    const { data } = await modal.onDidDismiss();
-    if (!data) {
-      return;
-    }
-    await this.profileService.saveProfile(data.profile);
+    await modal.onDidDismiss();
     this.needsProfile = false;
-    await this.planService.updateWeekAdjustments(
-      this.selectedWeekStart,
-      data.weekServingDelta,
-      data.weekNote
-    );
     await this.loadWeek();
+    this.stateService.notifyWeeklyPlanChanged(this.selectedWeekStart);
   }
 
   async onSetupProfile() {
@@ -130,7 +128,6 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
     const modal = await this.modalCtrl.create({
       component: MealPickerModalComponent,
       componentProps: {
-        slotLabel: `Meal ${slotIndex + 1}`,
         weekStartDate: this.selectedWeekStart,
         slotIndex,
       },
@@ -139,6 +136,7 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
     const { data } = await modal.onDidDismiss<{ cachedRecipeId?: number; weekChanged?: boolean }>();
     if (data?.weekChanged) {
       await this.loadWeek();
+      this.stateService.notifyWeeklyPlanChanged(this.selectedWeekStart);
     }
     if (!data?.cachedRecipeId) {
       return;
@@ -149,6 +147,7 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
       data.cachedRecipeId
     );
     this.syncSlots();
+    this.stateService.notifyWeeklyPlanChanged(this.selectedWeekStart);
   }
 
   async viewRecipe(meal: PlanMeal, slotIndex: number) {
@@ -169,6 +168,7 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
     const { data } = await modal.onDidDismiss<{ weekChanged?: boolean }>();
     if (data?.weekChanged) {
       await this.loadWeek();
+      this.stateService.notifyWeeklyPlanChanged(this.selectedWeekStart);
     }
   }
 
@@ -187,7 +187,8 @@ export class MealPlannerPlanPage implements OnInit, OnDestroy {
   }
 
   private syncSlots() {
-    this.slots = Array.from({ length: MEALS_PER_WEEK }, (_, slotIndex) => {
+    const mealsPerWeek = this.plan?.mealsPerWeek ?? MEALS_PER_WEEK;
+    this.slots = Array.from({ length: mealsPerWeek }, (_, slotIndex) => {
       return this.plan?.meals.find((meal) => meal.slotIndex === slotIndex) ?? null;
     });
     const weekServingDelta = this.plan?.weekServingDelta ?? 0;

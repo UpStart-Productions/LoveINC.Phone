@@ -1,0 +1,7 @@
+<span class="meal-star-rating" [attr.aria-label]="'Rating ' + formattedRating + ' out of 5'">
+  <span class="meal-star-rating__star" aria-hidden="true">
+    <ion-icon name="star-outline" class="meal-star-rating__icon-outline"></ion-icon>
+    <ion-icon name="star" class="meal-star-rating__icon-fill" [style.color]="starColor"></ion-icon>
+  </span>
+  <span class="meal-star-rating__value">{{ formattedRating }}</span>
+</span>

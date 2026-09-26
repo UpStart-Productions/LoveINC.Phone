@@ -100,6 +100,7 @@ import {
   // Content Icons
   calendarOutline,
   calendar,
+  star,
   starOutline,
   peopleOutline,
   timeOutline,
@@ -540,7 +541,8 @@ export class AppComponent implements OnInit, OnDestroy {
       calendar,
       heart,
       restaurant,
-      starOutline,
+      star,
+  starOutline,
       peopleOutline,
       timeOutline,
       linkOutline,

@@ -7,7 +7,11 @@ import type {
   WeeklyPlan,
   WeeklySummary,
 } from '../types/meal-planner.types';
-import type { MealRecapComplexity } from '../constants/meal-recap.constants';
+import {
+  computeMealStarRating,
+  type MealRecapComplexity,
+  type MealRecapThumb,
+} from '../constants/meal-recap.constants';
 import { MEALS_PER_WEEK } from '../constants/cook.constants';
 import { getCurrentWeekStart } from '../utils/week-date.util';
 import {
@@ -20,9 +24,7 @@ import {
   GROCERY_AISLE_ORDER,
   normalizeGroceryAisle,
 } from '../utils/grocery-aisle.util';
-import { resolveIngredientImageUrl } from '../utils/ingredient-image.util';
 import { MealPlannerDatabaseService } from './meal-planner-database.service';
-import { MealPlannerIngredientImageService } from './meal-planner-ingredient-image.service';
 import { MealPlannerProfileService } from './meal-planner-profile.service';
 import { MealPlannerRecipeService } from './meal-planner-recipe.service';
 
@@ -34,7 +36,6 @@ export class MealPlannerPlanService {
 
   constructor(
     private dbService: MealPlannerDatabaseService,
-    private ingredientImageService: MealPlannerIngredientImageService,
     private profileService: MealPlannerProfileService,
     private recipeService: MealPlannerRecipeService
   ) {}
@@ -46,6 +47,28 @@ export class MealPlannerPlanService {
     );
     const row = result.values?.[0];
     return row ? String(row['week_start_date']) : null;
+  }
+
+  async getWeeklyPlansBetweenWeekStarts(
+    fromWeekStart: string,
+    toWeekStart: string
+  ): Promise<WeeklyPlan[]> {
+    const db = await this.dbService.getDbConnection();
+    const planResult = await db.query(
+      `SELECT week_start_date FROM weekly_plans
+       WHERE week_start_date >= ? AND week_start_date <= ?
+       ORDER BY week_start_date ASC`,
+      [fromWeekStart, toWeekStart]
+    );
+    const weekStarts = (planResult.values ?? []).map((row) => String(row['week_start_date']));
+    const plans: WeeklyPlan[] = [];
+    for (const weekStart of weekStarts) {
+      const plan = await this.getWeeklyPlan(weekStart);
+      if (plan) {
+        plans.push(plan);
+      }
+    }
+    return plans;
   }
 
   async getWeeklyPlan(weekStartDate: string): Promise<WeeklyPlan | null> {
@@ -65,6 +88,18 @@ export class MealPlannerPlanService {
     const meals: PlanMeal[] = [];
     for (const mealRow of mealsResult.values ?? []) {
       const recipe = await this.recipeService.getCachedRecipeById(Number(mealRow['cached_recipe_id']));
+      const reactionEmoji = mealRow['reaction_emoji'] ? String(mealRow['reaction_emoji']) : undefined;
+      const effortRating = mealRow['recap_effort']
+        ? (String(mealRow['recap_effort']) as MealRecapThumb)
+        : undefined;
+      const timeRating = mealRow['recap_time']
+        ? (String(mealRow['recap_time']) as MealRecapThumb)
+        : undefined;
+      const costRating = mealRow['recap_cost']
+        ? (String(mealRow['recap_cost']) as MealRecapThumb)
+        : undefined;
+      const storedStarRating =
+        mealRow['star_rating'] != null ? Number(mealRow['star_rating']) : undefined;
       meals.push({
         id: Number(mealRow['id']),
         weeklyPlanId: Number(mealRow['weekly_plan_id']),
@@ -75,20 +110,30 @@ export class MealPlannerPlanService {
         eventNote: mealRow['event_note'] ? String(mealRow['event_note']) : undefined,
         isCooked: Boolean(mealRow['is_cooked']),
         cookTimeBucket: mealRow['cook_time_bucket'] ? String(mealRow['cook_time_bucket']) : undefined,
-        reactionEmoji: mealRow['reaction_emoji'] ? String(mealRow['reaction_emoji']) : undefined,
+        reactionEmoji,
         actualCookMinutes:
           mealRow['actual_cook_minutes'] != null ? Number(mealRow['actual_cook_minutes']) : undefined,
         complexity: mealRow['complexity']
           ? (String(mealRow['complexity']) as MealRecapComplexity)
           : undefined,
+        effortRating,
+        timeRating,
+        costRating,
+        recapNotes: mealRow['recap_notes'] ? String(mealRow['recap_notes']) : undefined,
+        starRating:
+          storedStarRating ??
+          computeMealStarRating({ reactionEmoji, effortRating, timeRating, costRating }),
         cookedAt: mealRow['cooked_at'] ? String(mealRow['cooked_at']) : undefined,
       });
     }
+
+    const mealsPerWeek = Number(planRow['meals_per_week']) || MEALS_PER_WEEK;
 
     return {
       id: Number(planRow['id']),
       weekStartDate: String(planRow['week_start_date']),
       weekServingDelta: Number(planRow['week_serving_delta']),
+      mealsPerWeek,
       weekNote: planRow['week_note'] ? String(planRow['week_note']) : undefined,
       meals,
       createdAt: String(planRow['created_at']),
@@ -104,32 +149,48 @@ export class MealPlannerPlanService {
     const db = await this.dbService.getDbConnection();
     const now = new Date().toISOString();
     const insert = await db.run(
-      `INSERT INTO weekly_plans (week_start_date, week_serving_delta, week_note, created_at, updated_at)
-       VALUES (?, 0, NULL, ?, ?)`,
-      [weekStartDate, now, now]
+      `INSERT INTO weekly_plans (week_start_date, week_serving_delta, meals_per_week, week_note, created_at, updated_at)
+       VALUES (?, 0, ?, NULL, ?, ?)`,
+      [weekStartDate, MEALS_PER_WEEK, now, now]
     );
     return {
       id: insert.changes?.lastId,
       weekStartDate,
       weekServingDelta: 0,
+      mealsPerWeek: MEALS_PER_WEEK,
       meals: [],
       createdAt: now,
       updatedAt: now,
     };
   }
 
-  async updateWeekAdjustments(
+  async updateWeekSettings(
     weekStartDate: string,
-    weekServingDelta: number,
-    weekNote?: string
+    settings: {
+      weekServingDelta: number;
+      mealsPerWeek: number;
+      weekNote?: string;
+    }
   ): Promise<WeeklyPlan> {
     const plan = await this.ensureWeeklyPlan(weekStartDate);
     const db = await this.dbService.getDbConnection();
     const updatedAt = new Date().toISOString();
+    const mealsPerWeek = this.normalizeMealsPerWeek(settings.mealsPerWeek);
+
     await db.run(
-      'UPDATE weekly_plans SET week_serving_delta = ?, week_note = ?, updated_at = ? WHERE id = ?',
-      [weekServingDelta, weekNote ?? null, updatedAt, plan.id]
+      `UPDATE weekly_plans
+       SET week_serving_delta = ?, meals_per_week = ?, week_note = ?, updated_at = ?
+       WHERE id = ?`,
+      [settings.weekServingDelta, mealsPerWeek, settings.weekNote ?? null, updatedAt, plan.id]
     );
+
+    if (mealsPerWeek < plan.mealsPerWeek) {
+      await db.run('DELETE FROM plan_meals WHERE weekly_plan_id = ? AND slot_index >= ?', [
+        plan.id,
+        mealsPerWeek,
+      ]);
+    }
+
     const refreshed = await this.getWeeklyPlan(weekStartDate);
     if (refreshed) {
       await this.rebuildGroceryList(refreshed);
@@ -143,10 +204,10 @@ export class MealPlannerPlanService {
     slotIndex: number,
     cachedRecipeId: number
   ): Promise<WeeklyPlan> {
-    if (slotIndex < 0 || slotIndex >= MEALS_PER_WEEK) {
+    const plan = await this.ensureWeeklyPlan(weekStartDate);
+    if (slotIndex < 0 || slotIndex >= plan.mealsPerWeek) {
       throw new Error('Invalid meal slot');
     }
-    const plan = await this.ensureWeeklyPlan(weekStartDate);
     const db = await this.dbService.getDbConnection();
     const now = new Date().toISOString();
     const existingMeal = plan.meals.find((m) => m.slotIndex === slotIndex);
@@ -154,7 +215,9 @@ export class MealPlannerPlanService {
     if (existingMeal?.id) {
       await db.run(
         `UPDATE plan_meals SET cached_recipe_id = ?, is_cooked = 0, cook_time_bucket = NULL,
-         reaction_emoji = NULL, actual_cook_minutes = NULL, complexity = NULL, cooked_at = NULL WHERE id = ?`,
+         reaction_emoji = NULL, actual_cook_minutes = NULL, complexity = NULL,
+         recap_notes = NULL, recap_effort = NULL, recap_time = NULL, recap_cost = NULL,
+         star_rating = NULL, cooked_at = NULL WHERE id = ?`,
         [cachedRecipeId, existingMeal.id]
       );
     } else {
@@ -176,12 +239,9 @@ export class MealPlannerPlanService {
   }
 
   async clearMealForSlot(weekStartDate: string, slotIndex: number): Promise<WeeklyPlan> {
-    if (slotIndex < 0 || slotIndex >= MEALS_PER_WEEK) {
-      throw new Error('Invalid meal slot');
-    }
     const plan = await this.getWeeklyPlan(weekStartDate);
-    if (!plan?.id) {
-      throw new Error('Weekly plan not found');
+    if (!plan?.id || slotIndex < 0 || slotIndex >= plan.mealsPerWeek) {
+      throw new Error('Invalid meal slot');
     }
     const existingMeal = plan.meals.find((meal) => meal.slotIndex === slotIndex);
     if (!existingMeal?.id) {
@@ -206,23 +266,83 @@ export class MealPlannerPlanService {
     const mealResult = await db.query('SELECT cooked_at FROM plan_meals WHERE id = ?', [planMealId]);
     const existingCookedAt = mealResult.values?.[0]?.['cooked_at'];
     const cookedAt = existingCookedAt ? String(existingCookedAt) : new Date().toISOString();
+    const starRating = computeMealStarRating(recap);
 
     await db.run(
       `UPDATE plan_meals
        SET is_cooked = 1,
            reaction_emoji = ?,
-           actual_cook_minutes = ?,
-           complexity = ?,
+           actual_cook_minutes = NULL,
+           complexity = NULL,
+           recap_effort = ?,
+           recap_time = ?,
+           recap_cost = ?,
+           recap_notes = ?,
+           star_rating = ?,
            cooked_at = ?
        WHERE id = ?`,
       [
         recap.reactionEmoji ?? null,
-        recap.actualCookMinutes ?? null,
-        recap.complexity ?? null,
+        recap.effortRating ?? null,
+        recap.timeRating ?? null,
+        recap.costRating ?? null,
+        recap.notes?.trim() || null,
+        starRating ?? null,
         cookedAt,
         planMealId,
       ]
     );
+  }
+
+  async getLatestStarRatingsForRecipes(options: {
+    cachedRecipeIds?: readonly number[];
+    spoonacularIds?: readonly number[];
+  }): Promise<{ byCachedRecipeId: Map<number, number>; bySpoonacularId: Map<number, number> }> {
+    const byCachedRecipeId = new Map<number, number>();
+    const bySpoonacularId = new Map<number, number>();
+    const cachedRecipeIds = [...new Set((options.cachedRecipeIds ?? []).filter((id) => id > 0))];
+    const spoonacularIds = [...new Set((options.spoonacularIds ?? []).filter((id) => id > 0))];
+
+    if (!cachedRecipeIds.length && !spoonacularIds.length) {
+      return { byCachedRecipeId, bySpoonacularId };
+    }
+
+    const db = await this.dbService.getDbConnection();
+    const conditions: string[] = [];
+    const params: number[] = [];
+
+    if (cachedRecipeIds.length) {
+      conditions.push(`pm.cached_recipe_id IN (${cachedRecipeIds.map(() => '?').join(',')})`);
+      params.push(...cachedRecipeIds);
+    }
+    if (spoonacularIds.length) {
+      conditions.push(`cr.spoonacular_id IN (${spoonacularIds.map(() => '?').join(',')})`);
+      params.push(...spoonacularIds);
+    }
+
+    const result = await db.query(
+      `SELECT pm.cached_recipe_id, cr.spoonacular_id, pm.star_rating, pm.cooked_at
+       FROM plan_meals pm
+       JOIN cached_recipes cr ON cr.id = pm.cached_recipe_id
+       WHERE pm.star_rating IS NOT NULL
+       AND (${conditions.join(' OR ')})
+       ORDER BY pm.cooked_at DESC`,
+      params
+    );
+
+    for (const row of result.values ?? []) {
+      const cachedRecipeId = Number(row['cached_recipe_id']);
+      const spoonacularId = Number(row['spoonacular_id']);
+      const rating = Number(row['star_rating']);
+      if (!byCachedRecipeId.has(cachedRecipeId)) {
+        byCachedRecipeId.set(cachedRecipeId, rating);
+      }
+      if (!bySpoonacularId.has(spoonacularId)) {
+        bySpoonacularId.set(spoonacularId, rating);
+      }
+    }
+
+    return { byCachedRecipeId, bySpoonacularId };
   }
 
   async updateMealGuests(
@@ -305,16 +425,11 @@ export class MealPlannerPlanService {
       amountText: String(row['amount_text']),
       isChecked: Boolean(row['is_checked']),
       isManual: Boolean(row['is_manual']),
-      imageUrl: row['image_url'] ? String(row['image_url']) : undefined,
       sortOrder: Number(row['sort_order']),
     };
   }
 
-  async addGroceryItem(
-    weekStartDate: string,
-    ingredientName: string,
-    imageUrl?: string
-  ): Promise<GroceryItem> {
+  async addGroceryItem(weekStartDate: string, ingredientName: string): Promise<GroceryItem> {
     const trimmed = ingredientName.trim();
     if (!trimmed) {
       throw new Error('Item name is required');
@@ -329,7 +444,6 @@ export class MealPlannerPlanService {
     const aisle = normalizeGroceryAisle(undefined, trimmed);
     const displayName = this.titleCase(trimmed);
     const ingredientKey = this.buildGroceryIngredientKey(aisle, displayName);
-    const cachedImage = imageUrl ?? (await this.ingredientImageService.getCachedImage(trimmed));
 
     const existing = await db.query(
       'SELECT ingredient_name FROM grocery_items WHERE weekly_plan_id = ?',
@@ -351,8 +465,8 @@ export class MealPlannerPlanService {
     const insert = await db.run(
       `INSERT INTO grocery_items
        (weekly_plan_id, aisle, ingredient_name, amount_text, is_checked, sort_order, is_manual, image_url)
-       VALUES (?, ?, ?, '', 0, ?, 1, ?)`,
-      [plan.id, aisle, displayName, sortOrder, cachedImage ?? null]
+       VALUES (?, ?, ?, '', 0, ?, 1, NULL)`,
+      [plan.id, aisle, displayName, sortOrder]
     );
 
     await db.run(
@@ -360,11 +474,16 @@ export class MealPlannerPlanService {
       [plan.id, ingredientKey]
     );
 
-    if (cachedImage) {
-      await this.ingredientImageService.cacheImage(trimmed, cachedImage);
+    let itemId = insert.changes?.lastId;
+    if (!itemId) {
+      const fallback = await db.query(
+        `SELECT id FROM grocery_items
+         WHERE weekly_plan_id = ? AND ingredient_name = ? AND is_manual = 1
+         ORDER BY id DESC LIMIT 1`,
+        [plan.id, displayName]
+      );
+      itemId = Number(fallback.values?.[0]?.['id']);
     }
-
-    const itemId = insert.changes?.lastId;
     if (!itemId) {
       throw new Error('Failed to add grocery item');
     }
@@ -375,11 +494,6 @@ export class MealPlannerPlanService {
       throw new Error('Failed to load grocery item');
     }
     return this.mapGroceryItemRow(created);
-  }
-
-  async setGroceryItemImageUrl(itemId: number, imageUrl: string): Promise<void> {
-    const db = await this.dbService.getDbConnection();
-    await db.run('UPDATE grocery_items SET image_url = ? WHERE id = ?', [imageUrl, itemId]);
   }
 
   async removeGroceryItem(itemId: number): Promise<void> {
@@ -425,15 +539,6 @@ export class MealPlannerPlanService {
     const normalizedAisles = new Set<string>(GROCERY_AISLE_ORDER);
     if (items.some((item) => !normalizedAisles.has(item.aisle))) {
       return true;
-    }
-    if (items.some((item) => !item.imageUrl)) {
-      for (const meal of plan.meals) {
-        const recipe =
-          meal.recipe ?? (await this.recipeService.getCachedRecipeById(meal.cachedRecipeId));
-        if (recipe?.ingredients.some((ingredient) => resolveIngredientImageUrl(ingredient))) {
-          return true;
-        }
-      }
     }
     return false;
   }
@@ -509,13 +614,12 @@ export class MealPlannerPlanService {
     }
 
     const manualItemsResult = await db.query(
-      'SELECT ingredient_name, aisle, image_url FROM grocery_items WHERE weekly_plan_id = ? AND is_manual = 1',
+      'SELECT ingredient_name, aisle FROM grocery_items WHERE weekly_plan_id = ? AND is_manual = 1',
       [plan.id]
     );
     const savedManualItems = (manualItemsResult.values ?? []).map((row) => ({
       ingredientName: String(row['ingredient_name']),
       aisle: String(row['aisle']),
-      imageUrl: row['image_url'] ? String(row['image_url']) : undefined,
     }));
 
     const exclusions = new Set<string>();
@@ -529,10 +633,7 @@ export class MealPlannerPlanService {
 
     await db.run('DELETE FROM grocery_items WHERE weekly_plan_id = ?', [plan.id]);
 
-    const merged = new Map<
-      string,
-      { aisle: string; amounts: string[]; imageUrl?: string; isManual: boolean }
-    >();
+    const merged = new Map<string, { aisle: string; amounts: string[]; isManual: boolean }>();
 
     let activeExclusions = exclusions;
     await this.mergeRecipeIngredientsIntoGroceryMap(
@@ -561,7 +662,6 @@ export class MealPlannerPlanService {
       merged.set(key, {
         aisle: manual.aisle,
         amounts: [''],
-        imageUrl: manual.imageUrl,
         isManual: true,
       });
     }
@@ -594,12 +694,9 @@ export class MealPlannerPlanService {
             isChecked,
             sortOrder++,
             value.isManual ? 1 : 0,
-            value.imageUrl ?? null,
+            null,
           ]
         );
-        if (value.imageUrl) {
-          void this.ingredientImageService.cacheImage(displayName, value.imageUrl).catch(() => {});
-        }
       }
     }
   }
@@ -609,7 +706,7 @@ export class MealPlannerPlanService {
     householdSize: number,
     merged: Map<
       string,
-      { aisle: string; amounts: string[]; imageUrl?: string; isManual: boolean }
+      { aisle: string; amounts: string[]; isManual: boolean }
     >,
     exclusions: Set<string>
   ): Promise<void> {
@@ -630,7 +727,7 @@ export class MealPlannerPlanService {
     householdSize: number,
     merged: Map<
       string,
-      { aisle: string; amounts: string[]; imageUrl?: string; isManual: boolean }
+      { aisle: string; amounts: string[]; isManual: boolean }
     >,
     exclusions: Set<string>
   ): Promise<void> {
@@ -657,23 +754,13 @@ export class MealPlannerPlanService {
         continue;
       }
       const scaledAmount = formatScaledIngredientAmount(ingredient, scale);
-      let imageUrl: string | undefined;
-        try {
-          imageUrl =
-            resolveIngredientImageUrl(ingredient) ??
-            (await this.ingredientImageService.getCachedImage(ingredient.name));
-        } catch {
-          imageUrl = resolveIngredientImageUrl(ingredient);
-        }
       const existing = merged.get(key);
       if (existing) {
         existing.amounts.push(scaledAmount);
-        existing.imageUrl = existing.imageUrl ?? imageUrl;
       } else {
         merged.set(key, {
           aisle: normalizedAisle,
           amounts: [scaledAmount],
-          imageUrl,
           isManual: false,
         });
       }
@@ -686,5 +773,13 @@ export class MealPlannerPlanService {
 
   private titleCase(value: string): string {
     return value.replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  private normalizeMealsPerWeek(value: number): number {
+    const parsed = Math.round(Number(value));
+    if (!Number.isFinite(parsed) || parsed < 1) {
+      return MEALS_PER_WEEK;
+    }
+    return Math.min(parsed, 7);
   }
 }

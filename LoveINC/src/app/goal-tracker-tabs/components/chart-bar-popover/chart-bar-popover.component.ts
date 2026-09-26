@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="chart-bar-popover">
       <p class="popover-label">{{ label }}</p>
-      <p class="popover-value">{{ scheduled > 0 ? completed + ' of ' + scheduled + ' times' : 'Nothing scheduled' }}</p>
+      <p class="popover-value">{{ scheduled > 0 ? completed + ' of ' + scheduled + ' ' + unitNoun : 'Nothing scheduled' }}</p>
     </div>
   `,
   styles: [`
@@ -36,4 +36,5 @@ export class ChartBarPopoverComponent {
   @Input() label = '';
   @Input() completed = 0;
   @Input() scheduled = 0;
+  @Input() unitNoun = 'times';
 }

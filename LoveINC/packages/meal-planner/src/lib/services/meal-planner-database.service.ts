@@ -216,6 +216,12 @@ export class MealPlannerDatabaseService {
   private async migrateTables(db: SQLiteDBConnection): Promise<void> {
     await this.addColumnIfMissing(db, 'plan_meals', 'actual_cook_minutes', 'INTEGER');
     await this.addColumnIfMissing(db, 'plan_meals', 'complexity', 'TEXT');
+    await this.addColumnIfMissing(db, 'plan_meals', 'recap_notes', 'TEXT');
+    await this.addColumnIfMissing(db, 'plan_meals', 'recap_effort', 'TEXT');
+    await this.addColumnIfMissing(db, 'plan_meals', 'recap_time', 'TEXT');
+    await this.addColumnIfMissing(db, 'plan_meals', 'recap_cost', 'TEXT');
+    await this.addColumnIfMissing(db, 'plan_meals', 'star_rating', 'REAL');
+    await this.addColumnIfMissing(db, 'weekly_plans', 'meals_per_week', 'INTEGER NOT NULL DEFAULT 3');
     await this.addColumnIfMissing(db, 'grocery_items', 'is_manual', 'INTEGER DEFAULT 0');
     await this.addColumnIfMissing(db, 'grocery_items', 'image_url', 'TEXT');
     await db.execute(`

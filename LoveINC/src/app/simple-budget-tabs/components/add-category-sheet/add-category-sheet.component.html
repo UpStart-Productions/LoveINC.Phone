@@ -12,6 +12,7 @@
   <div class="custom-input-row">
     <ion-item>
       <ion-input
+        #nameInput
         [(ngModel)]="customName"
         [placeholder]="placeholder"
         (keyup.enter)="addCustom()"

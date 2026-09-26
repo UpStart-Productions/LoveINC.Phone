@@ -14,7 +14,11 @@ import {
 } from '@ionic/angular/standalone';
 import { LucideAngularModule } from 'lucide-angular';
 import type { CachedRecipe } from '@upstart-productions/meal-planner';
-import { MealPlannerProfileService, MealPlannerRecipeService } from '@upstart-productions/meal-planner';
+import {
+  MealPlannerPlanService,
+  MealPlannerProfileService,
+  MealPlannerRecipeService,
+} from '@upstart-productions/meal-planner';
 import { ContentCardListComponent } from '../../../components/content-card-list/content-card-list.component';
 import type { ContentCardListItem } from '../../../components/content-card-list/content-card-list.model';
 import { MEAL_SEARCH_CATEGORIES } from '../../constants/meal-search-categories';
@@ -24,6 +28,7 @@ import {
   mapSpoonacularResultToListItem,
 } from '../../utils/meal-planner-list.mapper';
 import { RecipeDetailModalComponent } from '../recipe-detail-modal/recipe-detail-modal.component';
+import { SwipeUpToCloseDirective } from '../../../directives/swipe-up-to-close.directive';
 
 @Component({
   selector: 'app-meal-picker-modal',
@@ -43,13 +48,14 @@ import { RecipeDetailModalComponent } from '../recipe-detail-modal/recipe-detail
     IonIcon,
     ContentCardListComponent,
     LucideAngularModule,
+    SwipeUpToCloseDirective,
   ],
 })
 export class MealPickerModalComponent implements OnInit {
-  @Input() slotLabel = 'Meal';
   @Input() weekStartDate = '';
   @Input() slotIndex = 0;
   @ViewChild('categoryZone') categoryZone?: ElementRef<HTMLElement>;
+  @ViewChild('categoryPanelSwipe') categoryPanelSwipe?: SwipeUpToCloseDirective;
 
   readonly categories = MEAL_SEARCH_CATEGORIES;
   /** Matches content-card large aside avatar icon scale. */
@@ -74,11 +80,20 @@ export class MealPickerModalComponent implements OnInit {
     private modalCtrl: ModalController,
     private spoonacular: SpoonacularService,
     private recipeService: MealPlannerRecipeService,
-    private profileService: MealPlannerProfileService
+    private profileService: MealPlannerProfileService,
+    private planService: MealPlannerPlanService
   ) {}
 
   get hasActiveSearch(): boolean {
     return Boolean(this.searchQuery.trim() || this.selectedCategoryId);
+  }
+
+  /** Favorites or library picks shown when search/category is idle. */
+  get hasExistingMealsToPickFrom(): boolean {
+    return (
+      this.favoriteListItems.length > 0 ||
+      (this.showRecommendationsFirst && this.recommendationListItems.length > 0)
+    );
   }
 
   get collapsedTabCategory() {
@@ -98,8 +113,21 @@ export class MealPickerModalComponent implements OnInit {
       this.recipeService.listFavorites(),
     ]);
     this.showRecommendationsFirst = count >= 4;
-    this.favoriteListItems = favorites.map((recipe) => mapCachedRecipeToListItem(recipe));
-    this.recommendationListItems = recommendations.map((recipe) => mapCachedRecipeToListItem(recipe));
+    const cachedRecipeIds = [...favorites, ...recommendations]
+      .map((recipe) => recipe.id)
+      .filter((id): id is number => id != null);
+    const ratings = await this.planService.getLatestStarRatingsForRecipes({ cachedRecipeIds });
+    this.favoriteListItems = favorites.map((recipe) =>
+      mapCachedRecipeToListItem(recipe, {
+        starRating: recipe.id ? ratings.byCachedRecipeId.get(recipe.id) : undefined,
+      })
+    );
+    this.recommendationListItems = recommendations.map((recipe) =>
+      mapCachedRecipeToListItem(recipe, {
+        starRating: recipe.id ? ratings.byCachedRecipeId.get(recipe.id) : undefined,
+      })
+    );
+    this.categoriesAnimCollapsed = this.hasExistingMealsToPickFrom;
   }
 
   dismiss() {
@@ -119,12 +147,30 @@ export class MealPickerModalComponent implements OnInit {
   }
 
   expandCategories() {
+    this.categoryPanelSwipe?.reset();
     this.categoriesPanelOpen = true;
-    this.categoriesAnimCollapsed = false;
+
+    if (!this.categoriesAnimCollapsed) {
+      return;
+    }
+
+    this.scheduleCategoryExpand();
+  }
+
+  collapseCategories() {
+    this.categoryPanelSwipe?.reset();
+    this.categoriesPanelOpen = false;
+    this.categoriesAnimCollapsed = true;
   }
 
   toggleCategory(categoryId: string) {
     this.selectedCategoryId = this.selectedCategoryId === categoryId ? null : categoryId;
+    this.syncCategoryPanelState();
+    void this.runSearch();
+  }
+
+  clearCategory() {
+    this.selectedCategoryId = null;
     this.syncCategoryPanelState();
     void this.runSearch();
   }
@@ -135,7 +181,7 @@ export class MealPickerModalComponent implements OnInit {
       this.scheduleCategoryCollapse();
       return;
     }
-    this.categoriesAnimCollapsed = false;
+    this.categoriesAnimCollapsed = this.hasExistingMealsToPickFrom;
   }
 
   private scheduleCategoryCollapse() {
@@ -149,6 +195,16 @@ export class MealPickerModalComponent implements OnInit {
         if (this.hasActiveSearch && !this.categoriesPanelOpen) {
           this.categoriesAnimCollapsed = true;
         }
+      });
+    });
+  }
+
+  private scheduleCategoryExpand() {
+    requestAnimationFrame(() => {
+      void this.categoryZone?.nativeElement.offsetHeight;
+      requestAnimationFrame(() => {
+        this.categoriesAnimCollapsed = false;
+        this.categoryPanelSwipe?.playEnterAnimation();
       });
     });
   }
@@ -188,7 +244,22 @@ export class MealPickerModalComponent implements OnInit {
         ...params,
         maxReadyTime: this.maxReadyMinutes,
       });
-      this.searchListItems = results.map((result) => mapSpoonacularResultToListItem(result));
+      const spoonacularIds = results.map((result) => result.id);
+      const [ratings, cachedReadyMinutes] = await Promise.all([
+        this.planService.getLatestStarRatingsForRecipes({ spoonacularIds }),
+        this.recipeService.getReadyMinutesBySpoonacularIds(spoonacularIds),
+      ]);
+      this.searchListItems = results.map((result) =>
+        mapSpoonacularResultToListItem(
+          {
+            ...result,
+            readyInMinutes: result.readyInMinutes ?? cachedReadyMinutes.get(result.id),
+          },
+          {
+            starRating: ratings.bySpoonacularId.get(result.id),
+          }
+        )
+      );
     } catch (err) {
       this.errorMessage =
         err instanceof Error && err.message.trim()

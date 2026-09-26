@@ -10,6 +10,15 @@
   --meal-planner-accent: #d56132;
 }
 
+.recipe-detail-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+}
+
 .recipe-detail-meta-badge {
   position: static;
   top: auto;
@@ -17,8 +26,7 @@
   bottom: auto;
   width: fit-content;
   max-width: 100%;
-  margin-top: 1rem;
-  margin-bottom: 0.75rem;
+  margin: 0;
   background-color: var(--meal-planner-accent);
   color: #ffffff;
   text-transform: none;

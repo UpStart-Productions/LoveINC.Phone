@@ -23,6 +23,8 @@ export interface ContentCardListItem {
   lucideTitleIcon?: string;
   underTitle?: string;
   detail?: string;
+  /** Meal recap star rating, shown at the far right of the detail row. */
+  mealStarRating?: number;
   detailSegments?: ContentCardTextSegment[];
   imageUrl?: string;
   /** Sit the image on a grey rounded square (company logos). */

@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  Input,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -12,45 +11,22 @@ import { FormsModule } from '@angular/forms';
 import type { PluginListenerHandle } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
   IonButton,
-  IonIcon,
+  IonButtons,
   IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
+  IonHeader,
+  IonIcon,
   IonInput,
+  IonItem,
+  IonTitle,
+  IonToolbar,
   ModalController,
 } from '@ionic/angular/standalone';
 
-const CATEGORY_ICON_MAP: Record<string, string> = {
-  Paycheck: 'briefcase-outline',
-  Benefits: 'heart-outline',
-  'Side work': 'construct-outline',
-  Other: 'ellipse-outline',
-  'Rent or mortgage': 'house-outline',
-  Electric: 'flash-outline',
-  'Gas utility': 'flame-outline',
-  Water: 'water-outline',
-  Phone: 'call-outline',
-  Internet: 'wifi-outline',
-  Insurance: 'shield-outline',
-  'Debt payment': 'card-outline',
-  Childcare: 'people-outline',
-  Groceries: 'cart-outline',
-  'Gas for car': 'car-outline',
-  Household: 'house-outline',
-  Medical: 'medical-outline',
-  Personal: 'person-outline',
-};
-
 @Component({
-  selector: 'app-add-category-sheet',
-  templateUrl: './add-category-sheet.component.html',
-  styleUrls: ['./add-category-sheet.component.scss'],
+  selector: 'app-grocery-add-item-sheet',
+  templateUrl: './grocery-add-item-sheet.component.html',
+  styleUrls: ['./grocery-add-item-sheet.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -63,18 +39,13 @@ const CATEGORY_ICON_MAP: Record<string, string> = {
     IonIcon,
     IonContent,
     IonItem,
-    IonLabel,
-    IonList,
     IonInput,
   ],
 })
-export class AddCategorySheetComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input() type: 'income' | 'bills' | 'flexible' = 'income';
-  @Input() suggestedNames: string[] = [];
-
+export class GroceryAddItemSheetComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('nameInput') nameInput?: IonInput;
 
-  customName = '';
+  itemName = '';
 
   private keyboardShowListener?: PluginListenerHandle;
   private keyboardHideListener?: PluginListenerHandle;
@@ -83,18 +54,6 @@ export class AddCategorySheetComponent implements OnInit, AfterViewInit, OnDestr
     private modalCtrl: ModalController,
     private host: ElementRef<HTMLElement>
   ) {}
-
-  get header(): string {
-    return this.type === 'income' ? 'Add income' : this.type === 'bills' ? 'Add bill' : 'Add flexible';
-  }
-
-  get placeholder(): string {
-    return this.type === 'income'
-      ? 'Create custom income'
-      : this.type === 'bills'
-        ? 'Create custom bill'
-        : 'Create custom flexible';
-  }
 
   ngOnInit() {
     void this.attachKeyboardListeners();
@@ -111,23 +70,16 @@ export class AddCategorySheetComponent implements OnInit, AfterViewInit, OnDestr
     this.applyModalKeyboardOffset(0);
   }
 
-  getIcon(name: string): string {
-    return CATEGORY_ICON_MAP[name] ?? 'ellipse-outline';
-  }
-
-  selectSuggested(name: string) {
-    this.modalCtrl.dismiss({ name, isCustom: false });
-  }
-
-  addCustom() {
-    const name = this.customName.trim();
-    if (name) {
-      this.modalCtrl.dismiss({ name, isCustom: true });
+  submit() {
+    const name = this.itemName.trim();
+    if (!name) {
+      return;
     }
+    void this.modalCtrl.dismiss({ name }, 'save');
   }
 
   close() {
-    this.modalCtrl.dismiss(null, 'cancel');
+    void this.modalCtrl.dismiss(null, 'cancel');
   }
 
   private async attachKeyboardListeners() {

@@ -65,12 +65,16 @@
             </div>
           </div>
           @if (hasAsideAvatar) {
-            <div class="content-card-tool-header__icon">
+            <div class="content-card-tool-header__icon content-card-aside-with-rating">
               <ng-container *ngTemplateOutlet="asideAvatarTemplate" />
+              <ng-container *ngTemplateOutlet="asideRating" />
             </div>
           }
         </div>
-        <div class="content-card-tool-body">
+        <div
+          class="content-card-tool-body"
+          [class.content-card-tool-body--with-aside-rating]="hasDetailRating && hasAsideAvatar"
+        >
           @if (subtitle) {
             <p class="app-body-secondary">{{ subtitle }}</p>
           }
@@ -83,22 +87,7 @@
               <p class="app-body-secondary">{{ underTitle }}</p>
             }
           }
-          @if (detailSegments?.length || detail) {
-            <div class="content-card-detail" [class.content-card-detail--single-line]="detailSingleLine">
-              <p>
-                @if (detailSegments?.length) {
-                  @for (seg of detailSegments; track $index) {
-                    <span
-                      [class.content-card-tone-positive]="seg.tone === 'positive'"
-                      [class.content-card-tone-negative]="seg.tone === 'negative'"
-                    >{{ seg.text }}</span>
-                  }
-                } @else {
-                  {{ detail }}
-                }
-              </p>
-            </div>
-          }
+          <ng-container *ngTemplateOutlet="detailContent" />
           @if (tags?.length) {
             <div class="accepted-items">
               @for (tag of tags; track tag) {
@@ -240,22 +229,7 @@
               </div>
             }
           }
-          @if (detailSegments?.length || detail) {
-            <div class="content-card-detail" [class.content-card-detail--single-line]="detailSingleLine">
-              <p>
-                @if (detailSegments?.length) {
-                  @for (seg of detailSegments; track $index) {
-                    <span
-                      [class.content-card-tone-positive]="seg.tone === 'positive'"
-                      [class.content-card-tone-negative]="seg.tone === 'negative'"
-                    >{{ seg.text }}</span>
-                  }
-                } @else {
-                  {{ detail }}
-                }
-              </p>
-            </div>
-          }
+          <ng-container *ngTemplateOutlet="detailContent" />
           @if (tags?.length) {
             <div class="accepted-items">
               @for (tag of tags; track tag) {
@@ -269,6 +243,7 @@
           *ngIf="showAside"
           [class.content-card-aside--extra-only]="!hasAsideAvatar && !!asideBadge"
           [class.content-card-aside--with-date]="showAsideDate"
+          [class.content-card-aside-with-rating]="hasDetailRating && hasAsideAvatar"
         >
           @if (showAsideDate) {
             <span class="app-body-secondary-xs content-card-aside-date">
@@ -282,6 +257,7 @@
           @if (hasAsideAvatar) {
             <ng-container *ngTemplateOutlet="asideAvatarTemplate" />
           }
+          <ng-container *ngTemplateOutlet="asideRating" />
           @if (asideBadge) {
             <ion-badge class="app-status-pill content-card-aside-badge" [color]="asideBadgeColor">{{ asideBadge }}</ion-badge>
           }
@@ -291,6 +267,31 @@
     }
   </ion-card-content>
 </ion-card>
+
+<ng-template #detailContent>
+  @if (detailSegments?.length || detail) {
+    <div class="content-card-detail" [class.content-card-detail--single-line]="detailSingleLine">
+      <p>
+        @if (detailSegments?.length) {
+          @for (seg of detailSegments; track $index) {
+            <span
+              [class.content-card-tone-positive]="seg.tone === 'positive'"
+              [class.content-card-tone-negative]="seg.tone === 'negative'"
+            >{{ seg.text }}</span>
+          }
+        } @else {
+          {{ detail }}
+        }
+      </p>
+    </div>
+  }
+</ng-template>
+
+<ng-template #asideRating>
+  @if (hasDetailRating) {
+    <app-meal-star-rating [rating]="mealStarRating!" [compact]="true" />
+  }
+</ng-template>
 
 <ng-template #asideAvatarTemplate>
   <div

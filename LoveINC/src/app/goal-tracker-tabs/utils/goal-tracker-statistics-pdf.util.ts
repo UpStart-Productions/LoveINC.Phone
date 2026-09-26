@@ -154,6 +154,52 @@ function buildHabitsSection(stats: StatisticsPdfHabitStat[]): Content {
   };
 }
 
+function buildTotalsRow(habitsCompletedLabel: string, totalPercent: number): Content {
+  return {
+    columns: [
+      { width: '*', text: habitsCompletedLabel, bold: true, fontSize: 13 },
+      {
+        width: 'auto',
+        text: `${totalPercent}%`,
+        bold: true,
+        fontSize: 14,
+        alignment: 'right',
+      },
+    ],
+    margin: [0, 0, 0, 10] as [number, number, number, number],
+  };
+}
+
+function buildChartStack(
+  weekLabel: string,
+  habitsCompletedLabel: string,
+  totalPercent: number,
+  weeklyData: WeeklyBarData[]
+): { stack: Content[] } {
+  return {
+    stack: [
+      buildTotalsRow(habitsCompletedLabel, totalPercent),
+      buildBarChart(weeklyData),
+      {
+        text: weekLabel,
+        alignment: 'center',
+        fontSize: 9,
+        color: '#444',
+        margin: [0, 6, 0, 0] as [number, number, number, number],
+      },
+    ],
+  };
+}
+
+function buildHabitsContent(habitStats: StatisticsPdfHabitStat[]): { stack: Content[] } {
+  return {
+    stack: [
+      { text: 'Habits', bold: true, fontSize: 12, margin: [0, 0, 0, 8] as [number, number, number, number] },
+      buildHabitsSection(habitStats),
+    ],
+  };
+}
+
 export function buildGoalTrackerStatisticsDocDefinition(options: {
   weekLabel: string;
   totalPercent: number;
@@ -161,6 +207,7 @@ export function buildGoalTrackerStatisticsDocDefinition(options: {
   totalScheduled: number;
   weeklyData: WeeklyBarData[];
   habitStats: StatisticsPdfHabitStat[];
+  stackChartAboveContent?: boolean;
   userFullName?: string;
 }): TDocumentDefinitions {
   const habitsCompletedLabel = formatHabitsCompleted(options.totalCompleted, options.totalScheduled);
@@ -175,52 +222,36 @@ export function buildGoalTrackerStatisticsDocDefinition(options: {
     });
   }
 
+  const chartStack = buildChartStack(
+    options.weekLabel,
+    habitsCompletedLabel,
+    options.totalPercent,
+    options.weeklyData
+  );
+  const habitsContent = buildHabitsContent(options.habitStats);
+
+  const bodyContent: Content = options.stackChartAboveContent
+    ? {
+        stack: [
+          chartStack,
+          { text: '', margin: [0, 0, 0, 14] as [number, number, number, number] },
+          habitsContent,
+        ],
+      }
+    : {
+        columns: [
+          { width: '46%', stack: chartStack.stack },
+          { width: '*', stack: habitsContent.stack },
+        ],
+        columnGap: 14,
+      };
+
   return {
     info: {
       title: options.weekLabel,
       subject: 'Goal Tracker Statistics',
     },
-    content: [
-      ...headerContent,
-      {
-        columns: [
-          {
-            width: '46%',
-            stack: [
-              {
-                columns: [
-                  { width: '*', text: habitsCompletedLabel, bold: true, fontSize: 13 },
-                  {
-                    width: 'auto',
-                    text: `${options.totalPercent}%`,
-                    bold: true,
-                    fontSize: 14,
-                    alignment: 'right',
-                  },
-                ],
-                margin: [0, 0, 0, 10] as [number, number, number, number],
-              },
-              buildBarChart(options.weeklyData),
-              {
-                text: options.weekLabel,
-                alignment: 'center',
-                fontSize: 9,
-                color: '#444',
-                margin: [0, 6, 0, 0] as [number, number, number, number],
-              },
-            ],
-          },
-          {
-            width: '*',
-            stack: [
-              { text: 'Habits', bold: true, fontSize: 12, margin: [0, 0, 0, 8] as [number, number, number, number] },
-              buildHabitsSection(options.habitStats),
-            ],
-          },
-        ],
-        columnGap: 14,
-      },
-    ],
+    content: [...headerContent, bodyContent],
   };
 }
 

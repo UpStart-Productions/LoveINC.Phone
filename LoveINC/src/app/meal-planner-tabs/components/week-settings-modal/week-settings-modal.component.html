@@ -1,33 +1,70 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="week-settings-sheet-toolbar">
     <ion-title>Household &amp; week</ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="clear" aria-label="Close" (click)="dismiss()">
-        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      <ion-button fill="clear" class="close-button" aria-label="Close" (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-list>
-    <ion-item>
+<ion-content class="week-settings-sheet-content">
+  <div class="week-settings-row">
+    <ion-item class="week-settings-field">
       <ion-label position="stacked">Household size</ion-label>
-      <ion-input type="number" min="1" [(ngModel)]="householdSize"></ion-input>
+      <ion-input
+        type="number"
+        inputmode="numeric"
+        min="1"
+        [(ngModel)]="householdSize"
+        (ngModelChange)="onFieldChange()"
+      ></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Max cook time (minutes)</ion-label>
-      <ion-input type="number" min="15" [(ngModel)]="maxReadyMinutes"></ion-input>
+    <ion-item class="week-settings-field">
+      <ion-label position="stacked">Max cook time (min)</ion-label>
+      <ion-input
+        type="number"
+        inputmode="numeric"
+        min="15"
+        [(ngModel)]="maxReadyMinutes"
+        (ngModelChange)="onFieldChange()"
+      ></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Extra servings from each meal</ion-label>
-      <ion-input type="number" min="0" [(ngModel)]="weekServingDelta"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Note for this week (guests or events)</ion-label>
-      <ion-textarea autoGrow="true" rows="4" [(ngModel)]="weekNote"></ion-textarea>
-    </ion-item>
-  </ion-list>
+  </div>
 
-  <ion-button expand="block" color="red-orange" (click)="save()">Save</ion-button>
+  <div class="week-settings-row">
+    <ion-item class="week-settings-field">
+      <ion-label position="stacked">Extra servings</ion-label>
+      <ion-input
+        type="number"
+        inputmode="numeric"
+        min="0"
+        [(ngModel)]="weekServingDelta"
+        (ngModelChange)="onFieldChange()"
+      ></ion-input>
+    </ion-item>
+    <ion-item class="week-settings-field">
+      <ion-label position="stacked">Meals this week</ion-label>
+      <ion-input
+        type="number"
+        inputmode="numeric"
+        min="1"
+        max="7"
+        [(ngModel)]="mealsPerWeek"
+        (ngModelChange)="onFieldChange()"
+      ></ion-input>
+    </ion-item>
+  </div>
+
+  <ion-item class="week-settings-notes-field">
+    <ion-label position="stacked">Note for this week (guests or events)</ion-label>
+    <ion-textarea
+      [(ngModel)]="weekNote"
+      (ngModelChange)="onFieldChange()"
+      rows="3"
+      [autoGrow]="true"
+      autocapitalize="sentences"
+    ></ion-textarea>
+  </ion-item>
 </ion-content>

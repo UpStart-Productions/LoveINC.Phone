@@ -1,53 +1,11 @@
-<div
-  class="grocery-item-list"
-  [class.grocery-item-list--flush-top]="flushTop"
->
+<div class="grocery-item-list">
   <div class="grocery-item-list-shell">
-    <ion-list lines="none">
-      @for (item of items; track item.id) {
-        <ion-item-sliding
-          #sliding
-          class="grocery-item-sliding"
-          [class.grocery-item-sliding--removing]="item.id && removingIds.has(item.id)"
-        >
-          <ion-item
-            button
-            detail="false"
-            lines="none"
-            class="grocery-item-row"
-            (click)="onItemTap(item, sliding)"
-          >
-            <div slot="start" class="grocery-item-row__avatar" aria-hidden="true">
-              @if (item.imageUrl) {
-                <img [src]="item.imageUrl" [alt]="" class="grocery-item-row__image" />
-              } @else {
-                <div class="grocery-item-row__icon-wrap">
-                  <ion-icon name="cart-outline" class="grocery-item-row__icon"></ion-icon>
-                </div>
-              }
-              @if (item.isChecked) {
-                <span class="grocery-item-row__check">
-                  <ion-icon name="checkmark-circle" color="success"></ion-icon>
-                </span>
-              }
-            </div>
-            <ion-label>
-              <h2>{{ item.ingredientName }}</h2>
-            </ion-label>
-          </ion-item>
-
-          <ion-item-options side="end">
-            <ion-item-option
-              color="danger"
-              expandable
-              aria-label="Remove from list"
-              (click)="onDelete(item, sliding)"
-            >
-              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-      }
-    </ion-list>
+    @for (item of items; track item.id; let last = $last) {
+      <app-grocery-swipe-item
+        [item]="item"
+        [showBorder]="!last"
+        (delete)="onItemDelete($event)"
+      />
+    }
   </div>
 </div>

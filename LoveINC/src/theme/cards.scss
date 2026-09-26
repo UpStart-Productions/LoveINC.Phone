@@ -872,6 +872,10 @@ ion-card.clickable {
   &::part(content) {
     min-width: 13.75rem;
   }
+
+  ion-item i-lucide[slot='start'] {
+    color: var(--ion-color-dark);
+  }
 }
 /* Verse typography uses the same serif family as journal reading. */
 app-verse-of-the-day-widget .content-card {

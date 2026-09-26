@@ -9,6 +9,7 @@ import { LocationMapModalService } from '../../services/location-map-modal.servi
 import { AuthorBioModalService } from '../../services/author-bio-modal.service';
 import { hasMeaningfulRichText } from '../../content-plan/content-plan-author.util';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
+import { MealStarRatingComponent } from '../../meal-planner-tabs/components/meal-star-rating/meal-star-rating.component';
 
 /** Optional fragments for coloring numeric parts (e.g. budget amounts). */
 export type ContentCardTextSegment = {
@@ -23,7 +24,16 @@ export type ContentCardAsideAvatarSize = 'small' | 'large' | 'xl';
   templateUrl: './content-card.component.html',
   styleUrls: ['./content-card.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonBadge, IonCard, IonCardContent, IonIcon, LucideAngularModule, SafeHtmlPipe],
+  imports: [
+    CommonModule,
+    IonBadge,
+    IonCard,
+    IonCardContent,
+    IonIcon,
+    LucideAngularModule,
+    SafeHtmlPipe,
+    MealStarRatingComponent,
+  ],
 })
 export class ContentCardComponent {
   private readonly navController = inject(NavController);
@@ -74,6 +84,9 @@ export class ContentCardComponent {
 
   /** Detail text below title (e.g. "2-5 min", "4-6 min") */
   @Input() detail?: string;
+
+  /** Meal recap star rating, shown at the far right of the detail row. */
+  @Input() mealStarRating?: number;
 
   /** Clamp detail to one line (ellipsis if overflow). */
   @Input() detailSingleLine = false;
@@ -204,6 +217,10 @@ export class ContentCardComponent {
   get showAside(): boolean {
     const asideDate = !!this.createdAtLabel?.trim() && !this.createdAtInlineWithAuthor;
     return this.hasAsideAvatar || !!this.asideBadge?.trim() || asideDate;
+  }
+
+  get hasDetailRating(): boolean {
+    return this.mealStarRating != null && !!this.detail;
   }
 
   get badgeAsideOnly(): boolean {

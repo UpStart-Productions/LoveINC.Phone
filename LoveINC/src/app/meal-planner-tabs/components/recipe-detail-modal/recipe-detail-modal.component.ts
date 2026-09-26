@@ -42,8 +42,10 @@ import {
   buildRecipePdfFilename,
   buildRecipeShareHtml,
 } from '../../utils/recipe-detail-pdf.util';
+import { LucideAngularModule } from 'lucide-angular';
 import { MealRecapSheetComponent } from '../meal-recap-sheet/meal-recap-sheet.component';
-import type { MealRecapComplexity } from '@upstart-productions/meal-planner';
+import { MealStarRatingComponent } from '../meal-star-rating/meal-star-rating.component';
+import type { MealRecapThumb } from '@upstart-productions/meal-planner';
 
 @Component({
   selector: 'app-recipe-detail-modal',
@@ -63,6 +65,8 @@ import type { MealRecapComplexity } from '@upstart-productions/meal-planner';
     IonList,
     IonItem,
     IonLabel,
+    LucideAngularModule,
+    MealStarRatingComponent,
   ],
 })
 export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -85,8 +89,11 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
   exporting = false;
   sharing = false;
   mealRecapReactionEmoji?: string;
-  mealRecapActualCookMinutes?: number;
-  mealRecapComplexity?: MealRecapComplexity;
+  mealRecapEffortRating?: MealRecapThumb;
+  mealRecapTimeRating?: MealRecapThumb;
+  mealRecapCostRating?: MealRecapThumb;
+  mealRecapNotes?: string;
+  mealStarRating?: number;
 
   private edgeScrollEl: HTMLElement | null = null;
   private edgeScrollListener: (() => void) | null = null;
@@ -209,12 +216,16 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
     const modal = await this.modalCtrl.create({
       component: MealRecapSheetComponent,
       cssClass: 'meal-recap-sheet',
+      breakpoints: [0, 0.58],
+      initialBreakpoint: 0.58,
+      backdropDismiss: true,
       componentProps: {
         planMealId: this.planMealId,
-        recipeTimeMinutes: this.recipe.readyInMinutes ?? 45,
         initialReactionEmoji: this.mealRecapReactionEmoji,
-        initialActualCookMinutes: this.mealRecapActualCookMinutes,
-        initialComplexity: this.mealRecapComplexity,
+        initialEffortRating: this.mealRecapEffortRating,
+        initialTimeRating: this.mealRecapTimeRating,
+        initialCostRating: this.mealRecapCostRating,
+        initialNotes: this.mealRecapNotes,
       },
     });
     await modal.present();
@@ -428,8 +439,11 @@ export class RecipeDetailModalComponent implements OnInit, AfterViewInit, OnDest
       this.planMealId = meal.id;
       this.extraGuests = meal.extraGuests;
       this.mealRecapReactionEmoji = meal.reactionEmoji;
-      this.mealRecapActualCookMinutes = meal.actualCookMinutes;
-      this.mealRecapComplexity = meal.complexity;
+      this.mealRecapEffortRating = meal.effortRating;
+      this.mealRecapTimeRating = meal.timeRating;
+      this.mealRecapCostRating = meal.costRating;
+      this.mealRecapNotes = meal.recapNotes;
+      this.mealStarRating = meal.starRating;
     }
   }
 

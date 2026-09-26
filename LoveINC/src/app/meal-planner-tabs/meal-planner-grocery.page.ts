@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import type { ViewWillEnter } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import {
   AlertController,
@@ -9,6 +10,7 @@ import {
   IonIcon,
   IonTitle,
   IonToolbar,
+  ModalController,
 } from '@ionic/angular/standalone';
 import { AppBackButtonComponent } from '../components/app-back-button/app-back-button.component';
 import {
@@ -16,13 +18,12 @@ import {
   compareGroceryAisles,
   formatWeekLabel,
   getCurrentWeekStart,
-  resolveIngredientImageUrl,
   type GroceryItem,
 } from '@upstart-productions/meal-planner';
 import { MealWeekScrollerComponent } from './components/week-scroller/week-scroller.component';
+import { GroceryAddItemSheetComponent } from './components/grocery-add-item-sheet/grocery-add-item-sheet.component';
 import { GroceryItemListComponent } from './components/grocery-item-list/grocery-item-list.component';
 import { MealPlannerStateService } from './services/meal-planner-state.service';
-import { SpoonacularService } from './services/spoonacular.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -44,19 +45,20 @@ import { Subscription } from 'rxjs';
     GroceryItemListComponent,
   ],
 })
-export class MealPlannerGroceryPage implements OnInit, OnDestroy {
+export class MealPlannerGroceryPage implements OnInit, OnDestroy, ViewWillEnter {
   loading = true;
   selectedWeekStart = getCurrentWeekStart();
   earliestWeekStart = '';
   weekLabel = '';
   groupedItems: Array<{ aisle: string; items: GroceryItem[] }> = [];
   private weekSub?: Subscription;
+  private planSub?: Subscription;
 
   constructor(
     private planService: MealPlannerPlanService,
     private stateService: MealPlannerStateService,
-    private spoonacularService: SpoonacularService,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private modalCtrl: ModalController
   ) {}
 
   async ngOnInit() {
@@ -65,10 +67,20 @@ export class MealPlannerGroceryPage implements OnInit, OnDestroy {
       this.selectedWeekStart = week;
       void this.loadWeek();
     });
+    this.planSub = this.stateService.watchWeeklyPlanChanged().subscribe((week) => {
+      if (week === this.selectedWeekStart) {
+        void this.loadWeek();
+      }
+    });
+  }
+
+  ionViewWillEnter() {
+    void this.loadWeek();
   }
 
   ngOnDestroy() {
     this.weekSub?.unsubscribe();
+    this.planSub?.unsubscribe();
   }
 
   onWeekSelected(weekStartDate: string) {
@@ -76,36 +88,18 @@ export class MealPlannerGroceryPage implements OnInit, OnDestroy {
   }
 
   async addItem() {
-    const alert = await this.alertCtrl.create({
-      header: 'Add item',
-      inputs: [
-        {
-          name: 'name',
-          type: 'text',
-          placeholder: 'Item name',
-        },
-      ],
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        {
-          text: 'Add',
-          handler: (values) => {
-            void this.submitAddItem(values?.['name']);
-          },
-        },
-      ],
+    const modal = await this.modalCtrl.create({
+      component: GroceryAddItemSheetComponent,
+      cssClass: 'grocery-add-item-sheet',
+      breakpoints: [0, 0.38],
+      initialBreakpoint: 0.38,
+      backdropDismiss: true,
     });
-    await alert.present();
-  }
-
-  async onGroceryRowTap(item: GroceryItem) {
-    const itemId = item.id;
-    if (!itemId) {
-      return;
+    await modal.present();
+    const { data, role } = await modal.onWillDismiss<{ name?: string }>();
+    if (role === 'save' && data?.name) {
+      await this.submitAddItem(data.name);
     }
-    const checked = !item.isChecked;
-    item.isChecked = checked;
-    await this.planService.setGroceryItemChecked(itemId, checked);
   }
 
   async onGroceryRowDelete(item: GroceryItem) {
@@ -129,12 +123,7 @@ export class MealPlannerGroceryPage implements OnInit, OnDestroy {
     }
 
     try {
-      const imageUrl = await this.spoonacularService.fetchIngredientImage(name);
-      const created = await this.planService.addGroceryItem(
-        this.selectedWeekStart,
-        name,
-        imageUrl
-      );
+      const created = await this.planService.addGroceryItem(this.selectedWeekStart, name);
       this.insertGroceryItem(created);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Could not add that item.';
@@ -148,17 +137,25 @@ export class MealPlannerGroceryPage implements OnInit, OnDestroy {
   }
 
   private insertGroceryItem(item: GroceryItem) {
-    let group = this.groupedItems.find((row) => row.aisle === item.aisle);
-    if (!group) {
-      group = { aisle: item.aisle, items: [] };
-      this.groupedItems = [...this.groupedItems, group].sort((a, b) =>
-        compareGroceryAisles(a.aisle, b.aisle)
+    const groupIndex = this.groupedItems.findIndex((row) => row.aisle === item.aisle);
+    if (groupIndex === -1) {
+      this.groupedItems = [...this.groupedItems, { aisle: item.aisle, items: [item] }].sort(
+        (a, b) => compareGroceryAisles(a.aisle, b.aisle)
       );
-      group = this.groupedItems.find((row) => row.aisle === item.aisle)!;
+      return;
     }
-    group.items = [...group.items, item].sort((a, b) =>
-      a.ingredientName.localeCompare(b.ingredientName)
-    );
+
+    this.groupedItems = this.groupedItems.map((group, index) => {
+      if (index !== groupIndex) {
+        return group;
+      }
+      return {
+        ...group,
+        items: [...group.items, item].sort((a, b) =>
+          a.ingredientName.localeCompare(b.ingredientName)
+        ),
+      };
+    });
   }
 
   private async loadWeek() {
@@ -166,7 +163,6 @@ export class MealPlannerGroceryPage implements OnInit, OnDestroy {
     try {
       this.earliestWeekStart = (await this.planService.getEarliestWeekStart()) ?? '';
       this.weekLabel = formatWeekLabel(this.selectedWeekStart);
-      await this.backfillRecipeIngredientImages();
       const items = await this.planService.getGroceryItems(this.selectedWeekStart);
       const map = new Map<string, GroceryItem[]>();
       for (const item of items) {
@@ -180,81 +176,8 @@ export class MealPlannerGroceryPage implements OnInit, OnDestroy {
           aisle,
           items: aisleItems,
         }));
-      await this.applyImagesFromRecipes();
     } finally {
       this.loading = false;
-    }
-  }
-
-  private async backfillRecipeIngredientImages() {
-    try {
-      const plan = await this.planService.getWeeklyPlan(this.selectedWeekStart);
-      if (!plan?.meals.length) {
-        return;
-      }
-
-      const refreshedRecipeIds = new Set<number>();
-      for (const meal of plan.meals) {
-        const recipe = meal.recipe;
-        if (!recipe?.id || refreshedRecipeIds.has(recipe.id)) {
-          continue;
-        }
-        if (recipe.ingredients.every((ingredient) => ingredient.imageFile?.trim())) {
-          refreshedRecipeIds.add(recipe.id);
-          continue;
-        }
-        refreshedRecipeIds.add(recipe.id);
-        try {
-          await this.spoonacularService.refreshCachedRecipeIngredientImages(recipe);
-        } catch {
-          // Stop backfill on quota errors so recipe search keeps working.
-          break;
-        }
-      }
-    } catch {
-      // Ingredient photos are optional — never block the grocery list.
-    }
-  }
-
-  private async applyImagesFromRecipes() {
-    const plan = await this.planService.getWeeklyPlan(this.selectedWeekStart);
-    if (!plan?.meals.length) {
-      return;
-    }
-
-    const imageByName = new Map<string, string>();
-    for (const meal of plan.meals) {
-      const recipe = meal.recipe;
-      if (!recipe) {
-        continue;
-      }
-      for (const ingredient of recipe.ingredients) {
-        const imageUrl = resolveIngredientImageUrl(ingredient);
-        if (!imageUrl) {
-          continue;
-        }
-        imageByName.set(this.normalizeIngredientLookupKey(ingredient.name), imageUrl);
-      }
-    }
-
-    for (const [nameKey, imageUrl] of imageByName.entries()) {
-      await this.applyIngredientImage(nameKey, imageUrl);
-    }
-  }
-
-  private normalizeIngredientLookupKey(name: string): string {
-    return name.trim().toLowerCase();
-  }
-
-  private async applyIngredientImage(nameKey: string, imageUrl: string) {
-    for (const group of this.groupedItems) {
-      for (const row of group.items) {
-        if (row.ingredientName.toLowerCase() !== nameKey || !row.id) {
-          continue;
-        }
-        row.imageUrl = imageUrl;
-        await this.planService.setGroceryItemImageUrl(row.id, imageUrl);
-      }
     }
   }
 }

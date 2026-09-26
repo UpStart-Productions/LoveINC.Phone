@@ -3,3 +3,22 @@
 :host {
   display: block;
 }
+
+.content-card-aside-with-rating {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--content-card-aside-avatar-size);
+  align-self: flex-start;
+}
+
+.content-card-aside-with-rating app-meal-star-rating {
+  position: absolute;
+  top: calc(100% + 0.125rem + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.content-card-tool-body--with-aside-rating .content-card-detail {
+  padding-right: calc(var(--content-card-aside-avatar-size) + 0.25rem);
+}

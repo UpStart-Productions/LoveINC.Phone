@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Pick {{ slotLabel }}</ion-title>
+    <ion-title>Select Your Meal</ion-title>
     <ion-buttons slot="end">
       <ion-button fill="clear" aria-label="Close" (click)="dismiss()">
         <ion-icon slot="icon-only" name="close-outline"></ion-icon>
@@ -20,105 +20,141 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="meal-picker-content" [fullscreen]="true">
+<ion-content
+  class="meal-picker-content"
+  [fullscreen]="true"
+  [scrollY]="categoriesAnimCollapsed"
+>
   <div
     #categoryZone
     class="category-zone"
     [class.category-zone--collapsed]="categoriesAnimCollapsed"
+    [class.category-zone--dragging-panel]="categoryPanelSwipe?.dragging || categoryPanelSwipe?.snapping"
   >
-    <button
-      type="button"
-      class="category-tab app-unstyled-button"
+    <div
+      class="category-tab"
+      role="group"
       [attr.aria-expanded]="!categoriesAnimCollapsed"
-      (click)="expandCategories()"
     >
-      @if (collapsedTabCategory; as category) {
-        <div
-          class="category-tab__avatar"
-          [style.--category-color]="category.iconBackgroundColor"
-        >
-          <i-lucide
-            [name]="category.lucideIcon"
-            [size]="18"
-            color="#ffffff"
-            aria-hidden="true"
-          ></i-lucide>
-        </div>
-        <span class="category-tab__label app-body-secondary-sm">{{ category.label }}</span>
-      } @else {
-        <ion-icon name="grid-outline" aria-hidden="true"></ion-icon>
-        <span class="category-tab__label app-body-secondary-sm">Categories</span>
-      }
-      <ion-icon class="category-tab__chevron" name="chevron-down-outline" aria-hidden="true"></ion-icon>
-    </button>
-
-    <div class="category-panel">
-      <div class="category-grid">
-        @for (category of categories; track category.id) {
-          <button
-            type="button"
-            class="category-tile app-unstyled-button"
-            [attr.aria-pressed]="isCategorySelected(category.id)"
-            (click)="toggleCategory(category.id)"
+      <button
+        type="button"
+        class="category-tab__main app-unstyled-button"
+        (click)="expandCategories()"
+      >
+        @if (collapsedTabCategory; as category) {
+          <div
+            class="category-tab__avatar"
+            [style.--category-color]="category.iconBackgroundColor"
           >
-            <div
-              class="category-tile__avatar"
-              [class.category-tile__avatar--selected]="isCategorySelected(category.id)"
-              [style.--category-color]="category.iconBackgroundColor"
-            >
-              <i-lucide
-                [name]="category.lucideIcon"
-                [size]="categoryIconSize"
-                [color]="categoryIconColor(category.id, category.iconBackgroundColor)"
-                aria-hidden="true"
-              ></i-lucide>
-            </div>
-            <span class="category-tile__label app-body-secondary-sm">{{ category.label }}</span>
-          </button>
+            <i-lucide
+              [name]="category.lucideIcon"
+              [size]="18"
+              color="#ffffff"
+              aria-hidden="true"
+            ></i-lucide>
+          </div>
+          <span class="category-tab__label app-body-secondary-sm">{{ category.label }}</span>
+        } @else {
+          <ion-icon name="grid-outline" aria-hidden="true"></ion-icon>
+          <span class="category-tab__label app-body-secondary-sm">Categories</span>
         }
+      </button>
+      @if (selectedCategoryId) {
+        <button
+          type="button"
+          class="category-tab__clear app-unstyled-button"
+          aria-label="Clear category"
+          (click)="clearCategory()"
+        >
+          <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+        </button>
+      }
+    </div>
+
+    <div #categoryPanel class="category-panel">
+      <div
+        #categoryPanelSwipe="swipeUpToClose"
+        class="category-panel__surface"
+        appSwipeUpToClose
+        [appSwipeUpToClose]="!categoriesAnimCollapsed"
+        (swipeUpToClose)="collapseCategories()"
+        [class.category-panel__surface--dragging]="categoryPanelSwipe?.dragging"
+      >
+        <div class="category-grid">
+          @for (category of categories; track category.id) {
+            <button
+              type="button"
+              class="category-tile app-unstyled-button"
+              [attr.aria-pressed]="isCategorySelected(category.id)"
+              (click)="toggleCategory(category.id)"
+            >
+              <div
+                class="category-tile__avatar"
+                [class.category-tile__avatar--selected]="isCategorySelected(category.id)"
+                [style.--category-color]="category.iconBackgroundColor"
+              >
+                <i-lucide
+                  [name]="category.lucideIcon"
+                  [size]="categoryIconSize"
+                  [color]="categoryIconColor(category.id, category.iconBackgroundColor)"
+                  aria-hidden="true"
+                ></i-lucide>
+              </div>
+              <span class="category-tile__label app-body-secondary-sm">{{ category.label }}</span>
+            </button>
+          }
+        </div>
+        <div class="category-panel__footer">
+          <span class="category-panel__handle" aria-hidden="true"></span>
+        </div>
       </div>
     </div>
   </div>
 
-  @if (errorMessage) {
-    <p class="app-body-secondary ion-padding-horizontal">{{ errorMessage }}</p>
-  }
+  @if (categoriesAnimCollapsed) {
+    @if (errorMessage) {
+      <p class="app-body-secondary ion-padding-horizontal">{{ errorMessage }}</p>
+    }
 
-  @if (hasActiveSearch) {
-    @if (searchListItems.length) {
-      <app-content-card-list
-        [items]="searchListItems"
-        [flushTop]="true"
-        (itemClick)="onListItemClick($event)"
-      />
-    } @else if (searching) {
-      <p class="app-body-secondary ion-padding">Searching…</p>
+    @if (hasActiveSearch) {
+      @if (searchListItems.length) {
+        <app-content-card-list
+          [items]="searchListItems"
+          [flushTop]="true"
+          [compactCategoryLabel]="true"
+          (itemClick)="onListItemClick($event)"
+        />
+      } @else if (searching) {
+        <p class="app-body-secondary ion-padding">Searching…</p>
+      } @else {
+        <p class="app-body-secondary ion-padding">No recipes match. Try another search or category.</p>
+      }
     } @else {
-      <p class="app-body-secondary ion-padding">No recipes match. Try another search or category.</p>
-    }
-  } @else {
-    @if (favoriteListItems.length) {
-      <p class="section-label app-body-secondary-sm app-uppercase">Favorites</p>
-      <app-content-card-list
-        [items]="favoriteListItems"
-        [flushTop]="true"
-        (itemClick)="onListItemClick($event)"
-      />
+      @if (favoriteListItems.length) {
+        <p class="section-label app-body-secondary-sm app-uppercase">Favorites</p>
+        <app-content-card-list
+          [items]="favoriteListItems"
+          [flushTop]="true"
+          [compactCategoryLabel]="true"
+          (itemClick)="onListItemClick($event)"
+        />
+      }
+
+      @if (showRecommendationsFirst && recommendationListItems.length) {
+        <p class="section-label app-body-secondary-sm app-uppercase">Suggested from your library</p>
+        <app-content-card-list
+          [items]="recommendationListItems"
+          [flushTop]="!favoriteListItems.length"
+          [compactCategoryLabel]="true"
+          (itemClick)="onListItemClick($event)"
+        />
+      }
+
+      @if (!favoriteListItems.length && !recommendationListItems.length) {
+        <p class="app-body-secondary ion-padding">Search or pick a category to get started.</p>
+      }
     }
 
-    @if (showRecommendationsFirst && recommendationListItems.length) {
-      <p class="section-label app-body-secondary-sm app-uppercase">Suggested from your library</p>
-      <app-content-card-list
-        [items]="recommendationListItems"
-        [flushTop]="!favoriteListItems.length"
-        (itemClick)="onListItemClick($event)"
-      />
-    }
-
-    @if (!favoriteListItems.length && !recommendationListItems.length) {
-      <p class="app-body-secondary ion-padding">Search or pick a category to get started.</p>
-    }
+    <p class="app-caption spoonacular-attribution">Recipes provided by Spoonacular</p>
   }
-
-  <p class="app-caption spoonacular-attribution">Recipes provided by Spoonacular</p>
 </ion-content>

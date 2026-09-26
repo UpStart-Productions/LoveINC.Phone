@@ -1,0 +1,69 @@
+.grocery-swipe-item {
+  position: relative;
+  overflow: hidden;
+  max-height: 4rem;
+  background: var(--app-card-background);
+}
+
+.grocery-swipe-item--collapsing {
+  transition:
+    max-height 0.34s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.28s ease;
+  opacity: 0;
+}
+
+.grocery-swipe-item__delete {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-inline-end: 1.35rem;
+  background: var(--ion-color-danger, #eb445a);
+}
+
+.grocery-swipe-item__delete-icon {
+  color: #ffffff;
+  font-size: 1.5rem;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.grocery-swipe-item__surface {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 3rem;
+  padding-inline: 1rem;
+  background: var(--app-card-background);
+  touch-action: pan-y;
+  will-change: transform;
+}
+
+.grocery-swipe-item__surface--animating {
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.grocery-swipe-item__surface--border {
+  border-bottom: 1px solid var(--ion-color-light-shade);
+}
+
+.grocery-swipe-item__check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-inline-end: 0.75rem;
+  touch-action: manipulation;
+
+  ion-icon {
+    font-size: 1.625rem;
+  }
+}
+
+.grocery-swipe-item__surface .app-list-row-title {
+  flex: 1;
+  min-width: 0;
+}

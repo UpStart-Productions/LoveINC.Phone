@@ -2,7 +2,9 @@
   <ion-toolbar class="meal-recap-sheet-toolbar">
     <ion-title>How was it?</ion-title>
     <ion-buttons slot="end">
-      <ion-button class="done-button" (click)="close()">Close</ion-button>
+      <ion-button fill="clear" class="close-button" aria-label="Close" (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -23,41 +25,44 @@
     }
   </div>
 
-  <div class="meal-recap-slider-block">
-    <p class="meal-recap-slider-block__title">How long did it take?</p>
-    <ion-range
-      [min]="cookTimeMin"
-      [max]="cookTimeMax"
-      [step]="5"
-      [snaps]="true"
-      [pin]="true"
-      [value]="cookMinutes"
-      (ionInput)="onCookMinutesChange($event)"
-      aria-label="How long did it take to make"
-    ></ion-range>
-    <div class="meal-recap-range-labels">
-      <span>{{ cookTimeMin }} min</span>
-      <span class="meal-recap-range-labels__center">{{ recipeTimeMinutes }} min (recipe)</span>
-      <span>{{ cookTimeMax }} min</span>
-    </div>
+  <div class="meal-recap-ratings" role="group" aria-label="Meal ratings">
+    @for (dimension of ratingDimensions; track dimension.key) {
+      <div class="meal-recap-rating">
+        <div class="meal-recap-rating__buttons">
+          <button
+            type="button"
+            class="meal-recap-thumb"
+            [class.meal-recap-thumb--selected]="isRatingSelected(dimension.key, 'down')"
+            [attr.aria-pressed]="isRatingSelected(dimension.key, 'down')"
+            [attr.aria-label]="dimension.label + ' thumbs down'"
+            (click)="selectRating(dimension.key, 'down')"
+          >
+            <span aria-hidden="true">{{ thumbDownEmoji }}</span>
+          </button>
+          <button
+            type="button"
+            class="meal-recap-thumb"
+            [class.meal-recap-thumb--selected]="isRatingSelected(dimension.key, 'up')"
+            [attr.aria-pressed]="isRatingSelected(dimension.key, 'up')"
+            [attr.aria-label]="dimension.label + ' thumbs up'"
+            (click)="selectRating(dimension.key, 'up')"
+          >
+            <span aria-hidden="true">{{ thumbUpEmoji }}</span>
+          </button>
+        </div>
+        <span class="meal-recap-rating__label">{{ dimension.label }}</span>
+      </div>
+    }
   </div>
 
-  <div class="meal-recap-slider-block">
-    <p class="meal-recap-slider-block__title">Complexity</p>
-    <ion-range
-      min="0"
-      max="2"
-      step="1"
-      [snaps]="true"
-      [pin]="false"
-      [value]="complexityIndex"
-      (ionInput)="onComplexityChange($event)"
-      aria-label="Recipe complexity"
-    ></ion-range>
-    <div class="meal-recap-range-labels">
-      <span>Easy</span>
-      <span class="meal-recap-range-labels__center">OK</span>
-      <span>Hard</span>
-    </div>
-  </div>
+  <ion-item class="meal-recap-notes-field">
+    <ion-label position="stacked">Anything to remember for next time?</ion-label>
+    <ion-textarea
+      [(ngModel)]="notes"
+      (ngModelChange)="onNotesChange()"
+      rows="3"
+      [autoGrow]="true"
+      autocapitalize="sentences"
+    ></ion-textarea>
+  </ion-item>
 </ion-content>

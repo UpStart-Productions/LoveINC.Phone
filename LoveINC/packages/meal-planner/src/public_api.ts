@@ -5,6 +5,7 @@ export type {
   PlanMeal,
   MealRecap,
   MealRecapComplexity,
+  MealRecapThumb,
   WeeklyPlan,
   GroceryItem,
   WeeklySummary,
@@ -14,6 +15,9 @@ export { MEALS_PER_WEEK } from './lib/constants/cook.constants';
 export {
   MEAL_RECAP_REACTIONS,
   MEAL_RECAP_COMPLEXITY_VALUES,
+  MEAL_RECAP_RATING_DIMENSIONS,
+  type MealRecapRatingKey,
+  computeMealStarRating,
   complexityToIndex,
   indexToComplexity,
 } from './lib/constants/meal-recap.constants';
@@ -34,15 +38,8 @@ export {
   normalizeGroceryAisle,
   compareGroceryAisles,
 } from './lib/utils/grocery-aisle.util';
-export {
-  ingredientImageUrlFromFile,
-  normalizeIngredientImageFile,
-  resolveIngredientImageUrl,
-  buildIngredientSearchQueries,
-} from './lib/utils/ingredient-image.util';
 export type { IngredientLineDisplay } from './lib/utils/recipe-scaling.util';
 export { MealPlannerDatabaseService } from './lib/services/meal-planner-database.service';
 export { MealPlannerProfileService } from './lib/services/meal-planner-profile.service';
 export { MealPlannerRecipeService } from './lib/services/meal-planner-recipe.service';
 export { MealPlannerPlanService } from './lib/services/meal-planner-plan.service';
-export { MealPlannerIngredientImageService } from './lib/services/meal-planner-ingredient-image.service';

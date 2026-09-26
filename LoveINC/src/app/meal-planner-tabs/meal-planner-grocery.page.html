@@ -28,14 +28,14 @@
       </p>
     </div>
   } @else {
-    @for (group of groupedItems; track group.aisle; let first = $first) {
-      <p class="aisle-label app-body-secondary-sm app-uppercase">{{ group.aisle }}</p>
-      <app-grocery-item-list
-        [items]="group.items"
-        [flushTop]="first"
-        (itemTap)="onGroceryRowTap($event)"
-        (itemDelete)="onGroceryRowDelete($event)"
-      />
+    @for (group of groupedItems; track group.aisle) {
+      <section class="grocery-aisle-section">
+        <p class="aisle-label app-body-secondary-sm app-uppercase">{{ group.aisle }}</p>
+        <app-grocery-item-list
+          [items]="group.items"
+          (itemDelete)="onGroceryRowDelete($event)"
+        />
+      </section>
     }
   }
 </ion-content>

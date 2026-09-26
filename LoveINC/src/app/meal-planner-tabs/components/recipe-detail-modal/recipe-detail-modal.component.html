@@ -74,23 +74,28 @@
   }
 
   <div class="content-reader-body p-l-18 p-r-18 p-b-36">
-    <div class="card-badge card-badge--actions recipe-detail-meta-badge">
-      <span class="recipe-detail-meta-badge__label">
-        @if (recipe.readyInMinutes) {
-          {{ recipe.readyInMinutes }} min ·
-        }
-        Serves {{ displayServings }}
-      </span>
-      <button
-        type="button"
-        class="card-badge-more"
-        aria-label="Recipe options"
-        aria-haspopup="dialog"
-        [attr.aria-expanded]="actionsOpen"
-        (click)="openActions($event)"
-      >
-        <span aria-hidden="true">•••</span>
-      </button>
+    <div class="recipe-detail-meta-row">
+      <div class="card-badge card-badge--actions recipe-detail-meta-badge">
+        <span class="recipe-detail-meta-badge__label">
+          @if (recipe.readyInMinutes) {
+            {{ recipe.readyInMinutes }} min ·
+          }
+          Serves {{ displayServings }}
+        </span>
+        <button
+          type="button"
+          class="card-badge-more"
+          aria-label="Recipe options"
+          aria-haspopup="dialog"
+          [attr.aria-expanded]="actionsOpen"
+          (click)="openActions($event)"
+        >
+          <span aria-hidden="true">•••</span>
+        </button>
+      </div>
+      @if (mealStarRating != null) {
+        <app-meal-star-rating [rating]="mealStarRating" />
+      }
     </div>
 
     <h3>Ingredients</h3>
@@ -177,7 +182,7 @@
         [disabled]="!isOnWeek"
         (click)="selectIMadeThisAction($event, actionsPopover)"
       >
-        <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+        <i-lucide slot="start" name="soup" [size]="24" aria-hidden="true"></i-lucide>
         <ion-label>I made this</ion-label>
       </ion-item>
     </ion-list>

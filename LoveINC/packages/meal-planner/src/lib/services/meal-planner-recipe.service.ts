@@ -41,6 +41,31 @@ export class MealPlannerRecipeService {
     return row ? this.mapRecipeRow(row) : null;
   }
 
+  async getReadyMinutesBySpoonacularIds(
+    spoonacularIds: readonly number[]
+  ): Promise<Map<number, number>> {
+    const ids = [...new Set(spoonacularIds.filter((id) => id > 0))];
+    if (!ids.length) {
+      return new Map();
+    }
+
+    const db = await this.dbService.getDbConnection();
+    const placeholders = ids.map(() => '?').join(',');
+    const result = await db.query(
+      `SELECT spoonacular_id, ready_in_minutes FROM cached_recipes WHERE spoonacular_id IN (${placeholders})`,
+      ids
+    );
+
+    const readyMinutesBySpoonacularId = new Map<number, number>();
+    for (const row of result.values ?? []) {
+      if (row['ready_in_minutes'] == null) {
+        continue;
+      }
+      readyMinutesBySpoonacularId.set(Number(row['spoonacular_id']), Number(row['ready_in_minutes']));
+    }
+    return readyMinutesBySpoonacularId;
+  }
+
   async upsertCachedRecipe(recipe: Omit<CachedRecipe, 'id' | 'cachedAt'> & { cachedAt?: string }): Promise<CachedRecipe> {
     const db = await this.dbService.getDbConnection();
     const cachedAt = recipe.cachedAt ?? new Date().toISOString();

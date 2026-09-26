@@ -477,6 +477,7 @@ export class GoalTrackerStatisticsPage {
       totalScheduled: this.totalScheduled,
       weeklyData: this.weeklyData,
       habitStats: this.habitStats,
+      stackChartAboveContent: this.chartView === 'year',
       userFullName: this.getUserFullName() ?? undefined,
     });
     const filename = buildGoalTrackerStatisticsPdfFilename(this.periodLabel);
