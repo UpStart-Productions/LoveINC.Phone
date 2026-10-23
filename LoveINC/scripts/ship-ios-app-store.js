@@ -5,29 +5,36 @@
  * - production Angular build → www (version badge reads app-version.json)
  * - cap sync ios
  * - remove live-reload `server` from native capacitor.config.json (Ionic -l injects LAN URL)
- * - open Xcode for Archive
+ * - xcodebuild Release archive + App Store export (.ipa)
+ * - open the .xcarchive in Xcode (Organizer) for upload / validation
  *
- * Usage: node scripts/ship-ios-app-store.js [patch|minor|major|build]
+ * Usage: node scripts/ship-ios-app-store.js [patch|minor|major|build] [--open-workspace]
  * Default: patch
+ *
+ * Flags:
+ *   --open-workspace  Skip archive; only open App.xcworkspace (legacy manual Archive flow)
  */
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
 const root = path.join(__dirname, '..');
-const iosCapConfig = path.join(root, 'ios/App/App/capacitor.config.json');
+const iosAppDir = path.join(root, 'ios/App');
+const iosCapConfig = path.join(iosAppDir, 'App/capacitor.config.json');
+const versionFile = path.join(root, 'src/app-version.json');
+const exportOptionsPlist = path.join(iosAppDir, 'ExportOptions.appstore.plist');
+const distIosDir = path.join(root, 'dist-ios');
 
-const bumpArg = process.argv[2] || 'patch';
-const allowedBumps = ['major', 'minor', 'patch', 'build'];
-if (!allowedBumps.includes(bumpArg)) {
-  console.error(
-    `ship-ios-app-store: bump must be one of: ${allowedBumps.join(', ')} (got ${JSON.stringify(process.argv[2])})`,
-  );
-  process.exit(1);
+const argv = process.argv.slice(2);
+const openWorkspaceOnly = argv.includes('--open-workspace');
+const bumpArg = argv.find((a) => ['major', 'minor', 'patch', 'build'].includes(a)) || 'patch';
+
+function run(cmd, cwd = root) {
+  execSync(cmd, { cwd, stdio: 'inherit', env: process.env });
 }
 
-function run(cmd) {
-  execSync(cmd, { cwd: root, stdio: 'inherit' });
+function loadVersion() {
+  return JSON.parse(fs.readFileSync(versionFile, 'utf8'));
 }
 
 function stripLiveReloadServerFromIosConfig() {
@@ -64,8 +71,83 @@ function assertNoLiveReloadServerInNativeConfig(filePath) {
   }
 }
 
+function archiveAndExportForAppStore(versionData) {
+  if (!fs.existsSync(exportOptionsPlist)) {
+    console.error('ship-ios-app-store: missing', exportOptionsPlist);
+    process.exit(1);
+  }
+
+  const archivePath = path.join(iosAppDir, 'build', 'LoveINC.xcarchive');
+  const exportDir = path.join(
+    distIosDir,
+    `loveinc-${versionData.version}-build${versionData.build}-appstore`,
+  );
+  const ipaPath = path.join(exportDir, 'App.ipa');
+
+  fs.mkdirSync(path.dirname(archivePath), { recursive: true });
+  fs.mkdirSync(distIosDir, { recursive: true });
+  if (fs.existsSync(exportDir)) {
+    fs.rmSync(exportDir, { recursive: true, force: true });
+  }
+  fs.mkdirSync(exportDir, { recursive: true });
+
+  console.log('\nship-ios-app-store: archiving (Release, generic iOS device)…');
+  run(
+    [
+      'xcodebuild',
+      '-workspace App.xcworkspace',
+      '-scheme App',
+      '-configuration Release',
+      '-destination generic/platform=iOS',
+      '-archivePath',
+      JSON.stringify(archivePath),
+      '-allowProvisioningUpdates',
+      'archive',
+    ].join(' '),
+    iosAppDir,
+  );
+
+  console.log('\nship-ios-app-store: exporting App Store .ipa…');
+  run(
+    [
+      'xcodebuild',
+      '-exportArchive',
+      '-archivePath',
+      JSON.stringify(archivePath),
+      '-exportOptionsPlist',
+      JSON.stringify(exportOptionsPlist),
+      '-exportPath',
+      JSON.stringify(exportDir),
+      '-allowProvisioningUpdates',
+    ].join(' '),
+    iosAppDir,
+  );
+
+  if (!fs.existsSync(ipaPath)) {
+    console.error('ship-ios-app-store: export finished but .ipa not found at', ipaPath);
+    process.exit(1);
+  }
+
+  const versionedIpa = path.join(
+    distIosDir,
+    `loveinc-${versionData.version}-build${versionData.build}-appstore.ipa`,
+  );
+  fs.copyFileSync(ipaPath, versionedIpa);
+
+  console.log('\nship-ios-app-store: archive:', archivePath);
+  console.log('ship-ios-app-store: .ipa (export folder):', ipaPath);
+  console.log('ship-ios-app-store: .ipa (versioned copy):', versionedIpa);
+  console.log('\nOpening archive in Xcode Organizer…');
+  run(`open ${JSON.stringify(archivePath)}`);
+}
+
 run(`node scripts/bump-version.js ${bumpArg}`);
 run('npx ng build --configuration production');
 run('npx cap sync ios');
 stripLiveReloadServerFromIosConfig();
-run('open -a Xcode ios/App/App.xcworkspace');
+
+if (openWorkspaceOnly) {
+  run('open -a Xcode ios/App/App.xcworkspace');
+} else {
+  archiveAndExportForAppStore(loadVersion());
+}

@@ -27,6 +27,7 @@ log.txt
 /dist
 /dist-ota
 /dist-play
+/dist-ios
 /tmp
 /out-tsc
 /bazel-out
